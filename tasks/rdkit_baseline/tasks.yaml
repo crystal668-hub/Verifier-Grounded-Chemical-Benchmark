@@ -7,7 +7,7 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES. The goal is to
-      maximize RDKit QED under the verifier's small-molecule applicability domain.
+      maximize QED, which is scored on a bounded 0.0 to 1.0 scale.
     answer_schema: &answer_schema
       format: json
       required_fields: [candidates]
@@ -34,8 +34,8 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES. The goal is to
-      minimize RDKit synthetic accessibility score within the fixed scoring
-      range [1, 10].
+      minimize synthetic accessibility score, which is scored on a fixed 1.0
+      to 10.0 range where lower is better.
     answer_schema: *answer_schema
     constraints:
       - type: minimize_bounded
@@ -53,8 +53,8 @@ tasks:
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
-      Propose one valid single-component small-molecule SMILES whose RDKit
-      Crippen logP lies in a moderate drug-like window.
+      Propose one valid single-component small-molecule SMILES whose logP is
+      between 1.0 and 3.0.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -73,8 +73,8 @@ tasks:
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
-      Propose one valid single-component small-molecule SMILES whose RDKit TPSA
-      falls in a medium-polarity window.
+      Propose one valid single-component small-molecule SMILES whose TPSA is
+      between 35.0 and 75.0 square angstroms.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -94,7 +94,7 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES whose molecular
-      weight falls in a lead-like range.
+      weight is between 150.0 and 300.0 daltons.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -114,7 +114,7 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES with a moderate
-      number of RDKit hydrogen-bond acceptors.
+      number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -134,7 +134,7 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES with a small but
-      nonzero number of RDKit hydrogen-bond donors.
+      nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -154,7 +154,7 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: >
       Propose one valid single-component small-molecule SMILES. The goal is to
-      maximize RDKit fraction Csp3, whose theoretical range is [0, 1].
+      maximize fraction Csp3, whose theoretical range is 0.0 to 1.0.
     answer_schema: *answer_schema
     constraints:
       - type: maximize_bounded
@@ -173,8 +173,9 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: >
       Propose one valid single-component small-molecule SMILES that balances two
-      objectives: maximize RDKit QED and minimize RDKit synthetic accessibility
-      score.
+      objectives: maximize QED on a bounded 0.0 to 1.0 scale, and minimize
+      synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is
+      better.
     answer_schema: *answer_schema
     constraints:
       - type: maximize_bounded
@@ -196,8 +197,9 @@ tasks:
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: >
-      Propose one valid single-component small-molecule SMILES whose RDKit logP
-      and TPSA both fall in moderate drug-like windows.
+      Propose one valid single-component small-molecule SMILES whose logP is
+      between 1.0 and 3.0 and whose TPSA is between 35.0 and 75.0 square
+      angstroms.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -221,8 +223,9 @@ tasks:
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: >
-      Propose one valid single-component small-molecule SMILES with lead-like
-      molecular weight while also maximizing RDKit QED.
+      Propose one valid single-component small-molecule SMILES with molecular
+      weight between 150.0 and 300.0 daltons while also maximizing QED on a
+      bounded 0.0 to 1.0 scale.
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -246,8 +249,9 @@ tasks:
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: >
       Propose one valid single-component small-molecule SMILES with both a
-      moderate number of hydrogen-bond acceptors and a small nonzero number of
-      hydrogen-bond donors.
+      moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive,
+      and a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0
+      inclusive.
     answer_schema: *answer_schema
     constraints:
       - type: window

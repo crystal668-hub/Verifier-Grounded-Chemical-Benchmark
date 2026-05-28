@@ -46,6 +46,28 @@ def test_task_cards_bind_to_verifier_spec() -> None:
         assert len(task["constraints"]) in {1, 2}
 
 
+def test_prompts_expose_targets_without_verifier_internals() -> None:
+    banned_fragments = [
+        "rdkit",
+        "verifier",
+        "applicability domain",
+        "sigma",
+        "geometric mean",
+    ]
+
+    for task in load_tasks():
+        prompt = task["prompt"]
+        prompt_lower = prompt.lower()
+        assert not any(fragment in prompt_lower for fragment in banned_fragments)
+        for constraint in task["constraints"]:
+            if constraint["type"] == "window":
+                assert str(float(constraint["min"])) in prompt
+                assert str(float(constraint["max"])) in prompt
+            if constraint["type"] in {"maximize_bounded", "minimize_bounded"}:
+                assert str(float(constraint["lower"])) in prompt
+                assert str(float(constraint["upper"])) in prompt
+
+
 def test_sample_answers_score_successfully() -> None:
     tasks = {task["task_id"]: task for task in load_tasks()}
     specs = load_specs()
