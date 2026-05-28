@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import importlib.metadata as metadata
+import importlib
 import math
 from typing import Any
 
 from rdkit import Chem
 from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
-from rdkit.Contrib.SA_Score import sascorer
+
+sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 
 
 def clamp(value: float, lower: float = 0.0, upper: float = 1.0) -> float:

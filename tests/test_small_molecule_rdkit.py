@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import ast
 from pathlib import Path
 
 import pytest
@@ -14,6 +15,23 @@ from verifiers.small_molecule_rdkit import (
 
 ROOT = Path(__file__).resolve().parents[1]
 TASK_DIR = ROOT / "tasks" / "rdkit_baseline"
+
+
+def test_sa_score_import_avoids_static_contrib_import() -> None:
+    for path in [
+        ROOT / "verifiers" / "small_molecule_rdkit.py",
+        ROOT / "scripts" / "check_core_env.py",
+    ]:
+        tree = ast.parse(path.read_text())
+        static_contrib_imports = [
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.ImportFrom)
+            and node.module is not None
+            and node.module.startswith("rdkit.Contrib.SA_Score")
+        ]
+
+        assert not static_contrib_imports
 
 
 def load_tasks() -> list[dict]:

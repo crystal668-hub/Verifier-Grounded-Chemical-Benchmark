@@ -16,7 +16,8 @@ def check_rdkit() -> dict[str, Any]:
     from rdkit import Chem
     from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
     from rdkit.Chem import AllChem
-    from rdkit.Contrib.SA_Score import sascorer
+
+    sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 
     mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
     if mol is None:
