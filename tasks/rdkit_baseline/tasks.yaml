@@ -1,0 +1,265 @@
+tasks:
+  - task_id: rdkit_qed_max_001
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES. The goal is to
+      maximize RDKit QED under the verifier's small-molecule applicability domain.
+    answer_schema: &answer_schema
+      format: json
+      required_fields: [candidates]
+      candidate_fields: [smiles]
+      example: {"candidates": [{"smiles": "CC(=O)Oc1ccccc1C(=O)O"}]}
+    constraints:
+      - type: maximize_bounded
+        property: qed
+        lower: 0.0
+        upper: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: &failure_policy
+      invalid_json: parse_error
+      invalid_smiles: parse_error
+      multi_component: validity_error
+      outside_domain: domain_error
+
+  - task_id: rdkit_sa_min_002
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES. The goal is to
+      minimize RDKit synthetic accessibility score within the fixed scoring
+      range [1, 10].
+    answer_schema: *answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: sa_score
+        lower: 1.0
+        upper: 10.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_logp_window_003
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES whose RDKit
+      Crippen logP lies in a moderate drug-like window.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: logp
+        min: 1.0
+        max: 3.0
+        sigma: 0.5
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_tpsa_window_004
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES whose RDKit TPSA
+      falls in a medium-polarity window.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: tpsa
+        min: 35.0
+        max: 75.0
+        sigma: 10.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_mw_window_005
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES whose molecular
+      weight falls in a lead-like range.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: mw
+        min: 150.0
+        max: 300.0
+        sigma: 25.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_hba_window_006
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES with a moderate
+      number of RDKit hydrogen-bond acceptors.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: hba
+        min: 2
+        max: 4
+        sigma: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_hbd_window_007
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES with a small but
+      nonzero number of RDKit hydrogen-bond donors.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: hbd
+        min: 1
+        max: 2
+        sigma: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_fsp3_max_008
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES. The goal is to
+      maximize RDKit fraction Csp3, whose theoretical range is [0, 1].
+    answer_schema: *answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: fraction_csp3
+        lower: 0.0
+        upper: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_qed_sa_009
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES that balances two
+      objectives: maximize RDKit QED and minimize RDKit synthetic accessibility
+      score.
+    answer_schema: *answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: qed
+        lower: 0.0
+        upper: 1.0
+      - type: minimize_bounded
+        property: sa_score
+        lower: 1.0
+        upper: 10.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_logp_tpsa_010
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES whose RDKit logP
+      and TPSA both fall in moderate drug-like windows.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: logp
+        min: 1.0
+        max: 3.0
+        sigma: 0.5
+      - type: window
+        property: tpsa
+        min: 35.0
+        max: 75.0
+        sigma: 10.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_mw_qed_011
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES with lead-like
+      molecular weight while also maximizing RDKit QED.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: mw
+        min: 150.0
+        max: 300.0
+        sigma: 25.0
+      - type: maximize_bounded
+        property: qed
+        lower: 0.0
+        upper: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_hba_hbd_012
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    verifier_id: small_molecule_rdkit_v1
+    capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
+    prompt: >
+      Propose one valid single-component small-molecule SMILES with both a
+      moderate number of hydrogen-bond acceptors and a small nonzero number of
+      hydrogen-bond donors.
+    answer_schema: *answer_schema
+    constraints:
+      - type: window
+        property: hba
+        min: 2
+        max: 4
+        sigma: 1.0
+      - type: window
+        property: hbd
+        min: 1
+        max: 2
+        sigma: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy

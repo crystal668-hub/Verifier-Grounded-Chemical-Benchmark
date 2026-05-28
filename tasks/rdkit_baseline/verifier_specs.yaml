@@ -1,0 +1,60 @@
+verifiers:
+  - verifier_id: small_molecule_rdkit_v1
+    name: Small Molecule RDKit Descriptor Verifier
+    version: 1
+    environment: core-py312
+    package_versions:
+      rdkit: "2026.3.2"
+    input_schema:
+      format: json
+      required_fields:
+        - task_id
+        - candidates
+      candidate_schema:
+        required_fields:
+          - smiles
+    normalization:
+      smiles: RDKit canonical SMILES after sanitize
+      components: single component only
+    domain:
+      allowed_elements: [H, B, C, N, O, F, P, S, Cl, Br, I]
+      heavy_atom_count: [5, 60]
+      mw: [80.0, 600.0]
+      formal_charge: [-1, 1]
+    properties:
+      qed:
+        source: rdkit.Chem.QED.qed
+        range: [0.0, 1.0]
+      logp:
+        source: rdkit.Chem.Crippen.MolLogP
+      tpsa:
+        source: rdkit.Chem.rdMolDescriptors.CalcTPSA
+        units: angstrom_squared
+      mw:
+        source: rdkit.Chem.Descriptors.MolWt
+        units: dalton
+      hbd:
+        source: rdkit.Chem.rdMolDescriptors.CalcNumHBD
+      hba:
+        source: rdkit.Chem.rdMolDescriptors.CalcNumHBA
+      rotatable_bonds:
+        source: rdkit.Chem.rdMolDescriptors.CalcNumRotatableBonds
+      sa_score:
+        source: rdkit.Contrib.SA_Score.sascorer.calculateScore
+        scoring_range: [1.0, 10.0]
+      fraction_csp3:
+        source: rdkit.Chem.rdMolDescriptors.CalcFractionCSP3
+        range: [0.0, 1.0]
+    scoring:
+      supported_modes:
+        - window
+        - maximize_bounded
+        - minimize_bounded
+      aggregation: geometric_mean
+      bounded_modes:
+        good_at_or_baseline: forbidden
+      final_score_range: [0.0, 1.0]
+    failure_policy:
+      parse_error: invalid answer JSON shape, missing SMILES, or unparseable SMILES
+      validity_error: multi-component SMILES or unsanitizable molecule
+      domain_error: outside element, heavy atom, MW, or formal charge domain

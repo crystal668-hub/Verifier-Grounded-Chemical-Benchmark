@@ -11,9 +11,17 @@ dependencies = [
     "mp-api==0.46.1",
     "ord-schema==0.6.5",
     "pymatgen==2026.5.4",
+    "pyyaml==6.0.3",
     "rdkit==2026.3.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==8.4.2",
 ]
 
 [tool.uv]
 package = false
 
+[tool.pytest.ini_options]
+pythonpath = ["."]
