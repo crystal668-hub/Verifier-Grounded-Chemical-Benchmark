@@ -1,0 +1,19 @@
+[project]
+name = "verifier-grounded-benchmark"
+version = "0.1.0"
+description = "Verifier-grounded chemical benchmark environment and tooling."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "admet-ai==2.0.1",
+    "ase==3.28.0",
+    "cclib==1.8.1",
+    "chembl-webresource-client==0.10.9",
+    "mp-api==0.46.1",
+    "ord-schema==0.6.5",
+    "pymatgen==2026.5.4",
+    "rdkit==2026.3.2",
+]
+
+[tool.uv]
+package = false
+
