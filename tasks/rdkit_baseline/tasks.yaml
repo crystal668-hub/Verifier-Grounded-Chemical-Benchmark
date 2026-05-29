@@ -5,14 +5,20 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES. The goal is to
-      maximize QED, which is scored on a bounded 0.0 to 1.0 scale.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Maximize QED on a bounded 0.0 to 1.0 scale.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: &answer_schema
-      format: json
-      required_fields: [candidates]
-      candidate_fields: [smiles]
-      example: {"candidates": [{"smiles": "CC(=O)Oc1ccccc1C(=O)O"}]}
+      format: final_answer_line
+      final_answer_prefix: "FINAL ANSWER:"
+      value_type: smiles
+      cardinality: one
+      example: "FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O"
     constraints:
       - type: maximize_bounded
         property: qed
@@ -32,10 +38,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES. The goal is to
-      minimize synthetic accessibility score, which is scored on a fixed 1.0
-      to 10.0 range where lower is better.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is better.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: minimize_bounded
@@ -52,9 +62,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES whose logP is
-      between 1.0 and 3.0.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have logP between 1.0 and 3.0.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -72,9 +87,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES whose TPSA is
-      between 35.0 and 75.0 square angstroms.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have TPSA between 35.0 and 75.0 square angstroms.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -92,9 +112,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES whose molecular
-      weight is between 150.0 and 300.0 daltons.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have molecular weight between 150.0 and 300.0 daltons.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -112,9 +137,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES with a moderate
-      number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have a moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -132,9 +162,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES with a small but
-      nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -152,9 +187,14 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES. The goal is to
-      maximize fraction Csp3, whose theoretical range is 0.0 to 1.0.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Maximize fraction Csp3 on a 0.0 to 1.0 scale.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: maximize_bounded
@@ -171,11 +211,15 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES that balances two
-      objectives: maximize QED on a bounded 0.0 to 1.0 scale, and minimize
-      synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is
-      better.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Maximize QED on a bounded 0.0 to 1.0 scale.
+      - Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is better.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: maximize_bounded
@@ -196,10 +240,15 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES whose logP is
-      between 1.0 and 3.0 and whose TPSA is between 35.0 and 75.0 square
-      angstroms.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have logP between 1.0 and 3.0.
+      - Have TPSA between 35.0 and 75.0 square angstroms.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -222,10 +271,15 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES with molecular
-      weight between 150.0 and 300.0 daltons while also maximizing QED on a
-      bounded 0.0 to 1.0 scale.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have molecular weight between 150.0 and 300.0 daltons.
+      - Maximize QED on a bounded 0.0 to 1.0 scale.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window
@@ -247,11 +301,15 @@ tasks:
     difficulty: simple
     verifier_id: small_molecule_rdkit_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
-    prompt: >
-      Propose one valid single-component small-molecule SMILES with both a
-      moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive,
-      and a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0
-      inclusive.
+    prompt: |
+      Propose one valid single-component small-molecule SMILES.
+
+      The molecule must satisfy:
+      - Have a moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
+      - Have a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
     answer_schema: *answer_schema
     constraints:
       - type: window

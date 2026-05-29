@@ -8,6 +8,7 @@ from typing import Any
 
 import yaml
 
+from benchmark.answer_extraction import normalize_answer_record
 from verifiers.registry import UnknownVerifierError, get_verifier
 
 
@@ -41,6 +42,11 @@ def evaluate_one(
     if task is None:
         return routing_error(task_id, "task_error", f"unknown task_id: {task_id}")
 
+    extraction = normalize_answer_record(answer, task)
+    if not extraction.ok:
+        return routing_error(task_id, extraction.failure_type or "parse_error", extraction.message or "answer parse failed")
+    normalized_answer = extraction.answer or answer
+
     verifier_id = task.get("verifier_id")
     if not isinstance(verifier_id, str) or not verifier_id:
         return routing_error(task_id, "verifier_spec_error", "task is missing verifier_id")
@@ -54,7 +60,11 @@ def evaluate_one(
     except UnknownVerifierError as exc:
         return routing_error(task_id, "verifier_registry_error", str(exc))
 
-    return verifier(answer, task, spec)
+    result = verifier(normalized_answer, task, spec)
+    for field in ("raw_answer", "extracted_answer"):
+        if field in normalized_answer:
+            result[field] = normalized_answer[field]
+    return result
 
 
 def evaluate_many(
@@ -71,7 +81,7 @@ def evaluate_many(
 
 def summarize_row(result: dict[str, Any]) -> dict[str, Any]:
     scores = result.get("scores") or {}
-    return {
+    row = {
         "task_id": result.get("task_id"),
         "status": result.get("status"),
         "failure_type": result.get("failure_type"),
@@ -80,6 +90,10 @@ def summarize_row(result: dict[str, Any]) -> dict[str, Any]:
         "properties": result.get("properties", {}),
         "constraint_scores": scores.get("constraint_scores", []),
     }
+    for field in ("raw_answer", "extracted_answer"):
+        if field in result:
+            row[field] = result[field]
+    return row
 
 
 def summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -113,4 +127,3 @@ def routing_error(task_id: str | None, failure_type: str, message: str) -> dict[
         "message": message,
         "versions": {},
     }
-

@@ -60,7 +60,10 @@ def test_task_cards_bind_to_verifier_spec() -> None:
     for task in tasks:
         assert task["verifier_id"] in specs
         assert task["object_type"] == "small_molecule"
-        assert task["answer_schema"]["format"] == "json"
+        assert task["answer_schema"]["format"] == "final_answer_line"
+        assert task["answer_schema"]["final_answer_prefix"] == "FINAL ANSWER:"
+        assert task["answer_schema"]["value_type"] == "smiles"
+        assert task["answer_schema"]["cardinality"] == "one"
         assert len(task["constraints"]) in {1, 2}
 
 
@@ -76,6 +79,10 @@ def test_prompts_expose_targets_without_verifier_internals() -> None:
     for task in load_tasks():
         prompt = task["prompt"]
         prompt_lower = prompt.lower()
+        assert prompt.startswith("Propose one valid single-component small-molecule SMILES.")
+        assert "The molecule must satisfy:" in prompt
+        assert "Your final answer must appear on its own line exactly in this format:" in prompt
+        assert prompt.rstrip().endswith("FINAL ANSWER: <SMILES>")
         assert not any(fragment in prompt_lower for fragment in banned_fragments)
         for constraint in task["constraints"]:
             if constraint["type"] == "window":
