@@ -8,6 +8,7 @@ dependencies = [
     "ase==3.28.0",
     "cclib==1.8.1",
     "chembl-webresource-client==0.10.9",
+    "mcp>=1.27.2",
     "mp-api==0.46.1",
     "ord-schema==0.6.5",
     "pymatgen==2026.5.4",

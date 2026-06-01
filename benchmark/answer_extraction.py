@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from typing import Any
 
@@ -42,13 +43,26 @@ def normalize_answer_record(record: dict[str, Any], task: dict[str, Any]) -> Ext
         return ExtractionResult(None, "parse_error", "final answer line is empty")
 
     value_type = schema.get("value_type")
-    if value_type != "smiles":
+    candidate: dict[str, Any]
+    if value_type == "smiles":
+        candidate = {"smiles": extracted}
+    elif value_type == "json":
+        try:
+            candidate = {"json": json.loads(extracted)}
+        except json.JSONDecodeError as exc:
+            return ExtractionResult(None, "parse_error", f"invalid JSON final answer: {exc.msg}")
+    elif value_type == "number":
+        try:
+            candidate = {"value": float(extracted), "raw_value": extracted}
+        except ValueError:
+            return ExtractionResult(None, "parse_error", f"invalid numeric final answer: {extracted!r}")
+    else:
         return ExtractionResult(None, "parse_error", f"unsupported answer_schema value_type: {value_type!r}")
 
     return ExtractionResult(
         {
             "task_id": record.get("task_id"),
-            "candidates": [{"smiles": extracted}],
+            "candidates": [candidate],
             "raw_answer": raw_answer,
             "extracted_answer": extracted,
         },

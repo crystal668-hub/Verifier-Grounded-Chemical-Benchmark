@@ -1,0 +1,74 @@
+verifiers:
+  - verifier_id: atomisticskills_base_supercell_mcp_v1
+    name: AtomisticSkills Base Supercell MCP Verifier
+    version: 1
+    environment: base-agent
+    backend:
+      type: mcp
+      server: base
+      tool: supercell_expansion
+    fixture:
+      structure_path: tasks/atomisticskills_smoke/fixtures/Si.cif
+    tool:
+      server: base
+      name: supercell_expansion
+    expected:
+      atom_count: 4
+      reduced_formula: Si
+    timeout_seconds: 60
+    scoring:
+      aggregation: all_or_nothing
+    failure_policy:
+      parse_error: malformed JSON candidate or invalid scaling matrix
+      verifier_environment_error: AtomisticSkills checkout, conda, or MCP config missing
+      verifier_tool_error: MCP tool failed or did not produce a CIF
+      verifier_timeout: MCP tool exceeded timeout
+
+  - verifier_id: atomisticskills_drugdisc_descriptors_mcp_v1
+    name: AtomisticSkills DrugDisc Descriptor MCP Verifier
+    version: 1
+    environment: drugdisc-agent
+    backend:
+      type: mcp
+      server: drugdisc
+      tools:
+        - standardize_molecule
+        - compute_molecular_descriptors
+    tool:
+      server: drugdisc
+    standardization_mode: cleanup
+    timeout_seconds: 60
+    domain:
+      single_component: true
+      allowed_elements: [C, H, O]
+    scoring:
+      aggregation: geometric_mean
+    failure_policy:
+      parse_error: missing SMILES candidate
+      validity_error: multi-component SMILES
+      domain_error: disallowed elements
+      verifier_environment_error: AtomisticSkills checkout, conda, or MCP config missing
+      verifier_tool_error: MCP tool failed or descriptor output was invalid
+      verifier_timeout: MCP tool exceeded timeout
+
+  - verifier_id: atomisticskills_xrd_peak_script_v1
+    name: AtomisticSkills XRD Peak Script Verifier
+    version: 1
+    environment: xrd-agent
+    backend:
+      type: script
+      script: .agents/skills/mat-xrd-calculator/scripts/calculate_xrd.py
+    fixture:
+      structure_path: tasks/atomisticskills_smoke/fixtures/Si.cif
+    xrd:
+      wavelength: CuKa
+      target_peak: max_intensity
+      tolerance_degrees: 0.2
+    timeout_seconds: 120
+    scoring:
+      aggregation: linear_tolerance
+    failure_policy:
+      parse_error: missing numeric candidate
+      verifier_environment_error: AtomisticSkills checkout, conda, or xrd-agent missing
+      verifier_tool_error: XRD script failed or output JSON was invalid
+      verifier_timeout: XRD script exceeded timeout
