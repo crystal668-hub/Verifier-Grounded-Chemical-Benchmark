@@ -3,6 +3,9 @@ verifiers:
     name: AtomisticSkills Base Supercell MCP Verifier
     version: 1
     environment: base-agent
+    formal_track: false
+    verifier_image: null
+    verification_script: null
     backend:
       type: mcp
       server: base
@@ -28,6 +31,9 @@ verifiers:
     name: AtomisticSkills DrugDisc Descriptor MCP Verifier
     version: 1
     environment: drugdisc-agent
+    formal_track: false
+    verifier_image: null
+    verification_script: null
     backend:
       type: mcp
       server: drugdisc
@@ -55,6 +61,9 @@ verifiers:
     name: AtomisticSkills XRD Peak Script Verifier
     version: 1
     environment: xrd-agent
+    formal_track: false
+    verifier_image: null
+    verification_script: null
     backend:
       type: script
       script: .agents/skills/mat-xrd-calculator/scripts/calculate_xrd.py

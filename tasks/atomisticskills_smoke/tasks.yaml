@@ -4,7 +4,9 @@ tasks:
     object_type: crystal_structure_operation
     difficulty: smoke
     verifier_id: atomisticskills_base_supercell_mcp_v1
-    capability_tags: [atomisticskills, base_agent, mcp, structure_operation]
+    capability_tags: [atomisticskills, base_agent, mcp, structure_operation, experimental_smoke]
+    formal_track: false
+    notes: "Smoke test for structure operation adapter only; not a formal open-generation property-satisfaction task."
     prompt: |
       Propose one JSON object specifying a supercell scaling matrix for the provided silicon fixture.
 
@@ -40,7 +42,8 @@ tasks:
     object_type: small_molecule
     difficulty: smoke
     verifier_id: atomisticskills_drugdisc_descriptors_mcp_v1
-    capability_tags: [atomisticskills, drugdisc_agent, mcp, molecular_descriptor]
+    capability_tags: [atomisticskills, drugdisc_agent, mcp, molecular_descriptor, experimental_smoke]
+    formal_track: false
     prompt: |
       Propose one valid single-component small-molecule SMILES.
 
@@ -71,7 +74,9 @@ tasks:
     object_type: xrd_peak
     difficulty: smoke
     verifier_id: atomisticskills_xrd_peak_script_v1
-    capability_tags: [atomisticskills, xrd_agent, script_adapter, diffraction]
+    capability_tags: [atomisticskills, xrd_agent, script_adapter, diffraction, experimental_smoke]
+    formal_track: false
+    notes: "Smoke test for script adapter only; not a formal open-generation property-satisfaction task because the model reports a numeric peak rather than a candidate structure."
     prompt: |
       Propose the strongest calculated XRD peak position for the provided silicon fixture in degrees 2theta.
 

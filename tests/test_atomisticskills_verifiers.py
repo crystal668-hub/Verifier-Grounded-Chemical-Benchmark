@@ -42,6 +42,19 @@ def test_registry_resolves_atomisticskills_verifiers() -> None:
     assert get_verifier("atomisticskills_xrd_peak_script_v1") is evaluate_xrd_peak
 
 
+def test_atomisticskills_smoke_tasks_are_experimental_non_formal() -> None:
+    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    specs = load_verifier_specs(TASK_DIR / "verifier_specs.yaml")
+
+    for task in tasks.values():
+        assert "experimental_smoke" in task["capability_tags"]
+        assert task["formal_track"] is False
+
+    for spec in specs.values():
+        assert spec["formal_track"] is False
+        assert spec["backend"]["type"] in {"mcp", "script"}
+
+
 def test_base_supercell_verifier_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     input_cif = tmp_path / "Si.cif"
     output_cif = tmp_path / "out" / "Si_supercell.cif"
