@@ -130,7 +130,7 @@ def resolve_mcp_server_config(
 def extract_text_content(tool_result: Any) -> Any:
     structured = getattr(tool_result, "structuredContent", None)
     if structured is not None:
-        return structured
+        return unwrap_mcp_result_payload(structured)
 
     content = getattr(tool_result, "content", None)
     if content is None:
@@ -139,10 +139,16 @@ def extract_text_content(tool_result: Any) -> Any:
     if len(texts) == 1:
         text = texts[0]
         try:
-            return json.loads(text)
+            return unwrap_mcp_result_payload(json.loads(text))
         except json.JSONDecodeError:
             return text
     return "\n".join(texts)
+
+
+def unwrap_mcp_result_payload(payload: Any) -> Any:
+    if isinstance(payload, dict) and set(payload) == {"result"}:
+        return payload["result"]
+    return payload
 
 
 class AtomisticSkillsMCPAdapter:

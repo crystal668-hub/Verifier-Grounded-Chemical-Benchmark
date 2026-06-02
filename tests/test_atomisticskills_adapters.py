@@ -8,6 +8,7 @@ import pytest
 from verifiers.atomisticskills_backend import (
     AtomisticSkillsEnvironmentError,
     AtomisticSkillsScriptAdapter,
+    extract_text_content,
     resolve_mcp_server_config,
     xrd_subprocess_environment,
 )
@@ -89,3 +90,14 @@ def test_xrd_subprocess_environment_adds_atomisticskills_pythonpath(tmp_path: Pa
     env = xrd_subprocess_environment(root, {"PYTHONPATH": "/existing"})
 
     assert env["PYTHONPATH"] == f"{root}:/existing"
+
+
+def test_extract_text_content_unwraps_mcp_result_payload() -> None:
+    class Text:
+        text = json.dumps({"result": {"success": True, "standardized_smiles": "CCO"}})
+
+    class ToolResult:
+        structuredContent = None
+        content = [Text()]
+
+    assert extract_text_content(ToolResult()) == {"success": True, "standardized_smiles": "CCO"}
