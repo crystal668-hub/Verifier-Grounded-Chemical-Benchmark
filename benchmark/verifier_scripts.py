@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def build_script_payload(answer: dict[str, Any], task: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
@@ -21,6 +25,9 @@ def run_verification_script(
     python_executable: str = sys.executable,
 ) -> dict[str, Any]:
     script = Path(script_path)
+    env = os.environ.copy()
+    pythonpath = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = str(ROOT) if not pythonpath else f"{ROOT}{os.pathsep}{pythonpath}"
     completed = subprocess.run(
         [python_executable, str(script)],
         input=json.dumps(payload),
@@ -28,6 +35,7 @@ def run_verification_script(
         text=True,
         timeout=timeout_seconds,
         check=False,
+        env=env,
     )
     if completed.returncode != 0:
         return {
