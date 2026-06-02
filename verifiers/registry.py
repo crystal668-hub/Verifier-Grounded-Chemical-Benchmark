@@ -1,4 +1,4 @@
-"""Explicit verifier registry for routing task answers to verifier code."""
+"""Legacy verifier registry used only for experimental specs that do not yet define verification_script."""
 
 from __future__ import annotations
 
