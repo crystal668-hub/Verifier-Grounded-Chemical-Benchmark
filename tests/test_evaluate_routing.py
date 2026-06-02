@@ -16,7 +16,6 @@ from benchmark.evaluate import (
     summarize_row,
 )
 from verifiers.registry import UnknownVerifierError, get_verifier
-from verifiers.small_molecule_rdkit import evaluate_answer
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,10 +31,6 @@ FINAL_ANSWER_SCHEMA = {
 }
 
 
-def test_registry_resolves_rdkit_verifier() -> None:
-    assert get_verifier("small_molecule_rdkit_v1") is evaluate_answer
-
-
 def test_registry_rejects_unknown_verifier() -> None:
     with pytest.raises(UnknownVerifierError, match="unknown verifier_id"):
         get_verifier("missing_verifier_v1")
@@ -48,6 +43,7 @@ def test_evaluate_one_routes_by_task_and_verifier_id() -> None:
 
     result = evaluate_one(answer, tasks, specs)
 
+    assert specs[tasks["rdkit_qed_max_001"]["verifier_id"]]["verification_script"].endswith("rdkit_qed_max_001.py")
     assert result["status"] == "ok"
     assert result["task_id"] == "rdkit_qed_max_001"
     assert result["canonical_smiles"] == "COc1ccc2cc([C@@H](C)C(=O)O)ccc2c1"

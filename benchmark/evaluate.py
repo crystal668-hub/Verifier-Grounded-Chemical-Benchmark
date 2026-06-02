@@ -9,7 +9,11 @@ from typing import Any
 import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
+from benchmark.verifier_scripts import build_script_payload, run_verification_script
 from verifiers.registry import UnknownVerifierError, get_verifier
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def load_tasks(path: str | Path) -> dict[str, dict[str, Any]]:
@@ -54,6 +58,20 @@ def evaluate_one(
     spec = specs.get(verifier_id)
     if spec is None:
         return routing_error(task_id, "verifier_spec_error", f"missing verifier spec: {verifier_id}")
+
+    verification_script = spec.get("verification_script")
+    if verification_script:
+        script_path = ROOT / str(verification_script)
+        payload = build_script_payload(normalized_answer, task, spec)
+        result = run_verification_script(
+            script_path,
+            payload,
+            timeout_seconds=float(spec.get("timeout_seconds", 60.0)),
+        )
+        for field in ("raw_answer", "extracted_answer"):
+            if field in normalized_answer:
+                result[field] = normalized_answer[field]
+        return result
 
     try:
         verifier = get_verifier(verifier_id)

@@ -3,7 +3,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_qed_max_001_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -36,7 +36,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_sa_min_002_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -60,7 +60,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_logp_window_003_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -85,7 +85,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_tpsa_window_004_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -110,7 +110,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_mw_window_005_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -135,7 +135,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_hba_window_006_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -160,7 +160,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_hbd_window_007_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -185,7 +185,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_fsp3_max_008_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -209,7 +209,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_qed_sa_009_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -238,7 +238,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_logp_tpsa_010_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -269,7 +269,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_mw_qed_011_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -299,7 +299,7 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: small_molecule_rdkit_v1
+    verifier_id: rdkit_hba_hbd_012_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.

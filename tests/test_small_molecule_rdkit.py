@@ -59,6 +59,11 @@ def test_task_cards_bind_to_verifier_spec() -> None:
     assert len({task["task_id"] for task in tasks}) == 12
     for task in tasks:
         assert task["verifier_id"] in specs
+        spec = specs[task["verifier_id"]]
+        assert spec["verifier_image"] == "verifier-grounded:dev"
+        assert spec["verification_script"].endswith(f"{task['task_id']}.py")
+        assert (ROOT / spec["verification_script"]).exists()
+        assert spec["backend"]["type"] == "rdkit_descriptors"
         assert task["object_type"] == "small_molecule"
         assert task["answer_schema"]["format"] == "final_answer_line"
         assert task["answer_schema"]["final_answer_prefix"] == "FINAL ANSWER:"
