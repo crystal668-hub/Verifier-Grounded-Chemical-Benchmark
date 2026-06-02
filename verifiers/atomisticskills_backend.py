@@ -19,6 +19,7 @@ from mcp.client.stdio import stdio_client
 
 
 ENV_PATTERN = re.compile(r".*/envs/([^/]+)/bin/python$")
+ATOMISTICSKILLS_MCP_SHIM_DIR = Path(__file__).resolve().parent / "atomisticskills_mcp_shims"
 
 
 class AtomisticSkillsError(RuntimeError):
@@ -83,6 +84,18 @@ def detect_conda_executable() -> Path:
     raise AtomisticSkillsEnvironmentError("conda executable not found; install Miniforge before running xrd-agent")
 
 
+def prepend_pythonpath(path: Path, current: str | None) -> str:
+    if current:
+        return os.pathsep.join([str(path), current])
+    return str(path)
+
+
+def xrd_subprocess_environment(atomisticskills_home: Path, base_env: dict[str, str] | None = None) -> dict[str, str]:
+    env = dict(base_env or os.environ)
+    env["PYTHONPATH"] = prepend_pythonpath(atomisticskills_home, env.get("PYTHONPATH"))
+    return env
+
+
 def resolve_mcp_server_config(
     server_name: str,
     *,
@@ -109,7 +122,8 @@ def resolve_mcp_server_config(
         command_path = Path(command).expanduser()
 
     env = {str(k): str(v) for k, v in (server.get("env") or {}).items()}
-    env["PYTHONPATH"] = str(root)
+    env["PYTHONPATH"] = os.pathsep.join([str(ATOMISTICSKILLS_MCP_SHIM_DIR), str(root)])
+    env["ATOMISTICSKILLS_MCP_DISABLE_JSON_PREPARSE"] = "1"
     return MCPServerConfig(command=command_path, args=list(server.get("args") or []), env=env)
 
 
@@ -226,7 +240,14 @@ class AtomisticSkillsScriptAdapter:
         output = Path(output_dir)
         command = self.xrd_calculator_command(structure, output, wavelength=wavelength)
         try:
-            completed = subprocess.run(command, capture_output=True, text=True, timeout=timeout_seconds, check=False)
+            completed = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=timeout_seconds,
+                check=False,
+                env=xrd_subprocess_environment(self.atomisticskills_home),
+            )
         except subprocess.TimeoutExpired as exc:
             raise AtomisticSkillsTimeoutError("xrd-agent calculator timed out") from exc
         if completed.returncode != 0:

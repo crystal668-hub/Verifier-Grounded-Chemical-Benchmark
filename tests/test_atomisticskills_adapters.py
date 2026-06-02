@@ -9,6 +9,7 @@ from verifiers.atomisticskills_backend import (
     AtomisticSkillsEnvironmentError,
     AtomisticSkillsScriptAdapter,
     resolve_mcp_server_config,
+    xrd_subprocess_environment,
 )
 
 
@@ -43,7 +44,10 @@ def test_resolve_mcp_server_config_patches_conda_and_pythonpath(tmp_path: Path) 
 
     assert config.command == conda_base / "envs" / "base-agent" / "bin" / "python"
     assert config.args == ["-m", "src.mcp_server.base_server"]
-    assert config.env["PYTHONPATH"] == str(atomisticskills_home)
+    pythonpath_parts = config.env["PYTHONPATH"].split(":")
+    assert pythonpath_parts[0].endswith("verifiers/atomisticskills_mcp_shims")
+    assert pythonpath_parts[1] == str(atomisticskills_home)
+    assert config.env["ATOMISTICSKILLS_MCP_DISABLE_JSON_PREPARSE"] == "1"
 
 
 def test_resolve_mcp_server_config_rejects_unknown_server(tmp_path: Path) -> None:
@@ -77,3 +81,11 @@ def test_script_adapter_builds_xrd_command(tmp_path: Path) -> None:
         "--wavelength",
         "CuKa",
     ]
+
+
+def test_xrd_subprocess_environment_adds_atomisticskills_pythonpath(tmp_path: Path) -> None:
+    root = tmp_path / "AtomisticSkills"
+
+    env = xrd_subprocess_environment(root, {"PYTHONPATH": "/existing"})
+
+    assert env["PYTHONPATH"] == f"{root}:/existing"

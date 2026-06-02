@@ -4,8 +4,12 @@
 from __future__ import annotations
 
 import json
+import sys
 import tempfile
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 from verifiers.atomisticskills_backend import (
     AtomisticSkillsMCPAdapter,
@@ -15,7 +19,6 @@ from verifiers.atomisticskills_backend import (
 )
 
 
-ROOT = Path(__file__).resolve().parents[1]
 SI_FIXTURE = ROOT / "tasks" / "atomisticskills_smoke" / "fixtures" / "Si.cif"
 
 
