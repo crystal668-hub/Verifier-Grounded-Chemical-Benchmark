@@ -101,3 +101,37 @@ def test_extract_text_content_unwraps_mcp_result_payload() -> None:
         content = [Text()]
 
     assert extract_text_content(ToolResult()) == {"success": True, "standardized_smiles": "CCO"}
+
+
+def test_mcp_adapter_call_tools_uses_single_async_session(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from verifiers import atomisticskills_backend
+
+    calls: list[tuple[str, dict]] = []
+
+    async def fake_call_tools(self, tool_calls, timeout_seconds):
+        calls.extend((tool_name, arguments) for tool_name, arguments in tool_calls)
+        return ["loaded", {"formation_energy": 0.005}]
+
+    monkeypatch.setattr(atomisticskills_backend.AtomisticSkillsMCPAdapter, "_call_tools", fake_call_tools)
+    atomisticskills_home = tmp_path / "AtomisticSkills"
+    atomisticskills_home.mkdir()
+    write_fake_mcp_config(atomisticskills_home)
+    adapter = atomisticskills_backend.AtomisticSkillsMCPAdapter(
+        "base",
+        atomisticskills_home=atomisticskills_home,
+        conda_base=tmp_path / "miniforge3",
+    )
+
+    result = adapter.call_tools(
+        [
+            ("load_model", {"model_name": "MEGNet-Eform-MP-2018.6.1"}),
+            ("predict_structure", {"structure_data": "candidate.cif"}),
+        ],
+        timeout_seconds=90,
+    )
+
+    assert result == ["loaded", {"formation_energy": 0.005}]
+    assert calls == [
+        ("load_model", {"model_name": "MEGNet-Eform-MP-2018.6.1"}),
+        ("predict_structure", {"structure_data": "candidate.cif"}),
+    ]

@@ -114,14 +114,13 @@ def test_matgl_formation_energy_loads_model_and_scores_fake_mcp_result(monkeypat
         def __init__(self, server_name: str) -> None:
             assert server_name == "matgl"
 
-        def call_tool(self, tool_name: str, arguments: dict, timeout_seconds: float = 60.0) -> dict | str:
-            calls.append((tool_name, arguments))
-            if tool_name == "load_model":
-                return "Successfully loaded MatGL model: MEGNet-Eform-MP-2018.6.1"
-            if tool_name == "predict_structure":
-                assert Path(arguments["structure_data"]).exists()
-                return {"formation_energy": 0.0052700042724609375, "unit": "eV"}
-            raise AssertionError(tool_name)
+        def call_tools(self, tool_calls: list[tuple[str, dict]], timeout_seconds: float = 60.0) -> list[dict | str]:
+            calls.extend(tool_calls)
+            assert Path(tool_calls[1][1]["structure_data"]).exists()
+            return [
+                "Successfully loaded MatGL model: MEGNet-Eform-MP-2018.6.1",
+                {"formation_energy": 0.0052700042724609375, "unit": "eV"},
+            ]
 
     monkeypatch.setattr(matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
 

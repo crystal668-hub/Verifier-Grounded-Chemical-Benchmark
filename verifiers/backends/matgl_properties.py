@@ -106,19 +106,20 @@ def compute_property(
             timeout_seconds=timeout,
         )
     if property_name == "formation_energy":
-        adapter.call_tool(
-            "load_model",
-            {
-                "model_name": matgl_config.get("model_name", "MEGNet-Eform-MP-2018.6.1"),
-                "device": matgl_config.get("device", "cpu"),
-            },
+        results = adapter.call_tools(
+            [
+                (
+                    "load_model",
+                    {
+                        "model_name": matgl_config.get("model_name", "MEGNet-Eform-MP-2018.6.1"),
+                        "device": matgl_config.get("device", "cpu"),
+                    },
+                ),
+                ("predict_structure", {"structure_data": str(structure_path)}),
+            ],
             timeout_seconds=timeout,
         )
-        return adapter.call_tool(
-            "predict_structure",
-            {"structure_data": str(structure_path)},
-            timeout_seconds=timeout,
-        )
+        return results[-1]
     raise AtomisticSkillsToolError(f"unsupported MatGL property: {property_name}")
 
 

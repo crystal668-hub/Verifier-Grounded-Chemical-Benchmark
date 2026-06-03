@@ -167,16 +167,22 @@ class AtomisticSkillsMCPAdapter:
         )
 
     def call_tool(self, tool_name: str, arguments: dict[str, Any], timeout_seconds: float = 60.0) -> Any:
+        return self.call_tools([(tool_name, arguments)], timeout_seconds=timeout_seconds)[0]
+
+    def call_tools(self, tool_calls: list[tuple[str, dict[str, Any]]], timeout_seconds: float = 60.0) -> list[Any]:
         try:
-            return asyncio.run(self._call_tool(tool_name, arguments, timeout_seconds))
+            return asyncio.run(self._call_tools(tool_calls, timeout_seconds))
         except TimeoutError as exc:
-            raise AtomisticSkillsTimeoutError(f"{self.server_name}.{tool_name} timed out") from exc
+            raise AtomisticSkillsTimeoutError(f"{self.server_name} tool sequence timed out") from exc
         except AtomisticSkillsError:
             raise
         except Exception as exc:
-            raise AtomisticSkillsToolError(f"{self.server_name}.{tool_name} failed: {exc}") from exc
+            raise AtomisticSkillsToolError(f"{self.server_name} tool sequence failed: {exc}") from exc
 
     async def _call_tool(self, tool_name: str, arguments: dict[str, Any], timeout_seconds: float) -> Any:
+        return (await self._call_tools([(tool_name, arguments)], timeout_seconds))[0]
+
+    async def _call_tools(self, tool_calls: list[tuple[str, dict[str, Any]]], timeout_seconds: float) -> list[Any]:
         env = os.environ.copy()
         env.update(self.config.env)
         params = StdioServerParameters(
@@ -187,14 +193,17 @@ class AtomisticSkillsMCPAdapter:
         async with stdio_client(params, errlog=sys.stderr) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
-                result = await session.call_tool(
-                    tool_name,
-                    arguments,
-                    read_timeout_seconds=timedelta(seconds=timeout_seconds),
-                )
-        if getattr(result, "isError", False):
-            raise AtomisticSkillsToolError(str(extract_text_content(result)))
-        return extract_text_content(result)
+                results = []
+                for tool_name, arguments in tool_calls:
+                    result = await session.call_tool(
+                        tool_name,
+                        arguments,
+                        read_timeout_seconds=timedelta(seconds=timeout_seconds),
+                    )
+                    if getattr(result, "isError", False):
+                        raise AtomisticSkillsToolError(str(extract_text_content(result)))
+                    results.append(extract_text_content(result))
+        return results
 
 
 class AtomisticSkillsScriptAdapter:
