@@ -199,3 +199,83 @@ def test_score_answers_cli_outputs_summary_json() -> None:
     assert report["summary"]["num_ok"] == 12
     assert report["summary"]["num_error"] == 0
     assert len(report["rows"]) == 12
+
+
+def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: Path) -> None:
+    fake_script = tmp_path / "fake_matgl_verifier.py"
+    fake_script.write_text(
+        "import json, sys\n"
+        "payload = json.load(sys.stdin)\n"
+        "prop = payload['constraint']['property']\n"
+        "value = 0.987 if prop == 'bandgap' else 0.005\n"
+        "json.dump({\n"
+        "  'task_id': payload['task']['task_id'],\n"
+        "  'verifier_id': payload['verifier_spec']['verifier_id'],\n"
+        "  'status': 'ok',\n"
+        "  'canonical_smiles': None,\n"
+        "  'properties': {prop: value},\n"
+        "  'scores': {'validity_gate': 1.0, 'domain_gate': 1.0, 'constraint_scores': [{'property': prop, 'type': 'window', 'score': 1.0}], 'property_score': 1.0, 'score': 1.0},\n"
+        "  'failure_type': None,\n"
+        "  'message': None,\n"
+        "  'versions': {'matgl_backend': 'fake'}\n"
+        "}, sys.stdout)\n"
+    )
+    tasks = {
+        "matgl_bandgap_window_si_001": {
+            "task_id": "matgl_bandgap_window_si_001",
+            "version": 1,
+            "object_type": "crystal_structure",
+            "answer_schema": {
+                "format": "final_answer_block",
+                "final_answer_prefix": "FINAL ANSWER:",
+                "value_type": "cif",
+                "fence_language": "cif",
+                "cardinality": "one",
+            },
+            "constraints": [{"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_pbe_mcp_v1"}],
+            "scoring": {"aggregation": "geometric_mean"},
+        },
+        "matgl_bandgap_eform_si_003": {
+            "task_id": "matgl_bandgap_eform_si_003",
+            "version": 1,
+            "object_type": "crystal_structure",
+            "answer_schema": {
+                "format": "final_answer_block",
+                "final_answer_prefix": "FINAL ANSWER:",
+                "value_type": "cif",
+                "fence_language": "cif",
+                "cardinality": "one",
+            },
+            "constraints": [
+                {"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_pbe_mcp_v1"},
+                {"type": "window", "property": "formation_energy", "verifier_id": "matgl_formation_energy_mcp_v1"},
+            ],
+            "scoring": {"aggregation": "geometric_mean"},
+        },
+    }
+    specs = {
+        "matgl_bandgap_pbe_mcp_v1": {
+            "verifier_id": "matgl_bandgap_pbe_mcp_v1",
+            "verification_script": str(fake_script),
+            "property_name": "bandgap",
+        },
+        "matgl_formation_energy_mcp_v1": {
+            "verifier_id": "matgl_formation_energy_mcp_v1",
+            "verification_script": str(fake_script),
+            "property_name": "formation_energy",
+        },
+    }
+    response = "FINAL ANSWER:\n```cif\ndata_Si\n```\n"
+    answers = [
+        {"task_id": "matgl_bandgap_window_si_001", "response": response},
+        {"task_id": "matgl_bandgap_eform_si_003", "response": response},
+    ]
+
+    report = evaluate_many(answers, tasks, specs)
+
+    assert report["summary"]["num_answers"] == 2
+    assert report["summary"]["num_ok"] == 2
+    assert report["summary"]["num_error"] == 0
+    assert report["summary"]["mean_score"] == 1.0
+    assert report["rows"][0]["constraint_scores"] == [{"property": "bandgap", "type": "window", "score": 1.0}]
+    assert [item["property"] for item in report["rows"][1]["constraint_scores"]] == ["bandgap", "formation_energy"]
