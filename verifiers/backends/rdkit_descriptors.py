@@ -12,6 +12,19 @@ from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
 
 sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 
+DESCRIPTOR_FUNCTIONS = {
+    "qed": QED.qed,
+    "logp": Crippen.MolLogP,
+    "tpsa": rdMolDescriptors.CalcTPSA,
+    "mw": Descriptors.MolWt,
+    "hbd": rdMolDescriptors.CalcNumHBD,
+    "hba": rdMolDescriptors.CalcNumHBA,
+    "rotatable_bonds": rdMolDescriptors.CalcNumRotatableBonds,
+    "sa_score": sascorer.calculateScore,
+    "fraction_csp3": rdMolDescriptors.CalcFractionCSP3,
+    "ring_count": rdMolDescriptors.CalcNumRings,
+}
+
 
 def clamp(value: float, lower: float = 0.0, upper: float = 1.0) -> float:
     return max(lower, min(upper, value))
@@ -48,9 +61,21 @@ def score_constraint(properties: dict[str, float], constraint: dict[str, Any]) -
     raise ValueError(f"unsupported constraint type: {kind}")
 
 
-def evaluate_candidate(candidate: dict[str, Any], task: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+def evaluate_descriptor_constraint(
+    candidate: dict[str, Any],
+    task: dict[str, Any],
+    constraint: dict[str, Any],
+    spec: dict[str, Any],
+) -> dict[str, Any]:
     task_id = task["task_id"]
     result = base_result(task_id, spec)
+    descriptor = spec.get("descriptor")
+    if descriptor != constraint.get("property"):
+        return error_result(
+            result,
+            "verifier_spec_error",
+            f"verifier descriptor {descriptor!r} does not match constraint property {constraint.get('property')!r}",
+        )
 
     smiles = candidate.get("smiles")
     if not smiles or not isinstance(smiles, str):
@@ -71,36 +96,50 @@ def evaluate_candidate(candidate: dict[str, Any], task: dict[str, Any], spec: di
     if disallowed:
         return error_result(result, "domain_error", f"disallowed elements: {', '.join(disallowed)}")
 
-    properties = compute_properties(mol)
+    properties = compute_domain_properties(mol)
     domain_error = check_domain(properties, spec["domain"])
     if domain_error:
         return error_result(result, "domain_error", domain_error, properties=properties)
 
-    constraint_scores = [
-        {
-            "property": constraint["property"],
-            "type": constraint["type"],
-            "score": score_constraint(properties, constraint),
-        }
-        for constraint in task["constraints"]
-    ]
-    property_score = geometric_mean(item["score"] for item in constraint_scores)
+    descriptor_properties = {descriptor: compute_descriptor(mol, descriptor)}
+    constraint_score = {
+        "property": constraint["property"],
+        "type": constraint["type"],
+        "score": score_constraint(descriptor_properties, constraint),
+    }
+    property_score = float(constraint_score["score"])
 
     result.update(
         {
             "status": "ok",
             "canonical_smiles": Chem.MolToSmiles(mol, canonical=True),
-            "properties": properties,
+            "properties": descriptor_properties,
             "scores": {
                 "validity_gate": 1.0,
                 "domain_gate": 1.0,
-                "constraint_scores": constraint_scores,
+                "constraint_scores": [constraint_score],
                 "property_score": property_score,
                 "score": property_score,
             },
         }
     )
     return result
+
+
+def compute_descriptor(mol: Chem.Mol, descriptor: str) -> float | int:
+    try:
+        function = DESCRIPTOR_FUNCTIONS[descriptor]
+    except KeyError as exc:
+        raise ValueError(f"unsupported descriptor: {descriptor}") from exc
+    return function(mol)
+
+
+def compute_domain_properties(mol: Chem.Mol) -> dict[str, float | int]:
+    return {
+        "mw": Descriptors.MolWt(mol),
+        "heavy_atom_count": mol.GetNumHeavyAtoms(),
+        "formal_charge": Chem.GetFormalCharge(mol),
+    }
 
 
 def compute_properties(mol: Chem.Mol) -> dict[str, float | int]:
@@ -145,6 +184,7 @@ def geometric_mean(values: Any) -> float:
 def base_result(task_id: str, spec: dict[str, Any]) -> dict[str, Any]:
     return {
         "task_id": task_id,
+        "verifier_id": spec.get("verifier_id"),
         "status": "error",
         "canonical_smiles": None,
         "properties": {},

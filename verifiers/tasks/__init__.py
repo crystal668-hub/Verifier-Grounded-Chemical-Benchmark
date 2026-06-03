@@ -1,1 +1,1 @@
-"""Task-level verifier script entry points."""
+"""Legacy verifier task package kept for non-RDKit experimental code."""

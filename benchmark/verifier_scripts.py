@@ -11,10 +11,20 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def build_script_payload(answer: dict[str, Any], task: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+def build_script_payload(
+    answer: dict[str, Any],
+    task: dict[str, Any],
+    constraint: dict[str, Any],
+    spec: dict[str, Any],
+) -> dict[str, Any]:
     candidates = answer.get("candidates")
     candidate = candidates[0] if isinstance(candidates, list) and candidates and isinstance(candidates[0], dict) else {}
-    return {"task": task, "verifier_spec": spec, "candidate": candidate}
+    task_payload = {
+        key: task[key]
+        for key in ("task_id", "version", "object_type")
+        if key in task
+    }
+    return {"task": task_payload, "constraint": constraint, "verifier_spec": spec, "candidate": candidate}
 
 
 def run_verification_script(

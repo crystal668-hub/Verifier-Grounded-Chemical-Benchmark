@@ -3,7 +3,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_qed_max_001_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -22,6 +21,7 @@ tasks:
     constraints:
       - type: maximize_bounded
         property: qed
+        verifier_id: rdkit_qed_v1
         lower: 0.0
         upper: 1.0
     scoring:
@@ -36,7 +36,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_sa_min_002_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -50,6 +49,7 @@ tasks:
     constraints:
       - type: minimize_bounded
         property: sa_score
+        verifier_id: rdkit_sa_score_v1
         lower: 1.0
         upper: 10.0
     scoring:
@@ -60,7 +60,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_logp_window_003_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -74,6 +73,7 @@ tasks:
     constraints:
       - type: window
         property: logp
+        verifier_id: rdkit_logp_v1
         min: 1.0
         max: 3.0
         sigma: 0.5
@@ -85,7 +85,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_tpsa_window_004_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -99,6 +98,7 @@ tasks:
     constraints:
       - type: window
         property: tpsa
+        verifier_id: rdkit_tpsa_v1
         min: 35.0
         max: 75.0
         sigma: 10.0
@@ -110,7 +110,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_mw_window_005_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -124,6 +123,7 @@ tasks:
     constraints:
       - type: window
         property: mw
+        verifier_id: rdkit_mw_v1
         min: 150.0
         max: 300.0
         sigma: 25.0
@@ -135,7 +135,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_hba_window_006_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -149,6 +148,7 @@ tasks:
     constraints:
       - type: window
         property: hba
+        verifier_id: rdkit_hba_v1
         min: 2
         max: 4
         sigma: 1.0
@@ -160,7 +160,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_hbd_window_007_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -174,6 +173,7 @@ tasks:
     constraints:
       - type: window
         property: hbd
+        verifier_id: rdkit_hbd_v1
         min: 1
         max: 2
         sigma: 1.0
@@ -185,7 +185,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_fsp3_max_008_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -199,6 +198,7 @@ tasks:
     constraints:
       - type: maximize_bounded
         property: fraction_csp3
+        verifier_id: rdkit_fraction_csp3_v1
         lower: 0.0
         upper: 1.0
     scoring:
@@ -209,7 +209,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_qed_sa_009_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -224,10 +223,12 @@ tasks:
     constraints:
       - type: maximize_bounded
         property: qed
+        verifier_id: rdkit_qed_v1
         lower: 0.0
         upper: 1.0
       - type: minimize_bounded
         property: sa_score
+        verifier_id: rdkit_sa_score_v1
         lower: 1.0
         upper: 10.0
     scoring:
@@ -238,7 +239,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_logp_tpsa_010_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -253,11 +253,13 @@ tasks:
     constraints:
       - type: window
         property: logp
+        verifier_id: rdkit_logp_v1
         min: 1.0
         max: 3.0
         sigma: 0.5
       - type: window
         property: tpsa
+        verifier_id: rdkit_tpsa_v1
         min: 35.0
         max: 75.0
         sigma: 10.0
@@ -269,7 +271,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_mw_qed_011_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -284,11 +285,13 @@ tasks:
     constraints:
       - type: window
         property: mw
+        verifier_id: rdkit_mw_v1
         min: 150.0
         max: 300.0
         sigma: 25.0
       - type: maximize_bounded
         property: qed
+        verifier_id: rdkit_qed_v1
         lower: 0.0
         upper: 1.0
     scoring:
@@ -299,7 +302,6 @@ tasks:
     version: 1
     object_type: small_molecule
     difficulty: simple
-    verifier_id: rdkit_hba_hbd_012_v1
     capability_tags: [open_generation, property_satisfaction, rdkit_descriptor, multi_objective]
     prompt: |
       Propose one valid single-component small-molecule SMILES.
@@ -314,11 +316,13 @@ tasks:
     constraints:
       - type: window
         property: hba
+        verifier_id: rdkit_hba_v1
         min: 2
         max: 4
         sigma: 1.0
       - type: window
         property: hbd
+        verifier_id: rdkit_hbd_v1
         min: 1
         max: 2
         sigma: 1.0

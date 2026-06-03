@@ -1,10 +1,11 @@
 verifiers:
-  - verifier_id: rdkit_qed_max_001_v1
-    name: RDKit Qed Max 001 Verifier
+  - verifier_id: rdkit_qed_v1
+    name: RDKit QED Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_qed_max_001.py
+    verification_script: verifiers/descriptors/rdkit_qed.py
     timeout_seconds: 60
+    descriptor: qed
     resources: &resources
       cpu: 1
       memory_mb: 1024
@@ -17,36 +18,14 @@ verifiers:
       heavy_atom_count: [5, 60]
       mw: [80.0, 600.0]
       formal_charge: [-1, 1]
-    properties: &properties
-      qed:
-        source: rdkit.Chem.QED.qed
-        range: [0.0, 1.0]
-      logp:
-        source: rdkit.Chem.Crippen.MolLogP
-      tpsa:
-        source: rdkit.Chem.rdMolDescriptors.CalcTPSA
-        units: angstrom_squared
-      mw:
-        source: rdkit.Chem.Descriptors.MolWt
-        units: dalton
-      hbd:
-        source: rdkit.Chem.rdMolDescriptors.CalcNumHBD
-      hba:
-        source: rdkit.Chem.rdMolDescriptors.CalcNumHBA
-      rotatable_bonds:
-        source: rdkit.Chem.rdMolDescriptors.CalcNumRotatableBonds
-      sa_score:
-        source: rdkit.Contrib.SA_Score.sascorer.calculateScore
-        scoring_range: [1.0, 10.0]
-      fraction_csp3:
-        source: rdkit.Chem.rdMolDescriptors.CalcFractionCSP3
-        range: [0.0, 1.0]
+    property:
+      source: rdkit.Chem.QED.qed
+      range: [0.0, 1.0]
     scoring: &scoring
       supported_modes:
         - window
         - maximize_bounded
         - minimize_bounded
-      aggregation: geometric_mean
       bounded_modes:
         good_at_or_baseline: forbidden
       final_score_range: [0.0, 1.0]
@@ -55,156 +34,118 @@ verifiers:
       validity_error: multi-component SMILES or unsanitizable molecule
       domain_error: outside element, heavy atom, MW, or formal charge domain
 
-  - verifier_id: rdkit_sa_min_002_v1
-    name: RDKit Sa Min 002 Verifier
+  - verifier_id: rdkit_logp_v1
+    name: RDKit logP Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_sa_min_002.py
+    verification_script: verifiers/descriptors/rdkit_logp.py
     timeout_seconds: 60
+    descriptor: logp
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.Crippen.MolLogP
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_logp_window_003_v1
-    name: RDKit Logp Window 003 Verifier
+  - verifier_id: rdkit_tpsa_v1
+    name: RDKit TPSA Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_logp_window_003.py
+    verification_script: verifiers/descriptors/rdkit_tpsa.py
     timeout_seconds: 60
+    descriptor: tpsa
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.rdMolDescriptors.CalcTPSA
+      units: angstrom_squared
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_tpsa_window_004_v1
-    name: RDKit Tpsa Window 004 Verifier
+  - verifier_id: rdkit_mw_v1
+    name: RDKit Molecular Weight Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_tpsa_window_004.py
+    verification_script: verifiers/descriptors/rdkit_mw.py
     timeout_seconds: 60
+    descriptor: mw
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.Descriptors.MolWt
+      units: dalton
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_mw_window_005_v1
-    name: RDKit Mw Window 005 Verifier
+  - verifier_id: rdkit_hba_v1
+    name: RDKit Hydrogen-Bond Acceptor Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_mw_window_005.py
+    verification_script: verifiers/descriptors/rdkit_hba.py
     timeout_seconds: 60
+    descriptor: hba
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.rdMolDescriptors.CalcNumHBA
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_hba_window_006_v1
-    name: RDKit Hba Window 006 Verifier
+  - verifier_id: rdkit_hbd_v1
+    name: RDKit Hydrogen-Bond Donor Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_hba_window_006.py
+    verification_script: verifiers/descriptors/rdkit_hbd.py
     timeout_seconds: 60
+    descriptor: hbd
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.rdMolDescriptors.CalcNumHBD
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_hbd_window_007_v1
-    name: RDKit Hbd Window 007 Verifier
+  - verifier_id: rdkit_sa_score_v1
+    name: RDKit Synthetic Accessibility Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_hbd_window_007.py
+    verification_script: verifiers/descriptors/rdkit_sa_score.py
     timeout_seconds: 60
+    descriptor: sa_score
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Contrib.SA_Score.sascorer.calculateScore
+      scoring_range: [1.0, 10.0]
     scoring: *scoring
     failure_policy: *failure_policy
 
-  - verifier_id: rdkit_fsp3_max_008_v1
-    name: RDKit Fsp3 Max 008 Verifier
+  - verifier_id: rdkit_fraction_csp3_v1
+    name: RDKit Fraction Csp3 Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_fsp3_max_008.py
+    verification_script: verifiers/descriptors/rdkit_fraction_csp3.py
     timeout_seconds: 60
+    descriptor: fraction_csp3
     resources: *resources
     backend: *backend
     package_versions: *package_versions
     domain: *domain
-    properties: *properties
-    scoring: *scoring
-    failure_policy: *failure_policy
-
-  - verifier_id: rdkit_qed_sa_009_v1
-    name: RDKit Qed Sa 009 Verifier
-    version: 1
-    verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_qed_sa_009.py
-    timeout_seconds: 60
-    resources: *resources
-    backend: *backend
-    package_versions: *package_versions
-    domain: *domain
-    properties: *properties
-    scoring: *scoring
-    failure_policy: *failure_policy
-
-  - verifier_id: rdkit_logp_tpsa_010_v1
-    name: RDKit Logp Tpsa 010 Verifier
-    version: 1
-    verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_logp_tpsa_010.py
-    timeout_seconds: 60
-    resources: *resources
-    backend: *backend
-    package_versions: *package_versions
-    domain: *domain
-    properties: *properties
-    scoring: *scoring
-    failure_policy: *failure_policy
-
-  - verifier_id: rdkit_mw_qed_011_v1
-    name: RDKit Mw Qed 011 Verifier
-    version: 1
-    verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_mw_qed_011.py
-    timeout_seconds: 60
-    resources: *resources
-    backend: *backend
-    package_versions: *package_versions
-    domain: *domain
-    properties: *properties
-    scoring: *scoring
-    failure_policy: *failure_policy
-
-  - verifier_id: rdkit_hba_hbd_012_v1
-    name: RDKit Hba Hbd 012 Verifier
-    version: 1
-    verifier_image: verifier-grounded:dev
-    verification_script: verifiers/tasks/rdkit_hba_hbd_012.py
-    timeout_seconds: 60
-    resources: *resources
-    backend: *backend
-    package_versions: *package_versions
-    domain: *domain
-    properties: *properties
+    property:
+      source: rdkit.Chem.rdMolDescriptors.CalcFractionCSP3
+      range: [0.0, 1.0]
     scoring: *scoring
     failure_policy: *failure_policy

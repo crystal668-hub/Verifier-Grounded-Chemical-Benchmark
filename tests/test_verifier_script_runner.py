@@ -9,16 +9,25 @@ from benchmark.verifier_scripts import build_script_payload, run_verification_sc
 
 def test_build_script_payload_uses_first_candidate() -> None:
     task = {"task_id": "task_1", "constraints": []}
-    spec = {"verifier_id": "verifier_1", "verification_script": "verifiers/tasks/example.py"}
-    answer = {"task_id": "task_1", "candidates": [{"smiles": "CCO"}]}
+    constraint = {"type": "window", "property": "logp", "verifier_id": "rdkit_logp_v1"}
+    spec = {"verifier_id": "rdkit_logp_v1", "verification_script": "verifiers/descriptors/rdkit_logp.py"}
+    answer = {
+        "task_id": "task_1",
+        "candidates": [{"smiles": "CCO"}],
+        "raw_answer": "FINAL ANSWER: CCO",
+        "extracted_answer": "CCO",
+    }
 
-    payload = build_script_payload(answer, task, spec)
+    payload = build_script_payload(answer, task, constraint, spec)
 
     assert payload == {
-        "task": task,
+        "task": {"task_id": "task_1"},
+        "constraint": constraint,
         "verifier_spec": spec,
         "candidate": {"smiles": "CCO"},
     }
+    assert "raw_answer" not in payload
+    assert "extracted_answer" not in payload
 
 
 def test_run_verification_script_round_trips_json(tmp_path: Path) -> None:
@@ -31,7 +40,7 @@ def test_run_verification_script_round_trips_json(tmp_path: Path) -> None:
 
     result = run_verification_script(
         script,
-        {"task": {"task_id": "task_1"}, "verifier_spec": {}, "candidate": {"smiles": "CCO"}},
+        {"task": {"task_id": "task_1"}, "constraint": {}, "verifier_spec": {}, "candidate": {"smiles": "CCO"}},
         timeout_seconds=5,
         python_executable=sys.executable,
     )

@@ -7,10 +7,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from verifiers.small_molecule_rdkit import (
-    evaluate_answer,
-    score_constraint,
-)
+from benchmark.evaluate import evaluate_one
+from verifiers.backends.rdkit_descriptors import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,7 +17,7 @@ TASK_DIR = ROOT / "tasks" / "rdkit_baseline"
 
 def test_sa_score_import_avoids_static_contrib_import() -> None:
     for path in [
-        ROOT / "verifiers" / "small_molecule_rdkit.py",
+        ROOT / "verifiers" / "backends" / "rdkit_descriptors.py",
         ROOT / "scripts" / "check_core_env.py",
     ]:
         tree = ast.parse(path.read_text())
@@ -51,25 +49,41 @@ def load_samples() -> list[dict]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
-def test_task_cards_bind_to_verifier_spec() -> None:
+def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
     tasks = load_tasks()
     specs = load_specs()
+    expected_by_property = {
+        "qed": "rdkit_qed_v1",
+        "sa_score": "rdkit_sa_score_v1",
+        "logp": "rdkit_logp_v1",
+        "tpsa": "rdkit_tpsa_v1",
+        "mw": "rdkit_mw_v1",
+        "hba": "rdkit_hba_v1",
+        "hbd": "rdkit_hbd_v1",
+        "fraction_csp3": "rdkit_fraction_csp3_v1",
+    }
 
     assert len(tasks) == 12
     assert len({task["task_id"] for task in tasks}) == 12
+    assert set(specs) == set(expected_by_property.values())
     for task in tasks:
-        assert task["verifier_id"] in specs
-        spec = specs[task["verifier_id"]]
-        assert spec["verifier_image"] == "verifier-grounded:dev"
-        assert spec["verification_script"].endswith(f"{task['task_id']}.py")
-        assert (ROOT / spec["verification_script"]).exists()
-        assert spec["backend"]["type"] == "rdkit_descriptors"
+        assert "verifier_id" not in task
         assert task["object_type"] == "small_molecule"
         assert task["answer_schema"]["format"] == "final_answer_line"
         assert task["answer_schema"]["final_answer_prefix"] == "FINAL ANSWER:"
         assert task["answer_schema"]["value_type"] == "smiles"
         assert task["answer_schema"]["cardinality"] == "one"
         assert len(task["constraints"]) in {1, 2}
+        for constraint in task["constraints"]:
+            assert constraint["verifier_id"] == expected_by_property[constraint["property"]]
+            spec = specs[constraint["verifier_id"]]
+            assert spec["descriptor"] == constraint["property"]
+            assert spec["verifier_image"] == "verifier-grounded:dev"
+            assert spec["verification_script"] == f"verifiers/descriptors/{constraint['verifier_id'].removesuffix('_v1')}.py"
+            assert (ROOT / spec["verification_script"]).exists()
+            assert spec["backend"]["type"] == "rdkit_descriptors"
+            assert "verifiers/tasks/rdkit_" not in spec["verification_script"]
+            assert "rdkit_common" not in spec["verification_script"]
 
 
 def test_prompts_expose_targets_without_verifier_internals() -> None:
@@ -106,7 +120,7 @@ def test_sample_answers_score_successfully() -> None:
     assert len(samples) == 12
     for sample in samples:
         task = tasks[sample["task_id"]]
-        result = evaluate_answer(sample, task, specs[task["verifier_id"]])
+        result = evaluate_one(sample, tasks, specs)
         assert result["status"] == "ok"
         assert result["failure_type"] is None
         assert 0.0 <= result["scores"]["property_score"] <= 1.0
@@ -142,8 +156,7 @@ def test_bounded_scoring_does_not_accept_good_at_or_baseline() -> None:
 
 def test_invalid_smiles_returns_parse_error() -> None:
     task = load_tasks()[0]
-    spec = load_specs()[task["verifier_id"]]
-    result = evaluate_answer({"task_id": task["task_id"], "candidates": [{"smiles": "not a smiles"}]}, task, spec)
+    result = evaluate_one({"task_id": task["task_id"], "candidates": [{"smiles": "not a smiles"}]}, {task["task_id"]: task}, load_specs())
 
     assert result["status"] == "error"
     assert result["failure_type"] == "parse_error"
@@ -151,8 +164,7 @@ def test_invalid_smiles_returns_parse_error() -> None:
 
 def test_multicomponent_smiles_returns_validity_error() -> None:
     task = load_tasks()[0]
-    spec = load_specs()[task["verifier_id"]]
-    result = evaluate_answer({"task_id": task["task_id"], "candidates": [{"smiles": "CCO.O"}]}, task, spec)
+    result = evaluate_one({"task_id": task["task_id"], "candidates": [{"smiles": "CCO.O"}]}, {task["task_id"]: task}, load_specs())
 
     assert result["status"] == "error"
     assert result["failure_type"] == "validity_error"
@@ -160,8 +172,7 @@ def test_multicomponent_smiles_returns_validity_error() -> None:
 
 def test_disallowed_element_returns_domain_error() -> None:
     task = load_tasks()[0]
-    spec = load_specs()[task["verifier_id"]]
-    result = evaluate_answer({"task_id": task["task_id"], "candidates": [{"smiles": "C[Si](C)(C)C"}]}, task, spec)
+    result = evaluate_one({"task_id": task["task_id"], "candidates": [{"smiles": "C[Si](C)(C)C"}]}, {task["task_id"]: task}, load_specs())
 
     assert result["status"] == "error"
     assert result["failure_type"] == "domain_error"
@@ -169,22 +180,17 @@ def test_disallowed_element_returns_domain_error() -> None:
 
 def test_known_descriptor_values_are_stable() -> None:
     task = load_tasks()[0]
-    spec = load_specs()[task["verifier_id"]]
 
-    aspirin = evaluate_answer(
+    aspirin = evaluate_one(
         {"task_id": task["task_id"], "candidates": [{"smiles": "CC(=O)Oc1ccccc1C(=O)O"}]},
-        task,
-        spec,
+        {task["task_id"]: task},
+        load_specs(),
     )
-    ibuprofen = evaluate_answer(
+    ibuprofen = evaluate_one(
         {"task_id": task["task_id"], "candidates": [{"smiles": "CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O"}]},
-        task,
-        spec,
+        {task["task_id"]: task},
+        load_specs(),
     )
 
     assert aspirin["properties"]["qed"] == pytest.approx(0.5501, abs=1e-4)
-    assert aspirin["properties"]["logp"] == pytest.approx(1.3101, abs=1e-4)
-    assert aspirin["properties"]["tpsa"] == pytest.approx(63.6, abs=1e-4)
-    assert aspirin["properties"]["mw"] == pytest.approx(180.159, abs=1e-3)
     assert ibuprofen["properties"]["qed"] == pytest.approx(0.8216, abs=1e-4)
-    assert ibuprofen["properties"]["sa_score"] == pytest.approx(2.1918, abs=1e-4)

@@ -15,7 +15,6 @@ from benchmark.evaluate import (
     load_verifier_specs,
     summarize_row,
 )
-from verifiers.registry import UnknownVerifierError, get_verifier
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,23 +30,37 @@ FINAL_ANSWER_SCHEMA = {
 }
 
 
-def test_registry_rejects_unknown_verifier() -> None:
-    with pytest.raises(UnknownVerifierError, match="unknown verifier_id"):
-        get_verifier("missing_verifier_v1")
+def test_python_verifier_registry_has_been_removed() -> None:
+    assert not (ROOT / "verifiers" / "registry.py").exists()
 
 
-def test_evaluate_one_routes_by_task_and_verifier_id() -> None:
+def test_evaluate_one_routes_by_constraint_descriptor_verifier() -> None:
     tasks = load_tasks(TASKS_PATH)
     specs = load_verifier_specs(SPECS_PATH)
     answer = {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "COc1ccc2cc([C@@H](C)C(=O)O)ccc2c1"}]}
 
     result = evaluate_one(answer, tasks, specs)
 
-    assert specs[tasks["rdkit_qed_max_001"]["verifier_id"]]["verification_script"].endswith("rdkit_qed_max_001.py")
+    constraint = tasks["rdkit_qed_max_001"]["constraints"][0]
+    assert constraint["verifier_id"] == "rdkit_qed_v1"
+    assert specs[constraint["verifier_id"]]["verification_script"].endswith("rdkit_qed.py")
     assert result["status"] == "ok"
     assert result["task_id"] == "rdkit_qed_max_001"
     assert result["canonical_smiles"] == "COc1ccc2cc([C@@H](C)C(=O)O)ccc2c1"
     assert result["scores"]["score"] == pytest.approx(0.8810778082204156)
+
+
+def test_evaluate_one_aggregates_multi_descriptor_constraints() -> None:
+    tasks = load_tasks(TASKS_PATH)
+    specs = load_verifier_specs(SPECS_PATH)
+    answer = {"task_id": "rdkit_qed_sa_009", "candidates": [{"smiles": "CCN(CC)CC(=O)Nc1c(C)cccc1C"}]}
+
+    result = evaluate_one(answer, tasks, specs)
+
+    assert result["status"] == "ok"
+    assert [item["property"] for item in result["scores"]["constraint_scores"]] == ["qed", "sa_score"]
+    assert set(result["properties"]) == {"qed", "sa_score"}
+    assert result["scores"]["score"] == pytest.approx(0.8788835428179828)
 
 
 def test_evaluate_one_extracts_raw_response_before_routing() -> None:
@@ -128,7 +141,7 @@ def test_missing_verifier_spec_returns_structured_error() -> None:
     tasks = {
         "task_1": {
             "task_id": "task_1",
-            "verifier_id": "small_molecule_rdkit_v1",
+            "constraints": [{"type": "window", "property": "logp", "verifier_id": "missing_logp_v1"}],
         }
     }
 
@@ -138,19 +151,33 @@ def test_missing_verifier_spec_returns_structured_error() -> None:
     assert result["failure_type"] == "verifier_spec_error"
 
 
-def test_unknown_registry_verifier_returns_structured_error() -> None:
+def test_missing_constraint_verifier_id_returns_structured_error() -> None:
     tasks = {
         "task_1": {
             "task_id": "task_1",
-            "verifier_id": "unknown_verifier_v1",
+            "constraints": [{"type": "window", "property": "logp", "min": 1.0, "max": 3.0}],
         }
     }
-    specs = {"unknown_verifier_v1": {"verifier_id": "unknown_verifier_v1"}}
+
+    result = evaluate_one({"task_id": "task_1", "candidates": [{"smiles": "CCO"}]}, tasks, {})
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_spec_error"
+
+
+def test_spec_without_verification_script_returns_structured_error() -> None:
+    tasks = {
+        "task_1": {
+            "task_id": "task_1",
+            "constraints": [{"type": "window", "property": "logp", "verifier_id": "rdkit_logp_v1"}],
+        }
+    }
+    specs = {"rdkit_logp_v1": {"verifier_id": "rdkit_logp_v1", "descriptor": "logp"}}
 
     result = evaluate_one({"task_id": "task_1", "candidates": [{"smiles": "CCO"}]}, tasks, specs)
 
     assert result["status"] == "error"
-    assert result["failure_type"] == "verifier_registry_error"
+    assert result["failure_type"] == "verifier_spec_error"
 
 
 def test_score_answers_cli_outputs_summary_json() -> None:

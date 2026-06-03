@@ -18,7 +18,7 @@ from verifiers.atomisticskills_backend import (
     AtomisticSkillsTimeoutError,
     AtomisticSkillsToolError,
 )
-from verifiers.small_molecule_rdkit import clamp, geometric_mean, score_constraint
+from verifiers.backends.rdkit_descriptors import clamp, geometric_mean, score_constraint
 
 
 def evaluate_base_supercell(answer: dict[str, Any], task: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:

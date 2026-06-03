@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Score answer JSONL files through the verifier registry."""
+"""Score answer JSONL files through configured verifier scripts."""
 
 from __future__ import annotations
 

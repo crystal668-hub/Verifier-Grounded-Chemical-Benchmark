@@ -10,7 +10,6 @@ import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
 from benchmark.verifier_scripts import build_script_payload, run_verification_script
-from verifiers.registry import UnknownVerifierError, get_verifier
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,34 +50,38 @@ def evaluate_one(
         return routing_error(task_id, extraction.failure_type or "parse_error", extraction.message or "answer parse failed")
     normalized_answer = extraction.answer or answer
 
-    verifier_id = task.get("verifier_id")
-    if not isinstance(verifier_id, str) or not verifier_id:
-        return routing_error(task_id, "verifier_spec_error", "task is missing verifier_id")
+    constraints = task.get("constraints")
+    if not isinstance(constraints, list) or not constraints:
+        return routing_error(task_id, "verifier_spec_error", "task must include at least one constraint")
 
-    spec = specs.get(verifier_id)
-    if spec is None:
-        return routing_error(task_id, "verifier_spec_error", f"missing verifier spec: {verifier_id}")
+    results: list[dict[str, Any]] = []
+    for constraint in constraints:
+        if not isinstance(constraint, dict):
+            return routing_error(task_id, "verifier_spec_error", "task constraints must be objects")
+        verifier_id = constraint.get("verifier_id")
+        if not isinstance(verifier_id, str) or not verifier_id:
+            return routing_error(task_id, "verifier_spec_error", "constraint is missing verifier_id")
+        spec = specs.get(verifier_id)
+        if spec is None:
+            return routing_error(task_id, "verifier_spec_error", f"missing verifier spec: {verifier_id}")
+        verification_script = spec.get("verification_script")
+        if not isinstance(verification_script, str) or not verification_script:
+            return routing_error(task_id, "verifier_spec_error", f"verifier spec is missing verification_script: {verifier_id}")
 
-    verification_script = spec.get("verification_script")
-    if verification_script:
-        script_path = ROOT / str(verification_script)
-        payload = build_script_payload(normalized_answer, task, spec)
+        payload = build_script_payload(normalized_answer, task, constraint, spec)
         result = run_verification_script(
-            script_path,
+            ROOT / verification_script,
             payload,
             timeout_seconds=float(spec.get("timeout_seconds", 60.0)),
         )
-        for field in ("raw_answer", "extracted_answer"):
-            if field in normalized_answer:
-                result[field] = normalized_answer[field]
-        return result
+        if result.get("status") != "ok":
+            for field in ("raw_answer", "extracted_answer"):
+                if field in normalized_answer:
+                    result[field] = normalized_answer[field]
+            return result
+        results.append(result)
 
-    try:
-        verifier = get_verifier(verifier_id)
-    except UnknownVerifierError as exc:
-        return routing_error(task_id, "verifier_registry_error", str(exc))
-
-    result = verifier(normalized_answer, task, spec)
+    result = aggregate_constraint_results(task, results)
     for field in ("raw_answer", "extracted_answer"):
         if field in normalized_answer:
             result[field] = normalized_answer[field]
@@ -126,6 +129,68 @@ def summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "max_score": max(scores) if scores else None,
         "mean_score": sum(scores) / len(scores) if scores else None,
     }
+
+
+def aggregate_constraint_results(task: dict[str, Any], results: list[dict[str, Any]]) -> dict[str, Any]:
+    constraint_scores: list[dict[str, Any]] = []
+    properties: dict[str, Any] = {}
+    for result in results:
+        properties.update(result.get("properties") or {})
+        scores = result.get("scores") or {}
+        constraint_scores.extend(scores.get("constraint_scores") or [])
+
+    property_score = aggregate_scores(
+        [item.get("score", 0.0) for item in constraint_scores],
+        task.get("scoring", {}).get("aggregation", "geometric_mean"),
+    )
+    first = results[0]
+    return {
+        "task_id": task.get("task_id"),
+        "status": "ok",
+        "canonical_smiles": first.get("canonical_smiles"),
+        "properties": properties,
+        "scores": {
+            "validity_gate": 1.0,
+            "domain_gate": 1.0,
+            "constraint_scores": constraint_scores,
+            "property_score": property_score,
+            "score": property_score,
+        },
+        "failure_type": None,
+        "message": None,
+        "versions": merge_versions(results),
+    }
+
+
+def aggregate_scores(values: list[Any], aggregation: str) -> float:
+    scores = [max(0.0, min(1.0, float(value))) for value in values]
+    if not scores:
+        return 0.0
+    if aggregation != "geometric_mean":
+        raise ValueError(f"unsupported aggregation: {aggregation}")
+    if any(score == 0.0 for score in scores):
+        return 0.0
+    product = 1.0
+    for score in scores:
+        product *= score
+    return product ** (1.0 / len(scores))
+
+
+def merge_versions(results: list[dict[str, Any]]) -> dict[str, Any]:
+    merged: dict[str, Any] = {}
+    verifiers: dict[str, Any] = {}
+    for result in results:
+        versions = result.get("versions") or {}
+        for key, value in versions.items():
+            if key == "verifier_id":
+                continue
+            merged.setdefault(key, value)
+        verifier_id = result.get("verifier_id")
+        if verifier_id:
+            verifiers[str(verifier_id)] = versions
+    if verifiers:
+        merged["descriptor_verifiers"] = verifiers
+    return merged
 
 
 def routing_error(task_id: str | None, failure_type: str, message: str) -> dict[str, Any]:
