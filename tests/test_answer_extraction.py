@@ -179,3 +179,90 @@ def test_normalize_answer_record_rejects_invalid_number_value() -> None:
     assert not result.ok
     assert result.failure_type == "parse_error"
     assert "invalid numeric final answer" in str(result.message)
+
+
+CIF_TASK = {
+    "task_id": "matgl_bandgap_window_si_001",
+    "answer_schema": {
+        "format": "final_answer_block",
+        "final_answer_prefix": "FINAL ANSWER:",
+        "value_type": "cif",
+        "fence_language": "cif",
+        "cardinality": "one",
+    },
+}
+
+
+SI_CIF = """data_Si
+_symmetry_space_group_name_H-M   'P 1'
+_cell_length_a   3.8669746
+_cell_length_b   3.8669746
+_cell_length_c   3.8669746
+_cell_angle_alpha   60.0000000
+_cell_angle_beta   60.0000000
+_cell_angle_gamma   60.0000000
+loop_
+ _atom_site_label
+ _atom_site_type_symbol
+ _atom_site_fract_x
+ _atom_site_fract_y
+ _atom_site_fract_z
+ Si0 Si 0.000000 0.000000 0.000000
+ Si1 Si 0.250000 0.250000 0.250000
+"""
+
+
+def test_normalize_answer_record_extracts_cif_block() -> None:
+    response = f"Use a crystalline silicon cell.\nFINAL ANSWER:\n```cif\n{SI_CIF}```"
+
+    result = normalize_answer_record({"task_id": "matgl_bandgap_window_si_001", "response": response}, CIF_TASK)
+
+    assert result.ok
+    assert result.answer is not None
+    assert result.answer["candidates"] == [{"cif": SI_CIF.rstrip()}]
+    assert result.answer["raw_answer"] == response
+    assert result.answer["extracted_answer"] == SI_CIF.rstrip()
+
+
+def test_normalize_answer_record_rejects_missing_final_answer_block_prefix() -> None:
+    result = normalize_answer_record(
+        {"task_id": "matgl_bandgap_window_si_001", "response": f"```cif\n{SI_CIF}```"},
+        CIF_TASK,
+    )
+
+    assert not result.ok
+    assert result.failure_type == "parse_error"
+    assert "missing final answer block" in str(result.message)
+
+
+def test_normalize_answer_record_rejects_missing_cif_fence() -> None:
+    result = normalize_answer_record(
+        {"task_id": "matgl_bandgap_window_si_001", "response": f"FINAL ANSWER:\n{SI_CIF}"},
+        CIF_TASK,
+    )
+
+    assert not result.ok
+    assert result.failure_type == "parse_error"
+    assert "missing fenced cif block" in str(result.message)
+
+
+def test_normalize_answer_record_rejects_wrong_fence_language() -> None:
+    result = normalize_answer_record(
+        {"task_id": "matgl_bandgap_window_si_001", "response": f"FINAL ANSWER:\n```text\n{SI_CIF}```"},
+        CIF_TASK,
+    )
+
+    assert not result.ok
+    assert result.failure_type == "parse_error"
+    assert "missing fenced cif block" in str(result.message)
+
+
+def test_normalize_answer_record_rejects_empty_cif_block() -> None:
+    result = normalize_answer_record(
+        {"task_id": "matgl_bandgap_window_si_001", "response": "FINAL ANSWER:\n```cif\n   \n```"},
+        CIF_TASK,
+    )
+
+    assert not result.ok
+    assert result.failure_type == "parse_error"
+    assert result.message == "final answer cif block is empty"
