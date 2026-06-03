@@ -44,4 +44,3 @@ def test_mace_verifier_specs_are_yaml_loadable() -> None:
 
     assert len(payload["verifiers"]) == 1
     assert payload["verifiers"][0]["environment"] == "mace-agent"
-

@@ -42,4 +42,3 @@ verifiers:
       verifier_environment_error: AtomisticSkills checkout, conda, mace-agent, or MCP config missing
       verifier_tool_error: MACE MCP tool failed or output payload was invalid
       verifier_timeout: MACE MCP call exceeded timeout
-

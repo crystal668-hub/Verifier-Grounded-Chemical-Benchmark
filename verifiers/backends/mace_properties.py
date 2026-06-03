@@ -191,4 +191,3 @@ def error_result(
     if failure_type == "domain_error":
         result["scores"]["validity_gate"] = 1.0
     return result
-

@@ -143,4 +143,3 @@ def test_mace_property_maps_adapter_errors(
 
     assert result["status"] == "error"
     assert result["failure_type"] == failure_type
-

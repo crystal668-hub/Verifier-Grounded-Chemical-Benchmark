@@ -39,4 +39,3 @@ def main(property_name: str) -> None:
             spec,
         )
     json.dump(result, sys.stdout, sort_keys=True)
-

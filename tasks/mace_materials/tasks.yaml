@@ -45,4 +45,3 @@ tasks:
       missing_environment: verifier_environment_error
       backend_failure: verifier_tool_error
       timeout: verifier_timeout
-

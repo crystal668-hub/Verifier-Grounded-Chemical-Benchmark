@@ -63,4 +63,3 @@ def test_mace_property_script_outputs_standard_json_result() -> None:
         "property_score": 0.0,
         "score": 0.0,
     }
-
