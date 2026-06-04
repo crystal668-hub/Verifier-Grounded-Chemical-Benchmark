@@ -121,12 +121,13 @@ def test_evaluate_many_scores_sample_answers_with_summary() -> None:
 
     report = evaluate_many(answers, tasks, specs)
 
-    assert report["summary"]["num_answers"] == 12
-    assert report["summary"]["num_ok"] == 12
+    assert report["summary"]["num_answers"] == 10
+    assert report["summary"]["num_ok"] == 10
     assert report["summary"]["num_error"] == 0
     assert report["summary"]["min_score"] == pytest.approx(0.863812109226767)
     assert report["summary"]["max_score"] == 1.0
-    assert len(report["rows"]) == 12
+    assert report["summary"]["mean_score"] == pytest.approx(0.9547086473382975)
+    assert len(report["rows"]) == 10
 
 
 def test_unknown_task_id_returns_structured_error() -> None:
@@ -195,10 +196,10 @@ def test_score_answers_cli_outputs_summary_json() -> None:
     )
 
     report = json.loads(completed.stdout)
-    assert report["summary"]["num_answers"] == 12
-    assert report["summary"]["num_ok"] == 12
+    assert report["summary"]["num_answers"] == 10
+    assert report["summary"]["num_ok"] == 10
     assert report["summary"]["num_error"] == 0
-    assert len(report["rows"]) == 12
+    assert len(report["rows"]) == 10
 
 
 def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: Path) -> None:

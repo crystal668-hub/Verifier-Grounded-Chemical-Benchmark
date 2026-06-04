@@ -57,15 +57,15 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
         "sa_score": "rdkit_sa_score_v1",
         "logp": "rdkit_logp_v1",
         "tpsa": "rdkit_tpsa_v1",
-        "mw": "rdkit_mw_v1",
         "hba": "rdkit_hba_v1",
         "hbd": "rdkit_hbd_v1",
         "fraction_csp3": "rdkit_fraction_csp3_v1",
     }
 
-    assert len(tasks) == 12
-    assert len({task["task_id"] for task in tasks}) == 12
-    assert set(specs) == set(expected_by_property.values())
+    assert len(tasks) == 10
+    assert len({task["task_id"] for task in tasks}) == 10
+    assert set(expected_by_property.values()).issubset(specs)
+    assert all(task["task_id"] not in {"rdkit_mw_window_005", "rdkit_mw_qed_011"} for task in tasks)
     for task in tasks:
         assert "verifier_id" not in task
         assert task["object_type"] == "small_molecule"
@@ -75,6 +75,7 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
         assert task["answer_schema"]["cardinality"] == "one"
         assert len(task["constraints"]) in {1, 2}
         for constraint in task["constraints"]:
+            assert constraint["property"] != "mw"
             assert constraint["verifier_id"] == expected_by_property[constraint["property"]]
             spec = specs[constraint["verifier_id"]]
             assert spec["descriptor"] == constraint["property"]
@@ -86,20 +87,38 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
             assert "rdkit_common" not in spec["verification_script"]
 
 
-def test_prompts_expose_targets_without_verifier_internals() -> None:
+def test_rdkit_domain_gate_uses_only_mw_upper_bound() -> None:
+    specs = load_specs()
+
+    for spec in specs.values():
+        if spec["backend"]["type"] == "rdkit_descriptors":
+            assert spec["domain"]["mw"] == [0.0, 600.0]
+
+
+def test_prompts_expose_requirements_without_verifier_internals() -> None:
     banned_fragments = [
-        "rdkit",
         "verifier",
         "applicability domain",
+        "benchmark validity",
+        "domain constraints",
+        "small-molecule",
         "sigma",
         "geometric mean",
+    ]
+    required_fragments = [
+        "The molecule must satisfy these requirements:",
+        "The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.",
+        "Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.",
+        "Heavy atom count must be between 5 and 60 inclusive.",
+        "RDKit-calculated molecular weight must be at most 600.0 daltons.",
+        "Formal charge must be between -1 and 1 inclusive.",
     ]
 
     for task in load_tasks():
         prompt = task["prompt"]
         prompt_lower = prompt.lower()
-        assert prompt.startswith("Propose one valid single-component small-molecule SMILES.")
-        assert "The molecule must satisfy:" in prompt
+        assert prompt.startswith("Propose one valid single-component molecule and provide it as a SMILES string.")
+        assert all(fragment in prompt for fragment in required_fragments)
         assert "Your final answer must appear on its own line exactly in this format:" in prompt
         assert prompt.rstrip().endswith("FINAL ANSWER: <SMILES>")
         assert not any(fragment in prompt_lower for fragment in banned_fragments)
@@ -117,7 +136,8 @@ def test_sample_answers_score_successfully() -> None:
     specs = load_specs()
     samples = load_samples()
 
-    assert len(samples) == 12
+    assert len(samples) == 10
+    assert all(sample["task_id"] in tasks for sample in samples)
     for sample in samples:
         task = tasks[sample["task_id"]]
         result = evaluate_one(sample, tasks, specs)
@@ -176,6 +196,13 @@ def test_disallowed_element_returns_domain_error() -> None:
 
     assert result["status"] == "error"
     assert result["failure_type"] == "domain_error"
+
+
+def test_light_single_component_molecule_is_not_rejected_by_mw_domain() -> None:
+    task = next(task for task in load_tasks() if task["task_id"] == "rdkit_logp_window_003")
+    result = evaluate_one({"task_id": task["task_id"], "candidates": [{"smiles": "c1ccccc1"}]}, {task["task_id"]: task}, load_specs())
+
+    assert result["failure_type"] != "domain_error"
 
 
 def test_known_descriptor_values_are_stable() -> None:

@@ -26,14 +26,19 @@ Each task prompt should use a compact, consistent structure:
 2. Next section: list the conditions the answer must satisfy as bullets.
 3. Final section: state the output-format requirement exactly.
 
-For the RDKit small-molecule tasks, the canonical pattern is:
+For the RDKit descriptor tasks, the canonical pattern is:
 
 ```text
-Propose one valid single-component small-molecule SMILES.
+Propose one valid single-component molecule and provide it as a SMILES string.
 
-The molecule must satisfy:
-- <condition 1>
-- <condition 2, if any>
+The molecule must satisfy these requirements:
+- The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
+- Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
+- Heavy atom count must be between 5 and 60 inclusive.
+- RDKit-calculated molecular weight must be at most 600.0 daltons.
+- Formal charge must be between -1 and 1 inclusive.
+- <target condition 1>
+- <target condition 2, if any>
 
 Your final answer must appear on its own line exactly in this format:
 FINAL ANSWER: <SMILES>
@@ -42,9 +47,12 @@ FINAL ANSWER: <SMILES>
 The prompt may allow the model to include reasoning or explanation before the
 final answer. The only machine-read answer is the final answer line.
 
-The prompt must avoid exposing verifier internals such as verifier names,
-implementation libraries, aggregation formulas, or hidden domain checks. It may
-show user-relevant target ranges and objectives, because those define the task.
+The prompt must avoid exposing verifier plumbing such as verifier names,
+verification scripts, aggregation formulas, and smoothing parameters. Hard
+candidate requirements that can produce a `domain_error` must be visible in the
+task prompt. This keeps the model-facing task aligned with the scoring boundary
+without requiring models to infer private benchmark domain gates from informal
+terms such as "small molecule."
 
 ## Answer Schema
 
