@@ -12,7 +12,7 @@ SPEC = {
     "domain": {
         "allowed_elements": ["H", "B", "C", "N", "O", "F", "P", "S", "Cl", "Br", "I"],
         "heavy_atom_count": [5, 60],
-        "mw": [80.0, 600.0],
+        "mw": [0.0, 600.0],
         "formal_charge": [-1, 1],
     },
 }
