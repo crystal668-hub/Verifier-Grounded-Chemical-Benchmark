@@ -1,0 +1,94 @@
+verifiers:
+  - verifier_id: xtb_gap_gfn2_v1
+    name: xTB GFN2 HOMO-LUMO Gap Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_gap.py
+    timeout_seconds: 240
+    property_name: homo_lumo_gap
+    resources: &xtb_resources
+      cpu: 2
+      memory_mb: 2048
+    backend: &xtb_backend
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      optimize_before_property: true
+    package_versions: &xtb_package_versions
+      xtb: external
+      rdkit: "2026.3.2"
+    domain: &xtb_xyz_domain
+      format: xyz
+      charge: 0
+      multiplicity: 1
+      allowed_elements: [H, C, N, O, F, P, S, Cl, Br]
+      atom_count: [3, 80]
+      heavy_atom_count: [1, 40]
+      coordinate_units: angstrom
+      max_absolute_coordinate: 30.0
+      min_interatomic_distance: 0.45
+      inferred_components: 1
+      require_explicit_hydrogens: true
+    property:
+      source: xTB GFN2-xTB optimized geometry property printout
+      units: eV
+      notes: Fixed xTB HOMO-LUMO orbital-energy gap, not an experimental optical gap.
+    scoring: &xtb_scoring
+      supported_modes:
+        - window
+        - maximize_bounded
+        - minimize_bounded
+      bounded_modes:
+        good_at_or_baseline: forbidden
+      final_score_range: [0.0, 1.0]
+    failure_policy: &xtb_failure_policy
+      parse_error: missing fenced XYZ block or unparseable XYZ content
+      validity_error: atom overlap, disconnected geometry, or invalid coordinate values
+      domain_error: outside element, atom-count, charge, spin, or coordinate domain
+      verifier_environment_error: xTB executable missing or unusable
+      verifier_tool_error: xTB calculation failed, optimization did not converge, or output property was missing
+      verifier_timeout: xTB calculation exceeded timeout
+
+  - verifier_id: xtb_dipole_gfn2_v1
+    name: xTB GFN2 Dipole Moment Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_dipole.py
+    timeout_seconds: 240
+    property_name: dipole_moment
+    resources: *xtb_resources
+    backend: *xtb_backend
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB optimized geometry molecular dipole printout
+      units: debye
+      notes: Total molecular dipole magnitude.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_relaxation_energy_gfn2_v1
+    name: xTB GFN2 Relaxation Energy Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_relaxation_energy.py
+    timeout_seconds: 300
+    property_name: relaxation_energy
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      input_singlepoint_before_optimization: true
+      optimize_before_property: true
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB input single-point energy minus optimized total energy
+      units: eV
+      notes: Measures whether submitted XYZ geometry is close to a local xTB minimum.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
