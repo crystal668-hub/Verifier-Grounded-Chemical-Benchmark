@@ -80,7 +80,7 @@ def normalize_final_answer_block(record: dict[str, Any], raw_answer: str, schema
     if not isinstance(prefix, str) or not prefix:
         return ExtractionResult(None, "parse_error", "answer_schema must include final_answer_prefix")
     value_type = schema.get("value_type")
-    if value_type != "cif":
+    if value_type not in {"cif", "xyz"}:
         return ExtractionResult(None, "parse_error", f"unsupported answer_schema value_type: {value_type!r}")
 
     prefix_index = raw_answer.rfind(prefix)
@@ -101,12 +101,12 @@ def normalize_final_answer_block(record: dict[str, Any], raw_answer: str, schema
 
     extracted = match.group("value").strip()
     if not extracted:
-        return ExtractionResult(None, "parse_error", "final answer cif block is empty")
+        return ExtractionResult(None, "parse_error", f"final answer {value_type} block is empty")
 
     return ExtractionResult(
         {
             "task_id": record.get("task_id"),
-            "candidates": [{"cif": extracted}],
+            "candidates": [{value_type: extracted}],
             "raw_answer": raw_answer,
             "extracted_answer": extracted,
         },
