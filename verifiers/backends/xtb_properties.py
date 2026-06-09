@@ -298,7 +298,8 @@ def evaluate_xtb_property_constraint(
         return error_result(result, "parse_error", str(exc))
 
     xyz_properties = inspect_xyz(molecule)
-    domain_error = check_domain(molecule, xyz_properties, spec.get("domain", {}))
+    domain = {**(spec.get("domain") or {}), **(task.get("structural_domain") or {})}
+    domain_error = check_domain(molecule, xyz_properties, domain)
     if domain_error:
         failure_type = (
             "domain_error"

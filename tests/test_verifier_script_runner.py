@@ -8,7 +8,8 @@ from benchmark.verifier_scripts import build_script_payload, run_verification_sc
 
 
 def test_build_script_payload_uses_first_candidate() -> None:
-    task = {"task_id": "task_1", "constraints": []}
+    structural_domain = {"carbon_count_min": 2, "formula_denylist": ["H2O"]}
+    task = {"task_id": "task_1", "constraints": [], "structural_domain": structural_domain}
     constraint = {"type": "window", "property": "logp", "verifier_id": "rdkit_logp_v1"}
     spec = {"verifier_id": "rdkit_logp_v1", "verification_script": "verifiers/descriptors/rdkit_logp.py"}
     answer = {
@@ -21,7 +22,7 @@ def test_build_script_payload_uses_first_candidate() -> None:
     payload = build_script_payload(answer, task, constraint, spec)
 
     assert payload == {
-        "task": {"task_id": "task_1"},
+        "task": {"task_id": "task_1", "structural_domain": structural_domain},
         "constraint": constraint,
         "verifier_spec": spec,
         "candidate": {"smiles": "CCO"},

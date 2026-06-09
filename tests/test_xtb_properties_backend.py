@@ -282,6 +282,25 @@ def test_xtb_property_enforces_nontrivial_structural_domain(domain_update: dict,
     assert result["message"] == message
 
 
+def test_xtb_property_merges_task_structural_domain_with_verifier_domain() -> None:
+    current_task = {
+        **task("homo_lumo_gap"),
+        "structural_domain": {"carbon_count_min": 1},
+    }
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": WATER_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        gap_spec(),
+        runner=FakeRunner(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "domain_error"
+    assert result["message"] == "carbon_count below minimum 1"
+
+
 @pytest.mark.parametrize(
     ("exception", "failure_type"),
     [
