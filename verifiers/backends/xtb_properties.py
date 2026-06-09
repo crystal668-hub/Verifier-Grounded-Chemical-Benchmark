@@ -340,6 +340,8 @@ def evaluate_xtb_property_constraint(
         "type": constraint["type"],
         "score": score_constraint(merged_properties, constraint),
     }
+    if "role" in constraint:
+        constraint_score["role"] = constraint["role"]
     score = float(constraint_score["score"])
     result.update(
         {

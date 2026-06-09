@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from benchmark.evaluate import (
+    aggregate_constraint_results,
     evaluate_many,
     evaluate_one,
     load_answers_jsonl,
@@ -61,6 +62,52 @@ def test_evaluate_one_aggregates_multi_descriptor_constraints() -> None:
     assert [item["property"] for item in result["scores"]["constraint_scores"]] == ["qed", "sa_score"]
     assert set(result["properties"]) == {"qed", "sa_score"}
     assert result["scores"]["score"] == pytest.approx(0.8788835428179828)
+
+
+def test_aggregate_constraint_results_applies_quality_gate_multiplier() -> None:
+    task = {"task_id": "quality_task", "scoring": {"aggregation": "geometric_mean"}}
+    results = [
+        {
+            "verifier_id": "xtb_gap_gfn2_v1",
+            "canonical_smiles": None,
+            "properties": {"homo_lumo_gap": 2.0},
+            "scores": {
+                "constraint_scores": [{"property": "homo_lumo_gap", "type": "minimize_bounded", "score": 0.8}]
+            },
+            "versions": {"xtb_backend": "fake"},
+        },
+        {
+            "verifier_id": "xtb_dipole_gfn2_v1",
+            "canonical_smiles": None,
+            "properties": {"dipole_moment": 5.0},
+            "scores": {
+                "constraint_scores": [{"property": "dipole_moment", "type": "maximize_bounded", "score": 0.5}]
+            },
+            "versions": {"xtb_backend": "fake"},
+        },
+        {
+            "verifier_id": "xtb_relaxation_energy_gfn2_v1",
+            "canonical_smiles": None,
+            "properties": {"relaxation_energy": 0.175},
+            "scores": {
+                "constraint_scores": [
+                    {
+                        "property": "relaxation_energy",
+                        "type": "minimize_bounded",
+                        "role": "quality_gate",
+                        "score": 0.5,
+                    }
+                ]
+            },
+            "versions": {"xtb_backend": "fake"},
+        },
+    ]
+
+    result = aggregate_constraint_results(task, results)
+
+    assert result["scores"]["property_score"] == pytest.approx((0.8 * 0.5) ** 0.5)
+    assert result["scores"]["geometry_quality_score"] == pytest.approx(0.5)
+    assert result["scores"]["score"] == pytest.approx(((0.8 * 0.5) ** 0.5) * 0.5)
 
 
 def test_evaluate_one_extracts_raw_response_before_routing() -> None:

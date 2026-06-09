@@ -139,10 +139,13 @@ def aggregate_constraint_results(task: dict[str, Any], results: list[dict[str, A
         scores = result.get("scores") or {}
         constraint_scores.extend(scores.get("constraint_scores") or [])
 
+    quality_scores = [item.get("score", 0.0) for item in constraint_scores if item.get("role") == "quality_gate"]
+    main_scores = [item.get("score", 0.0) for item in constraint_scores if item.get("role") != "quality_gate"]
     property_score = aggregate_scores(
-        [item.get("score", 0.0) for item in constraint_scores],
+        main_scores,
         task.get("scoring", {}).get("aggregation", "geometric_mean"),
     )
+    geometry_quality_score = min((max(0.0, min(1.0, float(score))) for score in quality_scores), default=1.0)
     first = results[0]
     return {
         "task_id": task.get("task_id"),
@@ -154,7 +157,8 @@ def aggregate_constraint_results(task: dict[str, Any], results: list[dict[str, A
             "domain_gate": 1.0,
             "constraint_scores": constraint_scores,
             "property_score": property_score,
-            "score": property_score,
+            "geometry_quality_score": geometry_quality_score,
+            "score": property_score * geometry_quality_score,
         },
         "failure_type": None,
         "message": None,
