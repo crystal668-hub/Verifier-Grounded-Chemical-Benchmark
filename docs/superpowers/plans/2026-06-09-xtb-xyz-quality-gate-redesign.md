@@ -142,15 +142,15 @@ structural_domain:
 
 ### Task `xtb_gap_max_003`
 
-Raise the saturation point so simple saturated molecules do not automatically score `1.0`.
+Use the calibrated high-gap range and stricter structural domain so nontrivial fluorinated/heteroatom-containing saturated molecules can provide real positive controls while simple saturated molecules remain excluded.
 
 ```yaml
 constraints:
   - type: maximize_bounded
     property: homo_lumo_gap
     verifier_id: xtb_gap_gfn2_v1
-    lower: 12.0
-    upper: 20.0
+    lower: 10.0
+    upper: 12.0
   - type: minimize_bounded
     property: relaxation_energy
     verifier_id: xtb_relaxation_energy_gfn2_v1
@@ -160,9 +160,9 @@ constraints:
 structural_domain:
   atom_count: [12, 80]
   heavy_atom_count: [8, 40]
-  hetero_atom_count_min: 1
-  heavy_element_diversity_min: 2
-  formula_denylist: [H2O, CH4, NH3, CH4O, CH3F]
+  hetero_atom_count_min: 2
+  heavy_element_diversity_min: 3
+  formula_denylist: [H2O, CH4, NH3, CH4O, CH3F, CF4, C2F6]
 ```
 
 ### Task `xtb_gap_min_004`
@@ -772,4 +772,3 @@ git commit -m "fix: align xtb xyz quality gate integration"
 - Every sample answer is nontrivial and scores at least `0.6` with real xTB CLI installed.
 - `uv run pytest` passes.
 - `uv run python scripts/check_xtb_env.py` passes on this machine.
-
