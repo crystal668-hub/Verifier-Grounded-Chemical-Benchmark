@@ -156,6 +156,14 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
         lower, upper = domain["heavy_atom_count"]
         if not int(lower) <= int(properties["heavy_atom_count"]) <= int(upper):
             return f"heavy_atom_count outside [{lower}, {upper}]"
+    if "carbon_count_min" in domain and properties["carbon_count"] < int(domain["carbon_count_min"]):
+        return f"carbon_count below minimum {domain['carbon_count_min']}"
+    if "hetero_atom_count_min" in domain and properties["hetero_atom_count"] < int(domain["hetero_atom_count_min"]):
+        return f"hetero_atom_count below minimum {domain['hetero_atom_count_min']}"
+    if "heavy_element_diversity_min" in domain and properties["heavy_element_diversity"] < int(domain["heavy_element_diversity_min"]):
+        return f"heavy_element_diversity below minimum {domain['heavy_element_diversity_min']}"
+    if properties["formula"] in set(domain.get("formula_denylist", [])):
+        return f"formula is denied: {properties['formula']}"
     max_coordinate = domain.get("max_absolute_coordinate")
     if max_coordinate is not None and properties["max_absolute_coordinate"] > float(max_coordinate):
         return f"max_absolute_coordinate exceeds {max_coordinate}"
@@ -292,7 +300,23 @@ def evaluate_xtb_property_constraint(
     xyz_properties = inspect_xyz(molecule)
     domain_error = check_domain(molecule, xyz_properties, spec.get("domain", {}))
     if domain_error:
-        failure_type = "domain_error" if domain_error.startswith(("disallowed", "atom_count", "heavy_atom_count", "max_absolute", "unknown")) else "validity_error"
+        failure_type = (
+            "domain_error"
+            if domain_error.startswith(
+                (
+                    "disallowed",
+                    "atom_count",
+                    "heavy_atom_count",
+                    "carbon_count",
+                    "hetero_atom_count",
+                    "heavy_element_diversity",
+                    "formula",
+                    "max_absolute",
+                    "unknown",
+                )
+            )
+            else "validity_error"
+        )
         return error_result(result, failure_type, domain_error, properties=xyz_properties)
 
     xtb_runner = runner or XTBRunner(str((spec.get("backend") or {}).get("executable", "xtb")))

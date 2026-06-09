@@ -256,6 +256,33 @@ def test_xtb_property_maps_candidate_validation_errors(xyz: str, failure_type: s
 
 
 @pytest.mark.parametrize(
+    ("domain_update", "xyz", "message"),
+    [
+        ({"carbon_count_min": 1}, WATER_XYZ, "carbon_count below minimum 1"),
+        ({"hetero_atom_count_min": 2}, ACETONITRILE_XYZ, "hetero_atom_count below minimum 2"),
+        ({"heavy_element_diversity_min": 3}, ACETONITRILE_XYZ, "heavy_element_diversity below minimum 3"),
+        ({"formula_denylist": ["C2H3N"]}, ACETONITRILE_XYZ, "formula is denied: C2H3N"),
+    ],
+)
+def test_xtb_property_enforces_nontrivial_structural_domain(domain_update: dict, xyz: str, message: str) -> None:
+    current_task = task("homo_lumo_gap")
+    spec = gap_spec()
+    spec["domain"] = {**spec["domain"], **domain_update}
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": xyz},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=FakeRunner(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "domain_error"
+    assert result["message"] == message
+
+
+@pytest.mark.parametrize(
     ("exception", "failure_type"),
     [
         (xtb_properties.XTBEnvironmentError("missing xtb"), "verifier_environment_error"),
