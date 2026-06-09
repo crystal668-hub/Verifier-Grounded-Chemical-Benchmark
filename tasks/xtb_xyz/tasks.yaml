@@ -1,10 +1,10 @@
 tasks:
   - task_id: xtb_gap_window_001
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: basic
     formal_track: true
-    capability_tags: [open_generation, property_satisfaction, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
+    capability_tags: [open_generation, property_satisfaction, geometry_quality, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -13,8 +13,10 @@ tasks:
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 1 and 40 inclusive.
+      - Use at least 6 heavy atoms and at least one hetero atom.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 4.0 and 6.0 eV.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 3.5 and 5.5 eV.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -30,19 +32,32 @@ tasks:
       example: |
         FINAL ANSWER:
         ```xyz
-        3
-        water
-        O 0.000000 0.000000 0.000000
-        H 0.758602 0.000000 0.504284
-        H -0.758602 0.000000 0.504284
+        6
+        example
+        C 0.000000 0.000000 0.000000
+        C 1.400000 0.000000 0.000000
+        N 2.600000 0.000000 0.000000
+        H -0.500000 0.900000 0.000000
+        H -0.500000 -0.900000 0.000000
+        H 1.400000 1.000000 0.000000
         ```
     constraints:
       - type: window
         property: homo_lumo_gap
         verifier_id: xtb_gap_gfn2_v1
-        min: 4.0
-        max: 6.0
+        min: 3.5
+        max: 5.5
         sigma: 0.75
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [6, 40]
+      hetero_atom_count_min: 1
+      formula_denylist: [H2O, CH4, NH3, CO2, HCN, CH2O, C2H4, C6H6]
     scoring:
       aggregation: geometric_mean
     failure_policy: &xtb_task_failure_policy
@@ -57,11 +72,11 @@ tasks:
       timeout: verifier_timeout
 
   - task_id: xtb_dipole_window_002
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: basic
     formal_track: true
-    capability_tags: [open_generation, property_satisfaction, three_dimensional_geometry, xyz, xtb, dipole_moment]
+    capability_tags: [open_generation, property_satisfaction, geometry_quality, three_dimensional_geometry, xyz, xtb, dipole_moment]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -70,8 +85,10 @@ tasks:
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 1 and 40 inclusive.
+      - Use at least 5 heavy atoms, at least 2 carbon atoms, and at least 2 hetero atoms.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - After GFN2-xTB optimization, have a molecular dipole moment between 1.5 and 4.0 Debye.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - After GFN2-xTB optimization, have a molecular dipole moment between 3.0 and 5.5 Debye.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -83,28 +100,41 @@ tasks:
       - type: window
         property: dipole_moment
         verifier_id: xtb_dipole_gfn2_v1
-        min: 1.5
-        max: 4.0
+        min: 3.0
+        max: 5.5
         sigma: 1.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [5, 40]
+      carbon_count_min: 2
+      hetero_atom_count_min: 2
+      formula_denylist: [H2O, NH3, HCN, CH2O, CH3NO2]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
 
   - task_id: xtb_gap_max_003
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: intermediate
     formal_track: true
-    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
       The molecule must satisfy these requirements:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
-      - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 1 and 40 inclusive.
+      - Atom count must be between 12 and 80 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least one hetero atom and at least two distinct heavy-element types.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
       - Maximize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
 
       Your final answer must appear exactly in this format:
@@ -117,18 +147,30 @@ tasks:
       - type: maximize_bounded
         property: homo_lumo_gap
         verifier_id: xtb_gap_gfn2_v1
+        lower: 12.0
+        upper: 20.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
         lower: 0.0
-        upper: 12.0
+        upper: 0.35
+    structural_domain:
+      atom_count: [12, 80]
+      heavy_atom_count: [8, 40]
+      hetero_atom_count_min: 1
+      heavy_element_diversity_min: 2
+      formula_denylist: [H2O, CH4, NH3, CH4O, CH3F]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
 
   - task_id: xtb_gap_min_004
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: intermediate
     formal_track: true
-    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, homo_lumo_gap]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -136,8 +178,10 @@ tasks:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 1 and 40 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms and at least 2 hetero atoms.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
       - Minimize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
 
       Your final answer must appear exactly in this format:
@@ -151,17 +195,28 @@ tasks:
         property: homo_lumo_gap
         verifier_id: xtb_gap_gfn2_v1
         lower: 0.0
-        upper: 8.0
+        upper: 5.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      formula_denylist: [CH2O, C2H4, C6H6, CH3NO2]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
 
   - task_id: xtb_dipole_max_005
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: intermediate
     formal_track: true
-    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, xtb, dipole_moment]
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, dipole_moment]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -169,8 +224,10 @@ tasks:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 1 and 40 inclusive.
+      - Heavy atom count must be between 6 and 40 inclusive.
+      - Use at least 2 carbon atoms and at least 2 hetero atoms.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
       - Maximize the GFN2-xTB optimized-geometry molecular dipole moment.
 
       Your final answer must appear exactly in this format:
@@ -183,18 +240,29 @@ tasks:
       - type: maximize_bounded
         property: dipole_moment
         verifier_id: xtb_dipole_gfn2_v1
-        lower: 0.0
+        lower: 3.0
         upper: 10.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [6, 40]
+      carbon_count_min: 2
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH3CN, CH2O, CH3NO2]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
 
-  - task_id: xtb_relaxation_energy_min_006
-    version: 1
+  - task_id: xtb_low_gap_high_dipole_opt_006
+    version: 2
     object_type: small_molecule_3d
     difficulty: intermediate
     formal_track: true
-    capability_tags: [open_generation, geometry_quality, property_optimization, three_dimensional_geometry, xyz, xtb, relaxation_energy]
+    capability_tags: [open_generation, property_optimization, multi_objective, geometry_quality, three_dimensional_geometry, xyz, xtb, homo_lumo_gap, dipole_moment]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -202,9 +270,12 @@ tasks:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 1 and 40 inclusive.
-      - Coordinates must be in Angstrom and already close to a low-energy xTB geometry.
-      - Minimize the GFN2-xTB relaxation energy from the submitted geometry to the optimized geometry.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms and at least 2 hetero atoms.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Minimize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
+      - Maximize the GFN2-xTB optimized-geometry molecular dipole moment.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -214,20 +285,36 @@ tasks:
     answer_schema: *xyz_answer_schema
     constraints:
       - type: minimize_bounded
+        property: homo_lumo_gap
+        verifier_id: xtb_gap_gfn2_v1
+        lower: 0.0
+        upper: 5.0
+      - type: maximize_bounded
+        property: dipole_moment
+        verifier_id: xtb_dipole_gfn2_v1
+        lower: 3.0
+        upper: 8.0
+      - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
         lower: 0.0
-        upper: 0.5
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH2O, C2H4, C6H6, CH3CN, CH3NO2]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
 
   - task_id: xtb_gap_dipole_window_007
-    version: 1
+    version: 2
     object_type: small_molecule_3d
     difficulty: intermediate
     formal_track: true
-    capability_tags: [open_generation, property_satisfaction, multi_objective, three_dimensional_geometry, xyz, xtb, homo_lumo_gap, dipole_moment]
+    capability_tags: [open_generation, property_satisfaction, multi_objective, geometry_quality, three_dimensional_geometry, xyz, xtb, homo_lumo_gap, dipole_moment]
     prompt: |
       Propose one neutral closed-shell small molecule as an XYZ geometry.
 
@@ -235,10 +322,12 @@ tasks:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 1 and 40 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms and at least 2 hetero atoms.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 3.0 and 5.0 eV.
-      - After GFN2-xTB optimization, have a molecular dipole moment between 2.0 and 5.0 Debye.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 2.5 and 4.2 eV.
+      - After GFN2-xTB optimization, have a molecular dipole moment between 3.5 and 6.0 Debye.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -250,15 +339,26 @@ tasks:
       - type: window
         property: homo_lumo_gap
         verifier_id: xtb_gap_gfn2_v1
-        min: 3.0
-        max: 5.0
+        min: 2.5
+        max: 4.2
         sigma: 0.75
       - type: window
         property: dipole_moment
         verifier_id: xtb_dipole_gfn2_v1
-        min: 2.0
-        max: 5.0
+        min: 3.5
+        max: 6.0
         sigma: 1.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH2O, C2H4, C6H6, CH3CN, CH3NO2]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy

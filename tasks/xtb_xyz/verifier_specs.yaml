@@ -87,8 +87,9 @@ verifiers:
     package_versions: *xtb_package_versions
     domain: *xtb_xyz_domain
     property:
+      role: geometry_quality_gate
       source: xTB GFN2-xTB input single-point energy minus optimized total energy
       units: eV
-      notes: Measures whether submitted XYZ geometry is close to a local xTB minimum.
+      notes: Used as a universal direct-XYZ geometry quality multiplier, not as a standalone chemistry target.
     scoring: *xtb_scoring
     failure_policy: *xtb_failure_policy
