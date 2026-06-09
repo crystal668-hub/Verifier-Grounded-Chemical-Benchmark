@@ -24,6 +24,16 @@ H -0.629118 0.629118 -0.629118
 H 0.629118 -0.629118 -0.629118
 """
 
+ACETONITRILE_XYZ = """6
+acetonitrile
+C 0.000000 0.000000 0.000000
+C 1.460000 0.000000 0.000000
+N 2.620000 0.000000 0.000000
+H -0.360000 1.020000 0.000000
+H -0.360000 -0.510000 0.883346
+H -0.360000 -0.510000 -0.883346
+"""
+
 XTB_STDOUT = """
  | TOTAL ENERGY              -5.070680245292 Eh
  | HOMO-LUMO GAP              6.500000000000 eV
@@ -123,6 +133,21 @@ def test_parse_xyz_reads_atoms_and_coordinates() -> None:
 def test_parse_xyz_rejects_atom_count_mismatch() -> None:
     with pytest.raises(xtb_properties.XTBParseError, match="atom count"):
         xtb_properties.parse_xyz("4\nwater\nO 0 0 0\nH 0 0 1\nH 0 1 0\n")
+
+
+def test_inspect_xyz_reports_structural_domain_properties() -> None:
+    water = xtb_properties.inspect_xyz(xtb_properties.parse_xyz(WATER_XYZ))
+    acetonitrile = xtb_properties.inspect_xyz(xtb_properties.parse_xyz(ACETONITRILE_XYZ))
+
+    assert water["formula"] == "H2O"
+    assert water["carbon_count"] == 0
+    assert water["hetero_atom_count"] == 1
+    assert water["heavy_element_diversity"] == 1
+
+    assert acetonitrile["formula"] == "C2H3N"
+    assert acetonitrile["carbon_count"] == 2
+    assert acetonitrile["hetero_atom_count"] == 1
+    assert acetonitrile["heavy_element_diversity"] == 2
 
 
 def test_parse_xtb_output_reads_xtb_671_full_dipole_line() -> None:

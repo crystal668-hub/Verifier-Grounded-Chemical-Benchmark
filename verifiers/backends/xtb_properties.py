@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+from collections import Counter
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
@@ -116,12 +117,27 @@ def parse_xyz(xyz: str) -> XYZMolecule:
 def inspect_xyz(molecule: XYZMolecule) -> dict[str, Any]:
     elements = sorted({atom.symbol for atom in molecule.atoms})
     heavy_atom_count = sum(1 for atom in molecule.atoms if atom.symbol != "H")
+    counts = Counter(atom.symbol for atom in molecule.atoms)
     return {
         "atom_count": len(molecule.atoms),
         "heavy_atom_count": heavy_atom_count,
         "elements": elements,
+        "formula": hill_formula(dict(counts)),
+        "carbon_count": counts.get("C", 0),
+        "hetero_atom_count": sum(count for element, count in counts.items() if element not in {"H", "C"}),
+        "heavy_element_diversity": len({element for element in counts if element != "H"}),
         "max_absolute_coordinate": max(abs(value) for atom in molecule.atoms for value in (atom.x, atom.y, atom.z)),
     }
+
+
+def hill_formula(counts: dict[str, int]) -> str:
+    ordered_elements: list[str] = []
+    if "C" in counts:
+        ordered_elements.append("C")
+    if "H" in counts:
+        ordered_elements.append("H")
+    ordered_elements.extend(sorted(element for element in counts if element not in {"C", "H"}))
+    return "".join(f"{element}{'' if counts[element] == 1 else counts[element]}" for element in ordered_elements)
 
 
 def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict[str, Any]) -> str | None:
