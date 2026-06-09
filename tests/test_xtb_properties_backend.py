@@ -33,6 +33,27 @@ XTB_STDOUT = """
  GEOMETRY OPTIMIZATION CONVERGED
 """
 
+XTB_671_DIPOLE_STDOUT = """
+   *** GEOMETRY OPTIMIZATION CONVERGED AFTER 4 ITERATIONS ***
+
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         ::                     SUMMARY                     ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         :: total energy              -5.503248222956 Eh    ::
+         :: HOMO-LUMO gap              5.756262039309 eV    ::
+         ::.................................................::
+
+molecular dipole:
+                 x           y           z       tot (Debye)
+ q only:       -0.505      -0.000       0.000
+   full:       -1.031      -0.000      -0.000       2.621
+
+           -------------------------------------------------
+          | TOTAL ENERGY               -5.504066181050 Eh   |
+          | HOMO-LUMO GAP               5.951189522894 eV   |
+           -------------------------------------------------
+"""
+
 
 def gap_spec() -> dict:
     return {
@@ -102,6 +123,14 @@ def test_parse_xyz_reads_atoms_and_coordinates() -> None:
 def test_parse_xyz_rejects_atom_count_mismatch() -> None:
     with pytest.raises(xtb_properties.XTBParseError, match="atom count"):
         xtb_properties.parse_xyz("4\nwater\nO 0 0 0\nH 0 0 1\nH 0 1 0\n")
+
+
+def test_parse_xtb_output_reads_xtb_671_full_dipole_line() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_671_DIPOLE_STDOUT, require_converged=True)
+
+    assert properties["total_energy_hartree"] == pytest.approx(-5.504066181050)
+    assert properties["homo_lumo_gap"] == pytest.approx(5.951189522894)
+    assert properties["dipole_moment"] == pytest.approx(2.621)
 
 
 def test_xtb_gap_scores_fake_optimized_output() -> None:

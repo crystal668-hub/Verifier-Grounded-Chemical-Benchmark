@@ -26,6 +26,14 @@ DIPOLE_PATTERN = re.compile(
     r"([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
     re.IGNORECASE | re.DOTALL,
 )
+DIPOLE_FULL_PATTERN = re.compile(
+    r"molecular\s+dipole:.*?^\s*full:\s+"
+    r"[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
+    re.IGNORECASE | re.DOTALL | re.MULTILINE,
+)
 CONVERGED_PATTERN = re.compile(r"(GEOMETRY\s+OPTIMIZATION\s+CONVERGED|normal\s+termination\s+of\s+xtb)", re.IGNORECASE)
 
 
@@ -338,13 +346,22 @@ def parse_xtb_output(stdout: str, *, require_converged: bool = False) -> dict[st
     if require_converged and CONVERGED_PATTERN.search(stdout) is None:
         raise XTBToolError("xTB optimization did not converge")
     properties: dict[str, float] = {}
-    if match := ENERGY_PATTERN.search(stdout):
+    if match := last_match(ENERGY_PATTERN, stdout):
         properties["total_energy_hartree"] = float(match.group(1))
-    if match := GAP_PATTERN.search(stdout):
+    if match := last_match(GAP_PATTERN, stdout):
         properties["homo_lumo_gap"] = float(match.group(1))
-    if match := DIPOLE_PATTERN.search(stdout):
+    if match := DIPOLE_FULL_PATTERN.search(stdout):
+        properties["dipole_moment"] = float(match.group(1))
+    elif match := DIPOLE_PATTERN.search(stdout):
         properties["dipole_moment"] = float(match.group(4))
     return properties
+
+
+def last_match(pattern: re.Pattern[str], text: str) -> re.Match[str] | None:
+    match: re.Match[str] | None = None
+    for match in pattern.finditer(text):
+        pass
+    return match
 
 
 def base_result(task_id: str, spec: dict[str, Any]) -> dict[str, Any]:
