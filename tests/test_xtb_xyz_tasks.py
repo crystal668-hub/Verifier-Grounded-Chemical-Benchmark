@@ -81,6 +81,21 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert dipole["upper"] == 8.0
 
 
+def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
+    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    gap_max = tasks["xtb_gap_max_003"]
+    gap_constraint = next(item for item in gap_max["constraints"] if item["property"] == "homo_lumo_gap")
+    structural_domain = gap_max["structural_domain"]
+
+    assert gap_constraint["type"] == "maximize_bounded"
+    assert gap_constraint["lower"] == 10.0
+    assert gap_constraint["upper"] == 12.0
+    assert structural_domain["hetero_atom_count_min"] >= 2
+    assert structural_domain["heavy_element_diversity_min"] >= 3
+    assert "CF4" in structural_domain["formula_denylist"]
+    assert "C2F6" in structural_domain["formula_denylist"]
+
+
 def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
     tasks = load_tasks(TASK_DIR / "tasks.yaml")
 

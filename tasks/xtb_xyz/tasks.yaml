@@ -132,7 +132,7 @@ tasks:
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 12 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
-      - Use at least one hetero atom and at least two distinct heavy-element types.
+      - Use at least two hetero atoms and at least three distinct heavy-element types.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
       - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
       - Maximize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
@@ -147,8 +147,8 @@ tasks:
       - type: maximize_bounded
         property: homo_lumo_gap
         verifier_id: xtb_gap_gfn2_v1
-        lower: 12.0
-        upper: 20.0
+        lower: 10.0
+        upper: 12.0
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
@@ -158,9 +158,9 @@ tasks:
     structural_domain:
       atom_count: [12, 80]
       heavy_atom_count: [8, 40]
-      hetero_atom_count_min: 1
-      heavy_element_diversity_min: 2
-      formula_denylist: [H2O, CH4, NH3, CH4O, CH3F]
+      hetero_atom_count_min: 2
+      heavy_element_diversity_min: 3
+      formula_denylist: [H2O, CH4, NH3, CH4O, CH3F, CF4, C2F6]
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
