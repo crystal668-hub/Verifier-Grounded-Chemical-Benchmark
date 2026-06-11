@@ -4,14 +4,14 @@
 
 ## 1. 范围与来源
 
-本次整理面向 arXiv:2605.24002《Harnessing AtomisticSkills for Agentic Atomistic Research》中公开的 AtomisticSkills 工具体系，并对照 `doc/initial-design.md` 判断每类工具的可部署形态和 verifier 适配性。
+本次整理面向 arXiv:2605.24002《Harnessing AtomisticSkills for Agentic Atomistic Research》中公开的 AtomisticSkills 工具体系，并对照 `doc/INITIAL-DESIGN.md` 判断每类工具的可部署形态和 verifier 适配性。
 
 核对来源：
 
 - 论文页：<https://arxiv.org/abs/2605.24002>。论文说明 AtomisticSkills 提供 100+ skills，并通过 MCP tools、scripts、MLIP/DFT/数据库/模拟引擎支持材料、化学和药物发现任务。
 - 论文源码 `main.tex`。其中明确说明 tools 是严格结构化 Python 函数、运行在独立 MCP server 环境中；同时还有辅助 script 环境支持不适合长期暴露为 MCP 的 skill-specific scripts。
 - 开源仓库：<https://github.com/learningmatter-mit/AtomisticSkills>。本地核对 commit：`23d101d10ee416c6bb9c24ad40ce66038a841d5c`。
-- 本项目设计文档：`doc/initial-design.md`。
+- 本项目设计文档：`doc/INITIAL-DESIGN.md`。
 
 开源仓库当前核对结果：
 
@@ -24,7 +24,7 @@
 
 说明：论文文字称 “more than 10 tool servers and 50 MCP tools”。按当前公开 `main` 分支源码逐项解析，实际可见的是 10 个 MCP server、49 个 `@mcp.tool()` 函数；差异可能来自论文统计口径把辅助 script 环境或私有/案例工具也计入。
 
-## 2. 对照 `initial-design.md` 的判断准则
+## 2. 对照 `INITIAL-DESIGN.md` 的判断准则
 
 本项目的正式 verifier 需要满足：
 
@@ -58,7 +58,7 @@ Verifier 适配性分为：
 | `base.search_materials_project_by_chemsys` | 按元素体系查 MP hull 稳定结构 | 在线 API/冻结快照 | 条件可用。可用于材料稳定性、band gap 标签模式；正式 benchmark 需冻结数据。 |
 | `base.visualize_structure` | 结构渲染 | 本机 CPU | 否。只适合 QA/人工检查，不是性质 verifier。 |
 | `base.search_literature` | OpenAlex 文献搜索和下载 | 在线 API | 否。不适合作自动性质评分；只可用于 agent 参考资料检索。 |
-| `base.supercell_expansion` | 结构超胞生成 | 本机 CPU | 可直接作为结构操作 verifier。当前仓库已有 `atomisticskills_base_supercell_001` smoke 题；但它不是 `initial-design.md` 核心 open-generation 性质题。 |
+| `base.supercell_expansion` | 结构超胞生成 | 本机 CPU | 可直接作为结构操作 verifier。当前仓库已有 `atomisticskills_base_supercell_001` smoke 题；但它不是 `INITIAL-DESIGN.md` 核心 open-generation 性质题。 |
 | `base.modify_structure` | 元素替换/掺杂结构生成 | 本机 CPU | 条件可用。可验证结构编辑任务；作为开放材料生成 verifier 时还需接稳定性/性质计算。 |
 | `base.search_model_registry` | 本地 MLIP checkpoint registry 查询 | 本机 CPU | 否。只用于选择模型和避免重复训练。 |
 | `base.register_model` | 注册 fine-tuned MLIP | 本机 CPU | 否。模型管理工具。 |
@@ -69,7 +69,7 @@ Verifier 适配性分为：
 | `drugdisc.compute_molecular_fingerprints` | Morgan/ECFP、Tanimoto、Butina | 本机 CPU | 条件可用。适合作 novelty/diversity/applicability-domain 辅助 gate；不宜作为主要性质目标。 |
 | `matgl.load_model` | 加载 MatGL/CHGNet/M3GNet/TensorNet/eform 模型 | 本机 GPU/工作站 | 否。模型加载步骤。 |
 | `matgl.predict_structure` | 预测能量、力、应力、可选电荷 | 本机 GPU/工作站 | 条件可用。适合 formation energy proxy、relaxed energy proxy、charge sanity，但需冻结模型和输入结构规范。 |
-| `matgl.predict_atomic_features` | 原子 latent feature | 本机 GPU/工作站 | 通常不建议。可作 novelty/applicability-domain 研究指标，但不是 `initial-design.md` 首版核心性质。 |
+| `matgl.predict_atomic_features` | 原子 latent feature | 本机 GPU/工作站 | 通常不建议。可作 novelty/applicability-domain 研究指标，但不是 `INITIAL-DESIGN.md` 首版核心性质。 |
 | `matgl.predict_bandgap` | MEGNet band gap 预测 | 本机 GPU/工作站 | 条件可用。匹配 P0-4 band gap surrogate；正式 benchmark 应固定模型、functional、单位、适用域并校准误差。 |
 | `matgl.get_info` | 当前模型状态 | 本机 GPU/工作站 | 否。运行态检查。 |
 | `matgl.relax_structure` | MatGL/CHGNet/M3GNet 结构弛豫 | 本机 GPU/工作站 | 条件可用。可作为材料 verifier 前处理或稳定性 proxy，但需要固定 fmax、steps、cell relaxation、失败策略。 |
@@ -226,9 +226,9 @@ Verifier 适配性分为：
 - `general-deep-research`、`general-peer-review`、`general-property-units`、`general-query-literature-database`、`general-workflow-planner`：知识/流程辅助，不适合最终性质 verifier。
 - `mat-md-monitors`、`ml-foundation-potentials`、`ml-generative-adit`、`ml-mlip-automl`、`ml-property-predict-scd`：主要是 orchestration、model selection、generation 或 property-model setup；需要转化为冻结模型/固定脚本后才可能进入 verifier。
 
-## 5. 与 `initial-design.md` 首版性质方向的映射
+## 5. 与 `INITIAL-DESIGN.md` 首版性质方向的映射
 
-| `initial-design.md` 性质方向 | AtomisticSkills 中最接近的可用工具 | 部署建议 | 结论 |
+| `INITIAL-DESIGN.md` 性质方向 | AtomisticSkills 中最接近的可用工具 | 部署建议 | 结论 |
 |---|---|---|---|
 | P0-1 RDKit QED/logP/TPSA/MW/HBD/HBA/rotatable bonds/SA score | `drugdisc.compute_molecular_descriptors`、`drug-admet-prediction`；本项目已有独立 RDKit verifier | 本机 CPU | 可直接采用。注意 AtomisticSkills descriptor 工具未覆盖 SA score；SA score 仍建议用本项目 RDKit Contrib 路径。 |
 | P0-2 logS | AtomisticSkills 当前未提供 OPERA/SolTranNet/logS 专门工具 | 本机 CPU/GPU 或冻结数据 | 不宜从 AtomisticSkills 直接拿。继续按设计文档选择 OPERA/TDC/AqSolDB/ADMET-AI。 |
@@ -248,7 +248,7 @@ Verifier 适配性分为：
 
 - `atomisticskills_base_supercell_001`：使用 `base.supercell_expansion`。可本机安装 `base-agent` 后通过 MCP 运行；适合验证 MCP adapter 和结构操作，不属于首版核心 open-generation property satisfaction。
 - `atomisticskills_drugdisc_descriptor_001`：使用 `drugdisc.standardize_molecule` + `drugdisc.compute_molecular_descriptors`。可本机 CPU 安装 `drugdisc-agent`；可作为 P0-1 RDKit descriptor verifier 的变体。
-- `atomisticskills_xrd_peak_001`：使用 `mat-xrd-calculator/scripts/calculate_xrd.py`。可本机 CPU 安装 `xrd-agent`；适合固定 structure -> XRD peak verifier。若要符合 `initial-design.md` 的 open-generation 定位，题目应要求模型输出 CIF/structure，然后 verifier 计算 XRD pattern，而不是让模型直接报数值峰位。
+- `atomisticskills_xrd_peak_001`：使用 `mat-xrd-calculator/scripts/calculate_xrd.py`。可本机 CPU 安装 `xrd-agent`；适合固定 structure -> XRD peak verifier。若要符合 `INITIAL-DESIGN.md` 的 open-generation 定位，题目应要求模型输出 CIF/structure，然后 verifier 计算 XRD pattern，而不是让模型直接报数值峰位。
 
 ## 7. 建议进入 benchmark 的优先级
 
@@ -282,4 +282,4 @@ Verifier 适配性分为：
 3. 生成模型类工具应明确排除在 verifier 之外，避免“生成器自证”。
 4. 在线数据库工具可以用于构造题目和调研，但正式评分必须冻结 snapshot 或预下载标签。
 5. Atomate2/VASP、ORCA、长 MD、surface adsorption、GBSA/PBSA 等可以成为高可信 verifier，但部署形态应是计算集群服务或预计算标签库，不适合在公开首版中无资源控制地实时运行。
-6. 与 `initial-design.md` 最一致的首批 AtomisticSkills 候选是：`drugdisc` descriptors、`mat-xrd-calculator`、`mat-stability`/`mat-phase-diagram`、`matgl.predict_bandgap`、以及冻结 MLIP energy/relaxation wrappers。
+6. 与 `INITIAL-DESIGN.md` 最一致的首批 AtomisticSkills 候选是：`drugdisc` descriptors、`mat-xrd-calculator`、`mat-stability`/`mat-phase-diagram`、`matgl.predict_bandgap`、以及冻结 MLIP energy/relaxation wrappers。
