@@ -6,8 +6,8 @@
 
 RDKit 题目来自以下本地设计与计划文档：
 
-- `doc/INITIAL-DESIGN.md`：把 RDKit 小分子 descriptor 题定位为首批最稳定、成本最低、可本地确定性验证的 open-generation benchmark。
-- `doc/2026-05-26-verifier-grounded-chemical-benchmark-target-properties.md`：将 QED、logP、TPSA、MW、HBD/HBA、rotatable bonds、SA score 等列为 P0 小分子基础性质。
+- `docs/design/INITIAL-DESIGN.md`：把 RDKit 小分子 descriptor 题定位为首批最稳定、成本最低、可本地确定性验证的 open-generation benchmark。
+- `docs/research/2026-05-26-verifier-grounded-chemical-benchmark-target-properties.md`：将 QED、logP、TPSA、MW、HBD/HBA、rotatable bonds、SA score 等列为 P0 小分子基础性质。
 - `docs/superpowers/plans/2026-06-02-task-level-verifier-script-migration.md`：废弃 task-level verifier script，明确采用 descriptor-level verifier 设计。
 
 当前真实实现已按如下边界落地：

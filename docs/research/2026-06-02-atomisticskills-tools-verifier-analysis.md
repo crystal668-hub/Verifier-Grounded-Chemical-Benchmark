@@ -4,14 +4,14 @@
 
 ## 1. 范围与来源
 
-本次整理面向 arXiv:2605.24002《Harnessing AtomisticSkills for Agentic Atomistic Research》中公开的 AtomisticSkills 工具体系，并对照 `doc/INITIAL-DESIGN.md` 判断每类工具的可部署形态和 verifier 适配性。
+本次整理面向 arXiv:2605.24002《Harnessing AtomisticSkills for Agentic Atomistic Research》中公开的 AtomisticSkills 工具体系，并对照 `docs/design/INITIAL-DESIGN.md` 判断每类工具的可部署形态和 verifier 适配性。
 
 核对来源：
 
 - 论文页：<https://arxiv.org/abs/2605.24002>。论文说明 AtomisticSkills 提供 100+ skills，并通过 MCP tools、scripts、MLIP/DFT/数据库/模拟引擎支持材料、化学和药物发现任务。
 - 论文源码 `main.tex`。其中明确说明 tools 是严格结构化 Python 函数、运行在独立 MCP server 环境中；同时还有辅助 script 环境支持不适合长期暴露为 MCP 的 skill-specific scripts。
 - 开源仓库：<https://github.com/learningmatter-mit/AtomisticSkills>。本地核对 commit：`23d101d10ee416c6bb9c24ad40ce66038a841d5c`。
-- 本项目设计文档：`doc/INITIAL-DESIGN.md`。
+- 本项目设计文档：`docs/design/INITIAL-DESIGN.md`。
 
 开源仓库当前核对结果：
 
