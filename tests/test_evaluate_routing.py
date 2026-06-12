@@ -35,6 +35,10 @@ def test_python_verifier_registry_has_been_removed() -> None:
     assert not (ROOT / "verifiers" / "registry.py").exists()
 
 
+def test_legacy_atomisticskills_verifier_module_has_been_removed() -> None:
+    assert not (ROOT / "verifiers" / "atomisticskills.py").exists()
+
+
 def test_evaluate_one_routes_by_constraint_descriptor_verifier() -> None:
     tasks = load_tasks(TASKS_PATH)
     specs = load_verifier_specs(SPECS_PATH)
