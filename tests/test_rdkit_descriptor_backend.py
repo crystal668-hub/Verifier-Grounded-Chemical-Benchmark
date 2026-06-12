@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from verifiers.backends import rdkit_descriptors
 from verifiers.backends.rdkit_descriptors import evaluate_descriptor_constraint
 
 
@@ -36,6 +37,10 @@ def test_evaluate_descriptor_constraint_scores_valid_smiles() -> None:
     assert result["scores"]["constraint_scores"] == [{"property": "logp", "type": "window", "score": 1.0}]
     assert result["scores"]["score"] == 1.0
     assert result["versions"]["verifier_image"] == "verifier-grounded:dev"
+
+
+def test_rdkit_backend_does_not_expose_unused_bulk_property_helper() -> None:
+    assert not hasattr(rdkit_descriptors, "compute_properties")
 
 
 def test_evaluate_descriptor_constraint_rejects_invalid_smiles() -> None:

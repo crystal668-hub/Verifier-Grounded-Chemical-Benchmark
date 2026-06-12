@@ -145,23 +145,6 @@ def compute_domain_properties(mol: Chem.Mol) -> dict[str, float | int]:
     }
 
 
-def compute_properties(mol: Chem.Mol) -> dict[str, float | int]:
-    return {
-        "qed": QED.qed(mol),
-        "logp": Crippen.MolLogP(mol),
-        "tpsa": rdMolDescriptors.CalcTPSA(mol),
-        "mw": Descriptors.MolWt(mol),
-        "hbd": rdMolDescriptors.CalcNumHBD(mol),
-        "hba": rdMolDescriptors.CalcNumHBA(mol),
-        "rotatable_bonds": rdMolDescriptors.CalcNumRotatableBonds(mol),
-        "sa_score": sascorer.calculateScore(mol),
-        "fraction_csp3": rdMolDescriptors.CalcFractionCSP3(mol),
-        "ring_count": rdMolDescriptors.CalcNumRings(mol),
-        "heavy_atom_count": mol.GetNumHeavyAtoms(),
-        "formal_charge": Chem.GetFormalCharge(mol),
-    }
-
-
 def check_domain(properties: dict[str, float | int], domain: dict[str, Any]) -> str | None:
     heavy_min, heavy_max = domain["heavy_atom_count"]
     mw_min, mw_max = domain["mw"]
