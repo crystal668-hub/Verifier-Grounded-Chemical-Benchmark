@@ -3,7 +3,8 @@ verifiers:
     name: AtomisticSkills MACE Energy Verifier
     version: 1
     environment: mace-agent
-    formal_track: true
+    formal_track: false
+    track_status: prototype
     verifier_image: verifier-grounded:dev
     verification_script: verifiers/materials/mace_energy.py
     timeout_seconds: 240

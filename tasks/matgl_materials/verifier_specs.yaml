@@ -2,7 +2,8 @@ verifiers:
   - verifier_id: matgl_bandgap_pbe_mcp_v1
     name: AtomisticSkills MatGL PBE Band Gap Verifier
     version: 1
-    formal_track: true
+    formal_track: false
+    track_status: prototype
     verifier_image: verifier-grounded:dev
     verification_script: verifiers/materials/matgl_bandgap.py
     timeout_seconds: 180
@@ -43,7 +44,8 @@ verifiers:
   - verifier_id: matgl_formation_energy_mcp_v1
     name: AtomisticSkills MatGL Formation Energy Verifier
     version: 1
-    formal_track: true
+    formal_track: false
+    track_status: prototype
     verifier_image: verifier-grounded:dev
     verification_script: verifiers/materials/matgl_formation_energy.py
     timeout_seconds: 180

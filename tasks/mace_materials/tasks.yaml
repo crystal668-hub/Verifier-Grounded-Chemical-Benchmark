@@ -3,8 +3,10 @@ tasks:
     version: 1
     object_type: crystal_structure
     difficulty: basic
-    formal_track: true
-    capability_tags: [open_generation, property_satisfaction, materials, mace, atomisticskills_mcp, energy]
+    formal_track: false
+    track_status: prototype
+    capability_tags: [open_generation, property_satisfaction, materials, mace, atomisticskills_mcp, energy, prototype]
+    notes: "Prototype material-property task for MACE backend/interface validation; not part of the current formal benchmark track."
     prompt: |
       Propose one periodic crystalline material as a CIF.
 

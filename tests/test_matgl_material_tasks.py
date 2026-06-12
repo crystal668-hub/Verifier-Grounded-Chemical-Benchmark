@@ -26,6 +26,11 @@ def test_matgl_material_tasks_define_first_batch_properties() -> None:
     assert specs["matgl_formation_energy_mcp_v1"]["verification_script"] == "verifiers/materials/matgl_formation_energy.py"
     assert specs["matgl_bandgap_pbe_mcp_v1"]["property_name"] == "bandgap"
     assert specs["matgl_formation_energy_mcp_v1"]["property_name"] == "formation_energy"
+    assert all(task["formal_track"] is False for task in tasks.values())
+    assert all(task["track_status"] == "prototype" for task in tasks.values())
+    assert all("prototype" in task["capability_tags"] for task in tasks.values())
+    assert all(spec["formal_track"] is False for spec in specs.values())
+    assert all(spec["track_status"] == "prototype" for spec in specs.values())
     assert all(task["answer_schema"]["format"] == "final_answer_block" for task in tasks.values())
     assert all(task["answer_schema"]["value_type"] == "cif" for task in tasks.values())
 

@@ -493,7 +493,7 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 
 - MACE 与 MatGL 已有 CIF answer schema、材料 property-level 脚本和通过 AtomisticSkills MCP 调用后端的适配层，用来验证材料结构解析、MCP 调用链、错误映射和环境可用性。
 - AtomisticSkills smoke tasks 明确标记为 `formal_track: false`，用于 base-agent、drugdisc-agent 和 xrd-agent 的 MCP/script adapter 冒烟测试，不是正式 open-generation property-satisfaction 任务。
-- MACE/MatGL 当前虽然已经有 provisional task/spec/script，但其性质目标、候选材料空间、适用域、资源模型、模型版本冻结、容器化策略和正式题目设计仍未完成。它们应被视为“测试可用性和接口形态”的阶段性产物，而不是已经定稿的 benchmark 题目。
+- MACE/MatGL 当前虽然已经有 provisional task/spec/script，但其性质目标、候选材料空间、适用域、资源模型、模型版本冻结、容器化策略和正式题目设计仍未完成。它们在 task/spec 元数据中标记为 `formal_track: false` 和 `track_status: prototype`，应被视为“测试可用性和接口形态”的阶段性产物，而不是已经定稿的 benchmark 题目。
 
 因此，后续材料类正式题目不应直接照搬当前 MACE/MatGL smoke/prototype 配置。正确路径是参考 RDKit 与 xTB 已成型的分层结构，同时重新完成材料 verifier 的题目设计、domain 设计、资源约束和正式 failure policy。
 

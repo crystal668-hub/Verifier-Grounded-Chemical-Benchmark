@@ -22,6 +22,11 @@ def test_mace_material_tasks_define_energy_property() -> None:
     assert specs["mace_energy_mcp_v1"]["property_name"] == "energy"
     assert specs["mace_energy_mcp_v1"]["backend"]["server"] == "mace"
     assert specs["mace_energy_mcp_v1"]["mace"]["device"] == "cpu"
+    assert all(task["formal_track"] is False for task in tasks.values())
+    assert all(task["track_status"] == "prototype" for task in tasks.values())
+    assert all("prototype" in task["capability_tags"] for task in tasks.values())
+    assert all(spec["formal_track"] is False for spec in specs.values())
+    assert all(spec["track_status"] == "prototype" for spec in specs.values())
     assert all(task["answer_schema"]["format"] == "final_answer_block" for task in tasks.values())
     assert all(task["answer_schema"]["value_type"] == "cif" for task in tasks.values())
 

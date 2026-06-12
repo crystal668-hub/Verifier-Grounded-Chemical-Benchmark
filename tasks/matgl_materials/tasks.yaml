@@ -3,8 +3,10 @@ tasks:
     version: 1
     object_type: crystal_structure
     difficulty: basic
-    formal_track: true
-    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, bandgap]
+    formal_track: false
+    track_status: prototype
+    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, bandgap, prototype]
+    notes: "Prototype material-property task for MatGL backend/interface validation; not part of the current formal benchmark track."
     prompt: |
       Propose one periodic crystalline material as a CIF.
 
@@ -50,8 +52,10 @@ tasks:
     version: 1
     object_type: crystal_structure
     difficulty: basic
-    formal_track: true
-    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, formation_energy]
+    formal_track: false
+    track_status: prototype
+    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, formation_energy, prototype]
+    notes: "Prototype material-property task for MatGL backend/interface validation; not part of the current formal benchmark track."
     prompt: |
       Propose one periodic crystalline material as a CIF.
 
@@ -80,8 +84,10 @@ tasks:
     version: 1
     object_type: crystal_structure
     difficulty: basic
-    formal_track: true
-    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, bandgap, formation_energy, multi_objective]
+    formal_track: false
+    track_status: prototype
+    capability_tags: [open_generation, property_satisfaction, materials, matgl, atomisticskills_mcp, bandgap, formation_energy, multi_objective, prototype]
+    notes: "Prototype material-property task for MatGL backend/interface validation; not part of the current formal benchmark track."
     prompt: |
       Propose one periodic crystalline material as a CIF.
 
