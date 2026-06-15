@@ -1,0 +1,30 @@
+version: 1
+sources:
+  qm9:
+    status: required
+    source_type: public_dataset
+    preferred_format: xyz_or_sdf_with_3d
+    url: "https://www.nature.com/articles/sdata201422"
+    cache_path: ".cache/xtb_real_datasets/qm9"
+    license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
+  qmugs:
+    status: required
+    source_type: public_dataset
+    preferred_format: sdf_or_xyz_conformers
+    url: "https://www.nature.com/articles/s41597-022-01390-7"
+    cache_path: ".cache/xtb_real_datasets/qmugs"
+    license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
+  geom_drugs:
+    status: required_for_conformer_subset
+    source_type: public_dataset
+    preferred_format: conformer_records
+    url: "https://www.nature.com/articles/s41597-022-01288-4"
+    cache_path: ".cache/xtb_real_datasets/geom_drugs"
+    license_note: "Use only sampled derived manifests in git."
+  tartarus_opv:
+    status: optional_if_unavailable
+    source_type: benchmark_dataset
+    preferred_format: smiles_plus_generated_geometry
+    url: "https://papers.neurips.cc/paper_files/paper/2023/file/09f8b2469a3d1089a7c60d9ef1983271-Paper-Datasets_and_Benchmarks.pdf"
+    cache_path: ".cache/xtb_real_datasets/tartarus_opv"
+    license_note: "Record exact source and availability in final report."
