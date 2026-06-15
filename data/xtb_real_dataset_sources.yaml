@@ -6,6 +6,11 @@ sources:
     preferred_format: xyz_or_sdf_with_3d
     url: "https://www.nature.com/articles/sdata201422"
     cache_path: ".cache/xtb_real_datasets/qm9"
+    access:
+      type: direct_http_archive
+      files:
+        gdb9.tar.gz: "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/gdb9.tar.gz"
+      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
     license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
   qmugs:
     status: required
@@ -13,6 +18,16 @@ sources:
     preferred_format: sdf_or_xyz_conformers
     url: "https://www.nature.com/articles/s41597-022-01390-7"
     cache_path: ".cache/xtb_real_datasets/qmugs"
+    access:
+      type: nextcloud_public_webdav
+      webdav_url: "https://libdrive.ethz.ch/public.php/webdav/"
+      share_token: "X5vOBNSITAG5vzM"
+      files:
+        structures.tar.gz: "https://libdrive.ethz.ch/index.php/s/X5vOBNSITAG5vzM/download?path=%2F&files=structures.tar.gz"
+        download_links.txt: "https://libdrive.ethz.ch/public.php/webdav/download_links.txt"
+        tarball_assignment.csv: "https://libdrive.ethz.ch/public.php/webdav/tarball_assignment.csv"
+      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
+      notes: "Use streaming/local conversion with a record limit; full structures archive is about 7.2 GB."
     license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
   geom_drugs:
     status: required_for_conformer_subset
@@ -20,6 +35,16 @@ sources:
     preferred_format: conformer_records
     url: "https://www.nature.com/articles/s41597-022-01288-4"
     cache_path: ".cache/xtb_real_datasets/geom_drugs"
+    access:
+      type: harvard_dataverse
+      persistent_id: "doi:10.7910/DVN/JNGTDF"
+      api_url: "https://dataverse.harvard.edu/api/datasets/:persistentId/?persistentId=doi:10.7910/DVN/JNGTDF"
+      small_validation_files:
+        censo.tar.gz:
+          file_id: 5858503
+          url: "https://dataverse.harvard.edu/api/access/datafile/5858503"
+      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
+      notes: "Drug files are large; censo.tar.gz is small enough for connectivity validation but may not be GEOM-Drugs coverage."
     license_note: "Use only sampled derived manifests in git."
   tartarus_opv:
     status: optional_if_unavailable
@@ -27,4 +52,7 @@ sources:
     preferred_format: smiles_plus_generated_geometry
     url: "https://papers.neurips.cc/paper_files/paper/2023/file/09f8b2469a3d1089a7c60d9ef1983271-Paper-Datasets_and_Benchmarks.pdf"
     cache_path: ".cache/xtb_real_datasets/tartarus_opv"
+    access:
+      status: manual_or_generated_geometry_required
+      notes: "OPV/Tartarus coverage requires a license-compatible molecule source and explicit generated_geometry labeling before xTB calibration."
     license_note: "Record exact source and availability in final report."

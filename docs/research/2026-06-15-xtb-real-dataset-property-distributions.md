@@ -27,9 +27,31 @@ This run completed a runtime-bounded QM9 smoke pilot and did not complete the fu
 | Dataset | Status | Records available | Eligible after domain filter | Notes |
 | --- | --- | ---: | ---: | --- |
 | QM9 | available | 60 normalized records used from a local `gdb9.sdf` conversion | 60 | Downloaded `gdb9.tar.gz` from DeepChem S3 into `.cache/xtb_real_datasets/qm9/`; converted deterministic carbon-containing, hessian-domain-compatible records from `gdb9.sdf`. |
-| QMugs | unavailable | 0 | 0 | ETH Research Collection endpoint did not return a usable small programmatic subset within the runtime window; full dataset scale is not appropriate for automatic download in this task. |
-| GEOM-Drugs | unavailable | 0 | 0 | Harvard Dataverse metadata resolved, but available files are 132 MB to 50 GB; no small drug subset was downloaded in this run. |
-| Tartarus/OPV | unavailable | 0 | 0 | No reproducible small OPV subset was fetched during this run; coverage is `not_available`. |
+| QMugs | access_metadata_available | 0 | 0 | Root cause was using landing-page access instead of the official Nextcloud WebDAV share. WebDAV metadata, README, download links, and `tarball_assignment.csv` are now reachable; `structures.tar.gz` is about 7.2 GB, so local normalized sampling still requires streaming or manual cache download. |
+| GEOM-Drugs | metadata_available_transfer_incomplete | 0 | 0 | Harvard Dataverse metadata resolved and lists downloadable files. `censo.tar.gz` is a small validation file, but transfer was too slow/stalled in this session; drug subset files remain too large for automatic download. |
+| Tartarus/OPV | manual_or_generated_geometry_required | 0 | 0 | No license-compatible 3D OPV subset was fetched. OPV coverage needs an explicit source plus generated-geometry labeling before xTB calibration. |
+
+## Dataset Access Repair Notes
+
+The initial "unavailable" diagnosis conflated three different problems:
+
+| Source | What failed before | Repair attempted | Current status |
+| --- | --- | --- | --- |
+| QMugs | ETH landing/API access timed out and full dataset scale looked prohibitive | Used the official Nextcloud public WebDAV endpoint with share token `X5vOBNSITAG5vzM`; downloaded README, download links, and tarball assignment metadata | Machine access is fixed for metadata; structure conversion is blocked only by the 7.2 GB structure archive size. |
+| GEOM-Drugs | Only large Dataverse files were considered | Queried Dataverse API and identified small `censo.tar.gz` validation file plus large drug files | Metadata access works; file transfer was too slow in this run and should be retried with resume outside the short smoke window. |
+| Tartarus/OPV | No direct 3D molecule source was identified | Marked source as requiring manual or generated geometry with explicit provenance | Still not ready for automatic calibration. |
+
+New repair tooling:
+
+```bash
+uv run python scripts/convert_xtb_real_dataset_sdf.py \
+  --input <local.sdf-or-tar.gz> \
+  --dataset-name qmugs \
+  --output-jsonl .cache/xtb_real_datasets/qmugs/qmugs_sample.jsonl \
+  --limit 1000
+```
+
+The converter accepts local SDF files and tar/tar.gz archives containing SDF files, emits the normalized JSONL schema consumed by `scripts/prepare_xtb_real_dataset_sample.py`, and allows bounded conversion with `--limit`.
 
 ## Sampling Method
 
@@ -118,7 +140,7 @@ The remaining chemistry signal to track is hessian stability: 15% of the hessian
 
 ## Recommended Threshold Follow-Ups
 
-1. Add a dataset acquisition/conversion pass for at least one drug-like source before revisiting thresholds.
+1. Complete a bounded QMugs structure-cache download or streaming conversion, then rerun with at least one drug-like source before revisiting thresholds.
 2. Keep property-level status accounting in all distribution runs; row-level status is too coarse for multi-property tiers.
 3. Use tier-aware sampling: hessian-domain records for expensive tier, carbon-containing records for Fukui statistics, and broad samples for light tier.
 4. Once source coverage is available, run the planned expanded counts: 10,000-30,000 light, 2,000-5,000 medium, and 500-1,000 expensive records.
@@ -129,8 +151,8 @@ Expanded execution was not run in this pass. The selected expanded sizes are def
 
 | Tier | Planned expanded range | Selected count for next run | Decision |
 | --- | ---: | ---: | --- |
-| light | 10,000-30,000 | 10,000 | Use the low end after QM9 plus at least one drug-like dataset are available. |
-| medium | 2,000-5,000 | 2,000 | Use the low end with carbon-aware Fukui sampling and at least one drug-like dataset. |
+| light | 10,000-30,000 | 10,000 | Use the low end after QM9 plus a bounded QMugs or GEOM normalized JSONL sample are available. |
+| medium | 2,000-5,000 | 2,000 | Use the low end with carbon-aware Fukui sampling and a bounded drug-like source. |
 | expensive | 500-1,000 | 500 | Use the low end with hessian-domain-aware sampling only. |
 
 Rationale: the rerun fixed smoke workflow issues and removed runtime failures, but it still covers only 60 QM9 records. Running expanded commands against only this source would scale a biased sample rather than improve threshold evidence.
@@ -139,6 +161,6 @@ Rationale: the rerun fixed smoke workflow issues and removed runtime failures, b
 
 - This is a smoke pilot, not the full real-dataset distribution study.
 - Only 60 normalized QM9 SDF records were used in the rerun.
-- QMugs, GEOM-Drugs, and OPV coverage are unavailable in this report.
+- QMugs and GEOM access metadata are now available, but no non-QM9 3D records were normalized and run through xTB in this report.
 - Score-threshold fractions were not computed against official task constraints in this run; the analyzer currently reports property quantiles and failure diagnostics.
 - Generated artifacts are intentionally uncommitted; the committed deliverable is this report plus reproducible scripts and tests.
