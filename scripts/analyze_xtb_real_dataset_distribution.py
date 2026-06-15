@@ -47,6 +47,11 @@ def load_rows(paths: list[Path]) -> list[dict[str, Any]]:
                 for name, value in (row.get("properties") or {}).items()
                 if not str(name).endswith("_unit") and isinstance(value, int | float) and not isinstance(value, bool)
             }
+            seen.update(
+                str(name)
+                for row in payload.get("rows", [])
+                for name in (row.get("property_statuses") or {})
+            )
             tier_properties = sorted(seen)
         for row in payload.get("rows", []):
             rows.append({**row, "_input": str(path), "_tier": tier or row.get("tier"), "_tier_properties": tier_properties})
@@ -64,6 +69,8 @@ def numeric_properties(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, A
                 continue
             if isinstance(value, int | float) and math.isfinite(float(value)):
                 by_property[name].append(row)
+        for name in tier_properties:
+            by_property.setdefault(name, [])
     return by_property
 
 
@@ -95,13 +102,18 @@ def property_values(rows: list[dict[str, Any]], property_name: str) -> list[floa
 
 def summarize_slice(all_rows: list[dict[str, Any]], value_rows: list[dict[str, Any]], property_name: str) -> dict[str, Any]:
     values = property_values(value_rows, property_name)
-    ok_count = sum(row.get("status") == "ok" for row in all_rows)
-    error_count = sum(row.get("status") != "ok" for row in all_rows)
+    statuses = [property_status(row, property_name) for row in all_rows]
+    ok_count = sum(status == "ok" for status in statuses)
+    error_count = sum(status == "error" for status in statuses)
+    skipped_count = sum(status == "skipped" for status in statuses)
+    attempted_count = ok_count + error_count
     summary: dict[str, Any] = {
         "count": len(values),
         "ok_count": ok_count,
         "error_count": error_count,
-        "error_rate": (error_count / len(all_rows)) if all_rows else None,
+        "skipped_count": skipped_count,
+        "attempted_count": attempted_count,
+        "error_rate": (error_count / attempted_count) if attempted_count else None,
         "min": min(values) if values else None,
         "max": max(values) if values else None,
         "mean": statistics.fmean(values) if values else None,
@@ -114,6 +126,16 @@ def summarize_slice(all_rows: list[dict[str, Any]], value_rows: list[dict[str, A
     for threshold in DIAGNOSTIC_THRESHOLDS:
         summary[f"fraction_score_gte_{threshold:g}"] = None
     return summary
+
+
+def property_status(row: dict[str, Any], property_name: str) -> str:
+    statuses = row.get("property_statuses") or {}
+    status = statuses.get(property_name)
+    if isinstance(status, dict) and status.get("status"):
+        return str(status["status"])
+    if property_name in (row.get("properties") or {}):
+        return "ok"
+    return "error" if row.get("status") != "ok" else "ok"
 
 
 def fraction_failing_relaxation_gate(rows: list[dict[str, Any]]) -> float | None:
@@ -165,6 +187,8 @@ def write_summary_csv(path: Path, summary: dict[str, Any], *, per_dataset: bool)
         "count",
         "ok_count",
         "error_count",
+        "skipped_count",
+        "attempted_count",
         "error_rate",
         "min",
         *PERCENTILES.keys(),

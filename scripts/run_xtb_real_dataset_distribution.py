@@ -18,6 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from benchmark.evaluate import evaluate_one, load_verifier_specs
+from verifiers.backends.xtb_properties import XTBParseError, check_domain, inspect_xyz, parse_xyz
 
 
 TASK_DIR = ROOT / "tasks" / "xtb_xyz"
@@ -53,6 +54,7 @@ PROPERTY_VERIFIERS = {
     "imaginary_frequency_count": "xtb_hessian_thermo_gfn2_v1",
     "entropy_298_per_heavy_atom": "xtb_hessian_thermo_gfn2_v1",
 }
+HESSIAN_DOMAIN = {"atom_count": [6, 48], "heavy_atom_count": [4, 18]}
 
 
 def parse_args() -> argparse.Namespace:
@@ -114,43 +116,103 @@ def run_record(record: dict[str, Any], tier: str, tasks: dict[str, dict[str, Any
     merged_properties: dict[str, Any] = {}
     merged_versions: dict[str, Any] = {}
     failures: list[dict[str, Any]] = []
+    property_statuses: dict[str, dict[str, Any]] = {}
     for property_name in TIER_PROPERTIES[tier]:
+        skip_reason = property_skip_reason(record, property_name)
+        if skip_reason is not None:
+            property_statuses[property_name] = {
+                "status": "skipped",
+                "failure_type": "domain_skip",
+                "message": skip_reason,
+            }
+            continue
         result = evaluate_one(answer_for_record(record, property_name), tasks, specs)
         if result.get("status") != "ok":
+            failure_type = result.get("failure_type")
+            if property_name in {"max_f_plus_on_carbon", "f_plus_contrast"} and no_carbon_fukui_property(result):
+                failure_type = "domain_skip"
             failures.append(
                 {
                     "property": property_name,
-                    "failure_type": result.get("failure_type"),
+                    "failure_type": failure_type,
                     "message": result.get("message"),
                 }
             )
+            property_statuses[property_name] = {
+                "status": "skipped" if failure_type == "domain_skip" else "error",
+                "failure_type": failure_type,
+                "message": result.get("message"),
+            }
             continue
         for key, value in (result.get("properties") or {}).items():
             if key in TIER_PROPERTIES[tier] or key.endswith("_unit") or key in {"molecular_polarizability", "entropy_298", "gsolv_water_eV", "gsolv_hexane_eV", "max_f_plus_atom_index", "max_f_plus_atom_symbol"}:
                 merged_properties[key] = value
         merged_versions.update(result.get("versions") or {})
+        property_statuses[property_name] = {"status": "ok", "failure_type": None, "message": None}
 
-    status = "ok" if not failures else "error"
+    non_skipped = [item for item in property_statuses.values() if item["status"] != "skipped"]
+    errors = [item for item in property_statuses.values() if item["status"] == "error"]
+    ok_items = [item for item in property_statuses.values() if item["status"] == "ok"]
+    if errors and ok_items:
+        status = "partial"
+    elif errors:
+        status = "error"
+    elif ok_items:
+        status = "ok"
+    elif non_skipped:
+        status = "partial"
+    else:
+        status = "skipped"
+    primary_failure = next((item["failure_type"] for item in property_statuses.values() if item["status"] == "error"), None)
+    if primary_failure is None:
+        primary_failure = next((item["failure_type"] for item in property_statuses.values() if item["status"] == "skipped"), None)
     return {
         "dataset_name": record.get("dataset_name"),
         "record_id": record.get("record_id"),
         "tier": tier,
         "status": status,
-        "failure_type": failures[0]["failure_type"] if failures else None,
+        "failure_type": primary_failure,
         "runtime_seconds": time.perf_counter() - started,
         "properties": merged_properties,
+        "property_statuses": property_statuses,
         "versions": merged_versions,
         "failures": failures,
     }
 
 
+def property_skip_reason(record: dict[str, Any], property_name: str) -> str | None:
+    if property_name not in {"imaginary_frequency_count", "entropy_298_per_heavy_atom"}:
+        return None
+    try:
+        molecule = parse_xyz(str(record.get("xyz", "")))
+    except XTBParseError as exc:
+        return str(exc)
+    domain_error = check_domain(molecule, inspect_xyz(molecule), HESSIAN_DOMAIN)
+    if domain_error:
+        return domain_error
+    return None
+
+
+def no_carbon_fukui_property(result: dict[str, Any]) -> bool:
+    message = str(result.get("message") or "")
+    xyz_properties = result.get("properties") or {}
+    return "missing Fukui properties" in message and int(xyz_properties.get("carbon_count") or 0) == 0
+
+
 def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     failures = Counter(str(row.get("failure_type")) for row in rows if row.get("status") != "ok")
+    property_summary: dict[str, Counter[str]] = {}
+    for row in rows:
+        for property_name, status in (row.get("property_statuses") or {}).items():
+            property_summary.setdefault(str(property_name), Counter())[str(status.get("status"))] += 1
     return {
         "num_rows": len(rows),
         "num_ok": sum(row.get("status") == "ok" for row in rows),
-        "num_error": sum(row.get("status") != "ok" for row in rows),
+        "num_partial": sum(row.get("status") == "partial" for row in rows),
+        "num_error": sum(row.get("status") == "error" for row in rows),
+        "num_skipped": sum(row.get("status") == "skipped" for row in rows),
         "failure_types": dict(failures),
+        "property_statuses": {property_name: dict(counter) for property_name, counter in sorted(property_summary.items())},
     }
 
 

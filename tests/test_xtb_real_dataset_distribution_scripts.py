@@ -63,6 +63,33 @@ def test_run_xtb_real_dataset_distribution_reports_missing_xtb(tmp_path) -> None
     assert payload["failure_type"] == "verifier_environment_error"
 
 
+def test_run_xtb_real_dataset_distribution_rows_expose_property_statuses() -> None:
+    from scripts.run_xtb_real_dataset_distribution import summarize
+
+    rows = [
+        {
+            "dataset_name": "qm9",
+            "record_id": "a",
+            "tier": "medium",
+            "status": "partial",
+            "failure_type": "verifier_tool_error",
+            "runtime_seconds": 1.0,
+            "properties": {"global_electrophilicity": 0.4},
+            "property_statuses": {
+                "global_electrophilicity": {"status": "ok", "failure_type": None},
+                "max_f_plus_on_carbon": {"status": "error", "failure_type": "verifier_tool_error"},
+            },
+        }
+    ]
+
+    summary = summarize(rows)
+
+    assert summary["num_ok"] == 0
+    assert summary["num_partial"] == 1
+    assert summary["property_statuses"]["global_electrophilicity"]["ok"] == 1
+    assert summary["property_statuses"]["max_f_plus_on_carbon"]["error"] == 1
+
+
 def test_analyze_xtb_real_dataset_distribution_outputs_quantiles(tmp_path) -> None:
     results = tmp_path / "light_results.json"
     output_dir = tmp_path / "analysis"
@@ -139,6 +166,7 @@ def test_analyze_xtb_real_dataset_distribution_counts_errors_per_property_tier(t
                         "status": "ok",
                         "failure_type": None,
                         "properties": {"homo_lumo_gap": 5.0},
+                        "property_statuses": {"homo_lumo_gap": {"status": "ok", "failure_type": None}},
                     },
                     {
                         "dataset_name": "qm9",
@@ -146,6 +174,9 @@ def test_analyze_xtb_real_dataset_distribution_counts_errors_per_property_tier(t
                         "status": "error",
                         "failure_type": "verifier_tool_error",
                         "properties": {},
+                        "property_statuses": {
+                            "homo_lumo_gap": {"status": "error", "failure_type": "verifier_tool_error"}
+                        },
                     },
                 ],
             }
@@ -164,6 +195,9 @@ def test_analyze_xtb_real_dataset_distribution_counts_errors_per_property_tier(t
                         "status": "ok",
                         "failure_type": None,
                         "properties": {"global_electrophilicity": 0.5},
+                        "property_statuses": {
+                            "global_electrophilicity": {"status": "ok", "failure_type": None}
+                        },
                     }
                 ],
             }
@@ -193,6 +227,61 @@ def test_analyze_xtb_real_dataset_distribution_counts_errors_per_property_tier(t
     assert gap["ok_count"] == 1
     assert gap["error_count"] == 1
     assert gap["error_rate"] == 0.5
+
+
+def test_analyze_xtb_real_dataset_distribution_counts_partial_rows_per_property(tmp_path) -> None:
+    results = tmp_path / "medium_results.json"
+    output_dir = tmp_path / "analysis"
+    results.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "medium",
+                "properties": ["global_electrophilicity", "max_f_plus_on_carbon"],
+                "rows": [
+                    {
+                        "dataset_name": "qm9",
+                        "record_id": "a",
+                        "status": "partial",
+                        "failure_type": "verifier_tool_error",
+                        "properties": {"global_electrophilicity": 0.5},
+                        "property_statuses": {
+                            "global_electrophilicity": {"status": "ok", "failure_type": None},
+                            "max_f_plus_on_carbon": {
+                                "status": "error",
+                                "failure_type": "verifier_tool_error",
+                            },
+                        },
+                    }
+                ],
+            }
+        )
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "--inputs",
+            str(results),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    summary = json.loads((output_dir / "property_distribution_summary.json").read_text())
+    electrophilicity = summary["properties"]["global_electrophilicity"]["all"]
+    fukui = summary["properties"]["max_f_plus_on_carbon"]["all"]
+    assert electrophilicity["ok_count"] == 1
+    assert electrophilicity["error_count"] == 0
+    assert fukui["ok_count"] == 0
+    assert fukui["error_count"] == 1
+    assert fukui["error_rate"] == 1.0
 
 
 def test_analyze_xtb_real_dataset_distribution_omits_helper_properties(tmp_path) -> None:
