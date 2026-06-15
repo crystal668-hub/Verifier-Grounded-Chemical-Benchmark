@@ -1,5 +1,6 @@
 data/
 artifacts/
+.cache/
 .venv/
 __pycache__/
 .pytest_cache/
