@@ -61,3 +61,62 @@ def test_run_xtb_real_dataset_distribution_reports_missing_xtb(tmp_path) -> None
     payload = json.loads(completed.stdout)
     assert payload["status"] == "error"
     assert payload["failure_type"] == "verifier_environment_error"
+
+
+def test_analyze_xtb_real_dataset_distribution_outputs_quantiles(tmp_path) -> None:
+    results = tmp_path / "light_results.json"
+    output_dir = tmp_path / "analysis"
+    results.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "light",
+                "rows": [
+                    {
+                        "dataset_name": "qm9",
+                        "record_id": "a",
+                        "status": "ok",
+                        "failure_type": None,
+                        "properties": {"homo_lumo_gap": 5.0, "dipole_moment": 1.0},
+                    },
+                    {
+                        "dataset_name": "qm9",
+                        "record_id": "b",
+                        "status": "ok",
+                        "failure_type": None,
+                        "properties": {"homo_lumo_gap": 7.0, "dipole_moment": 3.0},
+                    },
+                    {
+                        "dataset_name": "qmugs",
+                        "record_id": "c",
+                        "status": "error",
+                        "failure_type": "verifier_timeout",
+                        "properties": {},
+                    },
+                ],
+            }
+        )
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "--inputs",
+            str(results),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    summary = json.loads((output_dir / "property_distribution_summary.json").read_text())
+    assert "homo_lumo_gap" in summary["properties"]
+    assert summary["properties"]["homo_lumo_gap"]["all"]["count"] == 2
+    assert summary["properties"]["homo_lumo_gap"]["all"]["p50"] == 6.0
+    assert (output_dir / "property_distribution_summary.md").exists()
+    assert (output_dir / "failure_summary.csv").exists()
