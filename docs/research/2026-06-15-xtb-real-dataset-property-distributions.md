@@ -111,6 +111,18 @@ No light-tier record failed the relaxation-energy gate; all 20 relaxation energi
 3. Add hessian-domain-aware sampling so expensive tier quotas are selected from eligible molecules instead of relying on broad pilot records.
 4. Once source coverage is available, run the planned expanded counts: 10,000-30,000 light, 2,000-5,000 medium, and 500-1,000 expensive records.
 
+## Expanded Run
+
+Expanded execution was not run in this pass. The selected expanded sizes are deferred until two prerequisites are met:
+
+| Tier | Planned expanded range | Selected count for next run | Decision |
+| --- | ---: | ---: | --- |
+| light | 10,000-30,000 | 10,000 | Use the low end after QM9 plus at least one drug-like dataset are available. |
+| medium | 2,000-5,000 | 2,000 | Use the low end after medium-tier parser/tool triage reduces failure rate below 5%. |
+| expensive | 500-1,000 | 500 | Use the low end with hessian-domain-aware sampling only. |
+
+Rationale: the pilot covered only 20 QM9 records, medium-tier failure rate was 15%, and hessian-domain eligibility was 3/20. Running the expanded commands against this source mix would scale a biased sample rather than improve threshold evidence. The next expanded run should first add a reproducible QMugs or GEOM-derived normalized JSONL input and select the hessian tier from records known to satisfy the stricter hessian domain.
+
 ## Limitations
 
 - This is a smoke pilot, not the full real-dataset distribution study.
