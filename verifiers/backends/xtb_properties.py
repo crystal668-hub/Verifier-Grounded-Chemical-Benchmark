@@ -23,6 +23,28 @@ from verifiers.result_schema import error_result
 HARTREE_TO_EV = 27.211386245988
 GAP_PATTERN = re.compile(r"HOMO-LUMO\s+GAP\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+eV", re.IGNORECASE)
 ENERGY_PATTERN = re.compile(r"TOTAL\s+ENERGY\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+Eh", re.IGNORECASE)
+LUMO_PATTERN = re.compile(
+    r"^\s*\d+\s+(?:\d+\.\d+\s+)?[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+\(LUMO\)",
+    re.IGNORECASE | re.MULTILINE,
+)
+POLARIZABILITY_PATTERN = re.compile(
+    r"Mol\.\s+(?:alpha|α)\(0\)\s*/au\s*:\s*([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
+    re.IGNORECASE,
+)
+GSOLV_PATTERN = re.compile(r"->\s*Gsolv\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+Eh", re.IGNORECASE)
+ELECTROPHILICITY_PATTERN = re.compile(
+    r"Global\s+electrophilicity\s+index\s+\(eV\):\s*([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
+    re.IGNORECASE,
+)
+IMAGINARY_FREQUENCY_PATTERN = re.compile(r"#\s*imaginary\s+freq\.\s+(\d+)", re.IGNORECASE)
+ENTROPY_298_PATTERN = re.compile(
+    r"^\s*TOT\s+[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"[-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?\s+"
+    r"([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s*$",
+    re.IGNORECASE | re.MULTILINE,
+)
 DIPOLE_PATTERN = re.compile(
     r"molecular\s+dipole:.*?tot\s+\(Debye\)\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+"
     r"([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+"
@@ -259,15 +281,28 @@ class XTBRunner:
             executable,
             str(xyz_path),
             "--gfn",
-            "2",
+            str(gfn_number(backend.get("method"))),
             "--chrg",
             str(backend.get("charge", 0)),
             "--uhf",
             str(backend.get("uhf", 0)),
         ]
+        if solvent := backend.get("solvent"):
+            solvent_model = str(backend.get("solvent_model") or backend.get("model") or "alpb").lower()
+            if solvent_model not in {"alpb", "gbsa"}:
+                raise XTBToolError(f"unsupported xTB solvent model: {solvent_model}")
+            command.extend([f"--{solvent_model}", str(solvent)])
+
         if mode == "optimize":
             command.append("--opt")
-        elif mode != "singlepoint":
+        elif mode == "singlepoint":
+            pass
+        elif mode in {"property", "hessian"}:
+            property_command = backend.get("property_command")
+            if not isinstance(property_command, str) or not property_command:
+                raise XTBToolError(f"xTB {mode} run requires property_command")
+            command.append(property_command)
+        else:
             raise XTBToolError(f"unsupported xTB run mode: {mode}")
         return command
 
@@ -283,7 +318,8 @@ def evaluate_xtb_property_constraint(
     task_id = str(task.get("task_id"))
     result = base_result(task_id, spec.get("verifier_id"), xtb_versions(spec))
     property_name = spec.get("property_name")
-    if property_name != constraint.get("property"):
+    allowed_properties = {property_name, *(spec.get("additional_property_names") or [])}
+    if constraint.get("property") not in allowed_properties:
         return error_result(
             result,
             "verifier_spec_error",
@@ -374,6 +410,21 @@ def run_property_calculation(
         optimized = parse_xtb_output(runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout, require_converged=True)
         relaxation = max(0.0, (singlepoint["total_energy_hartree"] - optimized["total_energy_hartree"]) * HARTREE_TO_EV)
         return {"relaxation_energy": relaxation, "relaxation_energy_unit": "eV"}
+    if property_name == "entropy_298_per_heavy_atom":
+        hessian_spec = ensure_property_command(spec, "--ohess")
+        parsed = parse_xtb_output(runner.run("hessian", xyz_path, timeout_seconds, spec=hessian_spec).stdout, require_converged=True)
+        required = {"imaginary_frequency_count", "entropy_298"}
+        if missing := sorted(required - set(parsed)):
+            raise XTBToolError(f"xTB output missing hessian properties: {', '.join(missing)}")
+        heavy_atom_count = count_heavy_atoms_from_xyz(xyz_path)
+        entropy_298 = parsed["entropy_298"]
+        return {
+            "imaginary_frequency_count": parsed["imaginary_frequency_count"],
+            "entropy_298": entropy_298,
+            "entropy_298_unit": "J mol-1 K-1",
+            "entropy_298_per_heavy_atom": entropy_298 / heavy_atom_count,
+            "entropy_298_per_heavy_atom_unit": "J mol-1 K-1 per heavy atom",
+        }
 
     optimized = parse_xtb_output(runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout, require_converged=True)
     if property_name == "homo_lumo_gap":
@@ -384,6 +435,70 @@ def run_property_calculation(
         if "dipole_moment" not in optimized:
             raise XTBToolError("xTB output missing dipole moment")
         return {"dipole_moment": optimized["dipole_moment"], "dipole_moment_unit": "debye"}
+    if property_name == "lumo_energy":
+        if "lumo_energy" not in optimized:
+            raise XTBToolError("xTB output missing LUMO energy")
+        return {"lumo_energy": optimized["lumo_energy"], "lumo_energy_unit": "eV"}
+    if property_name == "polarizability_per_heavy_atom":
+        if "molecular_polarizability" not in optimized:
+            raise XTBToolError("xTB output missing molecular polarizability")
+        heavy_atom_count = count_heavy_atoms_from_xyz(xyz_path)
+        polarizability = optimized["molecular_polarizability"]
+        return {
+            "molecular_polarizability": polarizability,
+            "molecular_polarizability_unit": "atomic_units",
+            "polarizability_per_heavy_atom": polarizability / heavy_atom_count,
+            "polarizability_per_heavy_atom_unit": "atomic_units_per_heavy_atom",
+        }
+    if property_name == "alpb_water_hexane_selectivity":
+        optimized_path = optimized_geometry_path(xyz_path)
+        solvent_runs = (spec.get("backend") or {}).get("solvent_runs") or [
+            {"model": "alpb", "solvent": "water"},
+            {"model": "alpb", "solvent": "hexane"},
+        ]
+        gsolv_by_solvent: dict[str, float] = {}
+        for solvent_run in solvent_runs:
+            solvent = str(solvent_run["solvent"])
+            solvent_spec = merge_backend(
+                spec,
+                {
+                    "solvent_model": solvent_run.get("model", "alpb"),
+                    "solvent": solvent,
+                },
+            )
+            parsed = parse_xtb_output(runner.run("singlepoint", optimized_path, timeout_seconds, spec=solvent_spec).stdout)
+            if "gsolv_hartree" not in parsed:
+                raise XTBToolError(f"xTB output missing Gsolv for solvent {solvent}")
+            gsolv_by_solvent[solvent] = parsed["gsolv_hartree"] * HARTREE_TO_EV
+        if "water" not in gsolv_by_solvent or "hexane" not in gsolv_by_solvent:
+            raise XTBToolError("ALPB selectivity requires water and hexane solvent runs")
+        return {
+            "gsolv_water_eV": gsolv_by_solvent["water"],
+            "gsolv_hexane_eV": gsolv_by_solvent["hexane"],
+            "alpb_water_hexane_selectivity": gsolv_by_solvent["hexane"] - gsolv_by_solvent["water"],
+            "alpb_water_hexane_selectivity_unit": "eV",
+        }
+    if property_name == "global_electrophilicity":
+        property_spec = ensure_property_command(spec, "--vomega")
+        parsed = parse_xtb_output(runner.run("property", optimized_geometry_path(xyz_path), timeout_seconds, spec=property_spec).stdout)
+        if "global_electrophilicity" not in parsed:
+            raise XTBToolError("xTB output missing global electrophilicity")
+        return {
+            "global_electrophilicity": parsed["global_electrophilicity"],
+            "global_electrophilicity_unit": "eV",
+        }
+    if property_name == "max_f_plus_on_carbon":
+        property_spec = ensure_property_command(spec, "--vfukui")
+        parsed = parse_xtb_output(runner.run("property", optimized_geometry_path(xyz_path), timeout_seconds, spec=property_spec).stdout)
+        required = {"max_f_plus_on_carbon", "f_plus_contrast"}
+        if missing := sorted(required - set(parsed)):
+            raise XTBToolError(f"xTB output missing Fukui properties: {', '.join(missing)}")
+        return {
+            "max_f_plus_on_carbon": parsed["max_f_plus_on_carbon"],
+            "f_plus_contrast": parsed["f_plus_contrast"],
+            "max_f_plus_atom_index": parsed["max_f_plus_atom_index"],
+            "max_f_plus_atom_symbol": parsed["max_f_plus_atom_symbol"],
+        }
     raise XTBToolError(f"unsupported xTB property: {property_name}")
 
 
@@ -395,11 +510,84 @@ def parse_xtb_output(stdout: str, *, require_converged: bool = False) -> dict[st
         properties["total_energy_hartree"] = float(match.group(1))
     if match := last_match(GAP_PATTERN, stdout):
         properties["homo_lumo_gap"] = float(match.group(1))
+    if match := last_match(LUMO_PATTERN, stdout):
+        properties["lumo_energy"] = float(match.group(1))
+    if match := last_match(POLARIZABILITY_PATTERN, stdout):
+        properties["molecular_polarizability"] = float(match.group(1))
+    if match := last_match(GSOLV_PATTERN, stdout):
+        properties["gsolv_hartree"] = float(match.group(1))
+    if match := last_match(ELECTROPHILICITY_PATTERN, stdout):
+        properties["global_electrophilicity"] = float(match.group(1))
     if match := DIPOLE_FULL_PATTERN.search(stdout):
         properties["dipole_moment"] = float(match.group(1))
     elif match := DIPOLE_PATTERN.search(stdout):
         properties["dipole_moment"] = float(match.group(4))
+    properties.update(parse_fukui_properties(stdout))
+    if match := last_match(IMAGINARY_FREQUENCY_PATTERN, stdout):
+        properties["imaginary_frequency_count"] = int(match.group(1))
+    if match := last_match(ENTROPY_298_PATTERN, stdout):
+        properties["entropy_298"] = float(match.group(1))
     return properties
+
+
+def parse_fukui_properties(stdout: str) -> dict[str, float | int | str]:
+    table_match = re.search(r"Fukui functions:\s*\n\s*#\s+f\(\+\)\s+f\(-\)\s+f\(0\)\s*\n(?P<body>.*?)(?:\n\s*-{5,}|\n\s*\|)", stdout, re.IGNORECASE | re.DOTALL)
+    if table_match is None:
+        return {}
+    values: list[tuple[int, str, float]] = []
+    for line in table_match.group("body").splitlines():
+        match = re.match(r"\s*(\d+)([A-Z][a-z]?)\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+", line)
+        if match:
+            values.append((int(match.group(1)), match.group(2), float(match.group(3))))
+    if not values:
+        return {}
+    carbon_values = [(index, symbol, value) for index, symbol, value in values if symbol == "C"]
+    if not carbon_values:
+        return {}
+    carbon_index, carbon_symbol, max_carbon = max(carbon_values, key=lambda item: item[2])
+    non_carbon_competitors = [value for _, symbol, value in values if symbol != "C"]
+    second_largest = max(non_carbon_competitors, default=max_carbon)
+    return {
+        "max_f_plus_on_carbon": max_carbon,
+        "f_plus_contrast": max_carbon - second_largest,
+        "max_f_plus_atom_index": carbon_index,
+        "max_f_plus_atom_symbol": carbon_symbol,
+    }
+
+
+def gfn_number(method: Any) -> int:
+    method_text = str(method or "GFN2-xTB").lower()
+    if "gfn1" in method_text:
+        return 1
+    if "gfn0" in method_text:
+        return 0
+    return 2
+
+
+def merge_backend(spec: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]:
+    merged = dict(spec)
+    merged["backend"] = {**(spec.get("backend") or {}), **updates}
+    return merged
+
+
+def ensure_property_command(spec: dict[str, Any], fallback: str) -> dict[str, Any]:
+    backend = spec.get("backend") or {}
+    if backend.get("property_command"):
+        return spec
+    return merge_backend(spec, {"property_command": fallback})
+
+
+def optimized_geometry_path(xyz_path: Path) -> Path:
+    optimized = xyz_path.parent / "xtbopt.xyz"
+    return optimized if optimized.exists() else xyz_path
+
+
+def count_heavy_atoms_from_xyz(xyz_path: Path) -> int:
+    molecule = parse_xyz(xyz_path.read_text())
+    heavy_atom_count = sum(1 for atom in molecule.atoms if atom.symbol != "H")
+    if heavy_atom_count <= 0:
+        raise XTBToolError("heavy_atom_count must be positive")
+    return heavy_atom_count
 
 
 def last_match(pattern: re.Pattern[str], text: str) -> re.Match[str] | None:

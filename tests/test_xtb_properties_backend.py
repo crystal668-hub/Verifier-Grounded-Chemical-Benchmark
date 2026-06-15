@@ -64,6 +64,110 @@ molecular dipole:
            -------------------------------------------------
 """
 
+XTB_ADVANCED_OPTIMIZE_STDOUT = """
+   *** GEOMETRY OPTIMIZATION CONVERGED AFTER 5 ITERATIONS ***
+
+           -------------------------------------------------
+          |                Final Singlepoint                |
+           -------------------------------------------------
+
+         #    Occupation            Energy/Eh            Energy/eV
+      -------------------------------------------------------------
+         8        2.0000           -0.4267046             -11.6112 (HOMO)
+         9                         -0.2021540              -5.5009 (LUMO)
+        10                         -0.2021540              -5.5009
+      -------------------------------------------------------------
+                  HL-Gap            0.2245506 Eh            6.1103 eV
+
+     #   Z          covCN         q      C6AA      alpha(0)
+     1   6 C        3.754    -0.106    22.588     6.777
+     2   6 C        1.890     0.119    28.197     8.576
+     3   7 N        0.911    -0.241    26.285     7.415
+     4   1 H        0.925     0.076     2.020     2.222
+     5   1 H        0.925     0.076     2.020     2.222
+     6   1 H        0.925     0.076     2.020     2.222
+
+ Mol. C6AA /au.bohr^6  :        377.200527
+ Mol. C8AA /au.bohr^8  :       8625.447370
+ Mol. alpha(0) /au     :         29.435445
+
+molecular dipole:
+                 x           y           z       tot (Debye)
+   full:       -1.515      -0.000      -0.000       3.852
+
+           -------------------------------------------------
+          | TOTAL ENERGY               -8.688500964005 Eh   |
+          | HOMO-LUMO GAP               6.110331625625 eV   |
+           -------------------------------------------------
+
+normal termination of xtb
+"""
+
+XTB_WATER_ALPB_STDOUT = """
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         ::                     SUMMARY                     ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         :: total energy              -8.698523262688 Eh    ::
+         :: -> Gsolv                  -0.012153418227 Eh    ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+normal termination of xtb
+"""
+
+XTB_HEXANE_ALPB_STDOUT = """
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         ::                     SUMMARY                     ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         :: total energy              -8.692754669875 Eh    ::
+         :: -> Gsolv                  -0.004657863364 Eh    ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+normal termination of xtb
+"""
+
+XTB_VOMEGA_STDOUT = """
+delta SCC IP (eV):   12.4563
+delta SCC EA (eV):   -3.1887
+Calculation of global electrophilicity index (IP+EA)^2/(8*(IP-EA))
+Global electrophilicity index (eV):    0.6862
+normal termination of xtb
+"""
+
+XTB_VFUKUI_STDOUT = """
+Fukui functions:
+     #        f(+)     f(-)     f(0)
+     1C      -0.034    0.071    0.019
+     2C       0.221    0.131    0.176
+     3N       0.341    0.375    0.358
+     4H       0.157    0.141    0.149
+     5H       0.157    0.141    0.149
+     6H       0.157    0.141    0.149
+           -------------------------------------------------
+          |                Property Printout                |
+           -------------------------------------------------
+normal termination of xtb
+"""
+
+XTB_HESSIAN_STDOUT = """
+          :  # frequencies                          12      :
+          :  # imaginary freq.                       0      :
+          :  imag. cutoff                  -20.0000000 cm-1 :
+
+   temp. (K)  partition function   enthalpy   heat capacity  entropy
+                                   cal/mol     cal/K/mol   cal/K/mol   J/K/mol
+ 298.15  VIB   1.44                  487.893      4.450      2.358
+         ROT  0.243E+04              888.752      2.981     18.470
+         INT  0.349E+04             1376.645      7.431     20.828
+         TR   0.254E+27             1481.254      4.968     37.047
+         TOT                        2857.8993    12.3992    57.8755   242.1509
+
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         ::                  THERMODYNAMIC                  ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+         :: total free energy          -8.667100871172 Eh   ::
+         :: zero point energy           0.044344236700 Eh   ::
+         :::::::::::::::::::::::::::::::::::::::::::::::::::::
+normal termination of xtb
+"""
+
 
 def gap_spec() -> dict:
     return {
@@ -94,6 +198,20 @@ def relaxation_spec() -> dict:
     return spec
 
 
+def advanced_spec(verifier_id: str, property_name: str, backend: dict | None = None, additional: list[str] | None = None) -> dict:
+    spec = gap_spec()
+    spec.update(
+        {
+            "verifier_id": verifier_id,
+            "property_name": property_name,
+            "backend": {"type": "local_xtb", "executable": "xtb", "charge": 0, "uhf": 0, **(backend or {})},
+        }
+    )
+    if additional:
+        spec["additional_property_names"] = additional
+    return spec
+
+
 def task(property_name: str, constraint_type: str = "window") -> dict:
     constraint = {
         "type": constraint_type,
@@ -120,6 +238,31 @@ class FakeRunner:
         if mode == "singlepoint":
             return xtb_properties.XTBRunResult(stdout=XTB_STDOUT.replace("-5.070680245292", "-5.000000000000"), stderr="", returncode=0)
         return xtb_properties.XTBRunResult(stdout=XTB_STDOUT, stderr="", returncode=0)
+
+
+class AdvancedFakeRunner:
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, Path, float, dict]] = []
+
+    def run(self, mode: str, xyz_path: Path, timeout_seconds: float, *, spec: dict) -> xtb_properties.XTBRunResult:
+        self.calls.append((mode, xyz_path, timeout_seconds, spec))
+        assert xyz_path.exists()
+        backend = spec.get("backend") or {}
+        if mode == "optimize":
+            optimized_path = xyz_path.parent / "xtbopt.xyz"
+            optimized_path.write_text(xyz_path.read_text())
+            return xtb_properties.XTBRunResult(stdout=XTB_ADVANCED_OPTIMIZE_STDOUT, stderr="", returncode=0)
+        if mode == "singlepoint" and backend.get("solvent") == "water":
+            return xtb_properties.XTBRunResult(stdout=XTB_WATER_ALPB_STDOUT, stderr="", returncode=0)
+        if mode == "singlepoint" and backend.get("solvent") == "hexane":
+            return xtb_properties.XTBRunResult(stdout=XTB_HEXANE_ALPB_STDOUT, stderr="", returncode=0)
+        if backend.get("property_command") == "--vomega":
+            return xtb_properties.XTBRunResult(stdout=XTB_VOMEGA_STDOUT, stderr="", returncode=0)
+        if backend.get("property_command") == "--vfukui":
+            return xtb_properties.XTBRunResult(stdout=XTB_VFUKUI_STDOUT, stderr="", returncode=0)
+        if backend.get("property_command") == "--ohess":
+            return xtb_properties.XTBRunResult(stdout=XTB_HESSIAN_STDOUT, stderr="", returncode=0)
+        raise AssertionError(f"unexpected run: mode={mode!r}, backend={backend!r}")
 
 
 def test_parse_xyz_reads_atoms_and_coordinates() -> None:
@@ -156,6 +299,41 @@ def test_parse_xtb_output_reads_xtb_671_full_dipole_line() -> None:
     assert properties["total_energy_hartree"] == pytest.approx(-5.504066181050)
     assert properties["homo_lumo_gap"] == pytest.approx(5.951189522894)
     assert properties["dipole_moment"] == pytest.approx(2.621)
+
+
+def test_parse_xtb_output_reads_lumo_and_molecular_polarizability() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_ADVANCED_OPTIMIZE_STDOUT, require_converged=True)
+
+    assert properties["lumo_energy"] == pytest.approx(-5.5009)
+    assert properties["molecular_polarizability"] == pytest.approx(29.435445)
+
+
+def test_parse_xtb_output_reads_alpb_gsolv_in_hartree() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_WATER_ALPB_STDOUT)
+
+    assert properties["gsolv_hartree"] == pytest.approx(-0.012153418227)
+
+
+def test_parse_xtb_output_reads_global_electrophilicity() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_VOMEGA_STDOUT)
+
+    assert properties["global_electrophilicity"] == pytest.approx(0.6862)
+
+
+def test_parse_xtb_output_reads_fukui_table() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_VFUKUI_STDOUT)
+
+    assert properties["max_f_plus_on_carbon"] == pytest.approx(0.221)
+    assert properties["f_plus_contrast"] == pytest.approx(-0.12)
+    assert properties["max_f_plus_atom_index"] == 2
+    assert properties["max_f_plus_atom_symbol"] == "C"
+
+
+def test_parse_xtb_output_reads_hessian_thermochemistry() -> None:
+    properties = xtb_properties.parse_xtb_output(XTB_HESSIAN_STDOUT)
+
+    assert properties["imaginary_frequency_count"] == 0
+    assert properties["entropy_298"] == pytest.approx(242.1509)
 
 
 def test_xtb_gap_scores_fake_optimized_output() -> None:
@@ -211,6 +389,142 @@ def test_xtb_relaxation_energy_uses_singlepoint_and_optimized_energies() -> None
     assert result["properties"]["relaxation_energy_unit"] == "eV"
     assert result["scores"]["score"] == 0.0
     assert [call[0] for call in runner.calls] == ["singlepoint", "optimize"]
+
+
+def test_xtb_lumo_scores_fake_optimized_output() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("lumo_energy", "minimize_bounded")
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec("xtb_lumo_gfn2_v1", "lumo_energy", {"method": "GFN2-xTB"}),
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["lumo_energy"] == pytest.approx(-5.5009)
+    assert result["properties"]["lumo_energy_unit"] == "eV"
+    assert [call[0] for call in runner.calls] == ["optimize"]
+
+
+def test_xtb_polarizability_normalizes_by_heavy_atom_count() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("polarizability_per_heavy_atom", "maximize_bounded")
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec("xtb_polarizability_gfn2_v1", "polarizability_per_heavy_atom", {"method": "GFN2-xTB"}),
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["molecular_polarizability"] == pytest.approx(29.435445)
+    assert result["properties"]["polarizability_per_heavy_atom"] == pytest.approx(29.435445 / 3)
+    assert result["properties"]["polarizability_per_heavy_atom_unit"] == "atomic_units_per_heavy_atom"
+
+
+def test_xtb_solvation_selectivity_uses_optimized_geometry_and_two_alpb_runs() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("alpb_water_hexane_selectivity", "maximize_bounded")
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec(
+            "xtb_solvation_selectivity_alpb_v1",
+            "alpb_water_hexane_selectivity",
+            {
+                "method": "GFN2-xTB",
+                "optimize_before_property": True,
+                "solvent_runs": [
+                    {"model": "alpb", "solvent": "water"},
+                    {"model": "alpb", "solvent": "hexane"},
+                ],
+            },
+        ),
+        runner=runner,
+    )
+
+    expected = (-0.004657863364 - -0.012153418227) * xtb_properties.HARTREE_TO_EV
+    assert result["status"] == "ok"
+    assert result["properties"]["alpb_water_hexane_selectivity"] == pytest.approx(expected)
+    assert result["properties"]["gsolv_water_eV"] == pytest.approx(-0.012153418227 * xtb_properties.HARTREE_TO_EV)
+    assert result["properties"]["gsolv_hexane_eV"] == pytest.approx(-0.004657863364 * xtb_properties.HARTREE_TO_EV)
+    assert [call[0] for call in runner.calls] == ["optimize", "singlepoint", "singlepoint"]
+    assert runner.calls[1][1].name == "xtbopt.xyz"
+    assert [call[3]["backend"].get("solvent") for call in runner.calls[1:]] == ["water", "hexane"]
+
+
+def test_xtb_electrophilicity_runs_vomega_property_command() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("global_electrophilicity", "maximize_bounded")
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec(
+            "xtb_electrophilicity_gfn1_ipea_v1",
+            "global_electrophilicity",
+            {"method": "GFN1-xTB/IPEA", "property_command": "--vomega", "optimize_before_property": True},
+        ),
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["global_electrophilicity"] == pytest.approx(0.6862)
+    assert result["properties"]["global_electrophilicity_unit"] == "eV"
+    assert [call[0] for call in runner.calls] == ["optimize", "property"]
+    assert runner.calls[1][3]["backend"]["property_command"] == "--vomega"
+
+
+def test_xtb_fukui_allows_secondary_constraint_property_from_same_spec() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("f_plus_contrast", "maximize_bounded")
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec(
+            "xtb_fukui_gfn1_v1",
+            "max_f_plus_on_carbon",
+            {"method": "GFN1-xTB", "property_command": "--vfukui", "optimize_before_property": True},
+            additional=["f_plus_contrast"],
+        ),
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["max_f_plus_on_carbon"] == pytest.approx(0.221)
+    assert result["properties"]["f_plus_contrast"] == pytest.approx(-0.12)
+    assert [call[0] for call in runner.calls] == ["optimize", "property"]
+    assert runner.calls[1][3]["backend"]["property_command"] == "--vfukui"
+
+
+def test_xtb_hessian_thermo_allows_imaginary_frequency_gate_from_same_spec() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("imaginary_frequency_count", "window")
+    current_task["constraints"][0].update({"min": 0, "max": 0, "role": "stability_gate"})
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": ACETONITRILE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        advanced_spec(
+            "xtb_hessian_thermo_gfn2_v1",
+            "entropy_298_per_heavy_atom",
+            {"method": "GFN2-xTB", "property_command": "--ohess", "optimize_before_property": True},
+            additional=["imaginary_frequency_count"],
+        ),
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["imaginary_frequency_count"] == 0
+    assert result["properties"]["entropy_298"] == pytest.approx(242.1509)
+    assert result["properties"]["entropy_298_per_heavy_atom"] == pytest.approx(242.1509 / 3)
+    assert result["scores"]["constraint_scores"][0]["role"] == "stability_gate"
+    assert [call[0] for call in runner.calls] == ["hessian"]
 
 
 def test_xtb_property_reports_verifier_spec_error_for_property_mismatch() -> None:
@@ -363,3 +677,42 @@ def test_xtb_runner_builds_official_cli_commands(monkeypatch: pytest.MonkeyPatch
 
     assert result.returncode == 0
     assert calls == [["/usr/bin/xtb", str(xyz_path), "--gfn", "2", "--chrg", "0", "--uhf", "0", "--opt"]]
+
+
+def test_xtb_runner_builds_property_and_solvation_commands(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    xyz_path = tmp_path / "water.xyz"
+    xyz_path.write_text(WATER_XYZ)
+    calls: list[list[str]] = []
+
+    def fake_run(command: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        calls.append(command)
+        return subprocess.CompletedProcess(command, 0, stdout=XTB_VOMEGA_STDOUT, stderr="")
+
+    monkeypatch.setattr(xtb_properties.shutil, "which", lambda executable: f"/usr/bin/{executable}")
+    monkeypatch.setattr(xtb_properties.subprocess, "run", fake_run)
+
+    runner = xtb_properties.XTBRunner("xtb")
+    runner.run(
+        "property",
+        xyz_path,
+        30,
+        spec={"backend": {"method": "GFN1-xTB/IPEA", "charge": 0, "uhf": 0, "property_command": "--vomega"}},
+    )
+    runner.run(
+        "singlepoint",
+        xyz_path,
+        30,
+        spec={"backend": {"method": "GFN2-xTB", "charge": 0, "uhf": 0, "solvent_model": "alpb", "solvent": "water"}},
+    )
+    runner.run(
+        "hessian",
+        xyz_path,
+        30,
+        spec={"backend": {"method": "GFN2-xTB", "charge": 0, "uhf": 0, "property_command": "--ohess"}},
+    )
+
+    assert calls == [
+        ["/usr/bin/xtb", str(xyz_path), "--gfn", "1", "--chrg", "0", "--uhf", "0", "--vomega"],
+        ["/usr/bin/xtb", str(xyz_path), "--gfn", "2", "--chrg", "0", "--uhf", "0", "--alpb", "water"],
+        ["/usr/bin/xtb", str(xyz_path), "--gfn", "2", "--chrg", "0", "--uhf", "0", "--ohess"],
+    ]
