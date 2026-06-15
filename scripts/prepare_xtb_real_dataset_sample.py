@@ -1,0 +1,265 @@
+#!/usr/bin/env python
+"""Prepare domain-filtered real-dataset samples for xTB distribution runs."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import random
+import sys
+from collections import Counter
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Iterable
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+import yaml
+
+from verifiers.backends.xtb_properties import XTBParseError, check_domain, inspect_xyz, parse_xyz
+
+
+DEFAULT_SEED = 20260615
+XTB_DOMAIN: dict[str, Any] = {
+    "allowed_elements": ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br"],
+    "atom_count": [3, 80],
+    "heavy_atom_count": [1, 40],
+    "max_absolute_coordinate": 30.0,
+    "min_interatomic_distance": 0.45,
+    "inferred_components": 1,
+}
+HEAVY_ATOM_BINS = {
+    "small": (1, 8),
+    "medium": (9, 18),
+    "large": (19, 40),
+}
+HETERO_ATOM_BINS = {
+    "low": (0, 1),
+    "medium": (2, 4),
+    "high": (5, 40),
+}
+FLEXIBILITY_BINS = {
+    "low": (0, 2),
+    "medium": (3, 6),
+    "high": (7, 80),
+}
+PILOT_LIGHT_QUOTAS = {"qm9": 500, "qmugs": 1000, "geom_drugs": 500, "tartarus_opv": 250}
+EXPANDED_LIGHT_QUOTAS = {"qm9": 5000, "qmugs": 10000, "geom_drugs": 5000, "tartarus_opv": 2500}
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-manifest", type=Path, default=ROOT / "data" / "xtb_real_dataset_sources.yaml")
+    parser.add_argument("--input-jsonl", type=Path, action="append", default=[])
+    parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--pilot", action="store_true")
+    mode.add_argument("--expanded", action="store_true")
+    return parser.parse_args()
+
+
+def load_jsonl(paths: Iterable[Path]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for path in paths:
+        with path.open() as handle:
+            for line_number, line in enumerate(handle, start=1):
+                if not line.strip():
+                    continue
+                record = json.loads(line)
+                record.setdefault("_source_jsonl", str(path))
+                record.setdefault("_source_line", line_number)
+                rows.append(record)
+    return rows
+
+
+def bin_value(value: int, bins: dict[str, tuple[int, int]]) -> str:
+    for label, (lower, upper) in bins.items():
+        if lower <= value <= upper:
+            return label
+    return "unknown"
+
+
+def stable_key(record: dict[str, Any]) -> tuple[str, str]:
+    return (str(record.get("dataset_name", "")), str(record.get("record_id", "")))
+
+
+def output_order_key(record: dict[str, Any]) -> tuple[str, int, str, str]:
+    return (
+        str(record.get("_source_jsonl", "")),
+        int(record.get("_source_line", 0)),
+        str(record.get("dataset_name", "")),
+        str(record.get("record_id", "")),
+    )
+
+
+def stratification_key(record: dict[str, Any]) -> tuple[str, ...]:
+    return (
+        str(record.get("dataset_name", "")),
+        str(record.get("heavy_atom_bin", "unknown")),
+        str(record.get("hetero_atom_bin", "unknown")),
+        str(record.get("estimated_flexibility_bin", "unknown")),
+        str(record.get("contains_halogen", False)),
+        str(record.get("contains_phosphorus_or_sulfur", False)),
+        str(record.get("geometry_source", "unknown")),
+    )
+
+
+def deterministic_jitter(record: dict[str, Any], seed: int) -> float:
+    digest = hashlib.sha256(f"{seed}|{stable_key(record)}".encode()).hexdigest()
+    return int(digest[:16], 16) / float(0xFFFFFFFFFFFFFFFF)
+
+
+def estimate_flexibility_bin(_record: dict[str, Any]) -> str:
+    return "unknown"
+
+
+def enrich_record(record: dict[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    try:
+        molecule = parse_xyz(str(record.get("xyz", "")))
+        properties = inspect_xyz(molecule)
+    except XTBParseError as exc:
+        return None, failure_record(record, "parse_error", str(exc))
+
+    if int(record.get("charge", 0)) != 0:
+        return None, failure_record(record, "domain_error", "charge must be 0")
+    if int(record.get("multiplicity", 1)) != 1:
+        return None, failure_record(record, "domain_error", "multiplicity must be 1")
+
+    domain_error = check_domain(molecule, properties, XTB_DOMAIN)
+    if domain_error is not None:
+        return None, failure_record(record, "domain_error", domain_error)
+
+    elements = set(properties["elements"])
+    enriched = {
+        **record,
+        **properties,
+        "charge": 0,
+        "multiplicity": 1,
+        "contains_halogen": bool(elements & {"F", "Cl", "Br"}),
+        "contains_phosphorus_or_sulfur": bool(elements & {"P", "S"}),
+        "heavy_atom_bin": bin_value(int(properties["heavy_atom_count"]), HEAVY_ATOM_BINS),
+        "hetero_atom_bin": bin_value(int(properties["hetero_atom_count"]), HETERO_ATOM_BINS),
+        "estimated_flexibility_bin": estimate_flexibility_bin(record),
+        "geometry_source": record.get("geometry_source", "unknown"),
+    }
+    return enriched, None
+
+
+def failure_record(record: dict[str, Any], failure_type: str, message: str) -> dict[str, Any]:
+    return {
+        "dataset_name": record.get("dataset_name"),
+        "record_id": record.get("record_id"),
+        "failure_type": failure_type,
+        "message": message,
+    }
+
+
+def sample_records(records: list[dict[str, Any]], seed: int, expanded: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    quotas = EXPANDED_LIGHT_QUOTAS if expanded else PILOT_LIGHT_QUOTAS
+    by_dataset: dict[str, list[dict[str, Any]]] = {}
+    for record in records:
+        by_dataset.setdefault(str(record.get("dataset_name")), []).append(record)
+
+    sampled: list[dict[str, Any]] = []
+    quota_notes: list[dict[str, Any]] = []
+    for dataset_name in sorted(by_dataset):
+        dataset_records = sorted(by_dataset[dataset_name], key=output_order_key)
+        quota = quotas.get(dataset_name, len(dataset_records))
+        selected = stratified_sample(dataset_records, quota, seed)
+        sampled.extend(selected)
+        if len(dataset_records) < quota:
+            quota_notes.append(
+                {
+                    "dataset_name": dataset_name,
+                    "available": len(dataset_records),
+                    "quota": quota,
+                    "status": "quota_underfilled",
+                }
+            )
+    return sorted(sampled, key=output_order_key), quota_notes
+
+
+def stratified_sample(records: list[dict[str, Any]], quota: int, seed: int) -> list[dict[str, Any]]:
+    if quota >= len(records):
+        return records
+
+    strata: dict[tuple[str, ...], list[dict[str, Any]]] = {}
+    for record in records:
+        strata.setdefault(stratification_key(record), []).append(record)
+
+    for stratum_records in strata.values():
+        stratum_records.sort(key=lambda record: (deterministic_jitter(record, seed), stable_key(record)))
+
+    selected: list[dict[str, Any]] = []
+    ordered_strata = sorted(strata.items(), key=lambda item: (deterministic_jitter({"dataset_name": "|".join(item[0]), "record_id": ""}, seed), item[0]))
+    while ordered_strata and len(selected) < quota:
+        next_round: list[tuple[tuple[str, ...], list[dict[str, Any]]]] = []
+        for key, stratum_records in ordered_strata:
+            if stratum_records and len(selected) < quota:
+                selected.append(stratum_records.pop(0))
+            if stratum_records:
+                next_round.append((key, stratum_records))
+        ordered_strata = next_round
+    return selected
+
+
+def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> None:
+    with path.open("w") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def load_source_manifest(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    with path.open() as handle:
+        return yaml.safe_load(handle)
+
+
+def main() -> int:
+    args = parse_args()
+    output_dir = args.output_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    source_manifest = load_source_manifest(args.source_manifest)
+    raw_records = load_jsonl(args.input_jsonl)
+    filtered_records: list[dict[str, Any]] = []
+    rejected_records: list[dict[str, Any]] = []
+    for record in raw_records:
+        enriched, failure = enrich_record(record)
+        if enriched is not None:
+            filtered_records.append(enriched)
+        if failure is not None:
+            rejected_records.append(failure)
+
+    sampled_records, quota_notes = sample_records(filtered_records, args.seed, args.expanded)
+
+    write_jsonl(output_dir / "filtered_records.jsonl", sorted(filtered_records, key=output_order_key))
+    write_jsonl(output_dir / "sampled_records.jsonl", sampled_records)
+    manifest = {
+        "status": "ok",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "seed": args.seed,
+        "mode": "expanded" if args.expanded else "pilot",
+        "source_manifest": str(args.source_manifest),
+        "source_manifest_loaded": source_manifest is not None,
+        "input_jsonl": [str(path) for path in args.input_jsonl],
+        "raw_record_count": len(raw_records),
+        "filtered_record_count": len(filtered_records),
+        "sampled_record_count": len(sampled_records),
+        "rejected_record_count": len(rejected_records),
+        "rejections_by_failure_type": dict(Counter(row["failure_type"] for row in rejected_records)),
+        "quota_notes": quota_notes,
+        "domain": XTB_DOMAIN,
+    }
+    (output_dir / "sample_manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True))
+    print(json.dumps({"status": "ok", "output_dir": str(output_dir), "sampled_record_count": len(sampled_records)}, indent=2, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
