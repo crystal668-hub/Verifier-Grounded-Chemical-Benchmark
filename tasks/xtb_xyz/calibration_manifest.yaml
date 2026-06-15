@@ -183,3 +183,59 @@ candidates:
     expected_behavior:
       xtb_hessian_thermo_stability_013: domain_error_or_low_score
     source: "Common small-molecule baseline"
+  xtb_lumo_min_008_near_miss_dicyanobenzene:
+    role: near_miss
+    molecule_family: aromatic_dinitrile
+    target_tasks: [xtb_lumo_min_008]
+    expected_behavior:
+      xtb_lumo_min_008: medium_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_polarizability_dipole_opt_009_near_miss_dicyanobenzene:
+    role: near_miss
+    molecule_family: aromatic_dinitrile
+    target_tasks: [xtb_polarizability_dipole_opt_009]
+    expected_behavior:
+      xtb_polarizability_dipole_opt_009: medium_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_solvation_selectivity_alpb_010_near_miss_dimethylamino_nitrobenzene:
+    role: near_miss
+    molecule_family: push_pull_nitroarene
+    target_tasks: [xtb_solvation_selectivity_alpb_010]
+    expected_behavior:
+      xtb_solvation_selectivity_alpb_010: medium_or_low_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_electrophilicity_max_011_near_miss_dicyanobenzene:
+    role: near_miss
+    molecule_family: aromatic_dinitrile
+    target_tasks: [xtb_electrophilicity_max_011]
+    expected_behavior:
+      xtb_electrophilicity_max_011: medium_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_fukui_carbon_site_012_near_miss_push_pull_azo_nitroarene:
+    role: near_miss
+    molecule_family: push_pull_azo_arene
+    target_tasks: [xtb_fukui_carbon_site_012]
+    expected_behavior:
+      xtb_fukui_carbon_site_012: medium_or_low_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_hessian_thermo_stability_013_near_miss_hexafluoroisopropanol:
+    role: near_miss
+    molecule_family: fluorinated_alcohol
+    target_tasks: [xtb_hessian_thermo_stability_013]
+    expected_behavior:
+      xtb_hessian_thermo_stability_013: medium_or_low_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_solvation_selectivity_alpb_010_stress_large_push_pull_cinnamonitrile:
+    role: stress_case
+    molecule_family: push_pull_cinnamonitrile
+    target_tasks: [xtb_solvation_selectivity_alpb_010]
+    expected_behavior:
+      xtb_solvation_selectivity_alpb_010: parser_runtime_stress
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_hessian_thermo_stability_013_stress_flexible_dimethoxyethane:
+    role: stress_case
+    molecule_family: flexible_ether
+    target_tasks: [xtb_hessian_thermo_stability_013]
+    expected_behavior:
+      xtb_hessian_thermo_stability_013: parser_runtime_stress
+    source: "Hand-curated flexible XYZ stress case"

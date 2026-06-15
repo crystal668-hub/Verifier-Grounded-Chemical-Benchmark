@@ -72,3 +72,18 @@ def test_xtb_calibration_covers_every_task_with_positive_and_negative_cases() ->
         roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}
         assert "positive_candidate" in roles, task_id
         assert "negative_baseline" in roles, task_id
+
+
+def test_xtb_advanced_tasks_have_at_least_three_calibration_roles() -> None:
+    answers = _load_answers()
+    advanced_task_ids = {
+        "xtb_lumo_min_008",
+        "xtb_polarizability_dipole_opt_009",
+        "xtb_solvation_selectivity_alpb_010",
+        "xtb_electrophilicity_max_011",
+        "xtb_fukui_carbon_site_012",
+        "xtb_hessian_thermo_stability_013",
+    }
+    for task_id in advanced_task_ids:
+        roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}
+        assert {"positive_candidate", "near_miss", "negative_baseline"}.issubset(roles), task_id

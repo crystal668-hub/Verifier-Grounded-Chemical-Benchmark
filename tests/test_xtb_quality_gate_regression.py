@@ -14,6 +14,12 @@ OPTIMIZATION_TASK_IDS = [
     "xtb_gap_min_004",
     "xtb_dipole_max_005",
     "xtb_low_gap_high_dipole_opt_006",
+    "xtb_lumo_min_008",
+    "xtb_polarizability_dipole_opt_009",
+    "xtb_solvation_selectivity_alpb_010",
+    "xtb_electrophilicity_max_011",
+    "xtb_fukui_carbon_site_012",
+    "xtb_hessian_thermo_stability_013",
 ]
 
 BASELINE_XYZ = {
