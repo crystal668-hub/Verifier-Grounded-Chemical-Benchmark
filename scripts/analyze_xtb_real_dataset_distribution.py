@@ -39,8 +39,17 @@ def load_rows(paths: list[Path]) -> list[dict[str, Any]]:
     for path in paths:
         payload = json.loads(path.read_text())
         tier = payload.get("tier")
+        tier_properties = [str(property_name) for property_name in payload.get("properties", [])]
+        if not tier_properties:
+            seen = {
+                str(name)
+                for row in payload.get("rows", [])
+                for name, value in (row.get("properties") or {}).items()
+                if not str(name).endswith("_unit") and isinstance(value, int | float) and not isinstance(value, bool)
+            }
+            tier_properties = sorted(seen)
         for row in payload.get("rows", []):
-            rows.append({**row, "_input": str(path), "_tier": tier or row.get("tier")})
+            rows.append({**row, "_input": str(path), "_tier": tier or row.get("tier"), "_tier_properties": tier_properties})
     return rows
 
 
@@ -48,7 +57,9 @@ def numeric_properties(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, A
     by_property: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         properties = row.get("properties") or {}
-        for name, value in properties.items():
+        tier_properties = set(row.get("_tier_properties") or [])
+        for name in sorted(tier_properties):
+            value = properties.get(name)
             if isinstance(value, bool) or name.endswith("_unit"):
                 continue
             if isinstance(value, int | float) and math.isfinite(float(value)):
@@ -124,10 +135,11 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     properties: dict[str, Any] = {}
     for property_name, value_rows in sorted(by_property.items()):
         slices: dict[str, Any] = {}
-        slices["all"] = summarize_slice(rows, value_rows, property_name)
-        datasets = sorted({str(row.get("dataset_name")) for row in rows})
+        property_all_rows = [row for row in rows if property_name in set(row.get("_tier_properties") or []) or property_name in (row.get("properties") or {})]
+        slices["all"] = summarize_slice(property_all_rows, value_rows, property_name)
+        datasets = sorted({str(row.get("dataset_name")) for row in property_all_rows})
         for dataset_name in datasets:
-            dataset_all_rows = [row for row in rows if str(row.get("dataset_name")) == dataset_name]
+            dataset_all_rows = [row for row in property_all_rows if str(row.get("dataset_name")) == dataset_name]
             dataset_value_rows = [row for row in value_rows if str(row.get("dataset_name")) == dataset_name]
             slices[dataset_name] = summarize_slice(dataset_all_rows, dataset_value_rows, property_name)
         properties[property_name] = slices
