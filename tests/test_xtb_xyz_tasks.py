@@ -24,12 +24,24 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
         "xtb_dipole_max_005",
         "xtb_low_gap_high_dipole_opt_006",
         "xtb_gap_dipole_window_007",
+        "xtb_lumo_min_008",
+        "xtb_polarizability_dipole_opt_009",
+        "xtb_solvation_selectivity_alpb_010",
+        "xtb_electrophilicity_max_011",
+        "xtb_fukui_carbon_site_012",
+        "xtb_hessian_thermo_stability_013",
     }
     assert not any("relaxation_energy_min" in task_id for task_id in tasks)
     assert set(specs) == {
         "xtb_gap_gfn2_v1",
         "xtb_dipole_gfn2_v1",
         "xtb_relaxation_energy_gfn2_v1",
+        "xtb_lumo_gfn2_v1",
+        "xtb_polarizability_gfn2_v1",
+        "xtb_solvation_selectivity_alpb_v1",
+        "xtb_electrophilicity_gfn1_ipea_v1",
+        "xtb_fukui_gfn1_v1",
+        "xtb_hessian_thermo_gfn2_v1",
     }
     assert specs["xtb_gap_gfn2_v1"]["verification_script"] == "verifiers/xtb/xtb_gap.py"
     assert specs["xtb_dipole_gfn2_v1"]["verification_script"] == "verifiers/xtb/xtb_dipole.py"
@@ -37,9 +49,21 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert specs["xtb_gap_gfn2_v1"]["property_name"] == "homo_lumo_gap"
     assert specs["xtb_dipole_gfn2_v1"]["property_name"] == "dipole_moment"
     assert specs["xtb_relaxation_energy_gfn2_v1"]["property_name"] == "relaxation_energy"
+    assert specs["xtb_lumo_gfn2_v1"]["property_name"] == "lumo_energy"
+    assert specs["xtb_polarizability_gfn2_v1"]["property_name"] == "polarizability_per_heavy_atom"
+    assert specs["xtb_solvation_selectivity_alpb_v1"]["property_name"] == "alpb_water_hexane_selectivity"
+    assert specs["xtb_electrophilicity_gfn1_ipea_v1"]["property_name"] == "global_electrophilicity"
+    assert specs["xtb_fukui_gfn1_v1"]["property_name"] == "max_f_plus_on_carbon"
+    assert specs["xtb_hessian_thermo_gfn2_v1"]["property_name"] == "entropy_298_per_heavy_atom"
     assert specs["xtb_gap_gfn2_v1"]["backend"]["type"] == "local_xtb"
     assert specs["xtb_gap_gfn2_v1"]["backend"]["executable"] == "xtb"
     assert specs["xtb_gap_gfn2_v1"]["backend"]["method"] == "GFN2-xTB"
+    assert specs["xtb_electrophilicity_gfn1_ipea_v1"]["backend"]["method"] == "GFN1-xTB/IPEA"
+    assert specs["xtb_electrophilicity_gfn1_ipea_v1"]["backend"]["property_command"] == "--vomega"
+    assert specs["xtb_fukui_gfn1_v1"]["backend"]["property_command"] == "--vfukui"
+    assert specs["xtb_fukui_gfn1_v1"]["additional_property_names"] == ["f_plus_contrast"]
+    assert specs["xtb_hessian_thermo_gfn2_v1"]["backend"]["property_command"] == "--ohess"
+    assert specs["xtb_hessian_thermo_gfn2_v1"]["additional_property_names"] == ["imaginary_frequency_count"]
 
     for task in tasks.values():
         assert task["answer_schema"]["format"] == "final_answer_block"
@@ -65,11 +89,16 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
         "xtb_dipole_max_005",
         "xtb_low_gap_high_dipole_opt_006",
         "xtb_gap_dipole_window_007",
+        "xtb_lumo_min_008",
+        "xtb_polarizability_dipole_opt_009",
+        "xtb_solvation_selectivity_alpb_010",
+        "xtb_electrophilicity_max_011",
+        "xtb_fukui_carbon_site_012",
     ]
     for task_id in optimization_tasks:
         structural_domain = tasks[task_id]["structural_domain"]
         assert structural_domain["heavy_atom_count"][0] >= 6
-        assert "formula_denylist" in structural_domain
+        assert "formula_denylist" in structural_domain or "heavy_element_diversity_min" in structural_domain
 
     task_006_constraints = tasks["xtb_low_gap_high_dipole_opt_006"]["constraints"]
     gap = next(item for item in task_006_constraints if item["property"] == "homo_lumo_gap")
@@ -79,6 +108,16 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert dipole["type"] == "maximize_bounded"
     assert dipole["lower"] == 3.0
     assert dipole["upper"] == 8.0
+
+    hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
+    imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
+    entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
+    assert imaginary["role"] == "stability_gate"
+    assert imaginary["type"] == "window"
+    assert imaginary["min"] == 0
+    assert imaginary["max"] == 0
+    assert entropy["type"] == "maximize_bounded"
+    assert tasks["xtb_hessian_thermo_stability_013"]["structural_domain"]["heavy_atom_count"] == [4, 18]
 
 
 def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
@@ -136,7 +175,7 @@ def test_xtb_verifier_specs_are_yaml_loadable() -> None:
     with (TASK_DIR / "verifier_specs.yaml").open() as handle:
         payload = yaml.safe_load(handle)
 
-    assert len(payload["verifiers"]) == 3
+    assert len(payload["verifiers"]) == 9
     assert payload["verifiers"][0]["domain"]["allowed_elements"] == ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br"]
     relaxation = next(item for item in payload["verifiers"] if item["verifier_id"] == "xtb_relaxation_energy_gfn2_v1")
     assert relaxation["property"]["role"] == "geometry_quality_gate"

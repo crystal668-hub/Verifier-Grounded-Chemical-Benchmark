@@ -114,6 +114,49 @@ def test_aggregate_constraint_results_applies_quality_gate_multiplier() -> None:
     assert result["scores"]["score"] == pytest.approx(((0.8 * 0.5) ** 0.5) * 0.5)
 
 
+def test_aggregate_constraint_results_applies_stability_gate_multiplier() -> None:
+    task = {"task_id": "hessian_task", "scoring": {"aggregation": "geometric_mean"}}
+    results = [
+        {
+            "verifier_id": "xtb_hessian_thermo_gfn2_v1",
+            "canonical_smiles": None,
+            "properties": {"imaginary_frequency_count": 1},
+            "scores": {
+                "constraint_scores": [
+                    {
+                        "property": "imaginary_frequency_count",
+                        "type": "window",
+                        "role": "stability_gate",
+                        "score": 0.25,
+                    }
+                ]
+            },
+            "versions": {"xtb_backend": "fake"},
+        },
+        {
+            "verifier_id": "xtb_hessian_thermo_gfn2_v1",
+            "canonical_smiles": None,
+            "properties": {"entropy_298_per_heavy_atom": 12.0},
+            "scores": {
+                "constraint_scores": [
+                    {
+                        "property": "entropy_298_per_heavy_atom",
+                        "type": "maximize_bounded",
+                        "score": 0.8,
+                    }
+                ]
+            },
+            "versions": {"xtb_backend": "fake"},
+        },
+    ]
+
+    result = aggregate_constraint_results(task, results)
+
+    assert result["scores"]["property_score"] == pytest.approx(0.8)
+    assert result["scores"]["stability_gate_score"] == pytest.approx(0.25)
+    assert result["scores"]["score"] == pytest.approx(0.2)
+
+
 def test_evaluate_one_extracts_raw_response_before_routing() -> None:
     tasks = load_tasks(TASKS_PATH)
     tasks["rdkit_qed_max_001"]["answer_schema"] = FINAL_ANSWER_SCHEMA

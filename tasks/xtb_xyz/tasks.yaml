@@ -362,3 +362,301 @@ tasks:
     scoring:
       aggregation: geometric_mean
     failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_lumo_min_008
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: intermediate
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, lumo_energy, electron_acceptor]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 3 and 80 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms and at least 2 hetero atoms.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Minimize the optimized-geometry LUMO energy.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: lumo_energy
+        verifier_id: xtb_lumo_gfn2_v1
+        lower: -4.0
+        upper: 1.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH2O, CH3NO2]
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_polarizability_dipole_opt_009
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, multi_objective, geometry_quality, three_dimensional_geometry, xyz, xtb, polarizability, dipole_moment]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 3 and 80 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms, at least 2 hetero atoms, and at least 2 distinct heavy-element types.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Maximize optimized-geometry molecular polarizability per heavy atom.
+      - After optimization, have a molecular dipole moment between 3.0 and 8.0 Debye.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: polarizability_per_heavy_atom
+        verifier_id: xtb_polarizability_gfn2_v1
+        lower: 4.0
+        upper: 12.0
+      - type: window
+        property: dipole_moment
+        verifier_id: xtb_dipole_gfn2_v1
+        min: 3.0
+        max: 8.0
+        sigma: 1.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      heavy_element_diversity_min: 2
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_solvation_selectivity_alpb_010
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, solvation, alpb]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 3 and 80 inclusive.
+      - Heavy atom count must be between 8 and 36 inclusive.
+      - Use at least 3 carbon atoms and at least 3 hetero atoms.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Maximize water-over-hexane implicit-solvent stabilization selectivity.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: alpb_water_hexane_selectivity
+        verifier_id: xtb_solvation_selectivity_alpb_v1
+        lower: 0.0
+        upper: 1.5
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 36]
+      carbon_count_min: 3
+      hetero_atom_count_min: 3
+      formula_denylist: [H2O, NH3, HCN, CH2O, CH3OH, CH3CN]
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_electrophilicity_max_011
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, electrophilicity, ipea]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 3 and 80 inclusive.
+      - Heavy atom count must be between 8 and 40 inclusive.
+      - Use at least 4 carbon atoms and at least 2 hetero atoms.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Maximize the global electrophilicity index.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: global_electrophilicity
+        verifier_id: xtb_electrophilicity_gfn1_ipea_v1
+        lower: 0.5
+        upper: 4.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 40]
+      carbon_count_min: 4
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH2O, CH3NO2]
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_fukui_carbon_site_012
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: expert
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, fukui, local_reactivity]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 3 and 80 inclusive.
+      - Heavy atom count must be between 8 and 32 inclusive.
+      - Use at least 5 carbon atoms and at least 2 hetero atoms.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Maximize the strongest carbon-atom f+ local reactivity descriptor.
+      - Make the strongest carbon f+ site stand out from competing atoms.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: maximize_bounded
+        property: max_f_plus_on_carbon
+        verifier_id: xtb_fukui_gfn1_v1
+        lower: 0.05
+        upper: 0.35
+      - type: maximize_bounded
+        property: f_plus_contrast
+        verifier_id: xtb_fukui_gfn1_v1
+        lower: 0.00
+        upper: 0.15
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      heavy_atom_count: [8, 32]
+      carbon_count_min: 5
+      hetero_atom_count_min: 2
+      formula_denylist: [HCN, CH2O, CH3NO2]
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *xtb_task_failure_policy
+
+  - task_id: xtb_hessian_thermo_stability_013
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: expert
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, geometry_quality, three_dimensional_geometry, xyz, xtb, hessian, thermochemistry]
+    prompt: |
+      Propose one neutral closed-shell small molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
+      - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
+      - Atom count must be between 6 and 48 inclusive.
+      - Heavy atom count must be between 4 and 18 inclusive.
+      - Use at least 2 carbon atoms and at least 1 hetero atom.
+      - Coordinates must be in Angstrom and suitable for local xTB optimization.
+      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - The optimized geometry should be a stable local minimum with zero imaginary vibrational frequencies.
+      - Maximize the 298.15 K entropy per heavy atom.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: window
+        property: imaginary_frequency_count
+        verifier_id: xtb_hessian_thermo_gfn2_v1
+        min: 0
+        max: 0
+        sigma: 1.0
+        role: stability_gate
+      - type: maximize_bounded
+        property: entropy_298_per_heavy_atom
+        verifier_id: xtb_hessian_thermo_gfn2_v1
+        lower: 5.0
+        upper: 18.0
+      - type: minimize_bounded
+        property: relaxation_energy
+        verifier_id: xtb_relaxation_energy_gfn2_v1
+        role: quality_gate
+        lower: 0.0
+        upper: 0.35
+    structural_domain:
+      atom_count: [6, 48]
+      heavy_atom_count: [4, 18]
+      carbon_count_min: 2
+      hetero_atom_count_min: 1
+    scoring:
+      aggregation: geometric_mean
+    timeout_seconds: 600
+    failure_policy: *xtb_task_failure_policy

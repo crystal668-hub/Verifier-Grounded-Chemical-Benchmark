@@ -79,6 +79,12 @@ def test_all_xtb_property_scripts_reject_mismatched_property() -> None:
         ("xtb_gap.py", "homo_lumo_gap", "dipole_moment"),
         ("xtb_dipole.py", "dipole_moment", "homo_lumo_gap"),
         ("xtb_relaxation_energy.py", "relaxation_energy", "homo_lumo_gap"),
+        ("xtb_lumo.py", "lumo_energy", "homo_lumo_gap"),
+        ("xtb_polarizability.py", "polarizability_per_heavy_atom", "homo_lumo_gap"),
+        ("xtb_solvation_selectivity.py", "alpb_water_hexane_selectivity", "homo_lumo_gap"),
+        ("xtb_electrophilicity.py", "global_electrophilicity", "homo_lumo_gap"),
+        ("xtb_fukui.py", "max_f_plus_on_carbon", "homo_lumo_gap"),
+        ("xtb_hessian_thermo.py", "entropy_298_per_heavy_atom", "homo_lumo_gap"),
     ]
     for script, constraint_property, spec_property in cases:
         payload = gap_payload()
