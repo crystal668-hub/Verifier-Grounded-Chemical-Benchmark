@@ -1,0 +1,185 @@
+version: 1
+description: Calibration candidates for xTB direct-XYZ task reliability analysis.
+candidates:
+  xtb_gap_window_001_positive_perfluoropropyl_nitrile:
+    role: positive_candidate
+    molecule_family: fluorinated_nitrile
+    target_tasks: [xtb_gap_window_001]
+    expected_behavior:
+      xtb_gap_window_001: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_gap_window_001_negative_water:
+    role: negative_baseline
+    molecule_family: simple_inorganic
+    target_tasks: [xtb_gap_window_001]
+    expected_behavior:
+      xtb_gap_window_001: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_dipole_window_002_positive_trifluoroethyl_nitroethane:
+    role: positive_candidate
+    molecule_family: fluorinated_nitroalkane
+    target_tasks: [xtb_dipole_window_002]
+    expected_behavior:
+      xtb_dipole_window_002: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_dipole_window_002_negative_methane:
+    role: negative_baseline
+    molecule_family: simple_hydrocarbon
+    target_tasks: [xtb_dipole_window_002]
+    expected_behavior:
+      xtb_dipole_window_002: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_gap_max_003_positive_hexafluoroisopropanol:
+    role: positive_candidate
+    molecule_family: fluorinated_alcohol
+    target_tasks: [xtb_gap_max_003]
+    expected_behavior:
+      xtb_gap_max_003: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_gap_max_003_negative_benzene:
+    role: negative_baseline
+    molecule_family: aromatic_hydrocarbon
+    target_tasks: [xtb_gap_max_003]
+    expected_behavior:
+      xtb_gap_max_003: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_gap_min_004_positive_push_pull_azo_nitroarene:
+    role: positive_candidate
+    molecule_family: push_pull_azo_arene
+    target_tasks: [xtb_gap_min_004]
+    expected_behavior:
+      xtb_gap_min_004: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_gap_min_004_negative_ethene:
+    role: negative_baseline
+    molecule_family: simple_alkene
+    target_tasks: [xtb_gap_min_004]
+    expected_behavior:
+      xtb_gap_min_004: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_dipole_max_005_positive_dimethylamino_nitrobenzene:
+    role: positive_candidate
+    molecule_family: push_pull_nitroarene
+    target_tasks: [xtb_dipole_max_005]
+    expected_behavior:
+      xtb_dipole_max_005: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_dipole_max_005_negative_carbon_dioxide:
+    role: negative_baseline
+    molecule_family: simple_oxide
+    target_tasks: [xtb_dipole_max_005]
+    expected_behavior:
+      xtb_dipole_max_005: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_low_gap_high_dipole_opt_006_positive_push_pull_cinnamonitrile:
+    role: positive_candidate
+    molecule_family: push_pull_cinnamonitrile
+    target_tasks: [xtb_low_gap_high_dipole_opt_006]
+    expected_behavior:
+      xtb_low_gap_high_dipole_opt_006: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_low_gap_high_dipole_opt_006_negative_acetonitrile:
+    role: negative_baseline
+    molecule_family: simple_nitrile
+    target_tasks: [xtb_low_gap_high_dipole_opt_006]
+    expected_behavior:
+      xtb_low_gap_high_dipole_opt_006: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_gap_dipole_window_007_positive_dicyanobenzene:
+    role: positive_candidate
+    molecule_family: aromatic_dinitrile
+    target_tasks: [xtb_gap_dipole_window_007]
+    expected_behavior:
+      xtb_gap_dipole_window_007: high_score
+    source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
+  xtb_gap_dipole_window_007_negative_formaldehyde:
+    role: negative_baseline
+    molecule_family: simple_carbonyl
+    target_tasks: [xtb_gap_dipole_window_007]
+    expected_behavior:
+      xtb_gap_dipole_window_007: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_lumo_min_008_positive_push_pull_azo_nitroarene:
+    role: positive_candidate
+    molecule_family: push_pull_azo_arene
+    target_tasks: [xtb_lumo_min_008]
+    expected_behavior:
+      xtb_lumo_min_008: high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_lumo_min_008_negative_benzene:
+    role: negative_baseline
+    molecule_family: aromatic_hydrocarbon
+    target_tasks: [xtb_lumo_min_008]
+    expected_behavior:
+      xtb_lumo_min_008: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_polarizability_dipole_opt_009_positive_push_pull_cinnamonitrile:
+    role: positive_candidate
+    molecule_family: push_pull_cinnamonitrile
+    target_tasks: [xtb_polarizability_dipole_opt_009]
+    expected_behavior:
+      xtb_polarizability_dipole_opt_009: medium_or_high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_polarizability_dipole_opt_009_negative_methanol:
+    role: negative_baseline
+    molecule_family: simple_alcohol
+    target_tasks: [xtb_polarizability_dipole_opt_009]
+    expected_behavior:
+      xtb_polarizability_dipole_opt_009: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_solvation_selectivity_alpb_010_positive_trifluoroethyl_nitroethane:
+    role: positive_candidate
+    molecule_family: fluorinated_nitroalkane
+    target_tasks: [xtb_solvation_selectivity_alpb_010]
+    expected_behavior:
+      xtb_solvation_selectivity_alpb_010: medium_or_high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_solvation_selectivity_alpb_010_negative_acetonitrile:
+    role: negative_baseline
+    molecule_family: simple_nitrile
+    target_tasks: [xtb_solvation_selectivity_alpb_010]
+    expected_behavior:
+      xtb_solvation_selectivity_alpb_010: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_electrophilicity_max_011_positive_push_pull_azo_nitroarene:
+    role: positive_candidate
+    molecule_family: push_pull_azo_arene
+    target_tasks: [xtb_electrophilicity_max_011]
+    expected_behavior:
+      xtb_electrophilicity_max_011: medium_or_high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_electrophilicity_max_011_negative_formaldehyde:
+    role: negative_baseline
+    molecule_family: simple_carbonyl
+    target_tasks: [xtb_electrophilicity_max_011]
+    expected_behavior:
+      xtb_electrophilicity_max_011: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_fukui_carbon_site_012_positive_dimethylamino_nitrobenzene:
+    role: positive_candidate
+    molecule_family: push_pull_nitroarene
+    target_tasks: [xtb_fukui_carbon_site_012]
+    expected_behavior:
+      xtb_fukui_carbon_site_012: medium_or_high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_fukui_carbon_site_012_negative_nitromethane:
+    role: negative_baseline
+    molecule_family: nitroalkane
+    target_tasks: [xtb_fukui_carbon_site_012]
+    expected_behavior:
+      xtb_fukui_carbon_site_012: domain_error_or_low_score
+    source: "Common small-molecule baseline"
+  xtb_hessian_thermo_stability_013_positive_trifluoroethyl_nitroethane:
+    role: positive_candidate
+    molecule_family: fluorinated_nitroalkane
+    target_tasks: [xtb_hessian_thermo_stability_013]
+    expected_behavior:
+      xtb_hessian_thermo_stability_013: medium_or_high_score
+    source: "Curated XYZ from existing local xTB optimization sample"
+  xtb_hessian_thermo_stability_013_negative_methane:
+    role: negative_baseline
+    molecule_family: simple_hydrocarbon
+    target_tasks: [xtb_hessian_thermo_stability_013]
+    expected_behavior:
+      xtb_hessian_thermo_stability_013: domain_error_or_low_score
+    source: "Common small-molecule baseline"
