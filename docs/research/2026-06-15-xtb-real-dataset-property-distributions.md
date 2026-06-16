@@ -177,3 +177,11 @@ The 2026-06-16 bounded acquisition pass produced `artifacts/xtb_real_distributio
 | Tartarus/OPV | manual_or_generated_geometry_required | 0 | Keep out of automatic calibration until provenance is explicit. |
 
 Observed blockers: the bounded QMugs `structures.tar.gz` attempt timed out after 120 seconds with a partial `25,788,416` byte file, far below the advertised archive size, so `qmugs_structure_archive_incomplete` blocks normalization. The GEOM `censo.tar.gz` retry completed to `25,375,585` bytes and opens as a tar archive, but it contains `censo/rd_mols/*.pickle` members and zero `.sdf` members; the SDF converter returned `status: ok` with `written: 0`, so the current validation blocker is `geom_validation_no_sdf_members`.
+
+## Dataset Expansion Prep Sample Build Decision
+
+Intermediate mixed sample build status: `not_ready_for_intermediate_calibration`.
+
+Reason: no non-QM9 normalized JSONL with records is available. The local `.cache/xtb_real_datasets/qmugs/qmugs_bounded.jsonl` file is missing (`0` records), and `.cache/xtb_real_datasets/geom_drugs/geom_validation.jsonl` exists but is `0` bytes with `0` records. QMugs remains blocked by `qmugs_structure_archive_incomplete`; GEOM validation conversion produced `0` SDF-normalized records because `censo.tar.gz` contains pickle members and no `.sdf` members.
+
+Next action: complete a usable QMugs structure archive conversion or add a GEOM pickle/conformer converter before building mixed intermediate samples. Keep Expanded Run blocked until at least one non-QM9 normalized JSONL has records.
