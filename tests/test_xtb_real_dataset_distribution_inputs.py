@@ -199,3 +199,70 @@ $$$$
     rows = [json.loads(line) for line in tar_output.read_text().splitlines()]
     assert rows[0]["dataset_name"] == "unit_tar"
     assert rows[0]["geometry_source"] == "sdf_3d"
+
+
+def test_convert_xtb_real_dataset_sdf_filters_tar_members_and_reports_summary(tmp_path) -> None:
+    import tarfile
+
+    sdf_text = """methanol
+  unit
+
+  6  5  0  0  0  0            999 V2000
+    0.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.4300    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3600    1.0200    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3600   -0.5100    0.8833 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.3600   -0.5100   -0.8833 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.7500    0.0000    0.9000 H   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0
+  1  3  1  0
+  1  4  1  0
+  1  5  1  0
+  2  6  1  0
+M  END
+>  <PUBCHEM_COMPOUND_CID>
+887
+
+$$$$
+"""
+    keep = tmp_path / "keep.sdf"
+    keep.write_text(sdf_text)
+    skip = tmp_path / "skip.sdf"
+    skip.write_text(sdf_text.replace("887", "999"))
+    archive = tmp_path / "fixture.tar.gz"
+    with tarfile.open(archive, "w:gz") as handle:
+        handle.add(keep, arcname="wanted/keep.sdf")
+        handle.add(skip, arcname="ignored/skip.sdf")
+
+    output = tmp_path / "out.jsonl"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/convert_xtb_real_dataset_sdf.py",
+            "--input",
+            str(archive),
+            "--dataset-name",
+            "qmugs",
+            "--output-jsonl",
+            str(output),
+            "--member-name-contains",
+            "wanted/",
+            "--record-id-property",
+            "PUBCHEM_COMPOUND_CID",
+            "--limit",
+            "5",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    summary = json.loads(completed.stdout)
+    assert summary["members_seen"] == 2
+    assert summary["members_selected"] == 1
+    assert summary["written"] == 1
+    rows = [json.loads(line) for line in output.read_text().splitlines()]
+    assert rows[0]["record_id"] == "887"
+    assert rows[0]["source_file"] == "wanted/keep.sdf"

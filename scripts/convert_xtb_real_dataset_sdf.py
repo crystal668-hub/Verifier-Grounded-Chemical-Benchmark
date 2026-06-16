@@ -26,27 +26,43 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--record-id-property", default="SOURCE_ID")
     parser.add_argument("--geometry-source", default="sdf_3d")
+    parser.add_argument(
+        "--member-name-contains",
+        action="append",
+        default=[],
+        help="Only process tar SDF members whose archive path contains this text. Can be repeated.",
+    )
     return parser.parse_args()
 
 
-def iter_sdf_paths(path: Path) -> Iterable[tuple[str, Path]]:
+def member_selected(name: str, filters: list[str]) -> bool:
+    return not filters or any(text in name for text in filters)
+
+
+def iter_sdf_paths(path: Path, filters: list[str]) -> Iterable[tuple[str, Path, bool]]:
     if tarfile.is_tarfile(path):
         with tarfile.open(path) as archive:
             for member in archive:
                 if not member.isfile() or not member.name.lower().endswith(".sdf"):
                     continue
+                selected = member_selected(member.name, filters)
+                if not selected:
+                    yield member.name, Path(), False
+                    continue
                 extracted = archive.extractfile(member)
                 if extracted is None:
+                    yield member.name, Path(), False
                     continue
                 with tempfile.NamedTemporaryFile(suffix=".sdf", delete=False) as handle:
-                    handle.write(extracted.read())
+                    for chunk in iter(lambda: extracted.read(1024 * 1024), b""):
+                        handle.write(chunk)
                     temp_path = Path(handle.name)
                 try:
-                    yield member.name, temp_path
+                    yield member.name, temp_path, True
                 finally:
                     temp_path.unlink(missing_ok=True)
     else:
-        yield path.name, path
+        yield path.name, path, True
 
 
 def mol_to_xyz(mol: Chem.Mol, comment: str) -> str | None:
@@ -74,8 +90,14 @@ def convert(args: argparse.Namespace) -> dict[str, int]:
     written = 0
     skipped = 0
     seen = 0
+    members_seen = 0
+    members_selected = 0
     with args.output_jsonl.open("w") as output:
-        for source_name, sdf_path in iter_sdf_paths(args.input):
+        for source_name, sdf_path, selected in iter_sdf_paths(args.input, args.member_name_contains):
+            members_seen += 1
+            if not selected:
+                continue
+            members_selected += 1
             supplier = Chem.SDMolSupplier(str(sdf_path), removeHs=False, sanitize=False)
             for mol_index, mol in enumerate(supplier, start=1):
                 seen += 1
@@ -99,8 +121,20 @@ def convert(args: argparse.Namespace) -> dict[str, int]:
                 output.write(json.dumps(record, sort_keys=True) + "\n")
                 written += 1
                 if args.limit is not None and written >= args.limit:
-                    return {"seen": seen, "written": written, "skipped": skipped}
-    return {"seen": seen, "written": written, "skipped": skipped}
+                    return {
+                        "seen": seen,
+                        "written": written,
+                        "skipped": skipped,
+                        "members_seen": members_seen,
+                        "members_selected": members_selected,
+                    }
+    return {
+        "seen": seen,
+        "written": written,
+        "skipped": skipped,
+        "members_seen": members_seen,
+        "members_selected": members_selected,
+    }
 
 
 def main() -> int:
