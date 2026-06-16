@@ -161,7 +161,7 @@ Rationale: the rerun fixed smoke workflow issues and removed runtime failures, b
 
 - This is a smoke pilot, not the full real-dataset distribution study.
 - Only 60 normalized QM9 SDF records were used in the rerun.
-- QMugs and GEOM access metadata are now available, but no non-QM9 3D records were normalized and run through xTB in this report.
+- The QMugs structure endpoint and GEOM Dataverse metadata are partially reachable, but QMugs ancillary metadata access is mixed or stale and no non-QM9 3D records were normalized or run through xTB in this report.
 - Score-threshold fractions were not computed against official task constraints in this run; the analyzer currently reports property quantiles and failure diagnostics.
 - Generated artifacts are intentionally uncommitted; the committed deliverable is this report plus reproducible scripts and tests.
 
