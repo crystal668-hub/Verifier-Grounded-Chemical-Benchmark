@@ -47,7 +47,11 @@ FLEXIBILITY_BINS = {
     "high": (7, 80),
 }
 PILOT_LIGHT_QUOTAS = {"qm9": 500, "qmugs": 1000, "geom_drugs": 500, "tartarus_opv": 250}
+INTERMEDIATE_LIGHT_QUOTAS = {"qm9": 250, "qmugs": 500, "geom_drugs": 250, "tartarus_opv": 100}
+INTERMEDIATE_MEDIUM_QUOTAS = {"qm9": 100, "qmugs": 250, "geom_drugs": 150, "tartarus_opv": 50}
+INTERMEDIATE_EXPENSIVE_QUOTAS = {"qm9": 75, "qmugs": 75, "geom_drugs": 50, "tartarus_opv": 0}
 EXPANDED_LIGHT_QUOTAS = {"qm9": 5000, "qmugs": 10000, "geom_drugs": 5000, "tartarus_opv": 2500}
+HESSIAN_DOMAIN = {"atom_count": [6, 48], "heavy_atom_count": [4, 18]}
 
 
 def parse_args() -> argparse.Namespace:
@@ -58,8 +62,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--pilot", action="store_true")
+    mode.add_argument("--intermediate", action="store_true")
     mode.add_argument("--expanded", action="store_true")
     return parser.parse_args()
+
+
+def mode_name(args: argparse.Namespace) -> str:
+    if args.expanded:
+        return "expanded"
+    if args.intermediate:
+        return "intermediate"
+    return "pilot"
 
 
 def load_jsonl(paths: Iterable[Path]) -> list[dict[str, Any]]:
@@ -85,6 +98,15 @@ def bin_value(value: int, bins: dict[str, tuple[int, int]]) -> str:
 
 def stable_key(record: dict[str, Any]) -> tuple[str, str]:
     return (str(record.get("dataset_name", "")), str(record.get("record_id", "")))
+
+
+def is_hessian_eligible(record: dict[str, Any]) -> bool:
+    atom_count = int(record.get("atom_count", 0))
+    heavy_atom_count = int(record.get("heavy_atom_count", 0))
+    return (
+        HESSIAN_DOMAIN["atom_count"][0] <= atom_count <= HESSIAN_DOMAIN["atom_count"][1]
+        and HESSIAN_DOMAIN["heavy_atom_count"][0] <= heavy_atom_count <= HESSIAN_DOMAIN["heavy_atom_count"][1]
+    )
 
 
 def output_order_key(record: dict[str, Any]) -> tuple[str, int, str, str]:
@@ -158,8 +180,11 @@ def failure_record(record: dict[str, Any], failure_type: str, message: str) -> d
     }
 
 
-def sample_records(records: list[dict[str, Any]], seed: int, expanded: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    quotas = EXPANDED_LIGHT_QUOTAS if expanded else PILOT_LIGHT_QUOTAS
+def sample_records_with_quotas(
+    records: list[dict[str, Any]],
+    quotas: dict[str, int],
+    seed: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     by_dataset: dict[str, list[dict[str, Any]]] = {}
     for record in records:
         by_dataset.setdefault(str(record.get("dataset_name")), []).append(record)
@@ -181,6 +206,11 @@ def sample_records(records: list[dict[str, Any]], seed: int, expanded: bool) -> 
                 }
             )
     return sorted(sampled, key=output_order_key), quota_notes
+
+
+def sample_records(records: list[dict[str, Any]], seed: int, expanded: bool) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    quotas = EXPANDED_LIGHT_QUOTAS if expanded else PILOT_LIGHT_QUOTAS
+    return sample_records_with_quotas(records, quotas, seed)
 
 
 def stratified_sample(records: list[dict[str, Any]], quota: int, seed: int) -> list[dict[str, Any]]:
@@ -222,6 +252,7 @@ def load_source_manifest(path: Path) -> dict[str, Any] | None:
 
 def main() -> int:
     args = parse_args()
+    mode = mode_name(args)
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -236,7 +267,28 @@ def main() -> int:
         if failure is not None:
             rejected_records.append(failure)
 
-    sampled_records, quota_notes = sample_records(filtered_records, args.seed, args.expanded)
+    if mode == "intermediate":
+        light_records, light_notes = sample_records_with_quotas(filtered_records, INTERMEDIATE_LIGHT_QUOTAS, args.seed)
+        medium_candidates = [record for record in filtered_records if int(record.get("carbon_count", 0)) > 0]
+        medium_records, medium_notes = sample_records_with_quotas(medium_candidates, INTERMEDIATE_MEDIUM_QUOTAS, args.seed)
+        expensive_candidates = [record for record in filtered_records if is_hessian_eligible(record)]
+        expensive_records, expensive_notes = sample_records_with_quotas(
+            expensive_candidates, INTERMEDIATE_EXPENSIVE_QUOTAS, args.seed
+        )
+        sampled_records = sorted(
+            {stable_key(row): row for row in [*light_records, *medium_records, *expensive_records]}.values(),
+            key=output_order_key,
+        )
+        quota_notes = (
+            [{"tier": "light", **note} for note in light_notes]
+            + [{"tier": "medium", **note} for note in medium_notes]
+            + [{"tier": "expensive", **note} for note in expensive_notes]
+        )
+        write_jsonl(output_dir / "sampled_records.light.jsonl", light_records)
+        write_jsonl(output_dir / "sampled_records.medium.jsonl", medium_records)
+        write_jsonl(output_dir / "sampled_records.expensive.jsonl", expensive_records)
+    else:
+        sampled_records, quota_notes = sample_records(filtered_records, args.seed, args.expanded)
 
     write_jsonl(output_dir / "filtered_records.jsonl", sorted(filtered_records, key=output_order_key))
     write_jsonl(output_dir / "sampled_records.jsonl", sampled_records)
@@ -244,7 +296,7 @@ def main() -> int:
         "status": "ok",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "seed": args.seed,
-        "mode": "expanded" if args.expanded else "pilot",
+        "mode": mode,
         "source_manifest": str(args.source_manifest),
         "source_manifest_loaded": source_manifest is not None,
         "input_jsonl": [str(path) for path in args.input_jsonl],

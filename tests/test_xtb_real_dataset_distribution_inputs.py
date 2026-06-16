@@ -266,3 +266,59 @@ $$$$
     rows = [json.loads(line) for line in output.read_text().splitlines()]
     assert rows[0]["record_id"] == "887"
     assert rows[0]["source_file"] == "wanted/keep.sdf"
+
+
+def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path) -> None:
+    def record(dataset_name: str, record_id: str, xyz: str) -> dict[str, object]:
+        return {
+            "dataset_name": dataset_name,
+            "record_id": record_id,
+            "xyz": xyz,
+            "charge": 0,
+            "multiplicity": 1,
+            "geometry_source": "fixture_xyz",
+        }
+
+    methane = "5\nmethane\nC 0 0 0\nH 0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH -0.63 0.63 -0.63\nH 0.63 -0.63 -0.63\n"
+    methanol = "12\nmethanol\nC 0 0 0\nC 1.54 0 0\nC 3.08 0 0\nO 4.51 0 0\nH -0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH 1.54 0.89 -0.63\nH 1.54 -0.89 -0.63\nH 3.08 0.89 0.63\nH 3.08 -0.89 0.63\nH 4.82 0.75 -0.48\nH 4.82 -0.75 -0.48\n"
+    ethane = "14\nethane\nC 0 0 0\nC 1.54 0 0\nC 3.08 0 0\nC 4.62 0 0\nH -0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH -0.63 0 -0.89\nH 1.54 0.89 -0.63\nH 1.54 -0.89 -0.63\nH 3.08 0.89 0.63\nH 3.08 -0.89 0.63\nH 5.25 0.63 0.63\nH 5.25 -0.63 0.63\nH 5.25 0 -0.89\n"
+    fixture = tmp_path / "fixture.jsonl"
+    fixture.write_text(
+        "\n".join(
+            json.dumps(row)
+            for row in [
+                record("qm9", "methane", methane),
+                record("qm9", "methanol", methanol),
+                record("qmugs", "ethane", ethane),
+            ]
+        )
+        + "\n"
+    )
+    output_dir = tmp_path / "out"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/prepare_xtb_real_dataset_sample.py",
+            "--input-jsonl",
+            str(fixture),
+            "--output-dir",
+            str(output_dir),
+            "--seed",
+            "20260615",
+            "--intermediate",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    manifest = json.loads((output_dir / "sample_manifest.json").read_text())
+    assert manifest["mode"] == "intermediate"
+    assert (output_dir / "sampled_records.light.jsonl").exists()
+    assert (output_dir / "sampled_records.medium.jsonl").exists()
+    assert (output_dir / "sampled_records.expensive.jsonl").exists()
+    expensive = [json.loads(line) for line in (output_dir / "sampled_records.expensive.jsonl").read_text().splitlines()]
+    assert [row["record_id"] for row in expensive] == ["methanol", "ethane"]
