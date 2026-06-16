@@ -27,7 +27,7 @@ This run completed a runtime-bounded QM9 smoke pilot and did not complete the fu
 | Dataset | Status | Records available | Eligible after domain filter | Notes |
 | --- | --- | ---: | ---: | --- |
 | QM9 | available | 60 normalized records used from a local `gdb9.sdf` conversion | 60 | Downloaded `gdb9.tar.gz` from DeepChem S3 into `.cache/xtb_real_datasets/qm9/`; converted deterministic carbon-containing, hessian-domain-compatible records from `gdb9.sdf`. |
-| QMugs | access_metadata_available | 0 | 0 | Root cause was using landing-page access instead of the official Nextcloud WebDAV share. WebDAV metadata, README, download links, and `tarball_assignment.csv` are now reachable; `structures.tar.gz` is about 7.2 GB, so local normalized sampling still requires streaming or manual cache download. |
+| QMugs | structure_archive_incomplete | 0 | 0 | The official Nextcloud structures endpoint is reachable enough to advertise a `7,180,016,346` byte `structures.tar.gz` and start a bounded download, but the local archive is still partial. Ancillary metadata access is mixed or stale in the latest probe: `download_links.txt` and `tarball_assignment.csv` returned HTTP 401, so normalization remains blocked until the structure archive is complete and usable. |
 | GEOM-Drugs | validation_archive_no_sdf_members | 0 | 0 | Harvard Dataverse metadata resolved and lists downloadable files. The later bounded retry completed `censo.tar.gz`, but the archive contains `censo/rd_mols/*.pickle` members and no `.sdf` members for the current SDF converter; drug subset files remain too large for automatic download. |
 | Tartarus/OPV | manual_or_generated_geometry_required | 0 | 0 | No license-compatible 3D OPV subset was fetched. OPV coverage needs an explicit source plus generated-geometry labeling before xTB calibration. |
 
@@ -37,7 +37,7 @@ The initial "unavailable" diagnosis conflated three different problems:
 
 | Source | What failed before | Repair attempted | Current status |
 | --- | --- | --- | --- |
-| QMugs | ETH landing/API access timed out and full dataset scale looked prohibitive | Used the official Nextcloud public WebDAV endpoint with share token `X5vOBNSITAG5vzM`; downloaded README, download links, and tarball assignment metadata | Machine access is fixed for metadata; structure conversion is blocked only by the 7.2 GB structure archive size. |
+| QMugs | ETH landing/API access timed out and full dataset scale looked prohibitive | Retried the official Nextcloud public structures endpoint with share token `X5vOBNSITAG5vzM`; the endpoint reported the full archive size and accepted a bounded resumable download | Structure access is partially validated, but the archive download is incomplete and ancillary metadata access is mixed or stale after HTTP 401 responses for `download_links.txt` and `tarball_assignment.csv`. |
 | GEOM-Drugs | Only large Dataverse files were considered | Queried Dataverse API and identified small `censo.tar.gz` validation file plus large drug files; later retried the small validation archive with resume | Transfer for the small archive completed, but it is not an SDF-bearing archive, so GEOM still provides zero normalized records for this report. |
 | Tartarus/OPV | No direct 3D molecule source was identified | Marked source as requiring manual or generated geometry with explicit provenance | Still not ready for automatic calibration. |
 
@@ -167,7 +167,7 @@ Rationale: the rerun fixed smoke workflow issues and removed runtime failures, b
 
 ## Dataset Expansion Prep Input Status
 
-The 2026-06-16 bounded acquisition pass produced `artifacts/xtb_real_distribution/2026-06-15-expansion-prep/source_availability.local.json` and `artifacts/xtb_real_distribution/2026-06-15-expansion-prep/source_availability.remote.json`. The remote metadata check returned `status: ok` with `remote_checked: true`; the QMugs structures endpoint advertised `7,180,016,346` bytes, while `qmugs/download_links.txt` and `qmugs/tarball_assignment.csv` returned HTTP 401 and GEOM `censo.tar.gz` returned HTTP 403 in that metadata probe.
+The 2026-06-16 bounded acquisition pass produced `artifacts/xtb_real_distribution/2026-06-15-expansion-prep/source_availability.local.json` and `artifacts/xtb_real_distribution/2026-06-15-expansion-prep/source_availability.remote.json`. The availability inspector completed with `remote_checked: true` and recorded per-file access results and failures: the QMugs structures endpoint advertised `7,180,016,346` bytes, while `qmugs/download_links.txt` and `qmugs/tarball_assignment.csv` returned HTTP 401 and GEOM `censo.tar.gz` returned HTTP 403 in that metadata probe.
 
 | Source | Prep status | Normalized records | Decision |
 | --- | --- | ---: | --- |
