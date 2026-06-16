@@ -33,6 +33,15 @@ def cache_path_for(raw_path: str) -> Path:
     return ROOT / path
 
 
+def declared_file_urls(access: dict[str, Any]) -> dict[str, str]:
+    urls: dict[str, str] = {}
+    for file_name, metadata in (access.get("small_validation_files") or {}).items():
+        if isinstance(metadata, dict) and metadata.get("url") is not None:
+            urls[file_name] = str(metadata["url"])
+    urls.update(access.get("files") or {})
+    return urls
+
+
 def local_file_status(cache_path: Path, files: dict[str, str]) -> dict[str, dict[str, Any]]:
     statuses: dict[str, dict[str, Any]] = {}
     for file_name in sorted(files):
@@ -65,7 +74,7 @@ def inspect_manifest(manifest_path: Path, *, check_remote: bool, remote_timeout:
     sources: dict[str, Any] = {}
     for source_name, source in sorted((manifest.get("sources") or {}).items()):
         access = source.get("access") or {}
-        files = access.get("files") or {}
+        files = declared_file_urls(access)
         cache_path = cache_path_for(str(source.get("cache_path", "")))
         source_status: dict[str, Any] = {
             "status": source.get("status"),
