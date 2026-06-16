@@ -125,3 +125,39 @@ def test_inspect_xtb_real_dataset_availability_reports_existing_cache(tmp_path) 
     cached = payload["sources"]["qmugs"]["local_files"]["structures.tar.gz"]
     assert cached["exists"] is True
     assert cached["size_bytes"] == 4
+
+
+def test_inspect_xtb_real_dataset_availability_does_not_check_remote_by_default(tmp_path, monkeypatch) -> None:
+    from scripts import inspect_xtb_real_dataset_availability as inspector
+
+    manifest = tmp_path / "sources.yaml"
+    manifest.write_text(
+        yaml.safe_dump(
+            {
+                "version": 1,
+                "sources": {
+                    "qmugs": {
+                        "status": "required",
+                        "cache_path": str(tmp_path / "qmugs"),
+                        "access": {
+                            "type": "nextcloud_public_webdav",
+                            "files": {
+                                "structures.tar.gz": "https://example.invalid/structures.tar.gz",
+                            },
+                        },
+                    },
+                },
+            },
+            sort_keys=True,
+        )
+    )
+
+    def fail_remote_head(*_args: object, **_kwargs: object) -> dict[str, object]:
+        raise AssertionError("remote_head should not be called unless --check-remote is passed")
+
+    monkeypatch.setattr(inspector, "remote_head", fail_remote_head)
+
+    payload = inspector.inspect_manifest(manifest, check_remote=False, remote_timeout=0.01)
+
+    assert payload["remote_checked"] is False
+    assert "remote_files" not in payload["sources"]["qmugs"]
