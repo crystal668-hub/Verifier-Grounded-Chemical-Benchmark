@@ -184,19 +184,27 @@ def sample_records_with_quotas(
     records: list[dict[str, Any]],
     quotas: dict[str, int],
     seed: int,
+    quota_note_dataset_names: Iterable[str] | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     by_dataset: dict[str, list[dict[str, Any]]] = {}
     for record in records:
         by_dataset.setdefault(str(record.get("dataset_name")), []).append(record)
 
     sampled: list[dict[str, Any]] = []
-    quota_notes: list[dict[str, Any]] = []
     for dataset_name in sorted(by_dataset):
         dataset_records = sorted(by_dataset[dataset_name], key=output_order_key)
         quota = quotas.get(dataset_name, len(dataset_records))
         selected = stratified_sample(dataset_records, quota, seed)
         sampled.extend(selected)
-        if len(dataset_records) < quota:
+
+    quota_notes: list[dict[str, Any]] = []
+    quota_note_datasets = set(by_dataset)
+    if quota_note_dataset_names is not None:
+        quota_note_datasets.update(str(dataset_name) for dataset_name in quota_note_dataset_names)
+    for dataset_name in sorted(quota_note_datasets):
+        dataset_records = by_dataset.get(dataset_name, [])
+        quota = quotas.get(dataset_name, len(dataset_records))
+        if quota > 0 and len(dataset_records) < quota:
             quota_notes.append(
                 {
                     "dataset_name": dataset_name,
@@ -268,12 +276,15 @@ def main() -> int:
             rejected_records.append(failure)
 
     if mode == "intermediate":
+        filtered_dataset_names = {str(record.get("dataset_name")) for record in filtered_records}
         light_records, light_notes = sample_records_with_quotas(filtered_records, INTERMEDIATE_LIGHT_QUOTAS, args.seed)
         medium_candidates = [record for record in filtered_records if int(record.get("carbon_count", 0)) > 0]
-        medium_records, medium_notes = sample_records_with_quotas(medium_candidates, INTERMEDIATE_MEDIUM_QUOTAS, args.seed)
+        medium_records, medium_notes = sample_records_with_quotas(
+            medium_candidates, INTERMEDIATE_MEDIUM_QUOTAS, args.seed, filtered_dataset_names
+        )
         expensive_candidates = [record for record in filtered_records if is_hessian_eligible(record)]
         expensive_records, expensive_notes = sample_records_with_quotas(
-            expensive_candidates, INTERMEDIATE_EXPENSIVE_QUOTAS, args.seed
+            expensive_candidates, INTERMEDIATE_EXPENSIVE_QUOTAS, args.seed, filtered_dataset_names
         )
         sampled_records = sorted(
             {stable_key(row): row for row in [*light_records, *medium_records, *expensive_records]}.values(),

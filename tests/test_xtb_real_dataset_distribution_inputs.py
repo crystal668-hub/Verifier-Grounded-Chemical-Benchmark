@@ -282,6 +282,7 @@ def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path
     methane = "5\nmethane\nC 0 0 0\nH 0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH -0.63 0.63 -0.63\nH 0.63 -0.63 -0.63\n"
     methanol = "12\nmethanol\nC 0 0 0\nC 1.54 0 0\nC 3.08 0 0\nO 4.51 0 0\nH -0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH 1.54 0.89 -0.63\nH 1.54 -0.89 -0.63\nH 3.08 0.89 0.63\nH 3.08 -0.89 0.63\nH 4.82 0.75 -0.48\nH 4.82 -0.75 -0.48\n"
     ethane = "14\nethane\nC 0 0 0\nC 1.54 0 0\nC 3.08 0 0\nC 4.62 0 0\nH -0.63 0.63 0.63\nH -0.63 -0.63 0.63\nH -0.63 0 -0.89\nH 1.54 0.89 -0.63\nH 1.54 -0.89 -0.63\nH 3.08 0.89 0.63\nH 3.08 -0.89 0.63\nH 5.25 0.63 0.63\nH 5.25 -0.63 0.63\nH 5.25 0 -0.89\n"
+    water = "3\nwater\nO 0 0 0\nH 0.758602 0 0.504284\nH -0.758602 0 0.504284\n"
     fixture = tmp_path / "fixture.jsonl"
     fixture.write_text(
         "\n".join(
@@ -290,6 +291,7 @@ def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path
                 record("qm9", "methane", methane),
                 record("qm9", "methanol", methanol),
                 record("qmugs", "ethane", ethane),
+                record("geom_drugs", "water", water),
             ]
         )
         + "\n"
@@ -322,3 +324,15 @@ def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path
     assert (output_dir / "sampled_records.expensive.jsonl").exists()
     expensive = [json.loads(line) for line in (output_dir / "sampled_records.expensive.jsonl").read_text().splitlines()]
     assert [row["record_id"] for row in expensive] == ["methanol", "ethane"]
+    assert {
+        "tier": "expensive",
+        "dataset_name": "geom_drugs",
+        "available": 0,
+        "quota": 50,
+        "status": "quota_underfilled",
+    } in manifest["quota_notes"]
+    light = [json.loads(line) for line in (output_dir / "sampled_records.light.jsonl").read_text().splitlines()]
+    medium = [json.loads(line) for line in (output_dir / "sampled_records.medium.jsonl").read_text().splitlines()]
+    sampled = [json.loads(line) for line in (output_dir / "sampled_records.jsonl").read_text().splitlines()]
+    assert all("methanol" in [row["record_id"] for row in rows] for rows in [light, medium, expensive])
+    assert [row["record_id"] for row in sampled].count("methanol") == 1
