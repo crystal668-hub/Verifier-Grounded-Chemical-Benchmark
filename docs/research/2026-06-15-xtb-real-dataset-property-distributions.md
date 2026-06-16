@@ -164,3 +164,16 @@ Rationale: the rerun fixed smoke workflow issues and removed runtime failures, b
 - QMugs and GEOM access metadata are now available, but no non-QM9 3D records were normalized and run through xTB in this report.
 - Score-threshold fractions were not computed against official task constraints in this run; the analyzer currently reports property quantiles and failure diagnostics.
 - Generated artifacts are intentionally uncommitted; the committed deliverable is this report plus reproducible scripts and tests.
+
+## Dataset Expansion Prep Input Status
+
+The 2026-06-16 bounded acquisition pass produced local and remote availability JSON under `artifacts/xtb_real_distribution/2026-06-15-expansion-prep/`. The remote metadata check returned `status: ok` with `remote_checked: true`; the QMugs structures endpoint advertised `7,180,016,346` bytes, while some metadata-sized endpoints returned access errors during the probe.
+
+| Source | Prep status | Normalized records | Decision |
+| --- | --- | ---: | --- |
+| QM9 | available | 60 | Keep as baseline source. |
+| QMugs | blocked_or_underfilled | 0 | Do not run Expanded Run; complete QMugs archive conversion first. |
+| GEOM-Drugs | validation_unavailable_or_no_sdf | 0 | Do not count GEOM toward coverage until a usable 3D archive is normalized. |
+| Tartarus/OPV | manual_or_generated_geometry_required | 0 | Keep out of automatic calibration until provenance is explicit. |
+
+Observed blockers: the bounded QMugs `structures.tar.gz` attempt timed out after 120 seconds with a partial `25,788,416` byte file, far below the advertised archive size, so `qmugs_structure_archive_incomplete` blocks normalization. The GEOM `censo.tar.gz` retry completed to `25,375,585` bytes and opens as a tar archive, but it contains `censo/rd_mols/*.pickle` members and zero `.sdf` members; the SDF converter returned `status: ok` with `written: 0`, so the current validation blocker is `geom_validation_no_sdf_members`.
