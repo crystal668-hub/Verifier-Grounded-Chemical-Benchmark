@@ -392,8 +392,8 @@ tasks:
       - type: minimize_bounded
         property: lumo_energy
         verifier_id: xtb_lumo_gfn2_v1
-        lower: -4.0
-        upper: 1.0
+        lower: -9.0
+        upper: -5.0
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
@@ -643,8 +643,8 @@ tasks:
       - type: maximize_bounded
         property: entropy_298_per_heavy_atom
         verifier_id: xtb_hessian_thermo_gfn2_v1
-        lower: 5.0
-        upper: 18.0
+        lower: 50.0
+        upper: 80.0
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1

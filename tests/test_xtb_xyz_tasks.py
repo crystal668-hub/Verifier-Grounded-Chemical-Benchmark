@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
@@ -133,6 +134,62 @@ def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
     assert structural_domain["heavy_element_diversity_min"] >= 3
     assert "CF4" in structural_domain["formula_denylist"]
     assert "C2F6" in structural_domain["formula_denylist"]
+
+
+def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
+    from verifiers.backends.rdkit_descriptors import score_constraint
+
+    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+
+    lumo = next(item for item in tasks["xtb_lumo_min_008"]["constraints"] if item["property"] == "lumo_energy")
+    assert lumo["type"] == "minimize_bounded"
+    assert lumo["lower"] == -9.0
+    assert lumo["upper"] == -5.0
+    assert score_constraint({"lumo_energy": -8.442}, lumo) == pytest.approx(0.8605, rel=1e-4)
+    assert score_constraint({"lumo_energy": -8.217}, lumo) == pytest.approx(0.80425, rel=1e-4)
+    assert score_constraint({"lumo_energy": -5.607}, lumo) == pytest.approx(0.15175, rel=1e-4)
+
+    hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
+    entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
+    imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
+    assert imaginary["role"] == "stability_gate"
+    assert imaginary["min"] == 0
+    assert imaginary["max"] == 0
+    assert entropy["type"] == "maximize_bounded"
+    assert entropy["lower"] == 50.0
+    assert entropy["upper"] == 80.0
+    assert score_constraint({"entropy_298_per_heavy_atom": 43.397}, entropy) == 0.0
+    assert score_constraint({"entropy_298_per_heavy_atom": 65.298}, entropy) == pytest.approx(0.509933, rel=1e-4)
+    assert score_constraint({"entropy_298_per_heavy_atom": 75.229}, entropy) == pytest.approx(0.840967, rel=1e-4)
+
+    polarizability = next(
+        item
+        for item in tasks["xtb_polarizability_dipole_opt_009"]["constraints"]
+        if item["property"] == "polarizability_per_heavy_atom"
+    )
+    solvation = next(
+        item
+        for item in tasks["xtb_solvation_selectivity_alpb_010"]["constraints"]
+        if item["property"] == "alpb_water_hexane_selectivity"
+    )
+    electrophilicity = next(
+        item
+        for item in tasks["xtb_electrophilicity_max_011"]["constraints"]
+        if item["property"] == "global_electrophilicity"
+    )
+    fukui = next(
+        item
+        for item in tasks["xtb_fukui_carbon_site_012"]["constraints"]
+        if item["property"] == "max_f_plus_on_carbon"
+    )
+    assert polarizability["lower"] == 4.0
+    assert polarizability["upper"] == 12.0
+    assert solvation["lower"] == 0.0
+    assert solvation["upper"] == 1.5
+    assert electrophilicity["lower"] == 0.5
+    assert electrophilicity["upper"] == 4.0
+    assert fukui["lower"] == 0.05
+    assert fukui["upper"] == 0.35
 
 
 def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
