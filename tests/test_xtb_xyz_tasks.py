@@ -149,10 +149,10 @@ def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
     lumo = next(item for item in tasks["xtb_lumo_min_008"]["constraints"] if item["property"] == "lumo_energy")
     assert lumo["type"] == "minimize_bounded"
     assert lumo["lower"] == -9.0
-    assert lumo["upper"] == -5.0
-    assert score_constraint({"lumo_energy": -8.442}, lumo) == pytest.approx(0.8605, rel=1e-4)
-    assert score_constraint({"lumo_energy": -8.217}, lumo) == pytest.approx(0.80425, rel=1e-4)
-    assert score_constraint({"lumo_energy": -5.607}, lumo) == pytest.approx(0.15175, rel=1e-4)
+    assert lumo["upper"] == -6.0
+    assert score_constraint({"lumo_energy": -8.5664}, lumo) == pytest.approx(0.855467, rel=1e-4)
+    assert score_constraint({"lumo_energy": -8.0285}, lumo) == pytest.approx(0.676167, rel=1e-4)
+    assert score_constraint({"lumo_energy": -5.607}, lumo) == 0.0
 
     hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
@@ -190,9 +190,19 @@ def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
     assert polarizability["lower"] == 4.0
     assert polarizability["upper"] == 12.0
     assert solvation["lower"] == 0.0
-    assert solvation["upper"] == 1.5
+    assert solvation["upper"] == 0.35
+    assert score_constraint({"alpb_water_hexane_selectivity": 0.23772563040053657}, solvation) == pytest.approx(
+        0.679216,
+        rel=1e-4,
+    )
+    assert score_constraint({"alpb_water_hexane_selectivity": 0.055189565791327444}, solvation) == pytest.approx(
+        0.157685,
+        rel=1e-4,
+    )
     assert electrophilicity["lower"] == 0.5
-    assert electrophilicity["upper"] == 4.0
+    assert electrophilicity["upper"] == 3.8
+    assert score_constraint({"global_electrophilicity": 2.4939}, electrophilicity) == pytest.approx(0.604212, rel=1e-4)
+    assert score_constraint({"global_electrophilicity": 1.8535}, electrophilicity) == pytest.approx(0.410152, rel=1e-4)
     assert fukui["lower"] == 0.05
     assert fukui["upper"] == 0.35
 

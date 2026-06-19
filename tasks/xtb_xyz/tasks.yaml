@@ -393,7 +393,7 @@ tasks:
         property: lumo_energy
         verifier_id: xtb_lumo_gfn2_v1
         lower: -9.0
-        upper: -5.0
+        upper: -6.0
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
@@ -492,7 +492,7 @@ tasks:
         property: alpb_water_hexane_selectivity
         verifier_id: xtb_solvation_selectivity_alpb_v1
         lower: 0.0
-        upper: 1.5
+        upper: 0.35
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
@@ -538,7 +538,7 @@ tasks:
         property: global_electrophilicity
         verifier_id: xtb_electrophilicity_gfn1_ipea_v1
         lower: 0.5
-        upper: 4.0
+        upper: 3.8
       - type: minimize_bounded
         property: relaxation_energy
         verifier_id: xtb_relaxation_energy_gfn2_v1
