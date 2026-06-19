@@ -13,6 +13,14 @@ ROOT = Path(__file__).resolve().parents[1]
 TASK_DIR = ROOT / "tasks" / "xtb_xyz"
 ANSWERS_PATH = TASK_DIR / "calibration_answers.jsonl"
 MANIFEST_PATH = TASK_DIR / "calibration_manifest.yaml"
+ADVANCED_TASK_IDS = {
+    "xtb_lumo_min_008",
+    "xtb_polarizability_dipole_opt_009",
+    "xtb_solvation_selectivity_alpb_010",
+    "xtb_electrophilicity_max_011",
+    "xtb_fukui_carbon_site_012",
+    "xtb_hessian_thermo_stability_013",
+}
 
 
 def _load_answers() -> list[dict]:
@@ -76,14 +84,31 @@ def test_xtb_calibration_covers_every_task_with_positive_and_negative_cases() ->
 
 def test_xtb_advanced_tasks_have_at_least_three_calibration_roles() -> None:
     answers = _load_answers()
-    advanced_task_ids = {
-        "xtb_lumo_min_008",
-        "xtb_polarizability_dipole_opt_009",
-        "xtb_solvation_selectivity_alpb_010",
-        "xtb_electrophilicity_max_011",
-        "xtb_fukui_carbon_site_012",
-        "xtb_hessian_thermo_stability_013",
-    }
-    for task_id in advanced_task_ids:
+    for task_id in ADVANCED_TASK_IDS:
         roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}
         assert {"positive_candidate", "near_miss", "negative_baseline"}.issubset(roles), task_id
+
+
+def test_xtb_advanced_calibration_manifest_records_curated_controls() -> None:
+    answers = _load_answers()
+    manifest = _load_manifest()
+
+    for task_id in ADVANCED_TASK_IDS:
+        task_answers = [answer for answer in answers if answer["task_id"] == task_id]
+        roles = {answer["role"] for answer in task_answers}
+        assert {"positive_candidate", "near_miss", "negative_baseline"}.issubset(roles), task_id
+
+        positive_ids = [answer["candidate_id"] for answer in task_answers if answer["role"] == "positive_candidate"]
+        assert len(positive_ids) >= 1, task_id
+        for candidate_id in positive_ids:
+            metadata = manifest["candidates"][candidate_id]
+            assert metadata["expected_behavior"][task_id] in {"high_score", "medium_or_high_score"}
+            assert metadata["source"]
+            assert metadata["molecule_family"]
+
+    curated_ids = {
+        answer["candidate_id"]
+        for answer in answers
+        if answer["task_id"] in ADVANCED_TASK_IDS and answer["role"] in {"positive_candidate", "near_miss"}
+    }
+    assert any("qm9" in manifest["candidates"][candidate_id]["source"].lower() for candidate_id in curated_ids)

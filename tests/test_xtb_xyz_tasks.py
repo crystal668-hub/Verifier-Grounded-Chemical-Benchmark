@@ -94,12 +94,17 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
         "xtb_polarizability_dipole_opt_009",
         "xtb_solvation_selectivity_alpb_010",
         "xtb_electrophilicity_max_011",
-        "xtb_fukui_carbon_site_012",
     ]
     for task_id in optimization_tasks:
         structural_domain = tasks[task_id]["structural_domain"]
         assert structural_domain["heavy_atom_count"][0] >= 6
         assert "formula_denylist" in structural_domain or "heavy_element_diversity_min" in structural_domain
+
+    fukui_domain = tasks["xtb_fukui_carbon_site_012"]["structural_domain"]
+    assert fukui_domain["heavy_atom_count"] == [4, 32]
+    assert fukui_domain["carbon_count_min"] == 3
+    assert fukui_domain["hetero_atom_count_min"] == 1
+    assert "formula_denylist" in fukui_domain
 
     task_006_constraints = tasks["xtb_low_gap_high_dipole_opt_006"]["constraints"]
     gap = next(item for item in task_006_constraints if item["property"] == "homo_lumo_gap")

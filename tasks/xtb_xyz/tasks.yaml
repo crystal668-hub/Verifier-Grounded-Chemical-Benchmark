@@ -567,8 +567,8 @@ tasks:
       - The XYZ must contain exactly one connected molecule with all hydrogens explicit.
       - Allowed elements: H, C, N, O, F, P, S, Cl, Br.
       - Atom count must be between 3 and 80 inclusive.
-      - Heavy atom count must be between 8 and 32 inclusive.
-      - Use at least 5 carbon atoms and at least 2 hetero atoms.
+      - Heavy atom count must be between 4 and 32 inclusive.
+      - Use at least 3 carbon atoms and at least 1 hetero atom.
       - Coordinates must be in Angstrom and suitable for local xTB optimization.
       - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
       - Maximize the strongest carbon-atom f+ local reactivity descriptor.
@@ -598,9 +598,9 @@ tasks:
         lower: 0.0
         upper: 0.35
     structural_domain:
-      heavy_atom_count: [8, 32]
-      carbon_count_min: 5
-      hetero_atom_count_min: 2
+      heavy_atom_count: [4, 32]
+      carbon_count_min: 3
+      hetero_atom_count_min: 1
       formula_denylist: [HCN, CH2O, CH3NO2]
     scoring:
       aggregation: geometric_mean
