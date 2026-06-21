@@ -268,6 +268,113 @@ $$$$
     assert rows[0]["source_file"] == "wanted/keep.sdf"
 
 
+def test_convert_xtb_real_dataset_geom_pickle_to_jsonl(tmp_path) -> None:
+    import pickle
+    import tarfile
+
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+
+    mol = Chem.AddHs(Chem.MolFromSmiles("CCO"))
+    assert AllChem.EmbedMolecule(mol, randomSeed=7) == 0
+    payload = {
+        "conformers": [
+            {
+                "rd_mol": mol,
+                "geom_id": 0,
+                "confnum": 4,
+                "ExTB": -12.3,
+            }
+        ]
+    }
+    pickle_path = tmp_path / "fixture.pickle"
+    pickle_path.write_bytes(pickle.dumps(payload))
+    archive = tmp_path / "geom.tar.gz"
+    with tarfile.open(archive, "w:gz") as handle:
+        handle.add(pickle_path, arcname="censo/rd_mols/ABC.pickle")
+
+    output = tmp_path / "geom.jsonl"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/convert_xtb_real_dataset_geom_pickle.py",
+            "--input",
+            str(archive),
+            "--output-jsonl",
+            str(output),
+            "--limit",
+            "1",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    summary = json.loads(completed.stdout)
+    assert summary["pickle_members_seen"] == 1
+    assert summary["pickle_load_errors"] == 0
+    assert summary["written"] == 1
+    rows = [json.loads(line) for line in output.read_text().splitlines()]
+    assert rows[0]["dataset_name"] == "geom_drugs"
+    assert rows[0]["record_id"] == "ABC_0"
+    assert rows[0]["geometry_source"] == "geom_pickle_rdkit_conformer"
+    assert rows[0]["xyz"].startswith("9\n")
+    assert rows[0]["source_file"] == "censo/rd_mols/ABC.pickle"
+
+
+def test_convert_xtb_real_dataset_geom_pickle_reports_skipped_members(tmp_path) -> None:
+    import pickle
+    import tarfile
+
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+
+    mol = Chem.AddHs(Chem.MolFromSmiles("CO"))
+    assert AllChem.EmbedMolecule(mol, randomSeed=11) == 0
+    valid_payload = {"conformers": [{"rd_mol": mol, "geom_id": 5}]}
+
+    invalid_pickle = tmp_path / "invalid.pickle"
+    invalid_pickle.write_bytes(b"not a pickle")
+    oversized_pickle = tmp_path / "oversized.pickle"
+    oversized_pickle.write_bytes(pickle.dumps(valid_payload) + (b"x" * 32))
+    valid_pickle = tmp_path / "valid.pickle"
+    valid_pickle.write_bytes(pickle.dumps(valid_payload))
+    max_member_bytes = valid_pickle.stat().st_size
+
+    archive = tmp_path / "geom.tar.gz"
+    with tarfile.open(archive, "w:gz") as handle:
+        handle.add(invalid_pickle, arcname="censo/rd_mols/invalid.pickle")
+        handle.add(oversized_pickle, arcname="censo/rd_mols/oversized.pickle")
+        handle.add(valid_pickle, arcname="censo/rd_mols/valid.pickle")
+
+    output = tmp_path / "geom.jsonl"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/convert_xtb_real_dataset_geom_pickle.py",
+            "--input",
+            str(archive),
+            "--output-jsonl",
+            str(output),
+            "--max-member-bytes",
+            str(max_member_bytes),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    summary = json.loads(completed.stdout)
+    assert summary["pickle_members_seen"] == 3
+    assert summary["pickle_load_errors"] == 1
+    assert summary["oversized_members"] == 1
+    assert summary["written"] == 1
+
+
 def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path) -> None:
     def record(dataset_name: str, record_id: str, xyz: str) -> dict[str, object]:
         return {
