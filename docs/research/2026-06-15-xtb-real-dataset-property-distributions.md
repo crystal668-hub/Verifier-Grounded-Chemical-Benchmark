@@ -185,3 +185,123 @@ Intermediate mixed sample build status: `not_ready_for_intermediate_calibration`
 Reason: no non-QM9 normalized JSONL with records is available. The local `.cache/xtb_real_datasets/qmugs/qmugs_bounded.jsonl` file is missing (`0` records), and `.cache/xtb_real_datasets/geom_drugs/geom_validation.jsonl` exists but is `0` bytes with `0` records. QMugs remains blocked by `qmugs_structure_archive_incomplete`; GEOM validation conversion produced `0` SDF-normalized records because `censo.tar.gz` contains pickle members and no `.sdf` members.
 
 Next action: complete a usable QMugs structure archive conversion or add a GEOM pickle/conformer converter before building mixed intermediate samples. Keep Expanded Run blocked until at least one non-QM9 normalized JSONL has records.
+
+## 2026-06-21 Blocking Repair and Intermediate Calibration
+
+This section supersedes the previous `not_ready_for_intermediate_calibration` sample-build decision. The two blocking non-QM9 inputs are now accessible for bounded calibration without full dataset downloads:
+
+| Source | Repair result | Normalized candidate records | Provenance |
+| --- | --- | ---: | --- |
+| QMugs | The partial local `structures.tar.gz` is stream-readable and contains usable SDF members even though the full 7.18 GB archive is not cached. | 600 | `.cache/xtb_real_datasets/qmugs/qmugs_partial_bounded600.jsonl`, `geometry_source=dataset_sdf_3d_partial_archive` |
+| GEOM-Drugs | Added a GEOM censo pickle converter for `censo/rd_mols/*.pickle` members containing RDKit conformers. | 500 | `.cache/xtb_real_datasets/geom_drugs/geom_censo_bounded500.jsonl`, `geometry_source=geom_pickle_rdkit_conformer` |
+
+QMugs conversion emitted RDKit warnings that some molecules were tagged as 2D despite nonzero Z coordinates. The normalized XYZ rows preserve the provided 3D coordinates, so the warning is recorded as source metadata inconsistency rather than a conversion failure.
+
+Commands used for the bounded non-QM9 repair:
+
+```bash
+uv run python scripts/convert_xtb_real_dataset_sdf.py \
+  --input .cache/xtb_real_datasets/qmugs/structures.tar.gz \
+  --dataset-name qmugs \
+  --output-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded600.jsonl \
+  --record-id-property CHEMBL_ID \
+  --geometry-source dataset_sdf_3d_partial_archive \
+  --limit 600
+
+uv run python scripts/convert_xtb_real_dataset_geom_pickle.py \
+  --input .cache/xtb_real_datasets/geom_drugs/censo.tar.gz \
+  --output-jsonl .cache/xtb_real_datasets/geom_drugs/geom_censo_bounded500.jsonl \
+  --limit 500 \
+  --max-conformers-per-molecule 1
+```
+
+The mixed intermediate sample preparation used QM9 plus both non-QM9 sources:
+
+```bash
+uv run python scripts/prepare_xtb_real_dataset_sample.py \
+  --source-manifest data/xtb_real_dataset_sources.yaml \
+  --input-jsonl .cache/xtb_real_datasets/qm9/qm9_smoke60.jsonl \
+  --input-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded600.jsonl \
+  --input-jsonl .cache/xtb_real_datasets/geom_drugs/geom_censo_bounded500.jsonl \
+  --output-dir artifacts/xtb_real_distribution/2026-06-21-expansion-prep \
+  --seed 20260615 \
+  --intermediate
+```
+
+Sample preparation results:
+
+| Metric | Count |
+| --- | ---: |
+| Raw normalized input records | 1,160 |
+| Domain-filtered records | 817 |
+| Unique mixed sampled records | 478 |
+| Rejected records | 343 |
+
+Filtered source coverage:
+
+| Source | Filtered records |
+| --- | ---: |
+| QM9 | 60 |
+| QMugs | 507 |
+| GEOM-Drugs | 250 |
+
+Tier-aware prepared files:
+
+| Tier file | Rows | Dataset mix |
+| --- | ---: | --- |
+| `sampled_records.light.jsonl` | 810 | GEOM 250, QM9 60, QMugs 500 |
+| `sampled_records.medium.jsonl` | 460 | GEOM 150, QM9 60, QMugs 250 |
+| `sampled_records.expensive.jsonl` | 114 | GEOM 17, QM9 60, QMugs 37 |
+
+The full 478-record light run was interrupted after about 10 minutes because the current runner executes each record/property verifier sequentially and was still in early light-tier verifier calls. For this staged delivery, balanced intermediate slices were generated while preserving all three sources:
+
+| Slice | Rows | Dataset mix |
+| --- | ---: | --- |
+| Light | 60 | GEOM 20, QM9 20, QMugs 20 |
+| Medium | 24 | GEOM 8, QM9 8, QMugs 8 |
+| Expensive | 12 | GEOM 4, QM9 4, QMugs 4 |
+
+Slice result files:
+
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/light_slice_results.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/medium_slice_results.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/expensive_slice_results.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/analysis/expanded_run_readiness.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/intermediate_calibration_summary.json`
+
+Intermediate xTB calibration result:
+
+| Tier | Rows | OK | Partial | Errors | Skipped | Property-level error rate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| light | 60 | 60 | 0 | 0 | 0 | 0.00 |
+| medium | 24 | 24 | 0 | 0 | 0 | 0.00 |
+| expensive | 12 | 12 | 0 | 0 | 0 | 0.00 |
+
+Key intermediate quantiles across all slice sources:
+
+| Property | N | P5 | P50 | P95 | Mean | Error rate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `homo_lumo_gap` | 60 | 1.495 | 3.113 | 12.241 | 3.919 | 0.00 |
+| `dipole_moment` | 60 | 0.001 | 4.214 | 8.142 | 4.108 | 0.00 |
+| `lumo_energy` | 60 | -8.852 | -7.011 | 1.167 | -6.402 | 0.00 |
+| `polarizability_per_heavy_atom` | 60 | 8.718 | 9.863 | 11.568 | 9.932 | 0.00 |
+| `relaxation_energy` | 60 | 0.000 | 0.017 | 0.159 | 0.050 | 0.00 |
+| `alpb_water_hexane_selectivity` | 24 | -0.319 | -0.119 | 0.218 | -0.096 | 0.00 |
+| `global_electrophilicity` | 24 | 0.392 | 1.439 | 2.053 | 1.300 | 0.00 |
+| `max_f_plus_on_carbon` | 24 | -0.000 | 0.079 | 0.286 | 0.107 | 0.00 |
+| `f_plus_contrast` | 24 | -0.133 | 0.009 | 0.055 | -0.003 | 0.00 |
+| `imaginary_frequency_count` | 12 | 0.000 | 0.000 | 0.450 | 0.083 | 0.00 |
+| `entropy_298_per_heavy_atom` | 12 | 29.725 | 36.711 | 73.639 | 46.317 | 0.00 |
+
+Expanded Run readiness artifact:
+
+| Metric | Value |
+| --- | ---: |
+| Non-QM9 unique records with at least one OK property | 32 |
+| Attempted properties | 420 |
+| Error properties | 0 |
+| Property error rate | 0.00 |
+| Hessian runtime/parser failures | 0 |
+| Blockers | `non_qm9_ok_records_below_100` |
+
+Decision: `Dataset Expansion Prep / intermediate calibration` is now complete for a staged slice, and the previous data-access blocker is repaired enough to support larger bounded calibration. The project is still `not_ready` for the formal Expanded Run because the xTB-executed non-QM9 unique record count is below the 100-record readiness floor. The next step should be a larger bounded calibration run that targets at least 100 unique non-QM9 OK records, ideally after adding progress/checkpointing or batching support to the runner so the prepared 478-record mixed sample can complete without losing partial progress.
