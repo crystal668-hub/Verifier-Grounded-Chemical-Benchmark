@@ -328,3 +328,129 @@ def test_analyze_xtb_real_dataset_distribution_omits_helper_properties(tmp_path)
     assert completed.returncode == 0
     summary = json.loads((output_dir / "property_distribution_summary.json").read_text())
     assert set(summary["properties"]) == {"alpb_water_hexane_selectivity"}
+
+
+def test_analyze_xtb_real_dataset_distribution_writes_expanded_readiness(tmp_path) -> None:
+    results = tmp_path / "light_results.json"
+    output_dir = tmp_path / "analysis"
+    rows = [
+        {
+            "dataset_name": "qm9",
+            "record_id": "qm9_a",
+            "status": "ok",
+            "failure_type": None,
+            "properties": {"homo_lumo_gap": 5.0},
+            "property_statuses": {"homo_lumo_gap": {"status": "ok", "failure_type": None}},
+        }
+    ]
+    rows.extend(
+        {
+            "dataset_name": "qmugs",
+            "record_id": f"qmugs_{index}",
+            "status": "ok",
+            "failure_type": None,
+            "properties": {"homo_lumo_gap": 2.0 + index},
+            "property_statuses": {"homo_lumo_gap": {"status": "ok", "failure_type": None}},
+        }
+        for index in range(120)
+    )
+    results.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "light",
+                "properties": ["homo_lumo_gap"],
+                "rows": rows,
+            }
+        )
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "--inputs",
+            str(results),
+            "--output-dir",
+            str(output_dir),
+            "--expanded-readiness",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    readiness = json.loads((output_dir / "expanded_run_readiness.json").read_text())
+    assert readiness["non_qm9_ok_records"] == 120
+    assert readiness["ready_for_expanded_run"] is True
+    assert readiness["property_error_rate"] == 0.0
+    assert (output_dir / "expanded_run_readiness.md").read_text().startswith("# Expanded Run Readiness")
+
+
+def test_analyze_xtb_real_dataset_distribution_readiness_uses_property_level_statuses(tmp_path) -> None:
+    results = tmp_path / "expensive_results.json"
+    output_dir = tmp_path / "analysis"
+    rows = []
+    for index in range(100):
+        rows.append(
+            {
+                "dataset_name": "qmugs",
+                "record_id": f"qmugs_{index}",
+                "status": "partial",
+                "failure_type": "domain_error",
+                "properties": {"entropy_298_per_heavy_atom": 30.0},
+                "property_statuses": {
+                    "entropy_298_per_heavy_atom": {"status": "ok", "failure_type": None},
+                    "imaginary_frequency_count": {"status": "skipped", "failure_type": "domain_skip"},
+                    "homo_lumo_gap": {"status": "error", "failure_type": "domain_error"},
+                },
+            }
+        )
+    rows.append(
+        {
+            "dataset_name": "qmugs",
+            "record_id": "runtime_failure",
+            "status": "partial",
+            "failure_type": "verifier_timeout",
+            "properties": {},
+            "property_statuses": {
+                "imaginary_frequency_count": {"status": "error", "failure_type": "verifier_timeout"},
+            },
+        }
+    )
+    results.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "expensive",
+                "properties": ["entropy_298_per_heavy_atom", "imaginary_frequency_count", "homo_lumo_gap"],
+                "rows": rows,
+            }
+        )
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "--inputs",
+            str(results),
+            "--output-dir",
+            str(output_dir),
+            "--expanded-readiness",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert completed.returncode == 0
+    readiness = json.loads((output_dir / "expanded_run_readiness.json").read_text())
+    assert readiness["non_qm9_ok_records"] == 100
+    assert readiness["attempted_property_count"] == 201
+    assert readiness["error_property_count"] == 101
+    assert readiness["hessian_runtime_failures"] == 1
+    assert "hessian_runtime_or_parser_failures" in readiness["blockers"]

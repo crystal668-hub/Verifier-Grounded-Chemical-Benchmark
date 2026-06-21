@@ -25,12 +25,22 @@ PERCENTILES = {
     "p99": 0.99,
 }
 DIAGNOSTIC_THRESHOLDS = [0.2, 0.5, 0.8, 0.95]
+HESSIAN_RUNTIME_FAILURE_TYPES = {
+    "verifier_environment_error",
+    "verifier_timeout",
+    "verifier_tool_error",
+    "parser_error",
+    "parse_error",
+    "runtime_error",
+    "xtb_runtime_error",
+}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", type=Path, nargs="+", required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--expanded-readiness", action="store_true")
     return parser.parse_args()
 
 
@@ -282,6 +292,84 @@ def write_recommendations(path: Path, summary: dict[str, Any], failures: list[di
     path.write_text("\n".join(lines) + "\n")
 
 
+def expanded_readiness(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    non_qm9_ok_records = len(
+        {
+            (str(row.get("dataset_name")), str(row.get("record_id")))
+            for row in rows
+            if str(row.get("dataset_name")) != "qm9" and row_has_property_ok(row)
+        }
+    )
+
+    attempted_property_count = 0
+    error_property_count = 0
+    hessian_runtime_failures = 0
+    for row in rows:
+        for property_name, status in (row.get("property_statuses") or {}).items():
+            if not isinstance(status, dict):
+                continue
+            property_status = status.get("status")
+            if property_status == "skipped":
+                continue
+            attempted_property_count += 1
+            if property_status == "error":
+                error_property_count += 1
+                failure_type = status.get("failure_type")
+                if (
+                    property_name in {"imaginary_frequency_count", "entropy_298_per_heavy_atom"}
+                    and str(failure_type) in HESSIAN_RUNTIME_FAILURE_TYPES
+                ):
+                    hessian_runtime_failures += 1
+
+    property_error_rate = (error_property_count / attempted_property_count) if attempted_property_count else None
+    blockers: list[str] = []
+    if non_qm9_ok_records < 100:
+        blockers.append("non_qm9_ok_records_below_100")
+    if property_error_rate is None:
+        blockers.append("no_attempted_properties")
+    elif property_error_rate > 0.05:
+        blockers.append("property_error_rate_above_5_percent")
+    if hessian_runtime_failures:
+        blockers.append("hessian_runtime_or_parser_failures")
+
+    return {
+        "ready_for_expanded_run": not blockers,
+        "non_qm9_ok_records": non_qm9_ok_records,
+        "attempted_property_count": attempted_property_count,
+        "error_property_count": error_property_count,
+        "property_error_rate": property_error_rate,
+        "hessian_runtime_failures": hessian_runtime_failures,
+        "blockers": blockers,
+    }
+
+
+def row_has_property_ok(row: dict[str, Any]) -> bool:
+    statuses = row.get("property_statuses") or {}
+    if any(isinstance(status, dict) and status.get("status") == "ok" for status in statuses.values()):
+        return True
+    return bool(row.get("properties")) and row.get("status") == "ok"
+
+
+def write_readiness_markdown(readiness: dict[str, Any]) -> str:
+    decision = "ready" if readiness["ready_for_expanded_run"] else "not_ready"
+    error_rate = readiness["property_error_rate"]
+    error_rate_text = fmt(error_rate) if error_rate is not None else "n/a"
+    blockers = readiness["blockers"] or ["none"]
+    lines = [
+        "# Expanded Run Readiness",
+        "",
+        f"- Decision: `{decision}`",
+        f"- Non-QM9 ok records: {readiness['non_qm9_ok_records']}",
+        f"- Attempted property count: {readiness['attempted_property_count']}",
+        f"- Error property count: {readiness['error_property_count']}",
+        f"- Property error rate: {error_rate_text}",
+        f"- Hessian runtime/parser failures: {readiness['hessian_runtime_failures']}",
+        f"- Blockers: {', '.join(blockers)}",
+        "",
+    ]
+    return "\n".join(lines)
+
+
 def main() -> int:
     args = parse_args()
     rows = load_rows(args.inputs)
@@ -294,6 +382,10 @@ def main() -> int:
     (args.output_dir / "property_distribution_summary.md").write_text(write_markdown(summary))
     write_failure_csv(args.output_dir / "failure_summary.csv", failures)
     write_recommendations(args.output_dir / "score_threshold_recommendations.md", summary, failures)
+    if args.expanded_readiness:
+        readiness = expanded_readiness(rows)
+        (args.output_dir / "expanded_run_readiness.json").write_text(json.dumps(readiness, indent=2, sort_keys=True))
+        (args.output_dir / "expanded_run_readiness.md").write_text(write_readiness_markdown(readiness))
     print(json.dumps({"status": "ok", "output_dir": str(args.output_dir)}, indent=2, sort_keys=True))
     return 0
 
