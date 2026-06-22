@@ -50,7 +50,10 @@ PILOT_LIGHT_QUOTAS = {"qm9": 500, "qmugs": 1000, "geom_drugs": 500, "tartarus_op
 INTERMEDIATE_LIGHT_QUOTAS = {"qm9": 250, "qmugs": 500, "geom_drugs": 250, "tartarus_opv": 100}
 INTERMEDIATE_MEDIUM_QUOTAS = {"qm9": 100, "qmugs": 250, "geom_drugs": 150, "tartarus_opv": 50}
 INTERMEDIATE_EXPENSIVE_QUOTAS = {"qm9": 75, "qmugs": 75, "geom_drugs": 50, "tartarus_opv": 0}
-EXPANDED_LIGHT_QUOTAS = {"qm9": 5000, "qmugs": 10000, "geom_drugs": 5000, "tartarus_opv": 2500}
+EXPANDED_LIGHT_QUOTAS = {"qm9": 5000, "qmugs": 3000, "geom_drugs": 2000, "tartarus_opv": 0}
+EXPANDED_MEDIUM_QUOTAS = {"qm9": 1000, "qmugs": 700, "geom_drugs": 300, "tartarus_opv": 0}
+EXPANDED_EXPENSIVE_QUOTAS = {"qm9": 250, "qmugs": 150, "geom_drugs": 100, "tartarus_opv": 0}
+EXPANDED_TIER_TARGETS = {"light": 10000, "medium": 2000, "expensive": 500}
 HESSIAN_DOMAIN = {"atom_count": [6, 48], "heavy_atom_count": [4, 18]}
 
 
@@ -221,6 +224,62 @@ def sample_records(records: list[dict[str, Any]], seed: int, expanded: bool) -> 
     return sample_records_with_quotas(records, quotas, seed)
 
 
+def fit_sample_to_target(
+    selected_records: list[dict[str, Any]],
+    candidate_records: list[dict[str, Any]],
+    target: int | None,
+    seed: int,
+) -> list[dict[str, Any]]:
+    if target is None or len(selected_records) >= target:
+        return sorted(selected_records, key=output_order_key)
+    selected_by_key = {stable_key(record): record for record in selected_records}
+    remaining = [record for record in candidate_records if stable_key(record) not in selected_by_key]
+    needed = target - len(selected_by_key)
+    for record in stratified_sample(remaining, needed, seed):
+        selected_by_key[stable_key(record)] = record
+        if len(selected_by_key) >= target:
+            break
+    return sorted(selected_by_key.values(), key=output_order_key)
+
+
+def tier_aware_sample_records(
+    filtered_records: list[dict[str, Any]],
+    seed: int,
+    light_quotas: dict[str, int],
+    medium_quotas: dict[str, int],
+    expensive_quotas: dict[str, int],
+    tier_targets: dict[str, int] | None = None,
+) -> tuple[
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+]:
+    filtered_dataset_names = {str(record.get("dataset_name")) for record in filtered_records}
+    light_records, light_notes = sample_records_with_quotas(filtered_records, light_quotas, seed)
+    medium_candidates = [record for record in filtered_records if int(record.get("carbon_count", 0)) > 0]
+    medium_records, medium_notes = sample_records_with_quotas(medium_candidates, medium_quotas, seed, filtered_dataset_names)
+    expensive_candidates = [record for record in filtered_records if is_hessian_eligible(record)]
+    expensive_records, expensive_notes = sample_records_with_quotas(
+        expensive_candidates, expensive_quotas, seed, filtered_dataset_names
+    )
+    if tier_targets is not None:
+        light_records = fit_sample_to_target(light_records, filtered_records, tier_targets.get("light"), seed)
+        medium_records = fit_sample_to_target(medium_records, medium_candidates, tier_targets.get("medium"), seed)
+        expensive_records = fit_sample_to_target(expensive_records, expensive_candidates, tier_targets.get("expensive"), seed)
+    sampled_records = sorted(
+        {stable_key(row): row for row in [*light_records, *medium_records, *expensive_records]}.values(),
+        key=output_order_key,
+    )
+    quota_notes = (
+        [{"tier": "light", **note} for note in light_notes]
+        + [{"tier": "medium", **note} for note in medium_notes]
+        + [{"tier": "expensive", **note} for note in expensive_notes]
+    )
+    return light_records, medium_records, expensive_records, sampled_records, quota_notes
+
+
 def stratified_sample(records: list[dict[str, Any]], quota: int, seed: int) -> list[dict[str, Any]]:
     if quota >= len(records):
         return records
@@ -275,26 +334,32 @@ def main() -> int:
         if failure is not None:
             rejected_records.append(failure)
 
-    if mode == "intermediate":
-        filtered_dataset_names = {str(record.get("dataset_name")) for record in filtered_records}
-        light_records, light_notes = sample_records_with_quotas(filtered_records, INTERMEDIATE_LIGHT_QUOTAS, args.seed)
-        medium_candidates = [record for record in filtered_records if int(record.get("carbon_count", 0)) > 0]
-        medium_records, medium_notes = sample_records_with_quotas(
-            medium_candidates, INTERMEDIATE_MEDIUM_QUOTAS, args.seed, filtered_dataset_names
+    tier_sampled_record_counts: dict[str, int] | None = None
+    tier_targets: dict[str, int] | None = None
+    if mode in {"intermediate", "expanded"}:
+        if mode == "expanded":
+            light_quotas = EXPANDED_LIGHT_QUOTAS
+            medium_quotas = EXPANDED_MEDIUM_QUOTAS
+            expensive_quotas = EXPANDED_EXPENSIVE_QUOTAS
+            tier_targets = EXPANDED_TIER_TARGETS
+        else:
+            light_quotas = INTERMEDIATE_LIGHT_QUOTAS
+            medium_quotas = INTERMEDIATE_MEDIUM_QUOTAS
+            expensive_quotas = INTERMEDIATE_EXPENSIVE_QUOTAS
+
+        light_records, medium_records, expensive_records, sampled_records, quota_notes = tier_aware_sample_records(
+            filtered_records,
+            args.seed,
+            light_quotas,
+            medium_quotas,
+            expensive_quotas,
+            tier_targets,
         )
-        expensive_candidates = [record for record in filtered_records if is_hessian_eligible(record)]
-        expensive_records, expensive_notes = sample_records_with_quotas(
-            expensive_candidates, INTERMEDIATE_EXPENSIVE_QUOTAS, args.seed, filtered_dataset_names
-        )
-        sampled_records = sorted(
-            {stable_key(row): row for row in [*light_records, *medium_records, *expensive_records]}.values(),
-            key=output_order_key,
-        )
-        quota_notes = (
-            [{"tier": "light", **note} for note in light_notes]
-            + [{"tier": "medium", **note} for note in medium_notes]
-            + [{"tier": "expensive", **note} for note in expensive_notes]
-        )
+        tier_sampled_record_counts = {
+            "light": len(light_records),
+            "medium": len(medium_records),
+            "expensive": len(expensive_records),
+        }
         write_jsonl(output_dir / "sampled_records.light.jsonl", light_records)
         write_jsonl(output_dir / "sampled_records.medium.jsonl", medium_records)
         write_jsonl(output_dir / "sampled_records.expensive.jsonl", expensive_records)
@@ -319,6 +384,10 @@ def main() -> int:
         "quota_notes": quota_notes,
         "domain": XTB_DOMAIN,
     }
+    if tier_targets is not None:
+        manifest["tier_targets"] = tier_targets
+    if tier_sampled_record_counts is not None:
+        manifest["tier_sampled_record_counts"] = tier_sampled_record_counts
     (output_dir / "sample_manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True))
     print(json.dumps({"status": "ok", "output_dir": str(output_dir), "sampled_record_count": len(sampled_records)}, indent=2, sort_keys=True))
     return 0

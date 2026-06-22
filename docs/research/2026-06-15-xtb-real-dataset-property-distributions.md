@@ -374,7 +374,7 @@ Recommended formal run target remains the low end of the planned expanded quotas
 | medium | 2,000 | `sampled_records.medium.jsonl` |
 | expensive | 500 | `sampled_records.expensive.jsonl` |
 
-Command template:
+Initial command template, now superseded by the `2026-06-22 Expanded Input Scale-Up` section below:
 
 ```bash
 RUN_ID=2026-06-22-expanded-run
@@ -417,3 +417,84 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
 ```
 
 Decision: formal Expanded Run preparation is complete. The source-coverage, property-error-rate, and Hessian runtime/parser gates are satisfied. OPV remains outside automatic calibration until a provenance-explicit 3D geometry source is available, but it is no longer a blocker for launching the QM9 + QMugs + GEOM formal Expanded Run.
+
+## 2026-06-22 Expanded Input Scale-Up
+
+The final preflight found that the previous formal command template pointed at intermediate-scale tier files. The formal run would have been technically launchable, but `--max-records 10000/2000/500` would only process the rows present in those files. This pass expanded the available normalized inputs and regenerated formal tier files under a fresh artifact directory:
+
+- `artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/`
+
+Input expansion:
+
+| Source | Normalized rows supplied | Filtered rows | Notes |
+| --- | ---: | ---: | --- |
+| QM9 | 6,000 | 5,991 | Converted from local `gdb9.sdf` as `qm9_bounded6000.jsonl`. |
+| QMugs | 7,210 | 6,424 | Converted from the partial local `structures.tar.gz` with `--allow-partial-archive`; 1 archive EOF was tolerated after preserving readable records. Duplicate conformer `record_id` values were disambiguated with stable `__dupNNN` suffixes. |
+| GEOM-Drugs | 534 | 261 | Converted from local `censo.tar.gz`; the small censo archive remains the limiting GEOM source. |
+
+Expanded preparation command:
+
+```bash
+.venv/bin/python scripts/prepare_xtb_real_dataset_sample.py \
+  --source-manifest data/xtb_real_dataset_sources.yaml \
+  --input-jsonl .cache/xtb_real_datasets/qm9/qm9_bounded6000.jsonl \
+  --input-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded12000.jsonl \
+  --input-jsonl .cache/xtb_real_datasets/geom_drugs/geom_censo_bounded6000.jsonl \
+  --output-dir artifacts/xtb_real_distribution/2026-06-22-expanded-inputs \
+  --seed 20260615 \
+  --expanded
+```
+
+Prepared formal tier files:
+
+| Tier file | Rows | Dataset mix | Unique `(dataset, record_id)` rows | Target met |
+| --- | ---: | --- | ---: | --- |
+| `sampled_records.light.jsonl` | 10,000 | QM9 5,337; QMugs 4,402; GEOM 261 | 10,000 | yes |
+| `sampled_records.medium.jsonl` | 2,000 | QM9 1,006; QMugs 733; GEOM 261 | 2,000 | yes |
+| `sampled_records.expensive.jsonl` | 500 | QM9 273; QMugs 209; GEOM 18 | 500 | yes |
+
+The sample manifest records `tier_targets: {"light": 10000, "medium": 2000, "expensive": 500}` and matching `tier_sampled_record_counts`. GEOM remains quota-underfilled in all tiers because the accessible small censo archive only yields 261 general-domain records and 18 hessian-domain records. The sampler now fills underfilled source quotas from remaining eligible QM9/QMugs records so the formal tier totals still meet the selected Expanded Run counts.
+
+Updated formal command template:
+
+```bash
+RUN_ID=2026-06-22-expanded-run
+mkdir -p artifacts/xtb_real_distribution/$RUN_ID
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.light.jsonl \
+  --tier light \
+  --max-records 10000 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
+  --checkpoint-every 25 \
+  --progress-every 25 \
+  --resume
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.medium.jsonl \
+  --tier medium \
+  --max-records 2000 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \
+  --checkpoint-every 10 \
+  --progress-every 10 \
+  --resume
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.expensive.jsonl \
+  --tier expensive \
+  --max-records 500 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/expensive_results.json \
+  --checkpoint-every 5 \
+  --progress-every 5 \
+  --resume
+
+.venv/bin/python scripts/analyze_xtb_real_dataset_distribution.py \
+  --inputs \
+    artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
+    artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \
+    artifacts/xtb_real_distribution/$RUN_ID/expensive_results.json \
+  --output-dir artifacts/xtb_real_distribution/$RUN_ID/analysis \
+  --expanded-readiness
+```
+
+Decision: the formal Expanded Run input-size blocker is repaired for the selected low-end targets. The formal Expanded Run can now process 10,000 light, 2,000 medium, and 500 expensive records from QM9 + QMugs + GEOM inputs. OPV is still not covered, and GEOM diversity is limited by the small accessible censo archive, but neither blocks the planned QM9/QMugs/GEOM formal run.
