@@ -143,4 +143,3 @@ Run:
 uv run python scripts/check_xtb_env.py
 ```
 Expected: `status` is `ok` when local xTB is installed, otherwise the documented `verifier_environment_error` JSON.
-
