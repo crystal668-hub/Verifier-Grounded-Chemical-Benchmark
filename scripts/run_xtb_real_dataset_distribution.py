@@ -64,12 +64,41 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--max-records", type=int, default=None)
     parser.add_argument("--specs", type=Path, default=TASK_DIR / "verifier_specs.yaml")
+    parser.add_argument("--resume", action="store_true", help="Reuse completed rows already present in --output")
+    parser.add_argument("--checkpoint-every", type=int, default=0, help="Write partial output after this many newly completed records")
+    parser.add_argument("--progress-every", type=int, default=0, help="Print progress after this many newly completed records")
     return parser.parse_args()
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     with path.open() as handle:
         return [json.loads(line) for line in handle if line.strip()]
+
+
+def row_key(row: dict[str, Any], tier: str | None = None) -> tuple[str, str, str]:
+    return (
+        str(row.get("tier") or tier or ""),
+        str(row.get("dataset_name") or ""),
+        str(row.get("record_id") or ""),
+    )
+
+
+def load_existing_rows(path: Path, tier: str) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return []
+    rows = payload.get("rows")
+    if not isinstance(rows, list):
+        return []
+    return [row for row in rows if isinstance(row, dict) and row_key(row)[0] == tier]
+
+
+def pending_records(records: list[dict[str, Any]], existing_rows: list[dict[str, Any]], tier: str) -> list[dict[str, Any]]:
+    completed = {row_key(row) for row in existing_rows}
+    return [record for record in records if row_key(record, tier) not in completed]
 
 
 def hidden_task(property_name: str, verifier_id: str) -> dict[str, Any]:
@@ -232,6 +261,29 @@ def write_environment_error() -> int:
     return 1
 
 
+def write_results(
+    path: Path,
+    *,
+    tier: str,
+    sampled_records: Path,
+    executable: str,
+    rows: list[dict[str, Any]],
+    complete: bool,
+) -> None:
+    payload = {
+        "status": "ok" if complete else "running",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "tier": tier,
+        "properties": TIER_PROPERTIES[tier],
+        "sampled_records": str(sampled_records),
+        "xtb_executable": executable,
+        "summary": summarize(rows),
+        "rows": rows,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True))
+
+
 def main() -> int:
     args = parse_args()
     executable = shutil.which("xtb")
@@ -247,20 +299,27 @@ def main() -> int:
     if args.max_records is not None:
         records = records[: args.max_records]
 
-    rows = [run_record(record, args.tier, tasks, specs) for record in records]
-    payload = {
-        "status": "ok",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "tier": args.tier,
-        "properties": TIER_PROPERTIES[args.tier],
-        "sampled_records": str(args.sampled_records),
-        "xtb_executable": executable,
-        "summary": summarize(rows),
-        "rows": rows,
-    }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(payload, indent=2, sort_keys=True))
-    print(json.dumps({"status": "ok", "output": str(args.output), "summary": payload["summary"]}, indent=2, sort_keys=True))
+    rows = load_existing_rows(args.output, args.tier) if args.resume else []
+    remaining_records = pending_records(records, rows, args.tier) if args.resume else records
+    for completed_count, record in enumerate(remaining_records, start=1):
+        rows.append(run_record(record, args.tier, tasks, specs))
+        if args.checkpoint_every > 0 and completed_count % args.checkpoint_every == 0:
+            write_results(args.output, tier=args.tier, sampled_records=args.sampled_records, executable=executable, rows=rows, complete=False)
+        if args.progress_every > 0 and completed_count % args.progress_every == 0:
+            print(
+                json.dumps(
+                    {
+                        "status": "running",
+                        "completed_new_records": completed_count,
+                        "total_rows": len(rows),
+                        "remaining_records": len(remaining_records) - completed_count,
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+    write_results(args.output, tier=args.tier, sampled_records=args.sampled_records, executable=executable, rows=rows, complete=True)
+    print(json.dumps({"status": "ok", "output": str(args.output), "summary": summarize(rows)}, indent=2, sort_keys=True))
     return 0
 
 

@@ -23,6 +23,9 @@ def test_run_xtb_real_dataset_distribution_help() -> None:
     assert "--sampled-records" in completed.stdout
     assert "--tier" in completed.stdout
     assert "--output" in completed.stdout
+    assert "--resume" in completed.stdout
+    assert "--checkpoint-every" in completed.stdout
+    assert "--progress-every" in completed.stdout
 
 
 def test_run_xtb_real_dataset_distribution_reports_missing_xtb(tmp_path) -> None:
@@ -88,6 +91,108 @@ def test_run_xtb_real_dataset_distribution_rows_expose_property_statuses() -> No
     assert summary["num_partial"] == 1
     assert summary["property_statuses"]["global_electrophilicity"]["ok"] == 1
     assert summary["property_statuses"]["max_f_plus_on_carbon"]["error"] == 1
+
+
+def test_run_xtb_real_dataset_distribution_resume_skips_existing_rows(tmp_path) -> None:
+    from scripts.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+
+    output = tmp_path / "results.json"
+    output.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "light",
+                "rows": [
+                    {
+                        "dataset_name": "qmugs",
+                        "record_id": "done",
+                        "tier": "light",
+                        "status": "ok",
+                    }
+                ],
+            }
+        )
+    )
+    records = [
+        {"dataset_name": "qmugs", "record_id": "done"},
+        {"dataset_name": "geom_drugs", "record_id": "todo"},
+    ]
+
+    existing = load_existing_rows(output, "light")
+    pending = pending_records(records, existing, "light")
+
+    assert [row["record_id"] for row in existing] == ["done"]
+    assert [row["record_id"] for row in pending] == ["todo"]
+
+
+def test_run_xtb_real_dataset_distribution_resume_does_not_skip_other_tiers(tmp_path) -> None:
+    from scripts.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+
+    output = tmp_path / "results.json"
+    output.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "tier": "medium",
+                "rows": [
+                    {
+                        "dataset_name": "qmugs",
+                        "record_id": "same-record",
+                        "tier": "medium",
+                        "status": "ok",
+                    }
+                ],
+            }
+        )
+    )
+    records = [{"dataset_name": "qmugs", "record_id": "same-record"}]
+
+    existing = load_existing_rows(output, "light")
+    pending = pending_records(records, existing, "light")
+
+    assert existing == []
+    assert [row["record_id"] for row in pending] == ["same-record"]
+
+
+def test_run_xtb_real_dataset_distribution_resume_keeps_dataset_names_distinct(tmp_path) -> None:
+    from scripts.run_xtb_real_dataset_distribution import pending_records
+
+    existing = [{"dataset_name": "qmugs", "record_id": "same-record", "tier": "light"}]
+    records = [
+        {"dataset_name": "qmugs", "record_id": "same-record"},
+        {"dataset_name": "geom_drugs", "record_id": "same-record"},
+    ]
+
+    pending = pending_records(records, existing, "light")
+
+    assert [(row["dataset_name"], row["record_id"]) for row in pending] == [("geom_drugs", "same-record")]
+
+
+def test_run_xtb_real_dataset_distribution_writes_checkpoint_payload(tmp_path) -> None:
+    from scripts.run_xtb_real_dataset_distribution import write_results
+
+    output = tmp_path / "results.json"
+    write_results(
+        output,
+        tier="light",
+        sampled_records=tmp_path / "sampled.jsonl",
+        executable="/usr/bin/xtb",
+        rows=[
+            {
+                "dataset_name": "qmugs",
+                "record_id": "a",
+                "tier": "light",
+                "status": "ok",
+                "property_statuses": {"homo_lumo_gap": {"status": "ok"}},
+            }
+        ],
+        complete=False,
+    )
+
+    payload = json.loads(output.read_text())
+    assert payload["status"] == "running"
+    assert payload["summary"]["num_ok"] == 1
+    assert payload["rows"][0]["record_id"] == "a"
 
 
 def test_analyze_xtb_real_dataset_distribution_outputs_quantiles(tmp_path) -> None:
