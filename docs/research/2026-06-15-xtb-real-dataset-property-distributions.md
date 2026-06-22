@@ -498,3 +498,74 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
 ```
 
 Decision: the formal Expanded Run input-size blocker is repaired for the selected low-end targets. The formal Expanded Run can now process 10,000 light, 2,000 medium, and 500 expensive records from QM9 + QMugs + GEOM inputs. OPV is still not covered, and GEOM diversity is limited by the small accessible censo archive, but neither blocks the planned QM9/QMugs/GEOM formal run.
+
+## 2026-06-22 Formal Expanded Run Results
+
+Formal Expanded Run was launched after the input scale-up gate passed. Execution used shard-level parallelism with the same runner and analyzer interfaces, then merged shard JSON into canonical tier result files:
+
+- `artifacts/xtb_real_distribution/2026-06-22-expanded-run/light_results.json`
+- `artifacts/xtb_real_distribution/2026-06-22-expanded-run/medium_results.json`
+- `artifacts/xtb_real_distribution/2026-06-22-expanded-run/expensive_results.json`
+- `artifacts/xtb_real_distribution/2026-06-22-expanded-run/analysis/`
+
+Run coverage:
+
+| Tier | Target rows | Completed rows | OK | Partial | Errors | Skipped |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| light | 10,000 | 10,000 | 10,000 | 0 | 0 | 0 |
+| medium | 2,000 | 2,000 | 1,999 | 1 | 0 | 0 |
+| expensive | 500 | 500 | 500 | 0 | 0 | 0 |
+
+Property-level readiness:
+
+| Metric | Value |
+| --- | ---: |
+| Non-QM9 records with at least one OK property | 4,663 |
+| Attempted properties | 59,000 |
+| Error properties | 1 |
+| Property error rate | 0.00001695 |
+| Hessian runtime/parser failures | 0 |
+| Blockers | none |
+| Ready for Expanded Run analysis | `true` |
+
+The only recorded failure was one QM9 `verifier_tool_error` for `global_electrophilicity`; the row is otherwise retained as `partial`. No light-tier, hessian, parser, or runtime failure pattern was observed.
+
+All-source property quantiles:
+
+| Property | N | P5 | P50 | P95 | Mean | Errors |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `homo_lumo_gap` | 10,000 | 1.929 | 3.447 | 9.295 | 4.109 | 0 |
+| `dipole_moment` | 10,000 | 0.749 | 3.240 | 7.404 | 3.560 | 0 |
+| `lumo_energy` | 10,000 | -8.206 | -6.675 | -1.384 | -6.136 | 0 |
+| `polarizability_per_heavy_atom` | 10,000 | 8.416 | 9.822 | 10.917 | 9.751 | 0 |
+| `relaxation_energy` | 10,000 | 0.000 | 0.023 | 0.087 | 0.028 | 0 |
+| `alpb_water_hexane_selectivity` | 2,000 | -0.449 | -0.091 | 0.450 | -0.054 | 0 |
+| `global_electrophilicity` | 1,999 | 0.321 | 1.070 | 1.924 | 1.073 | 1 |
+| `max_f_plus_on_carbon` | 2,000 | -0.005 | 0.086 | 0.232 | 0.101 | 0 |
+| `f_plus_contrast` | 2,000 | -0.150 | -0.013 | 0.126 | -0.024 | 0 |
+| `imaginary_frequency_count` | 500 | 0.000 | 0.000 | 0.000 | 0.030 | 0 |
+| `entropy_298_per_heavy_atom` | 500 | 28.961 | 43.078 | 54.850 | 41.379 | 0 |
+
+Important source-slice signals:
+
+| Property | QM9 P50 | QMugs P50 | GEOM P50 | Interpretation |
+| --- | ---: | ---: | ---: | --- |
+| `homo_lumo_gap` | 4.500 | 2.786 | 2.889 | Drug-like and GEOM slices are substantially lower-gap than QM9. |
+| `dipole_moment` | 2.530 | 4.108 | 4.767 | Non-QM9 sources are more polar in this expanded sample. |
+| `lumo_energy` | -5.906 | -7.133 | -7.110 | QMugs/GEOM have lower LUMO distributions than QM9. |
+| `relaxation_energy` | 0.038 | 0.000 | 0.138 | QMugs conformers are nearly xTB-relaxed; GEOM censo conformers relax more. |
+| `alpb_water_hexane_selectivity` | 0.018 | -0.208 | -0.186 | Source slices differ in solvent selectivity sign and center. |
+| `entropy_298_per_heavy_atom` | 47.205 | 32.756 | 30.747 | Hessian thermochemistry is strongly source/size dependent. |
+
+Generated analysis files:
+
+- `property_distribution_summary.json`
+- `property_distribution_summary.csv`
+- `property_distribution_summary.md`
+- `per_dataset_quantiles.csv`
+- `failure_summary.csv`
+- `score_threshold_recommendations.md`
+- `expanded_run_readiness.json`
+- `expanded_run_readiness.md`
+
+Decision: the final chemistry property distribution statistics are available for the selected Expanded Run scale. The data is sufficient for the next threshold-calibration decision pass across QM9 + QMugs + GEOM, with two explicit limitations: OPV/materials coverage is still absent, and GEOM coverage is constrained by the small censo archive.
