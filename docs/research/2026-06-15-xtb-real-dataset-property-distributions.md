@@ -305,3 +305,115 @@ Expanded Run readiness artifact:
 | Blockers | `non_qm9_ok_records_below_100` |
 
 Decision: `Dataset Expansion Prep / intermediate calibration` is now complete for a staged slice, and the previous data-access blocker is repaired enough to support larger bounded calibration. The project is still `not_ready` for the formal Expanded Run because the xTB-executed non-QM9 unique record count is below the 100-record readiness floor. The next step should be a larger bounded calibration run that targets at least 100 unique non-QM9 OK records, ideally after adding progress/checkpointing or batching support to the runner so the prepared 478-record mixed sample can complete without losing partial progress.
+
+## 2026-06-22 Expanded Run Preparation
+
+The next calibration pass added checkpoint/resume support to `scripts/run_xtb_real_dataset_distribution.py` and reran a larger non-QM9 light-tier slice. This directly addressed the previous readiness blocker, `non_qm9_ok_records_below_100`.
+
+Runner preparation:
+
+- Added `--resume`, `--checkpoint-every`, and `--progress-every`.
+- Resume keys use `(tier, dataset_name, record_id)` and keep dataset names and tiers distinct.
+- Checkpoints write analyzer-compatible JSON with `status: running`; normal completion rewrites the same output with `status: ok`.
+
+Expanded non-QM9 calibration input:
+
+| Slice | Rows | Unique records | Dataset mix | Atom count range |
+| --- | ---: | ---: | --- | --- |
+| `sampled_records.light.non_qm9_unique140.jsonl` with `--max-records 120` | 120 | 120 | GEOM 70, QMugs 50 | 17-44 |
+
+Command:
+
+```bash
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.light.non_qm9_unique140.jsonl \
+  --tier light \
+  --max-records 120 \
+  --output artifacts/xtb_real_distribution/2026-06-21-expansion-prep/light_non_qm9_unique120_results.json \
+  --checkpoint-every 10 \
+  --progress-every 10 \
+  --resume
+```
+
+Expanded-prep calibration result:
+
+| Tier/source | Rows | OK | Partial | Errors | Skipped | Runtime total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| non-QM9 light | 120 | 120 | 0 | 0 | 0 | 606.72 s |
+| medium slice | 24 | 24 | 0 | 0 | 0 | 116.46 s |
+| expensive slice | 12 | 12 | 0 | 0 | 0 | 11.13 s |
+
+Readiness was recomputed from:
+
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/light_non_qm9_unique120_results.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/medium_slice_results.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/expensive_slice_results.json`
+
+Expanded Run readiness:
+
+| Metric | Value |
+| --- | ---: |
+| Non-QM9 unique records with at least one OK property | 127 |
+| Attempted properties | 720 |
+| Error properties | 0 |
+| Property error rate | 0.00 |
+| Hessian runtime/parser failures | 0 |
+| Blockers | none |
+| Ready for formal Expanded Run | `true` |
+
+Formal Expanded Run preparation artifact:
+
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/formal_expanded_run_prep_manifest.json`
+- `artifacts/xtb_real_distribution/2026-06-21-expansion-prep/analysis-expanded-prep/expanded_run_readiness.json`
+
+Recommended formal run target remains the low end of the planned expanded quotas:
+
+| Tier | Formal target count | Input file |
+| --- | ---: | --- |
+| light | 10,000 | `sampled_records.light.jsonl` |
+| medium | 2,000 | `sampled_records.medium.jsonl` |
+| expensive | 500 | `sampled_records.expensive.jsonl` |
+
+Command template:
+
+```bash
+RUN_ID=2026-06-22-expanded-run
+mkdir -p artifacts/xtb_real_distribution/$RUN_ID
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.light.jsonl \
+  --tier light \
+  --max-records 10000 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
+  --checkpoint-every 25 \
+  --progress-every 25 \
+  --resume
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.medium.jsonl \
+  --tier medium \
+  --max-records 2000 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \
+  --checkpoint-every 10 \
+  --progress-every 10 \
+  --resume
+
+.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+  --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.expensive.jsonl \
+  --tier expensive \
+  --max-records 500 \
+  --output artifacts/xtb_real_distribution/$RUN_ID/expensive_results.json \
+  --checkpoint-every 5 \
+  --progress-every 5 \
+  --resume
+
+.venv/bin/python scripts/analyze_xtb_real_dataset_distribution.py \
+  --inputs \
+    artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
+    artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \
+    artifacts/xtb_real_distribution/$RUN_ID/expensive_results.json \
+  --output-dir artifacts/xtb_real_distribution/$RUN_ID/analysis \
+  --expanded-readiness
+```
+
+Decision: formal Expanded Run preparation is complete. The source-coverage, property-error-rate, and Hessian runtime/parser gates are satisfied. OPV remains outside automatic calibration until a provenance-explicit 3D geometry source is available, but it is no longer a blocker for launching the QM9 + QMugs + GEOM formal Expanded Run.
