@@ -93,6 +93,8 @@ uv run python scripts/analyze_xtb_task_quality.py \
 - `--openclaw-run PATH`：可重复，读取 OpenClaw run 目录或其中的 `results.json`。
 - `--output-dir`：写入报告，默认不覆盖输入。
 
+`--openclaw-run` 的重复参数语义是显式合并多个 benchmark run，而不是只消费一次 run。每个 run 中的每个 `group_id` 都会展开成一个 panel member；为了避免不同 run 复用同一个 `group_id` 时发生冲突，内部 `panel_member_id` 应规范化为 `<run_id>::<group_id>`，同时保留原始 `group_id` 和 `run_id` 字段用于报告展示。第一版不做隐式全盘检索；如果需要从一个 benchmark-run 根目录中自动筛选多个 run，应后续新增显式参数，例如 `--openclaw-run-root`、`--run-name-glob` 和 `--run-generated-after`。
+
 输出文件：
 
 - `task_quality_summary.json`：完整结构化报告；
@@ -150,6 +152,8 @@ OpenClaw 映射规则：
 - `constraint_scores`：`evaluation.details.constraint_scores`。
 - `property_score`、`geometry_quality_score`、`stability_gate_score`：从 `evaluation.details.verifier_result.scores` 读取。
 - `panel_member_id`：`group_id`。
+- `raw_group_id`：`group_id`。
+- `run_id`：OpenClaw run 目录名，或 `results.json` 父目录名。
 - `panel_member_label`：`group_label`。
 - `model`：优先 `runner_meta.agentMeta.provider + "/" + runner_meta.agentMeta.model`；缺失时从 `runtime-manifest.json` 的 `groups.<group_id>.single_agent_model` 读取。
 - `answer_availability`、`answer_reliability`、`evaluable`、`scored`、`skills_enabled`、`websearch`、`elapsed_seconds`：从同名顶层字段读取。
@@ -400,7 +404,7 @@ calibration_quality_score = positive_reachability_score
 
 模型面板证据回答：“题目对真实模型是否有合适难度和区分度？”
 
-输入可以来自 repo-native scored JSON，也可以来自 OpenClaw run。OpenClaw run 中每个 `group_id` 被视为一个 panel member。例如：
+输入可以来自 repo-native scored JSON，也可以来自一个或多个 OpenClaw run。OpenClaw run 中每个 `group_id` 被视为一个 panel member；当同时传入多个 run 时，panel member 的唯一键使用 `<run_id>::<group_id>`。例如：
 
 - `single_llm_skills_on`：`openai/gpt-5.5`，skills enabled；
 - `single_llm_skills_off`：`openai/gpt-5.5`，skills disabled。
@@ -493,6 +497,27 @@ uv run python scripts/analyze_xtb_task_quality.py \
   --output-dir artifacts/xtb_task_quality/2026-06-23
 ```
 
+如果有多个 benchmark run，应重复传入：
+
+```bash
+uv run python scripts/analyze_xtb_task_quality.py \
+  --tasks tasks/xtb_xyz/tasks.yaml \
+  --distribution-results artifacts/xtb_real_distribution/2026-06-22-expanded-run/light_results.json \
+  --distribution-results artifacts/xtb_real_distribution/2026-06-22-expanded-run/medium_results.json \
+  --distribution-results artifacts/xtb_real_distribution/2026-06-22-expanded-run/expensive_results.json \
+  --openclaw-run /Users/xutao/.openclaw/workspace/state/benchmark-runs/run-a \
+  --openclaw-run /Users/xutao/.openclaw/workspace/state/benchmark-runs/run-b \
+  --output-dir artifacts/xtb_task_quality/2026-06-23
+```
+
+多 run 合并规则：
+
+- 每个 run 独立生成 `SourceProvenance`。
+- 每条 attempt 的唯一 panel key 是 `<run_id>::<group_id>`。
+- 报告中同时展示 `run_id`、原始 `group_id`、`group_label`、`model`、`skills_enabled` 和 `websearch`。
+- 如果多个 run 表示同一模型和同一配置的重复实验，默认仍作为多个 panel members 参与分布统计；后续可以增加 `--collapse-repeated-panel-members` 选项，将同一 `(model, skills_enabled, websearch, task_id)` 的重复 attempts 聚合为 mean/best。
+- 模块不应从 `~/.openclaw/workspace/state/benchmark-runs` 自动扫描所有目录，除非用户显式提供后续扩展参数。这样可以避免把过期、失败或不同 task pack 的 run 混入当前质量评估。
+
 OpenClaw provenance 必须写入报告：
 
 - run directory；
@@ -574,7 +599,8 @@ CLI 测试：
 验收标准：
 
 - 能从 OpenClaw run 目录读取 `single_llm_skills_on` 和 `single_llm_skills_off` 两个 panel members；
+- 能同时读取多个显式传入的 OpenClaw run，并用 `<run_id>::<group_id>` 避免 panel member id 冲突；
 - 能把 OpenClaw scored attempts 和 repo-native calibration results 合并到同一模型面板/控制样本 schema；
-- 能对至少 7 个已有 xTB tasks 输出 task-level decision；
+- 能对当前 13 个 xTB tasks 输出 task-level decision；如果某个 run 只覆盖其中一部分 task，报告应对缺失 task 标记 `missing_model_panel_attempts`，而不是降低当前正式 task 数；
 - 不修改或复制 repo 外输入文件；
 - 所有报告都包含 source provenance。
