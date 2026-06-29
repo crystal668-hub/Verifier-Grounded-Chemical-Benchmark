@@ -24,6 +24,9 @@ dependencies = [
 dev = [
     "pytest==8.4.2",
 ]
+materials = [
+    "matgl==4.0.2",
+]
 
 [tool.uv]
 package = true
