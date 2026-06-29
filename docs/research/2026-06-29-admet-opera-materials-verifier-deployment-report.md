@@ -196,6 +196,18 @@ opera -h
 OPERA <input> <output> <options>
 ```
 
+本轮 backend 接入时按官方 `run_OPERA.sh` launcher 固化了实际 verifier
+调用契约：
+
+```text
+run_OPERA.sh <mcr_directory> --SMI <input.smi> --Output <output.csv> --Endpoint <endpoint>
+```
+
+因此本地部署除 `OPERA_EXECUTABLE` 外还需要配置 MATLAB Runtime 目录
+`OPERA_MCR_DIRECTORY`。macOS arm64 本机未安装 OPERA；当前 verifier
+backend 会把未配置 executable 或 MCR 的情况报告为
+`verifier_environment_error`，正式验证仍应在 Linux/Docker 环境中完成。
+
 安装指南还说明 accepted input files 包括 QSAR-ready `.smi`、`.sdf/.mol`，以及 command-line only 的 descriptor `.csv`。正式 verifier 应优先接受结构输入文件，不使用 `.txt` chemical ID 查找模式。
 
 不建议正式 verifier 依赖 GUI 或在线服务。`OPERA2.9_CL_Par` 只在批量校准或大规模候选筛选时使用；单候选评分优先普通 CL 包，减少并发不确定性。
@@ -392,6 +404,13 @@ mgl relax --infile Li2O.cif --outfile Li2O_relax.cif
 mgl predict --model M3GNet-Eform-MP-2018.6.1 --infile Li2O.cif
 mgl clear
 ```
+
+本轮部署将 `matgl==4.0.2` 放入 `materials` dependency group，并记录了
+`lightning` lockfile resolution 从 `2.6.5` 到 `2.6.1` 的变化。当前 native
+backend 已接入 pymatgen CIF 解析、MatGL model loading、`formation_energy`
+和 `bandgap` 两个 property shell；单元测试通过 fake model 覆盖，不在测试
+时下载 Hugging Face model。正式题目化前仍需要为具体 band gap checkpoint
+补充 fidelity/state_attr 配置，并在 verifier image build 阶段预缓存模型。
 
 ### 6.2 可计算/预测性质
 
