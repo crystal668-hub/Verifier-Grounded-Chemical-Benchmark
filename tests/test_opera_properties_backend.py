@@ -90,6 +90,21 @@ def test_evaluate_opera_constraint_missing_mcr_directory_maps_to_environment_err
     assert "mcr" in result["message"].lower()
 
 
+def test_evaluate_opera_constraint_bad_mcr_directory_includes_path(tmp_path) -> None:
+    executable = tmp_path / "fake_opera"
+    missing_mcr_directory = tmp_path / "missing-mcr"
+    executable.write_text("#!/bin/sh\nexit 99\n")
+    executable.chmod(executable.stat().st_mode | 0o111)
+    candidate, task, constraint, spec = payload()
+    spec["opera"] = {"executable": os.fspath(executable), "mcr_directory": os.fspath(missing_mcr_directory)}
+
+    result = evaluate_opera_constraint(candidate, task, constraint, spec)
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_environment_error"
+    assert os.fspath(missing_mcr_directory) in result["message"]
+
+
 def test_evaluate_opera_constraint_runs_fake_executable(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path,

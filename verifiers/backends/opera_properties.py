@@ -101,6 +101,13 @@ def evaluate_opera_constraint(
             "OPERA MCR directory not configured. Set spec['opera']['mcr_directory'] or OPERA_MCR_DIRECTORY.",
             properties=domain_properties,
         )
+    if not Path(mcr_directory).is_dir():
+        return error_result(
+            result,
+            "verifier_environment_error",
+            f"Configured OPERA MCR directory is not a directory: {mcr_directory}",
+            properties=domain_properties,
+        )
 
     canonical_smiles = Chem.MolToSmiles(mol, canonical=True)
     try:

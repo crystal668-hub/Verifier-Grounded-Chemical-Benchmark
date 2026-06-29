@@ -22,6 +22,10 @@ def find_opera() -> str | None:
     return shutil.which("opera") or shutil.which("OPERA")
 
 
+def find_mcr_directory() -> str | None:
+    return os.environ.get("OPERA_MCR_DIRECTORY")
+
+
 def check_opera() -> dict[str, Any]:
     executable = find_opera()
     if executable is None:
@@ -41,9 +45,29 @@ def check_opera() -> dict[str, Any]:
             "remediation": "Set OPERA_EXECUTABLE to the installed OPERA executable path.",
         }
 
+    mcr_directory = find_mcr_directory()
+    if not mcr_directory:
+        return {
+            "status": "missing",
+            "failure_type": "verifier_environment_error",
+            "executable": executable,
+            "message": "OPERA MCR directory not configured. Set OPERA_MCR_DIRECTORY to the MATLAB runtime directory.",
+            "remediation": "Set OPERA_MCR_DIRECTORY to the MCR runtime directory used by run_OPERA.sh.",
+        }
+
+    if not Path(mcr_directory).is_dir():
+        return {
+            "status": "missing",
+            "failure_type": "verifier_environment_error",
+            "executable": executable,
+            "mcr_directory": mcr_directory,
+            "message": f"Configured OPERA_MCR_DIRECTORY is not a directory: {mcr_directory}",
+            "remediation": "Set OPERA_MCR_DIRECTORY to an existing MCR runtime directory.",
+        }
+
     try:
         completed = subprocess.run(
-            [executable, "-h"],
+            [executable, mcr_directory, "-h"],
             capture_output=True,
             text=True,
             timeout=30,
@@ -54,12 +78,14 @@ def check_opera() -> dict[str, Any]:
             "status": "error",
             "failure_type": "verifier_environment_error",
             "executable": executable,
+            "mcr_directory": mcr_directory,
             "message": f"Failed to run OPERA help command: {exc}",
         }
 
     return {
         "status": "ok" if completed.returncode == 0 else "error",
         "executable": executable,
+        "mcr_directory": mcr_directory,
         "returncode": completed.returncode,
         "stdout_head": head(completed.stdout),
         "stderr_head": head(completed.stderr),
