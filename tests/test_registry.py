@@ -55,6 +55,7 @@ def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
         sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
         status="formal",
         tags=("small_molecule", "rdkit", "descriptor"),
+        resource_root=ROOT,
     )
     assert tracks[1] == TrackDefinition(
         name="xtb",
@@ -66,6 +67,7 @@ def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
         status="formal",
         tags=("small_molecule_3d", "xtb", "xyz"),
         requirements=("xtb executable for real scoring",),
+        resource_root=ROOT,
     )
 
 

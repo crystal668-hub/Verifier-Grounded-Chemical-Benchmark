@@ -78,6 +78,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
             status="formal",
             tags=("small_molecule", "rdkit", "descriptor"),
+            resource_root=package_root(),
         ),
         TrackDefinition(
             name="xtb",
@@ -89,6 +90,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             status="formal",
             tags=("small_molecule_3d", "xtb", "xyz"),
             requirements=("xtb executable for real scoring",),
+            resource_root=package_root(),
         ),
     ]
 
