@@ -17,6 +17,13 @@ def test_list_tracks_returns_formal_builtin_names() -> None:
     assert [track.name for track in vgb.list_tracks()] == ["rdkit", "xtb"]
 
 
+def test_vgb_alias_exposes_same_public_api() -> None:
+    import vgb as short_vgb
+
+    assert [definition.name for definition in short_vgb.list_tracks()] == ["rdkit", "xtb"]
+    assert short_vgb.load_track("rdkit").name == "rdkit"
+
+
 def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     track = vgb.load_track("rdkit")
 
