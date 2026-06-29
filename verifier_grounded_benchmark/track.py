@@ -121,8 +121,11 @@ def _script_root_for(definition: TrackDefinition) -> Path:
     if definition.resource_root is not None:
         return definition.root
 
-    verifier_specs_path = Path(definition.verifier_specs_path)
-    if verifier_specs_path.is_absolute():
+    verifier_specs_path = _resolve_track_path(
+        definition,
+        definition.verifier_specs_path,
+    )
+    if verifier_specs_path is not None:
         return verifier_specs_path.parent
 
     task_pack_path = Path(definition.task_pack_path)

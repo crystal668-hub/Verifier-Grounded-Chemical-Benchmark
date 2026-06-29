@@ -339,6 +339,56 @@ def test_external_absolute_task_path_resolves_relative_specs_and_samples(
     ]
 
 
+def test_external_nested_relative_specs_resolve_scripts_from_specs_directory(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "external_pack_with_nested_specs"
+    specs_root = root / "specs"
+    specs_root.mkdir(parents=True)
+    tasks_path = root / "tasks.yaml"
+    tasks_path.write_text(
+        yaml.safe_dump(
+            {
+                "tasks": [
+                    {
+                        "task_id": "external_nested_task",
+                        "prompt": "External nested prompt",
+                        "constraints": [{"verifier_id": "external_nested_v1"}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (specs_root / "verifier_specs.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "verifiers": [
+                    {
+                        "verifier_id": "external_nested_v1",
+                        "verification_script": "runner.py",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    track = Track(
+        TrackDefinition(
+            name="external-nested",
+            version="1",
+            display_name="External Nested",
+            task_pack_path=tasks_path,
+            verifier_specs_path="specs/verifier_specs.yaml",
+        )
+    )
+
+    assert track.verifier_specs_by_id["external_nested_v1"][
+        "verification_script"
+    ] == str(specs_root / "runner.py")
+
+
 def _write_track_files(
     tmp_path: Path,
     name: str,
