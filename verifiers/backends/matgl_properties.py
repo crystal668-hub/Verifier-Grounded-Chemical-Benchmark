@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+from dataclasses import dataclass
 import io
 from functools import lru_cache
 from importlib import metadata
@@ -16,6 +17,7 @@ from verifiers.result_schema import base_result
 from verifiers.result_schema import error_result
 
 DEFAULT_MATGL_MODEL = "MEGNet-Eform-MP-2018.6.1"
+OUTPUT_SNIPPET_LIMIT = 500
 
 
 def evaluate_matgl_constraint(
@@ -48,14 +50,26 @@ def evaluate_matgl_constraint(
     if domain_error:
         return error_result(result, "domain_error", domain_error, properties=structure_properties)
 
+    load_output = CapturedOutput()
     try:
-        with _suppress_output():
+        with capture_output() as load_output:
             model = load_matgl_model(spec)
-            prediction = model.predict_structure(structure)
     except (ImportError, ModuleNotFoundError) as exc:
-        return error_result(result, "verifier_environment_error", str(exc))
+        return error_result(result, "verifier_environment_error", error_message(exc, load_output))
     except Exception as exc:
-        return error_result(result, "verifier_tool_error", str(exc), properties=structure_properties)
+        return error_result(result, "verifier_tool_error", error_message(exc, load_output), properties=structure_properties)
+
+    prediction_output = CapturedOutput()
+    try:
+        with capture_output() as prediction_output:
+            prediction = model.predict_structure(structure)
+    except Exception as exc:
+        return error_result(
+            result,
+            "verifier_tool_error",
+            error_message(exc, prediction_output),
+            properties=structure_properties,
+        )
 
     try:
         property_values = parse_prediction(property_name, prediction)
@@ -118,6 +132,12 @@ def float_value(value: Any) -> float:
 
     if isinstance(converted, Number):
         return float(converted)
+
+    numel = getattr(converted, "numel", None)
+    if callable(numel):
+        numel_value = int(numel())
+        if numel_value != 1:
+            raise ValueError(f"MatGL prediction must contain exactly one element; got {numel_value}")
 
     size = getattr(converted, "size", None)
     if size is not None:
@@ -182,6 +202,41 @@ def _package_version(package_name: str) -> str | None:
 
 
 @contextlib.contextmanager
-def _suppress_output() -> Any:
-    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
-        yield
+def capture_output() -> Any:
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    captured = CapturedOutput()
+    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        try:
+            yield captured
+        finally:
+            captured.stdout = stdout.getvalue()
+            captured.stderr = stderr.getvalue()
+
+
+@dataclass
+class CapturedOutput:
+    stdout: str = ""
+    stderr: str = ""
+
+    def diagnostic(self, limit: int = OUTPUT_SNIPPET_LIMIT) -> str:
+        snippets: list[str] = []
+        for label, value in (("stdout", self.stdout), ("stderr", self.stderr)):
+            snippet = bounded_snippet(value, limit)
+            if snippet:
+                snippets.append(f"{label}: {snippet}")
+        return "; ".join(snippets)
+
+
+def bounded_snippet(value: str, limit: int = OUTPUT_SNIPPET_LIMIT) -> str:
+    normalized = " ".join(value.split())
+    if len(normalized) <= limit:
+        return normalized
+    return f"{normalized[:limit]}..."
+
+
+def error_message(exc: Exception, output: CapturedOutput) -> str:
+    diagnostic = output.diagnostic()
+    if diagnostic:
+        return f"{exc}; {diagnostic}"
+    return str(exc)

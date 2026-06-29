@@ -226,6 +226,57 @@ def test_matgl_prediction_failure_maps_to_tool_error_and_preserves_structure_pro
     assert "prediction failed" in str(result["message"])
 
 
+def test_matgl_prediction_import_error_maps_to_tool_error_and_preserves_structure_properties(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FailingModel:
+        def predict_structure(self, structure: object) -> object:
+            raise ImportError("runtime import failed")
+
+    monkeypatch.setattr(matgl_properties, "load_matgl_model", lambda spec: FailingModel())
+
+    result = matgl_properties.evaluate_matgl_constraint(
+        {"cif": SI_CIF},
+        bandgap_task(),
+        bandgap_task()["constraints"][0],
+        bandgap_spec(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_tool_error"
+    assert result["properties"]["reduced_formula"] == "Si"
+    assert "runtime import failed" in str(result["message"])
+
+
+def test_matgl_noisy_prediction_failure_captures_diagnostics_without_leaking_output(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    class NoisyFailingModel:
+        def predict_structure(self, structure: object) -> object:
+            print("matgl stdout before failure")
+            print("matgl stderr before failure", file=__import__("sys").stderr)
+            raise RuntimeError("prediction failed")
+
+    monkeypatch.setattr(matgl_properties, "load_matgl_model", lambda spec: NoisyFailingModel())
+
+    result = matgl_properties.evaluate_matgl_constraint(
+        {"cif": SI_CIF},
+        bandgap_task(),
+        bandgap_task()["constraints"][0],
+        bandgap_spec(),
+    )
+    captured = capsys.readouterr()
+
+    assert captured.out == ""
+    assert captured.err == ""
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_tool_error"
+    assert "prediction failed" in str(result["message"])
+    assert "stdout: matgl stdout before failure" in str(result["message"])
+    assert "stderr: matgl stderr before failure" in str(result["message"])
+
+
 def test_float_value_handles_scalar_array_and_tensor_like_patterns() -> None:
     class FakeNumpyArray:
         size = 1
@@ -257,3 +308,21 @@ def test_float_value_rejects_non_scalar_array_like() -> None:
 
     with pytest.raises(ValueError, match="exactly one element"):
         matgl_properties.float_value(FakeArray())
+
+
+def test_float_value_rejects_non_scalar_tensor_like_with_numel() -> None:
+    class FakeTensor:
+        def detach(self) -> FakeTensor:
+            return self
+
+        def cpu(self) -> FakeTensor:
+            return self
+
+        def numel(self) -> int:
+            return 2
+
+        def item(self) -> float:
+            raise RuntimeError("a Tensor with 2 elements cannot be converted to Scalar")
+
+    with pytest.raises(ValueError, match="exactly one element"):
+        matgl_properties.float_value(FakeTensor())
