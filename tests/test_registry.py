@@ -193,6 +193,39 @@ def test_suite_rejects_conflicting_same_verifier_id_specs(tmp_path: Path) -> Non
         Suite([first, second])
 
 
+def test_track_and_suite_tasks_by_id_return_mutation_safe_copies(
+    tmp_path: Path,
+) -> None:
+    track = _write_track_files(
+        tmp_path,
+        "first",
+        task_id="first_task",
+        verifier_id="first_v1",
+        verification_script="first.py",
+    )
+    suite = Suite([track])
+
+    track.tasks_by_id["first_task"]["prompt"] = "mutated track prompt"
+    suite.tasks_by_id["first_task"]["prompt"] = "mutated suite prompt"
+
+    assert track.task("first_task")["prompt"] == "Prompt for first_task"
+    assert suite.task("first_task")["prompt"] == "Prompt for first_task"
+    assert track.prompts() == [
+        {
+            "track": "first",
+            "task_id": "first_task",
+            "prompt": "Prompt for first_task",
+        }
+    ]
+    assert suite.prompts() == [
+        {
+            "track": "first",
+            "task_id": "first_task",
+            "prompt": "Prompt for first_task",
+        }
+    ]
+
+
 def _write_track_files(
     tmp_path: Path,
     name: str,

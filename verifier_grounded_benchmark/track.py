@@ -15,13 +15,13 @@ from verifier_grounded_benchmark.resources import materialize_verifier_specs
 class Track:
     def __init__(self, definition: TrackDefinition) -> None:
         self.definition = definition
-        self.tasks_by_id = load_tasks_file(
+        self._tasks_by_id = load_tasks_file(
             definition.resolve_path(definition.task_pack_path)
         )
         specs = load_verifier_specs_file(
             definition.resolve_path(definition.verifier_specs_path)
         )
-        self.verifier_specs_by_id = materialize_verifier_specs(
+        self._verifier_specs_by_id = materialize_verifier_specs(
             specs,
             script_root=definition.root,
         )
@@ -30,18 +30,26 @@ class Track:
     def name(self) -> str:
         return self.definition.name
 
+    @property
+    def tasks_by_id(self) -> dict[str, dict[str, Any]]:
+        return deepcopy(self._tasks_by_id)
+
+    @property
+    def verifier_specs_by_id(self) -> dict[str, dict[str, Any]]:
+        return deepcopy(self._verifier_specs_by_id)
+
     def tasks(self) -> list[dict[str, Any]]:
-        return [deepcopy(task) for task in self.tasks_by_id.values()]
+        return [deepcopy(task) for task in self._tasks_by_id.values()]
 
     def task(self, task_id: str) -> dict[str, Any]:
         try:
-            return deepcopy(self.tasks_by_id[task_id])
+            return deepcopy(self._tasks_by_id[task_id])
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for track {self.name!r}: {task_id}") from exc
 
     def prompts(self) -> list[dict[str, str]]:
         prompts: list[dict[str, str]] = []
-        for task in self.tasks_by_id.values():
+        for task in self._tasks_by_id.values():
             prompt = task.get("prompt")
             if isinstance(prompt, str):
                 prompts.append(
@@ -64,32 +72,40 @@ class Track:
 class Suite:
     def __init__(self, tracks: Iterable[Track]) -> None:
         self._tracks = list(tracks)
-        self.tasks_by_id: dict[str, dict[str, Any]] = {}
-        self.verifier_specs_by_id: dict[str, dict[str, Any]] = {}
+        self._tasks_by_id: dict[str, dict[str, Any]] = {}
+        self._verifier_specs_by_id: dict[str, dict[str, Any]] = {}
 
         for track in self._tracks:
-            for task_id, task in track.tasks_by_id.items():
-                if task_id in self.tasks_by_id:
+            for task_id, task in track._tasks_by_id.items():
+                if task_id in self._tasks_by_id:
                     raise ValueError(f"Duplicate task_id across suite tracks: {task_id}")
-                self.tasks_by_id[task_id] = deepcopy(task)
+                self._tasks_by_id[task_id] = deepcopy(task)
 
-            for verifier_id, spec in track.verifier_specs_by_id.items():
-                existing = self.verifier_specs_by_id.get(verifier_id)
+            for verifier_id, spec in track._verifier_specs_by_id.items():
+                existing = self._verifier_specs_by_id.get(verifier_id)
                 if existing is not None and existing != spec:
                     raise ValueError(
                         f"Conflicting verifier spec across suite tracks: {verifier_id}"
                     )
-                self.verifier_specs_by_id[verifier_id] = deepcopy(spec)
+                self._verifier_specs_by_id[verifier_id] = deepcopy(spec)
 
     def tracks(self) -> list[Track]:
         return list(self._tracks)
 
+    @property
+    def tasks_by_id(self) -> dict[str, dict[str, Any]]:
+        return deepcopy(self._tasks_by_id)
+
+    @property
+    def verifier_specs_by_id(self) -> dict[str, dict[str, Any]]:
+        return deepcopy(self._verifier_specs_by_id)
+
     def tasks(self) -> list[dict[str, Any]]:
-        return [deepcopy(task) for task in self.tasks_by_id.values()]
+        return [deepcopy(task) for task in self._tasks_by_id.values()]
 
     def task(self, task_id: str) -> dict[str, Any]:
         try:
-            return deepcopy(self.tasks_by_id[task_id])
+            return deepcopy(self._tasks_by_id[task_id])
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for suite: {task_id}") from exc
 

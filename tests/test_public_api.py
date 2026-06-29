@@ -15,7 +15,11 @@ def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     task_ids = [task["task_id"] for task in track.tasks()]
     assert "rdkit_qed_max_001" in task_ids
 
-    prompt = track.prompts()[0]
+    prompt = next(
+        prompt
+        for prompt in track.prompts()
+        if prompt["task_id"] == "rdkit_qed_max_001"
+    )
     assert prompt["track"] == "rdkit"
     assert prompt["task_id"] == "rdkit_qed_max_001"
     assert prompt["prompt"].startswith(
