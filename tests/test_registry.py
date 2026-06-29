@@ -5,6 +5,8 @@ from pathlib import Path
 import pytest
 import yaml
 
+import verifier_grounded_benchmark as vgb
+from verifier_grounded_benchmark.io import load_answers_jsonl_file
 from verifier_grounded_benchmark.registry import Registry, TrackDefinition
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +39,10 @@ def test_registry_lists_only_formal_tracks_by_default() -> None:
         "formal",
         "experimental",
     ]
+
+
+def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
+    assert [track.name for track in vgb.list_tracks()] == ["rdkit", "xtb"]
 
 
 def test_registry_rejects_duplicate_track_names() -> None:
@@ -103,3 +109,21 @@ def test_track_definition_resolves_relative_paths_from_resource_root(
     )
 
     assert track.resolve_path(track.task_pack_path) == tasks_path.resolve()
+
+
+def test_answers_jsonl_allows_repeated_task_ids(tmp_path: Path) -> None:
+    answers_path = tmp_path / "answers.jsonl"
+    answers_path.write_text(
+        "\n".join(
+            [
+                '{"task_id": "example_task", "candidates": [{"value": 1}]}',
+                '{"task_id": "example_task", "candidates": [{"value": 2}]}',
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    assert load_answers_jsonl_file(answers_path) == [
+        {"task_id": "example_task", "candidates": [{"value": 1}]},
+        {"task_id": "example_task", "candidates": [{"value": 2}]},
+    ]

@@ -22,7 +22,6 @@ def load_verifier_specs_file(path: str | Path) -> dict[str, dict[str, Any]]:
 def load_answers_jsonl_file(path: str | Path) -> list[dict[str, Any]]:
     answer_path = Path(path)
     answers: list[dict[str, Any]] = []
-    seen_ids: set[str] = set()
 
     try:
         lines = answer_path.read_text(encoding="utf-8").splitlines()
@@ -50,9 +49,6 @@ def load_answers_jsonl_file(path: str | Path) -> list[dict[str, Any]]:
                 f"Answer in {answer_path} on line {line_number} must have a "
                 "non-empty string task_id"
             )
-        if task_id in seen_ids:
-            raise ValueError(f"Duplicate answer task_id {task_id!r} in {answer_path}")
-        seen_ids.add(task_id)
         answers.append(item)
 
     return answers
