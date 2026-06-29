@@ -4,6 +4,12 @@ from pathlib import Path
 
 import pytest
 
+from benchmark.evaluate import (
+    evaluate_many,
+    load_answers_jsonl,
+    load_tasks,
+    load_verifier_specs,
+)
 import verifier_grounded_benchmark as vgb
 
 
@@ -56,3 +62,79 @@ def test_builtin_track_materialized_verifier_scripts_exist() -> None:
 def test_load_track_rejects_unknown_track() -> None:
     with pytest.raises(KeyError, match="Unknown benchmark track|unknown track"):
         vgb.load_track("missing")
+
+
+def test_track_evaluate_answers_matches_existing_rdkit_summary() -> None:
+    track = vgb.load_track("rdkit")
+    definition = track.definition
+    legacy_tasks = load_tasks(definition.resolve_path(definition.task_pack_path))
+    legacy_specs = load_verifier_specs(
+        definition.resolve_path(definition.verifier_specs_path)
+    )
+    legacy_answers = load_answers_jsonl(
+        definition.resolve_path(definition.sample_answers_path)
+    )
+
+    assert track.sample_answers() == legacy_answers
+    assert track.evaluate_answers(track.sample_answers()) == evaluate_many(
+        legacy_answers,
+        legacy_tasks,
+        legacy_specs,
+    )
+
+
+def test_track_evaluate_one_returns_structured_xtb_parse_error() -> None:
+    result = vgb.load_track("xtb").evaluate_one(
+        {"task_id": "xtb_gap_window_001", "candidates": [{}]}
+    )
+
+    assert result["status"] == "error"
+    assert result["task_id"] == "xtb_gap_window_001"
+    assert result["failure_type"] == "parse_error"
+    assert result["message"] == "candidate must include an XYZ string"
+
+
+def test_suite_evaluate_one_routes_by_task_id() -> None:
+    result = vgb.load_suite(["rdkit", "xtb"]).evaluate_one(
+        {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "CCO"}]}
+    )
+
+    assert result["task_id"] == "rdkit_qed_max_001"
+    assert result["status"] in {"ok", "error"}
+    if result["status"] == "error":
+        assert result["failure_type"] == "domain_error"
+        assert result["scores"]["score"] == 0.0
+
+
+def test_evaluation_report_wrapper_serializes_rows() -> None:
+    report = vgb.EvaluationReport(
+        summary={"num_answers": 1},
+        rows=[{"task_id": "task_1", "score": 0.5}],
+    )
+
+    assert report.to_dict() == {
+        "summary": {"num_answers": 1},
+        "rows": [{"task_id": "task_1", "score": 0.5}],
+    }
+    assert report.to_json() == (
+        '{\n'
+        '  "rows": [\n'
+        "    {\n"
+        '      "score": 0.5,\n'
+        '      "task_id": "task_1"\n'
+        "    }\n"
+        "  ],\n"
+        '  "summary": {\n'
+        '    "num_answers": 1\n'
+        "  }\n"
+        "}"
+    )
+    assert report.to_jsonl_rows() == '{"score": 0.5, "task_id": "task_1"}'
+
+
+def test_track_evaluate_answers_can_return_report() -> None:
+    report = vgb.load_track("rdkit").evaluate_answers([], as_report=True)
+
+    assert isinstance(report, vgb.EvaluationReport)
+    assert report.summary["num_answers"] == 0
+    assert report.rows == []

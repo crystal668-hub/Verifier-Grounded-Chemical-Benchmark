@@ -4,6 +4,11 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, Iterable
 
+from verifier_grounded_benchmark.evaluator import (
+    EvaluationConfig,
+    EvaluationReport,
+    Evaluator,
+)
 from verifier_grounded_benchmark.io import (
     load_answers_jsonl_file,
     load_tasks_file,
@@ -69,6 +74,20 @@ class Track:
             _resolve_track_path(self.definition, self.definition.sample_answers_path)
         )
 
+    def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
+        return Evaluator(self._tasks_by_id, self._verifier_specs_by_id, config=config)
+
+    def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        return self.evaluator().evaluate_one(answer)
+
+    def evaluate_answers(
+        self,
+        answers: list[dict[str, Any]],
+        *,
+        as_report: bool = False,
+    ) -> dict[str, Any] | EvaluationReport:
+        return self.evaluator().evaluate_many(answers, as_report=as_report)
+
 
 class Suite:
     def __init__(self, tracks: Iterable[Track]) -> None:
@@ -115,6 +134,20 @@ class Suite:
         for track in self._tracks:
             prompts.extend(track.prompts())
         return prompts
+
+    def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
+        return Evaluator(self._tasks_by_id, self._verifier_specs_by_id, config=config)
+
+    def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        return self.evaluator().evaluate_one(answer)
+
+    def evaluate_answers(
+        self,
+        answers: list[dict[str, Any]],
+        *,
+        as_report: bool = False,
+    ) -> dict[str, Any] | EvaluationReport:
+        return self.evaluator().evaluate_many(answers, as_report=as_report)
 
 
 def _script_root_for(definition: TrackDefinition) -> Path:

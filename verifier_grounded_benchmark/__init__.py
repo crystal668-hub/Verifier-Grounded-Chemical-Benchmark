@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from verifier_grounded_benchmark.evaluator import (
+    EvaluationConfig,
+    EvaluationReport,
+    Evaluator,
+)
 from verifier_grounded_benchmark.registry import DEFAULT_REGISTRY, Registry, TrackDefinition
 from verifier_grounded_benchmark.track import Suite, Track
 
@@ -24,6 +29,9 @@ def register_track(track: TrackDefinition, *, replace: bool = False) -> None:
 
 
 __all__ = [
+    "EvaluationConfig",
+    "EvaluationReport",
+    "Evaluator",
     "Registry",
     "Suite",
     "Track",
