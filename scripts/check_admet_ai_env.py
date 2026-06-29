@@ -22,7 +22,11 @@ def directory_fingerprint(path: Path | str) -> str:
     for file_path in sorted(root.rglob("*")):
         if file_path.is_file():
             digest.update(str(file_path.relative_to(root)).encode())
-            digest.update(str(file_path.stat().st_size).encode())
+            digest.update(b"\0")
+            with file_path.open("rb") as handle:
+                for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            digest.update(b"\0")
     return digest.hexdigest()
 
 
