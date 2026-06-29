@@ -296,6 +296,29 @@ def test_score_answers_cli_outputs_summary_json() -> None:
     assert len(report["rows"]) == 10
 
 
+def test_score_answers_cli_accepts_track_name() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/score_answers.py",
+            "--track",
+            "rdkit",
+            "--answers",
+            str(ANSWERS_PATH),
+        ],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    report = json.loads(completed.stdout)
+    assert report["summary"]["num_answers"] == 10
+    assert report["summary"]["num_ok"] == 10
+    assert report["summary"]["num_error"] == 0
+    assert len(report["rows"]) == 10
+
+
 def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: Path) -> None:
     fake_script = tmp_path / "fake_matgl_verifier.py"
     fake_script.write_text(
