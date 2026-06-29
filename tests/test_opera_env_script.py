@@ -6,8 +6,11 @@ import subprocess
 import sys
 
 
-def test_check_opera_env_missing_or_path_discovery(monkeypatch) -> None:
+def test_check_opera_env_missing_or_path_discovery(monkeypatch, tmp_path) -> None:
     monkeypatch.delenv("OPERA_EXECUTABLE", raising=False)
+    empty_path = tmp_path / "empty-path"
+    empty_path.mkdir()
+    monkeypatch.setenv("PATH", os.fspath(empty_path))
 
     completed = subprocess.run(
         [sys.executable, "scripts/check_opera_env.py"],
@@ -19,9 +22,8 @@ def test_check_opera_env_missing_or_path_discovery(monkeypatch) -> None:
 
     assert completed.returncode == 0, completed.stderr
     payload = json.loads(completed.stdout)
-    assert payload["status"] in {"missing", "ok"}
-    if payload["status"] == "missing":
-        assert payload["failure_type"] == "verifier_environment_error"
+    assert payload["status"] == "missing"
+    assert payload["failure_type"] == "verifier_environment_error"
 
 
 def test_check_opera_env_configured_executable(monkeypatch, tmp_path) -> None:

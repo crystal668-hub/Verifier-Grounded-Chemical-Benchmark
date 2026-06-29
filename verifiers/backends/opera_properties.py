@@ -26,12 +26,23 @@ class OPERAToolError(RuntimeError):
     """Raised when OPERA execution or output parsing fails."""
 
 
-def find_opera_executable(spec: dict[str, Any]) -> str | None:
+def configured_opera_executable(spec: dict[str, Any]) -> str | None:
     opera_spec = spec.get("opera") or {}
     configured = opera_spec.get("executable") or os.environ.get("OPERA_EXECUTABLE")
+    return str(configured) if configured else None
+
+
+def find_opera_executable(spec: dict[str, Any]) -> str | None:
+    configured = configured_opera_executable(spec)
     if configured:
         return str(configured) if Path(str(configured)).exists() else None
     return shutil.which("opera") or shutil.which("OPERA")
+
+
+def resolve_mcr_directory(spec: dict[str, Any]) -> str | None:
+    opera_spec = spec.get("opera") or {}
+    mcr_directory = opera_spec.get("mcr_directory") or os.environ.get("OPERA_MCR_DIRECTORY")
+    return str(mcr_directory) if mcr_directory else None
 
 
 def evaluate_opera_constraint(
@@ -70,16 +81,30 @@ def evaluate_opera_constraint(
 
     executable = find_opera_executable(spec)
     if executable is None:
+        configured = configured_opera_executable(spec)
+        if configured:
+            message = f"Configured OPERA executable does not exist: {configured}"
+        else:
+            message = "OPERA executable not found. Set spec['opera']['executable'], OPERA_EXECUTABLE, or PATH."
         return error_result(
             result,
             "verifier_environment_error",
-            "OPERA executable not found. Set spec['opera']['executable'], OPERA_EXECUTABLE, or PATH.",
+            message,
+            properties=domain_properties,
+        )
+
+    mcr_directory = resolve_mcr_directory(spec)
+    if not mcr_directory:
+        return error_result(
+            result,
+            "verifier_environment_error",
+            "OPERA MCR directory not configured. Set spec['opera']['mcr_directory'] or OPERA_MCR_DIRECTORY.",
             properties=domain_properties,
         )
 
     canonical_smiles = Chem.MolToSmiles(mol, canonical=True)
     try:
-        opera_properties = run_opera(executable, canonical_smiles, property_name, spec)
+        opera_properties = run_opera(executable, mcr_directory, canonical_smiles, property_name, spec)
     except subprocess.TimeoutExpired:
         return error_result(result, "verifier_timeout", "OPERA run timed out", properties=domain_properties)
     except OPERAEnvironmentError as exc:
@@ -93,6 +118,8 @@ def evaluate_opera_constraint(
     except Exception as exc:
         return error_result(result, "verifier_spec_error", f"constraint scoring failed: {exc}", properties=properties)
 
+    domain_gate = applicability_domain_gate(opera_properties, property_name)
+    final_score = property_score * domain_gate
     constraint_score = {
         "property": constraint["property"],
         "type": constraint["type"],
@@ -105,10 +132,10 @@ def evaluate_opera_constraint(
             "properties": properties,
             "scores": {
                 "validity_gate": 1.0,
-                "domain_gate": 1.0,
+                "domain_gate": domain_gate,
                 "constraint_scores": [constraint_score],
                 "property_score": property_score,
-                "score": property_score,
+                "score": final_score,
             },
         }
     )
@@ -117,12 +144,13 @@ def evaluate_opera_constraint(
 
 def run_opera(
     executable: str,
+    mcr_directory: str,
     smiles: str,
     property_name: str,
     spec: dict[str, Any],
 ) -> dict[str, float | int]:
     opera_spec = spec.get("opera") or {}
-    model = str(opera_spec.get("model") or property_name)
+    endpoint = str(opera_spec.get("endpoint") or opera_spec.get("model") or property_name)
     timeout_seconds = float(opera_spec.get("timeout_seconds", spec.get("timeout_seconds", 120)))
     with tempfile.TemporaryDirectory(prefix="opera-") as temp_dir:
         work_dir = Path(temp_dir)
@@ -131,7 +159,16 @@ def run_opera(
         input_path.write_text(f"{smiles}\tcandidate\n")
 
         completed = subprocess.run(
-            [executable, str(input_path), str(output_path), model],
+            [
+                executable,
+                mcr_directory,
+                "--SMI",
+                str(input_path),
+                "--Output",
+                str(output_path),
+                "--Endpoint",
+                endpoint,
+            ],
             capture_output=True,
             text=True,
             timeout=timeout_seconds,
@@ -152,22 +189,32 @@ def parse_opera_output(output: str, property_name: str) -> dict[str, float | int
     except StopIteration as exc:
         raise OPERAToolError("OPERA output contained no prediction rows") from exc
 
-    if property_name not in row or row[property_name] in {None, ""}:
+    property_column = property_name if property_name in row else "pred" if "pred" in row else None
+    if property_column is None or row[property_column] in {None, ""}:
         raise OPERAToolError(f"OPERA output missing property {property_name!r}")
 
     try:
-        properties: dict[str, float | int] = {property_name: float(row[property_name])}
+        properties: dict[str, float | int] = {property_name: float(row[property_column])}
     except ValueError as exc:
         raise OPERAToolError(f"OPERA property {property_name!r} is not numeric") from exc
 
     ad_name = f"AD_{property_name}"
     ad_value = row.get(ad_name)
+    if ad_value in {None, ""} and property_column == "pred":
+        ad_value = row.get("AD")
     if ad_value not in {None, ""}:
         try:
             properties[ad_name] = int(float(ad_value))
         except ValueError as exc:
             raise OPERAToolError(f"OPERA applicability-domain flag {ad_name!r} is not numeric") from exc
     return properties
+
+
+def applicability_domain_gate(properties: dict[str, Any], property_name: str) -> float:
+    ad_value = properties.get(f"AD_{property_name}")
+    if ad_value is None:
+        return 1.0
+    return 1.0 if int(ad_value) != 0 else 0.0
 
 
 def compute_domain_properties(mol: Chem.Mol) -> dict[str, Any]:
