@@ -42,7 +42,30 @@ def test_registry_lists_only_formal_tracks_by_default() -> None:
 
 
 def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
-    assert [track.name for track in vgb.list_tracks()] == ["rdkit", "xtb"]
+    tracks = vgb.list_tracks()
+
+    assert [track.name for track in tracks] == ["rdkit", "xtb"]
+    assert tracks[0] == TrackDefinition(
+        name="rdkit",
+        version="0.1.0",
+        display_name="RDKit baseline small-molecule tasks",
+        task_pack_path="tasks/rdkit_baseline/tasks.yaml",
+        verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
+        sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
+        status="formal",
+        tags=("small_molecule", "rdkit", "descriptor"),
+    )
+    assert tracks[1] == TrackDefinition(
+        name="xtb",
+        version="0.1.0",
+        display_name="xTB direct-XYZ small-molecule tasks",
+        task_pack_path="tasks/xtb_xyz/tasks.yaml",
+        verifier_specs_path="tasks/xtb_xyz/verifier_specs.yaml",
+        sample_answers_path="tasks/xtb_xyz/sample_answers.jsonl",
+        status="formal",
+        tags=("small_molecule_3d", "xtb", "xyz"),
+        requirements=("xtb executable for real scoring",),
+    )
 
 
 def test_registry_rejects_duplicate_track_names() -> None:

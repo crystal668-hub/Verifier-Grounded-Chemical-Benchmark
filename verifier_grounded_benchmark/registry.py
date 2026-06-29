@@ -71,21 +71,24 @@ def builtin_definitions() -> list[TrackDefinition]:
     return [
         TrackDefinition(
             name="rdkit",
-            version="1",
-            display_name="RDKit Baseline",
+            version="0.1.0",
+            display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks/rdkit_baseline/tasks.yaml",
             verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
             sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
             status="formal",
+            tags=("small_molecule", "rdkit", "descriptor"),
         ),
         TrackDefinition(
             name="xtb",
-            version="1",
-            display_name="xTB XYZ",
+            version="0.1.0",
+            display_name="xTB direct-XYZ small-molecule tasks",
             task_pack_path="tasks/xtb_xyz/tasks.yaml",
             verifier_specs_path="tasks/xtb_xyz/verifier_specs.yaml",
             sample_answers_path="tasks/xtb_xyz/sample_answers.jsonl",
             status="formal",
+            tags=("small_molecule_3d", "xtb", "xyz"),
+            requirements=("xtb executable for real scoring",),
         ),
     ]
 
