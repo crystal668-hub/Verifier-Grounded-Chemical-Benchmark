@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add locally deployable verifier backend support for ADMET-AI, OPERA, and direct MatGL+pymatgen without adding formal benchmark tasks.
+**Goal:** Add locally deployable verifier backend support for ADMET-AI, OPERA, and native MatGL+pymatgen without adding formal benchmark tasks.
 
 **Architecture:** Keep the current property-level script pattern: `verification_script -> shared backend -> result_schema`. Add backend modules and smoke-check scripts that prove each tool can be installed, discovered, and run locally. Do not add new `tasks/*` packs in this plan; use synthetic payloads and environment checks only.
 
@@ -66,7 +66,7 @@ Create:
 
 - `scripts/check_admet_ai_env.py` - smoke-check ADMET-AI package, model ensembles, endpoint metadata, and one quiet prediction.
 - `scripts/check_opera_env.py` - discover OPERA executable/path, run `opera -h` if available, and optionally run a fixture input when configured.
-- `scripts/check_matgl_direct_env.py` - smoke-check direct MatGL import/model cache behavior and pymatgen structure parsing.
+- `scripts/check_matgl_env.py` - smoke-check MatGL import/model cache behavior and pymatgen structure parsing.
 - `verifiers/backends/admet_ai_properties.py` - shared ADMET-AI backend for small-molecule endpoint evaluation.
 - `verifiers/admet/__init__.py` - package marker for ADMET verifier scripts.
 - `verifiers/admet/admet_ai_property_script.py` - shared CLI wrapper for ADMET-AI property scripts.
@@ -78,18 +78,18 @@ Create:
 - `verifiers/backends/opera_properties.py` - shared OPERA CLI backend/wrapper and output parser.
 - `verifiers/opera/__init__.py` - package marker for OPERA verifier scripts.
 - `verifiers/opera/opera_property_script.py` - shared CLI wrapper for OPERA property scripts.
-- `verifiers/backends/matgl_direct_properties.py` - direct MatGL+pymatgen backend independent of AtomisticSkills MCP.
-- `verifiers/materials/matgl_direct_property_script.py` - shared CLI wrapper for direct MatGL scripts.
-- `verifiers/materials/matgl_direct_bandgap.py` - direct MatGL bandgap script entry point.
-- `verifiers/materials/matgl_direct_formation_energy.py` - direct MatGL formation energy script entry point.
+- `verifiers/backends/matgl_properties.py` - native MatGL+pymatgen backend independent of AtomisticSkills MCP.
+- `verifiers/materials/matgl_property_script.py` - shared CLI wrapper for native MatGL scripts.
+- `verifiers/materials/matgl_bandgap.py` - native MatGL bandgap script entry point.
+- `verifiers/materials/matgl_formation_energy.py` - native MatGL formation energy script entry point.
 - `tests/test_admet_ai_env_script.py`
 - `tests/test_admet_ai_properties_backend.py`
 - `tests/test_admet_ai_task_scripts.py`
 - `tests/test_opera_env_script.py`
 - `tests/test_opera_properties_backend.py`
-- `tests/test_matgl_direct_env_script.py`
-- `tests/test_matgl_direct_properties_backend.py`
-- `tests/test_matgl_direct_task_scripts.py`
+- `tests/test_matgl_env_script.py`
+- `tests/test_matgl_properties_backend.py`
+- `tests/test_matgl_task_scripts.py`
 
 Modify:
 
@@ -1114,13 +1114,13 @@ git add scripts/check_opera_env.py verifiers/backends/opera_properties.py verifi
 git commit -m "feat: add opera verifier backend wrapper"
 ```
 
-## Task 4: Direct MatGL Environment Setup
+## Task 4: Native MatGL Environment Setup
 
 **Files:**
 - Modify: `pyproject.toml`
 - Modify: `uv.lock`
-- Create: `scripts/check_matgl_direct_env.py`
-- Test: `tests/test_matgl_direct_env_script.py`
+- Create: `scripts/check_matgl_env.py`
+- Test: `tests/test_matgl_env_script.py`
 
 - [ ] **Step 1: Decide dependency placement**
 
@@ -1153,7 +1153,7 @@ Expected: lock succeeds. If `lightning` changes from 2.6.5 to 2.6.1, record it i
 
 - [ ] **Step 3: Write MatGL env tests**
 
-Create `tests/test_matgl_direct_env_script.py`:
+Create `tests/test_matgl_env_script.py`:
 
 ```python
 from __future__ import annotations
@@ -1163,9 +1163,9 @@ import subprocess
 import sys
 
 
-def test_check_matgl_direct_env_reports_json() -> None:
+def test_check_matgl_env_reports_json() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_matgl_direct_env.py", "--no-model-load"],
+        [sys.executable, "scripts/check_matgl_env.py", "--no-model-load"],
         check=False,
         capture_output=True,
         text=True,
@@ -1179,13 +1179,13 @@ def test_check_matgl_direct_env_reports_json() -> None:
         assert payload["pymatgen"]["fixture_formula"] == "Si"
 ```
 
-- [ ] **Step 4: Implement `scripts/check_matgl_direct_env.py`**
+- [ ] **Step 4: Implement `scripts/check_matgl_env.py`**
 
-Create `scripts/check_matgl_direct_env.py`:
+Create `scripts/check_matgl_env.py`:
 
 ```python
 #!/usr/bin/env python
-"""Smoke-check direct MatGL+pymatgen verifier environment."""
+"""Smoke-check native MatGL+pymatgen verifier environment."""
 
 from __future__ import annotations
 
@@ -1253,8 +1253,8 @@ if __name__ == "__main__":
 Run:
 
 ```bash
-uv run pytest tests/test_matgl_direct_env_script.py -q
-uv run python scripts/check_matgl_direct_env.py --no-model-load
+uv run pytest tests/test_matgl_env_script.py -q
+uv run python scripts/check_matgl_env.py --no-model-load
 ```
 
 Expected: after dependency setup, both report `status: ok`. Before dependency setup, the script may report `missing`, but tests should tolerate that only until this task is completed. Tighten the test to require `status == "ok"` once MatGL is installed.
@@ -1264,7 +1264,7 @@ Expected: after dependency setup, both report `status: ok`. Before dependency se
 Run only when network/model cache is acceptable:
 
 ```bash
-uv run python scripts/check_matgl_direct_env.py --model MEGNet-Eform-MP-2018.6.1
+uv run python scripts/check_matgl_env.py --model MEGNet-Eform-MP-2018.6.1
 ```
 
 Expected: model loads or fails with an actionable Hugging Face/cache error. If model download is required, cache it during Docker build or local setup, not at benchmark scoring time.
@@ -1272,23 +1272,23 @@ Expected: model loads or fails with an actionable Hugging Face/cache error. If m
 - [ ] **Step 7: Commit**
 
 ```bash
-git add pyproject.toml uv.lock scripts/check_matgl_direct_env.py tests/test_matgl_direct_env_script.py
-git commit -m "build: add direct matgl environment support"
+git add pyproject.toml uv.lock scripts/check_matgl_env.py tests/test_matgl_env_script.py
+git commit -m "build: add native matgl environment support"
 ```
 
-## Task 5: Direct MatGL Backend
+## Task 5: Native MatGL Backend
 
 **Files:**
-- Create: `verifiers/backends/matgl_direct_properties.py`
-- Create: `verifiers/materials/matgl_direct_property_script.py`
-- Create: `verifiers/materials/matgl_direct_bandgap.py`
-- Create: `verifiers/materials/matgl_direct_formation_energy.py`
-- Test: `tests/test_matgl_direct_properties_backend.py`
-- Test: `tests/test_matgl_direct_task_scripts.py`
+- Create: `verifiers/backends/matgl_properties.py`
+- Create: `verifiers/materials/matgl_property_script.py`
+- Create: `verifiers/materials/matgl_bandgap.py`
+- Create: `verifiers/materials/matgl_formation_energy.py`
+- Test: `tests/test_matgl_properties_backend.py`
+- Test: `tests/test_matgl_task_scripts.py`
 
-- [ ] **Step 1: Write MatGL direct backend tests with fake model**
+- [ ] **Step 1: Write Native MatGL backend tests with fake model**
 
-Create `tests/test_matgl_direct_properties_backend.py`:
+Create `tests/test_matgl_properties_backend.py`:
 
 ```python
 from __future__ import annotations
@@ -1297,7 +1297,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.backends import matgl_direct_properties
+from verifiers.backends import matgl_properties
 
 
 SI_CIF = (Path(__file__).resolve().parents[1] / "tasks" / "matgl_materials" / "fixtures" / "Si.cif").read_text()
@@ -1305,7 +1305,7 @@ SI_CIF = (Path(__file__).resolve().parents[1] / "tasks" / "matgl_materials" / "f
 
 def spec(property_name: str = "formation_energy") -> dict:
     return {
-        "verifier_id": f"matgl_direct_{property_name}_v1",
+        "verifier_id": f"matgl_{property_name}_v1",
         "verifier_image": "verifier-grounded:dev",
         "property_name": property_name,
         "domain": {"allowed_elements": ["Si"], "atom_count": [1, 8], "volume": [1.0, 300.0]},
@@ -1317,24 +1317,24 @@ def constraint(property_name: str = "formation_energy") -> dict:
     return {
         "type": "window",
         "property": property_name,
-        "verifier_id": f"matgl_direct_{property_name}_v1",
+        "verifier_id": f"matgl_{property_name}_v1",
         "min": -0.1,
         "max": 0.1,
         "sigma": 0.1,
     }
 
 
-def test_matgl_direct_scores_fake_prediction(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_matgl_scores_fake_prediction(monkeypatch: pytest.MonkeyPatch) -> None:
     class FakeModel:
         def predict_structure(self, structure):
             assert structure.composition.reduced_formula == "Si"
             return 0.02
 
-    monkeypatch.setattr(matgl_direct_properties, "load_matgl_model", lambda spec: FakeModel())
+    monkeypatch.setattr(matgl_properties, "load_matgl_model", lambda spec: FakeModel())
 
-    result = matgl_direct_properties.evaluate_matgl_direct_constraint(
+    result = matgl_properties.evaluate_matgl_constraint(
         {"cif": SI_CIF},
-        {"task_id": "matgl_direct_task"},
+        {"task_id": "matgl_task"},
         constraint(),
         spec(),
     )
@@ -1344,10 +1344,10 @@ def test_matgl_direct_scores_fake_prediction(monkeypatch: pytest.MonkeyPatch) ->
     assert result["scores"]["score"] == 1.0
 
 
-def test_matgl_direct_reports_parse_error() -> None:
-    result = matgl_direct_properties.evaluate_matgl_direct_constraint(
+def test_matgl_reports_parse_error() -> None:
+    result = matgl_properties.evaluate_matgl_constraint(
         {"cif": "not a cif"},
-        {"task_id": "matgl_direct_task"},
+        {"task_id": "matgl_task"},
         constraint(),
         spec(),
     )
@@ -1356,12 +1356,12 @@ def test_matgl_direct_reports_parse_error() -> None:
     assert result["failure_type"] == "parse_error"
 ```
 
-- [ ] **Step 2: Implement direct MatGL backend**
+- [ ] **Step 2: Implement native MatGL backend**
 
-Create `verifiers/backends/matgl_direct_properties.py`:
+Create `verifiers/backends/matgl_properties.py`:
 
 ```python
-"""Direct MatGL+pymatgen material property backend."""
+"""Native MatGL+pymatgen material property backend."""
 
 from __future__ import annotations
 
@@ -1371,7 +1371,6 @@ from typing import Any
 
 from pymatgen.core import Structure
 
-from verifiers.backends.matgl_properties import check_domain, inspect_structure
 from verifiers.backends.rdkit_descriptors import score_constraint
 from verifiers.result_schema import base_result, error_result
 
@@ -1388,14 +1387,14 @@ def load_matgl_model(spec: dict[str, Any]):
     return load_matgl_model_by_name(model_name)
 
 
-def evaluate_matgl_direct_constraint(
+def evaluate_matgl_constraint(
     candidate: dict[str, Any],
     task: dict[str, Any],
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
     task_id = str(task.get("task_id"))
-    result = base_result(task_id, spec.get("verifier_id"), matgl_direct_versions(spec))
+    result = base_result(task_id, spec.get("verifier_id"), matgl_versions(spec))
     property_name = spec.get("property_name")
     if property_name != constraint.get("property"):
         return error_result(result, "verifier_spec_error", "MatGL property does not match constraint property")
@@ -1450,7 +1449,33 @@ def predict_property(structure: Structure, property_name: str, spec: dict[str, A
     if property_name == "bandgap":
         value = model.predict_structure(structure)
         return {"bandgap": float_value(value), "bandgap_unit": "eV"}
-    raise ValueError(f"unsupported MatGL direct property: {property_name}")
+    raise ValueError(f"unsupported Native MatGL property: {property_name}")
+
+
+def inspect_structure(structure: Structure) -> dict[str, Any]:
+    return {
+        "reduced_formula": structure.composition.reduced_formula,
+        "atom_count": len(structure),
+        "volume": float(structure.volume),
+        "elements": sorted({str(element) for element in structure.composition.elements}),
+    }
+
+
+def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | None:
+    allowed_elements = domain.get("allowed_elements")
+    if allowed_elements:
+        disallowed = sorted(set(properties["elements"]) - set(allowed_elements))
+        if disallowed:
+            return f"disallowed elements: {', '.join(disallowed)}"
+    if "atom_count" in domain:
+        lower, upper = domain["atom_count"]
+        if not int(lower) <= int(properties["atom_count"]) <= int(upper):
+            return f"atom_count outside [{lower}, {upper}]"
+    if "volume" in domain:
+        lower, upper = domain["volume"]
+        if not float(lower) <= float(properties["volume"]) <= float(upper):
+            return f"volume outside [{lower}, {upper}]"
+    return None
 
 
 def float_value(value: Any) -> float:
@@ -1463,7 +1488,7 @@ def float_value(value: Any) -> float:
     return float(value)
 
 
-def matgl_direct_versions(spec: dict[str, Any]) -> dict[str, Any]:
+def matgl_versions(spec: dict[str, Any]) -> dict[str, Any]:
     versions = {
         "verifier_image": spec.get("verifier_image"),
         "pymatgen": metadata.version("pymatgen"),
@@ -1477,14 +1502,14 @@ def matgl_direct_versions(spec: dict[str, Any]) -> dict[str, Any]:
 
 - [ ] **Step 3: Implement script wrappers**
 
-Create `verifiers/materials/matgl_direct_property_script.py`:
+Create `verifiers/materials/matgl_property_script.py`:
 
 ```python
-"""Shared CLI helper for direct MatGL verifier scripts."""
+"""Shared CLI helper for native MatGL verifier scripts."""
 
 from __future__ import annotations
 
-from verifiers.backends.matgl_direct_properties import evaluate_matgl_direct_constraint
+from verifiers.backends.matgl_properties import evaluate_matgl_constraint
 from verifiers.script_cli import run_property_script
 
 
@@ -1493,36 +1518,36 @@ def main(property_name: str) -> None:
         expected_name=property_name,
         spec_field="property_name",
         mismatch_label="property",
-        evaluator=evaluate_matgl_direct_constraint,
+        evaluator=evaluate_matgl_constraint,
         sort_keys=True,
     )
 ```
 
-Create `verifiers/materials/matgl_direct_formation_energy.py`:
+Create `verifiers/materials/matgl_formation_energy.py`:
 
 ```python
 from __future__ import annotations
 
-from verifiers.materials.matgl_direct_property_script import main
+from verifiers.materials.matgl_property_script import main
 
 if __name__ == "__main__":
     main("formation_energy")
 ```
 
-Create `verifiers/materials/matgl_direct_bandgap.py`:
+Create `verifiers/materials/matgl_bandgap.py`:
 
 ```python
 from __future__ import annotations
 
-from verifiers.materials.matgl_direct_property_script import main
+from verifiers.materials.matgl_property_script import main
 
 if __name__ == "__main__":
     main("bandgap")
 ```
 
-- [ ] **Step 4: Write direct script tests**
+- [ ] **Step 4: Write native MatGL script tests**
 
-Create `tests/test_matgl_direct_task_scripts.py` with a mismatch-only test that does not require model download:
+Create `tests/test_matgl_task_scripts.py` with a mismatch-only test that does not require model download:
 
 ```python
 from __future__ import annotations
@@ -1535,17 +1560,17 @@ from benchmark.verifier_scripts import run_verification_script
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_matgl_direct_script_property_mismatch() -> None:
+def test_matgl_script_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "materials" / "matgl_direct_formation_energy.py",
+        ROOT / "verifiers" / "materials" / "matgl_formation_energy.py",
         {
-            "task": {"task_id": "matgl_direct_mismatch"},
+            "task": {"task_id": "matgl_mismatch"},
             "candidate": {"cif": "not used"},
-            "constraint": {"type": "window", "property": "bandgap", "verifier_id": "matgl_direct_v1"},
+            "constraint": {"type": "window", "property": "bandgap", "verifier_id": "matgl_v1"},
             "verifier_spec": {
-                "verifier_id": "matgl_direct_v1",
+                "verifier_id": "matgl_v1",
                 "property_name": "bandgap",
-                "verification_script": "verifiers/materials/matgl_direct_formation_energy.py",
+                "verification_script": "verifiers/materials/matgl_formation_energy.py",
             },
         },
         timeout_seconds=10,
@@ -1555,12 +1580,12 @@ def test_matgl_direct_script_property_mismatch() -> None:
     assert result["failure_type"] == "verifier_spec_error"
 ```
 
-- [ ] **Step 5: Verify direct MatGL backend**
+- [ ] **Step 5: Verify native MatGL backend**
 
 Run:
 
 ```bash
-uv run pytest tests/test_matgl_direct_properties_backend.py tests/test_matgl_direct_task_scripts.py -q
+uv run pytest tests/test_matgl_properties_backend.py tests/test_matgl_task_scripts.py -q
 ```
 
 Expected: tests pass without downloading a model because backend tests monkeypatch model loading and script test checks mismatch before evaluation.
@@ -1570,7 +1595,7 @@ Expected: tests pass without downloading a model because backend tests monkeypat
 After model cache is available:
 
 ```bash
-uv run python scripts/check_matgl_direct_env.py --model MEGNet-Eform-MP-2018.6.1
+uv run python scripts/check_matgl_env.py --model MEGNet-Eform-MP-2018.6.1
 ```
 
 Expected: model loads and reports class. If it downloads from Hugging Face, document cache path and add a Docker build cache step in a later task.
@@ -1578,8 +1603,8 @@ Expected: model loads and reports class. If it downloads from Hugging Face, docu
 - [ ] **Step 7: Commit**
 
 ```bash
-git add verifiers/backends/matgl_direct_properties.py verifiers/materials/matgl_direct_* tests/test_matgl_direct_properties_backend.py tests/test_matgl_direct_task_scripts.py
-git commit -m "feat: add direct matgl verifier backend"
+git add verifiers/backends/matgl_properties.py verifiers/materials/matgl_* tests/test_matgl_properties_backend.py tests/test_matgl_task_scripts.py
+git commit -m "feat: add native matgl verifier backend"
 ```
 
 ## Task 6: Integration Verification and Documentation Notes
@@ -1599,9 +1624,9 @@ uv run pytest \
   tests/test_admet_ai_task_scripts.py \
   tests/test_opera_env_script.py \
   tests/test_opera_properties_backend.py \
-  tests/test_matgl_direct_env_script.py \
-  tests/test_matgl_direct_properties_backend.py \
-  tests/test_matgl_direct_task_scripts.py \
+  tests/test_matgl_env_script.py \
+  tests/test_matgl_properties_backend.py \
+  tests/test_matgl_task_scripts.py \
   -q
 ```
 
@@ -1614,14 +1639,14 @@ Run:
 ```bash
 uv run python scripts/check_admet_ai_env.py --smiles CCO
 uv run python scripts/check_opera_env.py
-uv run python scripts/check_matgl_direct_env.py --no-model-load
+uv run python scripts/check_matgl_env.py --no-model-load
 ```
 
 Expected:
 
 - ADMET-AI reports `status: ok`.
 - OPERA reports either `status: ok` when configured or `status: missing` with a clear remediation message.
-- MatGL direct reports `status: ok` after MatGL is installed.
+- Native MatGL reports `status: ok` after MatGL is installed.
 
 - [ ] **Step 3: Run full test suite**
 
@@ -1648,7 +1673,7 @@ Report:
 
 - ADMET-AI backend status and endpoint list.
 - OPERA status: configured executable path or missing/Docker-required.
-- MatGL direct status: installed version, model cache status, and whether live model load was run.
+- MatGL native status: installed version, model cache status, and whether live model load was run.
 - Test command and pass/fail result.
 
 ## Risks and Decisions

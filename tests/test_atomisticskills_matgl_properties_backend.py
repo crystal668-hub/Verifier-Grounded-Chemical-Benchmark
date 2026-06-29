@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.backends import matgl_properties
+from verifiers.backends import atomisticskills_matgl_properties
 from verifiers.atomisticskills_backend import (
     AtomisticSkillsEnvironmentError,
     AtomisticSkillsTimeoutError,
@@ -74,7 +74,7 @@ def eform_task() -> dict:
     }
 
 
-def test_matgl_bandgap_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_atomisticskills_matgl_bandgap_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[tuple[str, dict]] = []
 
     class FakeAdapter:
@@ -86,9 +86,9 @@ def test_matgl_bandgap_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch) -
             assert Path(arguments["structure_data"]).exists()
             return {"bandgap": 0.9873989820480347, "unit": "eV"}
 
-    monkeypatch.setattr(matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
+    monkeypatch.setattr(atomisticskills_matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
 
-    result = matgl_properties.evaluate_matgl_property_constraint(
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"cif": SI_CIF},
         bandgap_task(),
         bandgap_task()["constraints"][0],
@@ -107,7 +107,9 @@ def test_matgl_bandgap_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch) -
     assert calls[0][1]["task_name"] == "PBE"
 
 
-def test_matgl_formation_energy_loads_model_and_scores_fake_mcp_result(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_atomisticskills_matgl_formation_energy_loads_model_and_scores_fake_mcp_result(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     calls: list[tuple[str, dict]] = []
 
     class FakeAdapter:
@@ -122,9 +124,9 @@ def test_matgl_formation_energy_loads_model_and_scores_fake_mcp_result(monkeypat
                 {"formation_energy": 0.0052700042724609375, "unit": "eV"},
             ]
 
-    monkeypatch.setattr(matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
+    monkeypatch.setattr(atomisticskills_matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
 
-    result = matgl_properties.evaluate_matgl_property_constraint(
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"cif": SI_CIF},
         eform_task(),
         eform_task()["constraints"][0],
@@ -139,8 +141,8 @@ def test_matgl_formation_energy_loads_model_and_scores_fake_mcp_result(monkeypat
     assert calls[1][0] == "predict_structure"
 
 
-def test_matgl_property_reports_parse_error_for_missing_cif() -> None:
-    result = matgl_properties.evaluate_matgl_property_constraint(
+def test_atomisticskills_matgl_property_reports_parse_error_for_missing_cif() -> None:
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"smiles": "CCO"},
         bandgap_task(),
         bandgap_task()["constraints"][0],
@@ -152,8 +154,8 @@ def test_matgl_property_reports_parse_error_for_missing_cif() -> None:
     assert result["scores"]["score"] == 0.0
 
 
-def test_matgl_property_reports_parse_error_for_invalid_cif() -> None:
-    result = matgl_properties.evaluate_matgl_property_constraint(
+def test_atomisticskills_matgl_property_reports_parse_error_for_invalid_cif() -> None:
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"cif": "not a cif"},
         bandgap_task(),
         bandgap_task()["constraints"][0],
@@ -165,11 +167,11 @@ def test_matgl_property_reports_parse_error_for_invalid_cif() -> None:
     assert "CIF parse failed" in str(result["message"])
 
 
-def test_matgl_property_reports_domain_error_for_disallowed_element() -> None:
+def test_atomisticskills_matgl_property_reports_domain_error_for_disallowed_element() -> None:
     spec = bandgap_spec()
     spec["domain"] = {**spec["domain"], "allowed_elements": ["C"]}
 
-    result = matgl_properties.evaluate_matgl_property_constraint(
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"cif": SI_CIF},
         bandgap_task(),
         bandgap_task()["constraints"][0],
@@ -190,7 +192,7 @@ def test_matgl_property_reports_domain_error_for_disallowed_element() -> None:
         (AtomisticSkillsTimeoutError("timed out"), "verifier_timeout"),
     ],
 )
-def test_matgl_property_maps_adapter_errors(
+def test_atomisticskills_matgl_property_maps_adapter_errors(
     monkeypatch: pytest.MonkeyPatch,
     exception: Exception,
     failure_type: str,
@@ -202,9 +204,9 @@ def test_matgl_property_maps_adapter_errors(
         def call_tool(self, tool_name: str, arguments: dict, timeout_seconds: float = 60.0) -> dict:
             raise exception
 
-    monkeypatch.setattr(matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
+    monkeypatch.setattr(atomisticskills_matgl_properties, "AtomisticSkillsMCPAdapter", FakeAdapter)
 
-    result = matgl_properties.evaluate_matgl_property_constraint(
+    result = atomisticskills_matgl_properties.evaluate_atomisticskills_matgl_constraint(
         {"cif": SI_CIF},
         bandgap_task(),
         bandgap_task()["constraints"][0],

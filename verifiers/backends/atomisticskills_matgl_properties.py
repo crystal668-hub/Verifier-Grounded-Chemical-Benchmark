@@ -1,4 +1,4 @@
-"""Shared MatGL material property backend for verifier scripts."""
+"""Shared AtomisticSkills MatGL MCP backend for verifier scripts."""
 
 from __future__ import annotations
 
@@ -20,14 +20,14 @@ from verifiers.result_schema import base_result
 from verifiers.result_schema import error_result
 
 
-def evaluate_matgl_property_constraint(
+def evaluate_atomisticskills_matgl_constraint(
     candidate: dict[str, Any],
     task: dict[str, Any],
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
     task_id = str(task.get("task_id"))
-    result = base_result(task_id, spec.get("verifier_id"), matgl_versions(spec))
+    result = base_result(task_id, spec.get("verifier_id"), atomisticskills_matgl_versions(spec))
     property_name = spec.get("property_name")
     if property_name != constraint.get("property"):
         return error_result(
@@ -170,7 +170,7 @@ def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | No
     return None
 
 
-def matgl_versions(spec: dict[str, Any]) -> dict[str, Any]:
+def atomisticskills_matgl_versions(spec: dict[str, Any]) -> dict[str, Any]:
     return {
         "verifier_image": spec.get("verifier_image"),
         "matgl_backend": "atomisticskills_matgl_mcp",

@@ -21,7 +21,7 @@ def bandgap_payload() -> dict:
         },
         "verifier_spec": {
             "verifier_id": "matgl_bandgap_pbe_mcp_v1",
-            "verification_script": "verifiers/materials/matgl_bandgap.py",
+            "verification_script": "verifiers/materials/atomisticskills_matgl_bandgap.py",
             "property_name": "bandgap",
             "backend": {"type": "atomisticskills_mcp", "server": "matgl"},
         },
@@ -29,11 +29,15 @@ def bandgap_payload() -> dict:
     }
 
 
-def test_matgl_property_script_rejects_property_mismatch() -> None:
+def test_atomisticskills_matgl_property_script_rejects_property_mismatch() -> None:
     payload = bandgap_payload()
     payload["verifier_spec"] = {**payload["verifier_spec"], "property_name": "formation_energy"}
 
-    result = run_verification_script(ROOT / "verifiers" / "materials" / "matgl_bandgap.py", payload, timeout_seconds=60)
+    result = run_verification_script(
+        ROOT / "verifiers" / "materials" / "atomisticskills_matgl_bandgap.py",
+        payload,
+        timeout_seconds=60,
+    )
 
     assert result["status"] == "error"
     assert result["task_id"] == "matgl_bandgap_window_si_001"
@@ -43,9 +47,9 @@ def test_matgl_property_script_rejects_property_mismatch() -> None:
     assert result["scores"]["score"] == 0.0
 
 
-def test_matgl_property_script_outputs_standard_json_result() -> None:
+def test_atomisticskills_matgl_property_script_outputs_standard_json_result() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "materials" / "matgl_bandgap.py",
+        ROOT / "verifiers" / "materials" / "atomisticskills_matgl_bandgap.py",
         bandgap_payload(),
         timeout_seconds=60,
     )

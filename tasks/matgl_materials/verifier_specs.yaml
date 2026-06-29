@@ -5,7 +5,7 @@ verifiers:
     formal_track: false
     track_status: prototype
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/materials/matgl_bandgap.py
+    verification_script: verifiers/materials/atomisticskills_matgl_bandgap.py
     timeout_seconds: 180
     property_name: bandgap
     resources: &resources
@@ -47,7 +47,7 @@ verifiers:
     formal_track: false
     track_status: prototype
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/materials/matgl_formation_energy.py
+    verification_script: verifiers/materials/atomisticskills_matgl_formation_energy.py
     timeout_seconds: 180
     property_name: formation_energy
     resources: *resources
