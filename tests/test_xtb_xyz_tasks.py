@@ -215,11 +215,24 @@ def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
         "Atom count must be between",
         "Heavy atom count must be between",
         "all hydrogens explicit",
-        "relax by more than about 0.35 eV",
+        "chemically plausible for a neutral closed-shell small molecule",
+        "physically reasonable local minimum",
+        "more than about 0.35 eV of relaxation",
         "FINAL ANSWER:",
         "```xyz",
     ]
-    forbidden = ["verifier_id", "verifiers/", "sigma", "geometric_mean", "xtb_gap_gfn2_v1"]
+    forbidden = [
+        "verifier",
+        "verifier_id",
+        "verifiers/",
+        "sigma",
+        "geometric_mean",
+        "xtb_gap_gfn2_v1",
+        "local xTB",
+        "low-energy xTB",
+        "GFN2-xTB",
+        "benchmark",
+    ]
     for task in tasks.values():
         prompt = task["prompt"]
         for phrase in required:

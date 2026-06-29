@@ -11,8 +11,8 @@ tasks:
       Propose one periodic crystalline material as a CIF.
 
       The material must satisfy:
-      - MACE potential energy between -20.0 and 20.0 eV in the fixed MACE-MP-small model output convention.
-      - Use a compact periodic unit cell suitable for local verifier evaluation.
+      - Potential energy between -20.0 and 20.0 eV.
+      - Use a compact periodic unit cell with a modest atom count.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:

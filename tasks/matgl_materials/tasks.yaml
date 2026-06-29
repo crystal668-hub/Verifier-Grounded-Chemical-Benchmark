@@ -11,8 +11,8 @@ tasks:
       Propose one periodic crystalline material as a CIF.
 
       The material must satisfy:
-      - MatGL PBE band gap between 0.8 and 1.2 eV.
-      - Use a compact periodic unit cell suitable for local verifier evaluation.
+      - PBE band gap between 0.8 and 1.2 eV.
+      - Use a compact periodic unit cell with a modest atom count.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -60,8 +60,8 @@ tasks:
       Propose one periodic crystalline material as a CIF.
 
       The material must satisfy:
-      - MatGL formation energy between -0.05 and 0.05 eV in the fixed MEGNet formation-energy model output convention.
-      - Use a compact periodic unit cell suitable for local verifier evaluation.
+      - Formation energy between -0.05 and 0.05 eV.
+      - Use a compact periodic unit cell with a modest atom count.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -92,8 +92,8 @@ tasks:
       Propose one periodic crystalline material as a CIF.
 
       The material must satisfy both targets:
-      - MatGL PBE band gap between 0.8 and 1.2 eV.
-      - MatGL formation energy between -0.05 and 0.05 eV in the fixed MEGNet formation-energy model output convention.
+      - PBE band gap between 0.8 and 1.2 eV.
+      - Formation energy between -0.05 and 0.05 eV.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:

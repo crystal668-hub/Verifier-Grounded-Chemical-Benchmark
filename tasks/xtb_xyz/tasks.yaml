@@ -14,9 +14,9 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 1 and 40 inclusive.
       - Use at least 6 heavy atoms and at least one hetero atom.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 3.5 and 5.5 eV.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - After geometry optimization, have a HOMO-LUMO gap between 3.5 and 5.5 eV.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -86,9 +86,9 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 1 and 40 inclusive.
       - Use at least 5 heavy atoms, at least 2 carbon atoms, and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - After GFN2-xTB optimization, have a molecular dipole moment between 3.0 and 5.5 Debye.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - After geometry optimization, have a molecular dipole moment between 3.0 and 5.5 Debye.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -133,9 +133,9 @@ tasks:
       - Atom count must be between 12 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least two hetero atoms and at least three distinct heavy-element types.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - Maximize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - Maximize the optimized-geometry HOMO-LUMO gap.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -180,9 +180,9 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - Minimize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - Minimize the optimized-geometry HOMO-LUMO gap.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -226,9 +226,9 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 6 and 40 inclusive.
       - Use at least 2 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - Maximize the GFN2-xTB optimized-geometry molecular dipole moment.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - Maximize the optimized-geometry molecular dipole moment.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -272,10 +272,10 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - Minimize the GFN2-xTB optimized-geometry HOMO-LUMO gap.
-      - Maximize the GFN2-xTB optimized-geometry molecular dipole moment.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - Minimize the optimized-geometry HOMO-LUMO gap.
+      - Maximize the optimized-geometry molecular dipole moment.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -324,10 +324,10 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
-      - After GFN2-xTB optimization, have a HOMO-LUMO gap between 2.5 and 4.2 eV.
-      - After GFN2-xTB optimization, have a molecular dipole moment between 3.5 and 6.0 Debye.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
+      - After geometry optimization, have a HOMO-LUMO gap between 2.5 and 4.2 eV.
+      - After geometry optimization, have a molecular dipole moment between 3.5 and 6.0 Debye.
 
       Your final answer must appear exactly in this format:
       FINAL ANSWER:
@@ -378,8 +378,8 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - Minimize the optimized-geometry LUMO energy.
 
       Your final answer must appear exactly in this format:
@@ -424,8 +424,8 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms, at least 2 hetero atoms, and at least 2 distinct heavy-element types.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - Maximize optimized-geometry molecular polarizability per heavy atom.
       - After optimization, have a molecular dipole moment between 3.0 and 8.0 Debye.
 
@@ -477,8 +477,8 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 36 inclusive.
       - Use at least 3 carbon atoms and at least 3 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - Maximize water-over-hexane implicit-solvent stabilization selectivity.
 
       Your final answer must appear exactly in this format:
@@ -523,8 +523,8 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 8 and 40 inclusive.
       - Use at least 4 carbon atoms and at least 2 hetero atoms.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - Maximize the global electrophilicity index.
 
       Your final answer must appear exactly in this format:
@@ -569,8 +569,8 @@ tasks:
       - Atom count must be between 3 and 80 inclusive.
       - Heavy atom count must be between 4 and 32 inclusive.
       - Use at least 3 carbon atoms and at least 1 hetero atom.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - Maximize the strongest carbon-atom f+ local reactivity descriptor.
       - Make the strongest carbon f+ site stand out from competing atoms.
 
@@ -621,8 +621,8 @@ tasks:
       - Atom count must be between 6 and 48 inclusive.
       - Heavy atom count must be between 4 and 18 inclusive.
       - Use at least 2 carbon atoms and at least 1 hetero atom.
-      - Coordinates must be in Angstrom and suitable for local xTB optimization.
-      - The submitted XYZ should already be close to a low-energy xTB geometry; rough geometries that relax by more than about 0.35 eV will receive little or no credit.
+      - Coordinates must be in Angstrom and chemically plausible for a neutral closed-shell small molecule.
+      - The submitted XYZ should already be close to a physically reasonable local minimum; rough geometries that require more than about 0.35 eV of relaxation will receive little or no credit.
       - The optimized geometry should be a stable local minimum with zero imaginary vibrational frequencies.
       - Maximize the 298.15 K entropy per heavy atom.
 

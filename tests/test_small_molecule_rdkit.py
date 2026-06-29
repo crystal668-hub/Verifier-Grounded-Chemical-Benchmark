@@ -100,7 +100,9 @@ def test_prompts_expose_requirements_without_verifier_internals() -> None:
         "verifier",
         "applicability domain",
         "benchmark validity",
+        "benchmark",
         "domain constraints",
+        "RDKit-calculated",
         "small-molecule",
         "sigma",
         "geometric mean",
@@ -110,7 +112,7 @@ def test_prompts_expose_requirements_without_verifier_internals() -> None:
         "The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.",
         "Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.",
         "Heavy atom count must be between 5 and 60 inclusive.",
-        "RDKit-calculated molecular weight must be at most 600.0 daltons.",
+        "Molecular weight must be at most 600.0 daltons.",
         "Formal charge must be between -1 and 1 inclusive.",
     ]
 

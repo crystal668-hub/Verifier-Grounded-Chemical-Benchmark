@@ -11,7 +11,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Maximize QED on a bounded 0.0 to 1.0 scale.
 
@@ -49,7 +49,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is better.
 
@@ -78,7 +78,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have logP between 1.0 and 3.0.
 
@@ -108,7 +108,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have TPSA between 35.0 and 75.0 square angstroms.
 
@@ -138,7 +138,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have a moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
 
@@ -168,7 +168,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
 
@@ -198,7 +198,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Maximize fraction Csp3 on a 0.0 to 1.0 scale.
 
@@ -227,7 +227,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Maximize QED on a bounded 0.0 to 1.0 scale.
       - Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range where lower is better.
@@ -262,7 +262,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have logP between 1.0 and 3.0.
       - Have TPSA between 35.0 and 75.0 square angstroms.
@@ -299,7 +299,7 @@ tasks:
       - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
       - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
       - Heavy atom count must be between 5 and 60 inclusive.
-      - RDKit-calculated molecular weight must be at most 600.0 daltons.
+      - Molecular weight must be at most 600.0 daltons.
       - Formal charge must be between -1 and 1 inclusive.
       - Have a moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
       - Have a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
