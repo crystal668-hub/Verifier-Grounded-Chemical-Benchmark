@@ -17,13 +17,17 @@ from verifiers.result_schema import base_result, error_result
 
 @lru_cache(maxsize=4)
 def load_model_cached(include_physchem: bool, drugbank_percentiles: bool, num_workers: int):
-    from admet_ai import ADMETModel
+    stdout = io.StringIO()
+    stderr = io.StringIO()
+    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        from admet_ai import ADMETModel
+        from admet_ai.constants import DEFAULT_DRUGBANK_PATH
 
-    return ADMETModel(
-        include_physchem=include_physchem,
-        drugbank_path=None if not drugbank_percentiles else None,
-        num_workers=num_workers,
-    )
+        return ADMETModel(
+            include_physchem=include_physchem,
+            drugbank_path=DEFAULT_DRUGBANK_PATH if drugbank_percentiles else None,
+            num_workers=num_workers,
+        )
 
 
 def load_model(spec: dict[str, Any]):
@@ -86,7 +90,7 @@ def evaluate_admet_ai_constraint(
     if property_name not in predictions:
         return error_result(result, "verifier_tool_error", f"ADMET-AI output missing property {property_name!r}")
 
-    properties = {property_name: predictions[property_name]}
+    properties = {**domain_properties, property_name: predictions[property_name]}
     try:
         property_score = score_constraint(properties, constraint)
     except Exception as exc:
