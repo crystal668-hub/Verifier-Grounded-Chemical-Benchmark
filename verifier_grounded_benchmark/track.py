@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
 from typing import Any, Iterable
 
 from verifier_grounded_benchmark.io import (
@@ -23,7 +24,7 @@ class Track:
         )
         self._verifier_specs_by_id = materialize_verifier_specs(
             specs,
-            script_root=definition.root,
+            script_root=_script_root_for(definition),
         )
 
     @property
@@ -114,3 +115,18 @@ class Suite:
         for track in self._tracks:
             prompts.extend(track.prompts())
         return prompts
+
+
+def _script_root_for(definition: TrackDefinition) -> Path:
+    if definition.resource_root is not None:
+        return definition.root
+
+    verifier_specs_path = Path(definition.verifier_specs_path)
+    if verifier_specs_path.is_absolute():
+        return verifier_specs_path.parent
+
+    task_pack_path = Path(definition.task_pack_path)
+    if task_pack_path.is_absolute():
+        return task_pack_path.parent
+
+    return definition.root

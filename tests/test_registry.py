@@ -226,6 +226,56 @@ def test_track_and_suite_tasks_by_id_return_mutation_safe_copies(
     ]
 
 
+def test_external_absolute_track_paths_resolve_scripts_from_spec_directory(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "external_pack"
+    root.mkdir()
+    tasks_path = root / "tasks.yaml"
+    specs_path = root / "verifier_specs.yaml"
+    tasks_path.write_text(
+        yaml.safe_dump(
+            {
+                "tasks": [
+                    {
+                        "task_id": "external_task",
+                        "prompt": "External prompt",
+                        "constraints": [{"verifier_id": "external_v1"}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    specs_path.write_text(
+        yaml.safe_dump(
+            {
+                "verifiers": [
+                    {
+                        "verifier_id": "external_v1",
+                        "verification_script": "verifier.py",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    track = Track(
+        TrackDefinition(
+            name="external",
+            version="1",
+            display_name="External",
+            task_pack_path=tasks_path,
+            verifier_specs_path=specs_path,
+        )
+    )
+
+    assert track.verifier_specs_by_id["external_v1"]["verification_script"] == str(
+        root / "verifier.py"
+    )
+
+
 def _write_track_files(
     tmp_path: Path,
     name: str,
