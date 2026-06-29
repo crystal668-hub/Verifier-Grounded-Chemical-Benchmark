@@ -17,10 +17,10 @@ class Track:
     def __init__(self, definition: TrackDefinition) -> None:
         self.definition = definition
         self._tasks_by_id = load_tasks_file(
-            definition.resolve_path(definition.task_pack_path)
+            _resolve_track_path(definition, definition.task_pack_path)
         )
         specs = load_verifier_specs_file(
-            definition.resolve_path(definition.verifier_specs_path)
+            _resolve_track_path(definition, definition.verifier_specs_path)
         )
         self._verifier_specs_by_id = materialize_verifier_specs(
             specs,
@@ -66,7 +66,7 @@ class Track:
         if self.definition.sample_answers_path is None:
             return []
         return load_answers_jsonl_file(
-            self.definition.resolve_path(self.definition.sample_answers_path)
+            _resolve_track_path(self.definition, self.definition.sample_answers_path)
         )
 
 
@@ -130,3 +130,24 @@ def _script_root_for(definition: TrackDefinition) -> Path:
         return task_pack_path.parent
 
     return definition.root
+
+
+def _resolve_track_path(
+    definition: TrackDefinition,
+    path: str | Path | None,
+) -> Path | None:
+    if path is None:
+        return None
+
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+
+    if definition.resource_root is not None:
+        return definition.resolve_path(path)
+
+    task_pack_path = Path(definition.task_pack_path)
+    if task_pack_path.is_absolute():
+        return task_pack_path.parent / candidate
+
+    return definition.resolve_path(path)

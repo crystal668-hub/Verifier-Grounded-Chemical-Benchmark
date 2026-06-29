@@ -276,6 +276,69 @@ def test_external_absolute_track_paths_resolve_scripts_from_spec_directory(
     )
 
 
+def test_external_absolute_task_path_resolves_relative_specs_and_samples(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "external_pack_with_relatives"
+    root.mkdir()
+    tasks_path = root / "tasks.yaml"
+    tasks_path.write_text(
+        yaml.safe_dump(
+            {
+                "tasks": [
+                    {
+                        "task_id": "external_relative_task",
+                        "prompt": "External relative prompt",
+                        "constraints": [{"verifier_id": "external_relative_v1"}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (root / "verifier_specs.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "verifiers": [
+                    {
+                        "verifier_id": "external_relative_v1",
+                        "verification_script": "verifier.py",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (root / "sample_answers.jsonl").write_text(
+        '{"task_id": "external_relative_task", "candidates": [{"value": "C"}]}',
+        encoding="utf-8",
+    )
+
+    track = Track(
+        TrackDefinition(
+            name="external-relative",
+            version="1",
+            display_name="External Relative",
+            task_pack_path=tasks_path,
+            verifier_specs_path="verifier_specs.yaml",
+            sample_answers_path="sample_answers.jsonl",
+        )
+    )
+
+    assert track.task("external_relative_task")["prompt"] == (
+        "External relative prompt"
+    )
+    assert track.verifier_specs_by_id["external_relative_v1"][
+        "verification_script"
+    ] == str(root / "verifier.py")
+    assert track.sample_answers() == [
+        {
+            "task_id": "external_relative_task",
+            "candidates": [{"value": "C"}],
+        }
+    ]
+
+
 def _write_track_files(
     tmp_path: Path,
     name: str,
