@@ -8,6 +8,7 @@ import yaml
 import verifier_grounded_benchmark as vgb
 from verifier_grounded_benchmark.io import load_answers_jsonl_file
 from verifier_grounded_benchmark.registry import Registry, TrackDefinition
+from verifier_grounded_benchmark.track import Suite, Track
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -150,3 +151,92 @@ def test_answers_jsonl_allows_repeated_task_ids(tmp_path: Path) -> None:
         {"task_id": "example_task", "candidates": [{"value": 1}]},
         {"task_id": "example_task", "candidates": [{"value": 2}]},
     ]
+
+
+def test_suite_rejects_duplicate_task_ids(tmp_path: Path) -> None:
+    first = _write_track_files(
+        tmp_path,
+        "first",
+        task_id="shared_task",
+        verifier_id="first_v1",
+        verification_script="first.py",
+    )
+    second = _write_track_files(
+        tmp_path,
+        "second",
+        task_id="shared_task",
+        verifier_id="second_v1",
+        verification_script="second.py",
+    )
+
+    with pytest.raises(ValueError, match="Duplicate task_id"):
+        Suite([first, second])
+
+
+def test_suite_rejects_conflicting_same_verifier_id_specs(tmp_path: Path) -> None:
+    first = _write_track_files(
+        tmp_path,
+        "first",
+        task_id="first_task",
+        verifier_id="shared_v1",
+        verification_script="a.py",
+    )
+    second = _write_track_files(
+        tmp_path,
+        "second",
+        task_id="second_task",
+        verifier_id="shared_v1",
+        verification_script="b.py",
+    )
+
+    with pytest.raises(ValueError, match="Conflicting verifier spec"):
+        Suite([first, second])
+
+
+def _write_track_files(
+    tmp_path: Path,
+    name: str,
+    *,
+    task_id: str,
+    verifier_id: str,
+    verification_script: str,
+) -> Track:
+    root = tmp_path / name
+    root.mkdir()
+    (root / "tasks.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "tasks": [
+                    {
+                        "task_id": task_id,
+                        "prompt": f"Prompt for {task_id}",
+                        "constraints": [{"verifier_id": verifier_id}],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (root / "verifier_specs.yaml").write_text(
+        yaml.safe_dump(
+            {
+                "verifiers": [
+                    {
+                        "verifier_id": verifier_id,
+                        "verification_script": verification_script,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    definition = TrackDefinition(
+        name=name,
+        version="1",
+        display_name=name.title(),
+        task_pack_path="tasks.yaml",
+        verifier_specs_path="verifier_specs.yaml",
+        resource_root=root,
+    )
+    return Track(definition)
