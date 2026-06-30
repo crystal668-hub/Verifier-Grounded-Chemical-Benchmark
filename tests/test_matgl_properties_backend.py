@@ -128,6 +128,32 @@ def test_matgl_bandgap_scores_fake_native_model(monkeypatch: pytest.MonkeyPatch)
     assert result["scores"]["score"] == 1.0
 
 
+def test_matgl_bandgap_passes_configured_fidelity_state_attr(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FidelityAwareModel:
+        def predict_structure(self, structure: object, state_attr: object | None = None) -> float:
+            assert structure.composition.reduced_formula == "Si"
+            assert state_attr is not None
+            assert state_attr.tolist() == [0]
+            return 1.12
+
+    spec = bandgap_spec()
+    spec["matgl"] = {
+        "model_name": "MEGNet-BandGap-mfi-MP-2019.4.1",
+        "fidelity": "PBE",
+    }
+    monkeypatch.setattr(matgl_properties, "load_matgl_model", lambda spec: FidelityAwareModel())
+
+    result = matgl_properties.evaluate_matgl_constraint(
+        {"cif": SI_CIF},
+        bandgap_task(),
+        bandgap_task()["constraints"][0],
+        spec,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["bandgap"] == pytest.approx(1.12)
+
+
 @pytest.mark.parametrize("candidate", [{"smiles": "CCO"}, {"cif": "not a cif"}])
 def test_matgl_property_reports_parse_error_for_missing_or_invalid_cif(candidate: dict) -> None:
     result = matgl_properties.evaluate_matgl_constraint(

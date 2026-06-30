@@ -18,12 +18,13 @@ open-generation chemical property satisfaction benchmark。候选 verifier
 | 推荐级别 | 工具 | 最适合部署的 verifier 方向 | 结论 |
 |---|---|---|---|
 | P0 | ADMET-AI | 小分子 ADMET 多 endpoint：logS、hERG、AMES、DILI、BBB、Caco-2、CYP、clearance 等 | 最适合作为下一批小分子 verifier。Python/CLI 本地部署简单，项目已在 `pyproject.toml` pin `admet-ai==2.0.1`。 |
-| P0/P1 | OPERA | 监管/环境 QSAR：water solubility、Caco-2、FuB、Clint、CATMoS acute toxicity、CERAPP/CoMPARA 等 | 科学和监管语境认可度高，带 applicability domain/accuracy assessment。部署包很重，CLI 入口需要在 Docker 构建时用官方 quick run guide 固化。 |
+| P2（暂缓本机部署） | OPERA | 监管/环境 QSAR：water solubility、Caco-2、FuB、Clint、CATMoS acute toxicity、CERAPP/CoMPARA 等 | 科学和监管语境认可度高，带 applicability domain/accuracy assessment；但官方 runtime/CLI 只提供 Windows/Linux 64-bit，本机 macOS arm64 不能原生部署，需转 Linux/Docker 后再实测。 |
 | P0/P1 | MatGL + pymatgen | 材料 formation energy、band gap、relaxation、energy/forces/stress、hull stability workflow | 推荐作为材料方向主 verifier 后端。MatGL 当前维护更活跃，并包含 CHGNet-PyG、M3GNet、MEGNet、TensorNet/QET 等模型入口；pymatgen 负责相图和 hull 算法层。 |
 | P1 | standalone CHGNet + pymatgen | CHGNet static energy/forces/stress/magmom、structure relaxation、CHGNet energy-based stability proxy | 可作为 baseline 或交叉验证。CHGNet README 明确当前实现已迁移到 MatGL，legacy package 不建议作为长期唯一材料 verifier。 |
 
-最终建议：小分子下一批先部署 `ADMET-AI`，再部署 `OPERA`
-作为保守 QSAR/AD endpoint 互补。材料方向不要在
+最终建议：小分子下一批先部署 `ADMET-AI`；`OPERA`
+作为保守 QSAR/AD endpoint 互补先保留 wrapper 和 smoke，但暂缓本机
+部署，等 Linux/Docker verifier image 可用后再做真实模型验证。材料方向不要在
 `standalone CHGNet` 和 `MatGL` 二选一地孤立部署；推荐的正式形态是
 `MatGL model backend + pymatgen PhaseDiagram/structure analysis`，必要时把
 MatGL 中的 CHGNet-PyG checkpoint 作为一个具体 model choice。
@@ -207,6 +208,12 @@ run_OPERA.sh <mcr_directory> --SMI <input.smi> --Output <output.csv> --Endpoint 
 `OPERA_MCR_DIRECTORY`。macOS arm64 本机未安装 OPERA；当前 verifier
 backend 会把未配置 executable 或 MCR 的情况报告为
 `verifier_environment_error`，正式验证仍应在 Linux/Docker 环境中完成。
+
+2026-06-30 决策：暂缓继续在当前本机部署 OPERA。理由是当前 host 为
+macOS arm64，而 OPERA v2.9.2 官方 release assets 只有 Linux `.tar.xz`
+和 Windows `.zip` 包；即使单独安装 MATLAB Runtime，也缺少可在 Darwin
+arm64 原生运行的 OPERA 编译产物。后续 OPERA 实测应放到 Linux 机器或
+Docker image 中执行，并只在镜像构建时下载约 2 GB 的官方包。
 
 安装指南还说明 accepted input files 包括 QSAR-ready `.smi`、`.sdf/.mol`，以及 command-line only 的 descriptor `.csv`。正式 verifier 应优先接受结构输入文件，不使用 `.txt` chemical ID 查找模式。
 
@@ -409,8 +416,16 @@ mgl clear
 `lightning` lockfile resolution 从 `2.6.5` 到 `2.6.1` 的变化。当前 native
 backend 已接入 pymatgen CIF 解析、MatGL model loading、`formation_energy`
 和 `bandgap` 两个 property shell；单元测试通过 fake model 覆盖，不在测试
-时下载 Hugging Face model。正式题目化前仍需要为具体 band gap checkpoint
-补充 fidelity/state_attr 配置，并在 verifier image build 阶段预缓存模型。
+时下载 Hugging Face model。
+
+2026-06-30 本机 live smoke：已缓存并加载
+`MEGNet-Eform-MP-2018.6.1` 和 `MEGNet-BandGap-mfi-MP-2019.4.1`，
+缓存目录为 `~/.cache/matgl/`。使用现有 Si CIF fixture 做端到端 verifier
+script 实测，`formation_energy` 返回 `0.0052700042724609375 eV/atom`，
+`bandgap` 在 PBE fidelity (`state_attr=[0]`) 下返回
+`0.9873989820480347 eV`，两者均为 `status: ok`。注意 MatGL 仍会向
+stderr 输出 Hugging Face unauthenticated request warning 和旧 checkpoint
+version warning；backend 已确保 verifier stdout 只输出 JSON。
 
 ### 6.2 可计算/预测性质
 
@@ -513,8 +528,8 @@ MatGL 更适合作为材料方向主后端，原因：
 
 | verifier_id 建议 | backend | property |
 |---|---|---|
-| `matgl_bandgap_pbe_v1` | MatGL `MEGNet-BandGap-mfi-MP-2019.4.1`, fidelity PBE | band gap, eV |
-| `matgl_bandgap_hse_v1` | 同一模型，fidelity HSE | band gap, eV |
+| `matgl_bandgap_pbe_v1` | MatGL `MEGNet-BandGap-mfi-MP-2019.4.1`, fidelity PBE (`state_attr=[0]`) | band gap, eV |
+| `matgl_bandgap_hse_v1` | 同一模型，fidelity HSE (`state_attr=[2]`) | band gap, eV |
 | `matgl_eform_m3gnet_v1` | MatGL `M3GNet-Eform-MP-2018.6.1` | formation energy, eV/atom |
 | `matgl_relaxed_energy_v1` | MatGL PES checkpoint + fixed relaxation protocol | relaxed total/per-atom energy |
 | `matgl_ehull_proxy_v1` | MatGL energy/eform + fixed reference entries + pymatgen PhaseDiagram | energy above hull, eV/atom |
@@ -535,7 +550,7 @@ MatGL 更适合作为材料方向主后端，原因：
 1. `ADMET-AI`：部署成本最低，能立即补齐 RDKit/xTB 之外的真实药物发现 ADMET/safety 目标。
 2. `MatGL band gap + formation energy`：材料方向最贴合当前设计，且项目已有 MatGL 相关 smoke/task 脚手架，可从探索状态推进为正式 verifier。
 3. `MatGL + pymatgen E_hull proxy`：比单纯 band gap 更能防止无意义材料生成，但需要固定 reference entries 和校准。
-4. `OPERA`：科学和监管价值高，适合作为 ADMET-AI 的保守互补；部署包重，建议等 Python 版 ADMET verifier 稳定后再进入官方 image。
+4. `OPERA`：科学和监管价值高，适合作为 ADMET-AI 的保守互补；当前 macOS arm64 本机暂缓部署，建议等 Linux/Docker verifier image 准备好后再实测。
 5. `standalone CHGNet`：不建议作为唯一正式路线；可作为 MatGL 方案的对照、fallback 或 CHGNet-PyG 结果校验。
 
 ## 10. 官方资料来源

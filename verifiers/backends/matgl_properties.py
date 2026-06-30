@@ -59,10 +59,11 @@ def evaluate_matgl_constraint(
     except Exception as exc:
         return error_result(result, "verifier_tool_error", error_message(exc, load_output), properties=structure_properties)
 
+    prediction_kwargs = prediction_arguments(property_name, spec)
     prediction_output = CapturedOutput()
     try:
         with capture_output() as prediction_output:
-            prediction = model.predict_structure(structure)
+            prediction = model.predict_structure(structure, **prediction_kwargs)
     except Exception as exc:
         return error_result(
             result,
@@ -118,6 +119,32 @@ def parse_prediction(property_name: str, prediction: Any) -> dict[str, float | s
     if property_name == "bandgap":
         return {"bandgap": float_value(prediction), "bandgap_unit": "eV"}
     raise ValueError(f"unsupported MatGL property: {property_name}")
+
+
+def prediction_arguments(property_name: Any, spec: dict[str, Any]) -> dict[str, Any]:
+    if property_name != "bandgap":
+        return {}
+
+    matgl_config = spec.get("matgl") or {}
+    state_attr = matgl_config.get("state_attr")
+    if state_attr is None and "fidelity" in matgl_config:
+        state_attr = bandgap_fidelity_index(matgl_config["fidelity"])
+    if state_attr is None:
+        return {}
+
+    import torch
+
+    return {"state_attr": torch.tensor([int(state_attr)])}
+
+
+def bandgap_fidelity_index(fidelity: Any) -> int:
+    if isinstance(fidelity, str):
+        fidelity_map = {"PBE": 0, "GLLB-SC": 1, "HSE": 2, "SCAN": 3}
+        try:
+            return fidelity_map[fidelity.upper()]
+        except KeyError as exc:
+            raise ValueError(f"unsupported MatGL bandgap fidelity: {fidelity}") from exc
+    return int(fidelity)
 
 
 def float_value(value: Any) -> float:
