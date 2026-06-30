@@ -10,9 +10,11 @@ import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
 from benchmark.verifier_scripts import build_script_payload, run_verification_script
+from verifiers.scoring import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]
+REUSABLE_CONSTRAINT_TYPES = {"window", "maximize_bounded", "minimize_bounded"}
 
 
 def load_tasks(path: str | Path) -> dict[str, dict[str, Any]]:
@@ -55,6 +57,7 @@ def evaluate_one(
         return routing_error(task_id, "verifier_spec_error", "task must include at least one constraint")
 
     results: list[dict[str, Any]] = []
+    reusable_results: dict[tuple[str, str], dict[str, Any]] = {}
     for constraint in constraints:
         if not isinstance(constraint, dict):
             return routing_error(task_id, "verifier_spec_error", "task constraints must be objects")
@@ -68,17 +71,22 @@ def evaluate_one(
         if not isinstance(verification_script, str) or not verification_script:
             return routing_error(task_id, "verifier_spec_error", f"verifier spec is missing verification_script: {verifier_id}")
 
-        payload = build_script_payload(normalized_answer, task, constraint, spec)
-        result = run_verification_script(
-            ROOT / verification_script,
-            payload,
-            timeout_seconds=float(spec.get("timeout_seconds", 60.0)),
-        )
+        reuse_key = (verifier_id, verification_script)
+        reusable_result = reusable_results.get(reuse_key)
+        result = reuse_constraint_result(reusable_result, constraint) if reusable_result is not None else None
+        if result is None:
+            payload = build_script_payload(normalized_answer, task, constraint, spec)
+            result = run_verification_script(
+                ROOT / verification_script,
+                payload,
+                timeout_seconds=float(spec.get("timeout_seconds", 60.0)),
+            )
         if result.get("status") != "ok":
             for field in ("raw_answer", "extracted_answer"):
                 if field in normalized_answer:
                     result[field] = normalized_answer[field]
             return result
+        reusable_results[reuse_key] = result
         results.append(result)
 
     result = aggregate_constraint_results(task, results)
@@ -86,6 +94,39 @@ def evaluate_one(
         if field in normalized_answer:
             result[field] = normalized_answer[field]
     return result
+
+
+def reuse_constraint_result(
+    result: dict[str, Any] | None,
+    constraint: dict[str, Any],
+) -> dict[str, Any] | None:
+    if result is None or result.get("status") != "ok":
+        return None
+    if constraint.get("type") not in REUSABLE_CONSTRAINT_TYPES:
+        return None
+    prop = constraint.get("property")
+    properties = result.get("properties")
+    if not isinstance(prop, str) or not isinstance(properties, dict) or prop not in properties:
+        return None
+
+    constraint_score = {
+        "property": prop,
+        "type": constraint["type"],
+        "score": score_constraint(properties, constraint),
+    }
+    if "role" in constraint:
+        constraint_score["role"] = constraint["role"]
+    score = float(constraint_score["score"])
+    reused = dict(result)
+    reused["properties"] = dict(properties)
+    reused["scores"] = {
+        "validity_gate": 1.0,
+        "domain_gate": 1.0,
+        "constraint_scores": [constraint_score],
+        "property_score": score,
+        "score": score,
+    }
+    return reused
 
 
 def evaluate_many(

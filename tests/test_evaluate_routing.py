@@ -538,3 +538,113 @@ def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: P
     assert report["summary"]["mean_score"] == 1.0
     assert report["rows"][0]["constraint_scores"] == [{"property": "bandgap", "type": "window", "score": 1.0}]
     assert [item["property"] for item in report["rows"][1]["constraint_scores"]] == ["bandgap", "formation_energy"]
+
+
+def test_evaluate_one_reuses_same_verifier_measurement_for_multiple_constraints(tmp_path: Path) -> None:
+    counter_path = tmp_path / "counter.txt"
+    fake_script = tmp_path / "fake_multi_property_verifier.py"
+    fake_script.write_text(
+        "import json, pathlib, sys\n"
+        f"counter = pathlib.Path({str(counter_path)!r})\n"
+        "count = int(counter.read_text()) if counter.exists() else 0\n"
+        "counter.write_text(str(count + 1))\n"
+        "payload = json.load(sys.stdin)\n"
+        "prop = payload['constraint']['property']\n"
+        "json.dump({\n"
+        "  'task_id': payload['task']['task_id'],\n"
+        "  'verifier_id': payload['verifier_spec']['verifier_id'],\n"
+        "  'status': 'ok',\n"
+        "  'canonical_smiles': 'CCO',\n"
+        "  'properties': {'a': 6.0, 'b': 4.0},\n"
+        "  'scores': {'validity_gate': 1.0, 'domain_gate': 1.0, 'constraint_scores': [{'property': prop, 'type': payload['constraint']['type'], 'score': 1.0}], 'property_score': 1.0, 'score': 1.0},\n"
+        "  'failure_type': None,\n"
+        "  'message': None,\n"
+        "  'versions': {'fake_backend': 'v1'}\n"
+        "}, sys.stdout)\n"
+    )
+    tasks = {
+        "multi_constraint_task": {
+            "task_id": "multi_constraint_task",
+            "version": 1,
+            "object_type": "small_molecule",
+            "constraints": [
+                {"type": "maximize_bounded", "property": "a", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
+                {"type": "minimize_bounded", "property": "b", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
+            ],
+            "scoring": {"aggregation": "geometric_mean"},
+        }
+    }
+    specs = {
+        "fake_multi_v1": {
+            "verifier_id": "fake_multi_v1",
+            "verification_script": str(fake_script),
+        }
+    }
+
+    result = evaluate_one(
+        {"task_id": "multi_constraint_task", "candidates": [{"smiles": "CCO"}]},
+        tasks,
+        specs,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"] == {"a": 6.0, "b": 4.0}
+    assert result["scores"]["constraint_scores"] == [
+        {"property": "a", "type": "maximize_bounded", "score": 1.0},
+        {"property": "b", "type": "minimize_bounded", "score": 0.6},
+    ]
+    assert counter_path.read_text() == "1"
+
+
+def test_evaluate_one_runs_again_when_cached_measurement_lacks_property(tmp_path: Path) -> None:
+    counter_path = tmp_path / "counter.txt"
+    fake_script = tmp_path / "fake_single_property_verifier.py"
+    fake_script.write_text(
+        "import json, pathlib, sys\n"
+        f"counter = pathlib.Path({str(counter_path)!r})\n"
+        "count = int(counter.read_text()) if counter.exists() else 0\n"
+        "counter.write_text(str(count + 1))\n"
+        "payload = json.load(sys.stdin)\n"
+        "prop = payload['constraint']['property']\n"
+        "value = 6.0 if prop == 'a' else 4.0\n"
+        "json.dump({\n"
+        "  'task_id': payload['task']['task_id'],\n"
+        "  'verifier_id': payload['verifier_spec']['verifier_id'],\n"
+        "  'status': 'ok',\n"
+        "  'canonical_smiles': 'CCO',\n"
+        "  'properties': {prop: value},\n"
+        "  'scores': {'validity_gate': 1.0, 'domain_gate': 1.0, 'constraint_scores': [{'property': prop, 'type': payload['constraint']['type'], 'score': 1.0}], 'property_score': 1.0, 'score': 1.0},\n"
+        "  'failure_type': None,\n"
+        "  'message': None,\n"
+        "  'versions': {'fake_backend': 'v1'}\n"
+        "}, sys.stdout)\n"
+    )
+    tasks = {
+        "multi_constraint_task": {
+            "task_id": "multi_constraint_task",
+            "version": 1,
+            "object_type": "small_molecule",
+            "constraints": [
+                {"type": "maximize_bounded", "property": "a", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
+                {"type": "minimize_bounded", "property": "b", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
+            ],
+            "scoring": {"aggregation": "geometric_mean"},
+        }
+    }
+    specs = {
+        "fake_multi_v1": {
+            "verifier_id": "fake_multi_v1",
+            "verification_script": str(fake_script),
+        }
+    }
+
+    result = evaluate_one(
+        {"task_id": "multi_constraint_task", "candidates": [{"smiles": "CCO"}]},
+        tasks,
+        specs,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"] == {"a": 6.0, "b": 4.0}
+    assert [item["property"] for item in result["scores"]["constraint_scores"]] == ["a", "b"]
+    assert counter_path.read_text() == "2"

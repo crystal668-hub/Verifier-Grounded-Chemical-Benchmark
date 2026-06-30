@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata as metadata
-import math
 from typing import Any
 
 from rdkit import Chem
@@ -12,6 +11,8 @@ from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
 
 from verifiers.result_schema import base_result
 from verifiers.result_schema import error_result
+from verifiers.scoring import clamp
+from verifiers.scoring import score_constraint
 
 sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 
@@ -27,41 +28,6 @@ DESCRIPTOR_FUNCTIONS = {
     "fraction_csp3": rdMolDescriptors.CalcFractionCSP3,
     "ring_count": rdMolDescriptors.CalcNumRings,
 }
-
-
-def clamp(value: float, lower: float = 0.0, upper: float = 1.0) -> float:
-    return max(lower, min(upper, value))
-
-
-def score_constraint(properties: dict[str, float], constraint: dict[str, Any]) -> float:
-    kind = constraint["type"]
-    prop = constraint["property"]
-    value = float(properties[prop])
-
-    if kind == "window":
-        minimum = float(constraint["min"])
-        maximum = float(constraint["max"])
-        sigma = float(constraint.get("sigma", 1.0))
-        if sigma <= 0:
-            raise ValueError("window sigma must be positive")
-        if minimum <= value <= maximum:
-            return 1.0
-        distance = minimum - value if value < minimum else value - maximum
-        return clamp(math.exp(-distance / sigma))
-
-    if kind in {"maximize_bounded", "minimize_bounded"}:
-        forbidden = {"good_at", "baseline"} & set(constraint)
-        if forbidden:
-            raise ValueError(f"bounded scoring does not accept {sorted(forbidden)}")
-        lower = float(constraint["lower"])
-        upper = float(constraint["upper"])
-        if upper <= lower:
-            raise ValueError("bounded scoring requires upper > lower")
-        if kind == "maximize_bounded":
-            return clamp((value - lower) / (upper - lower))
-        return clamp((upper - value) / (upper - lower))
-
-    raise ValueError(f"unsupported constraint type: {kind}")
 
 
 def evaluate_descriptor_constraint(
