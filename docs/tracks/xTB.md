@@ -1,6 +1,6 @@
 # xTB 题目设计与实现同步
 
-更新日期：2026-06-11
+更新日期：2026-06-30
 
 ## 1. 设计来源
 
@@ -45,8 +45,8 @@ FINAL ANSWER:
 
 当前 task pack：`tasks/xtb_xyz/`
 
-- 题目数量：7。
-- verifier specs：3。
+- 题目数量：13。
+- verifier specs：9。
 - 所有题目均为 `formal_track: true`。
 - 所有题目都包含 `relaxation_energy` quality gate。
 
@@ -59,6 +59,12 @@ FINAL ANSWER:
 | `xtb_dipole_max_005` | maximize dipole moment, bounded `[3.0, 10.0]` Debye | relaxation energy <= 0.35 eV |
 | `xtb_low_gap_high_dipole_opt_006` | minimize gap + maximize dipole | relaxation energy <= 0.35 eV |
 | `xtb_gap_dipole_window_007` | gap window `[2.5, 4.2]` eV + dipole window `[3.5, 6.0]` Debye | relaxation energy <= 0.35 eV |
+| `xtb_lumo_min_008` | minimize LUMO energy, bounded `[-9.0, -6.0]` eV | relaxation energy <= 0.35 eV |
+| `xtb_polarizability_dipole_opt_009` | maximize polarizability per heavy atom + dipole window `[3.0, 8.0]` Debye | relaxation energy <= 0.35 eV |
+| `xtb_solvation_selectivity_alpb_010` | maximize ALPB water-over-hexane solvation selectivity, bounded `[0.0, 0.35]` eV | relaxation energy <= 0.35 eV |
+| `xtb_electrophilicity_max_011` | maximize global electrophilicity, bounded `[0.5, 3.8]` eV | relaxation energy <= 0.35 eV |
+| `xtb_fukui_carbon_site_012` | maximize carbon-site `f+` Fukui response, bounded `[0.05, 0.35]`, with contrast objective | relaxation energy <= 0.35 eV |
+| `xtb_hessian_thermo_stability_013` | maximize 298 K entropy per heavy atom with zero imaginary frequencies | relaxation energy <= 0.35 eV |
 
 ## 4. 涉及的可验证化学性质
 
@@ -66,6 +72,14 @@ FINAL ANSWER:
 |---|---|---:|---|
 | `homo_lumo_gap` | 主评分目标 | eV | 对提交的 XYZ 做 GFN2-xTB optimization 后，从 xTB 输出解析 HOMO-LUMO gap。 |
 | `dipole_moment` | 主评分目标 | Debye | 对提交的 XYZ 做 GFN2-xTB optimization 后，从 xTB molecular dipole 输出解析总偶极矩。 |
+| `lumo_energy` | 主评分目标 | eV | 对提交的 XYZ 做 GFN2-xTB optimization 后，从 orbital table 解析 LUMO energy。 |
+| `polarizability_per_heavy_atom` | 主评分目标 | atomic units per heavy atom | 对提交的 XYZ 做 GFN2-xTB optimization 后，解析 molecular polarizability 并按 heavy atom count 归一。 |
+| `alpb_water_hexane_selectivity` | 主评分目标 | eV | 在优化几何上分别运行 ALPB water 和 hexane solvent calculation，计算 `Gsolv(hexane) - Gsolv(water)`。 |
+| `global_electrophilicity` | 主评分目标 | eV | 优化几何后运行 xTB vertical electrophilicity workflow，解析 global electrophilicity。 |
+| `max_f_plus_on_carbon` | 主评分目标 | dimensionless | 优化几何后运行 vertical Fukui workflow，解析提交 XYZ atom order 中 carbon atoms 的最大 `f+`。 |
+| `f_plus_contrast` | 辅助评分目标 | dimensionless | 从同一 Fukui table 计算最强 carbon `f+` 与其它响应的区分度。 |
+| `entropy_298_per_heavy_atom` | 主评分目标 | J mol-1 K-1 per heavy atom | 对优化几何运行 hessian thermochemistry，解析 298.15 K entropy 并按 heavy atom count 归一。 |
+| `imaginary_frequency_count` | stability gate | count | 从 hessian thermochemistry 输出统计 imaginary frequencies；正式题要求为 0。 |
 | `relaxation_energy` | 几何质量门 | eV | 分别运行 input single-point 与 optimized calculation，计算输入几何到优化几何的能量降低量。 |
 
 `relaxation_energy` 不是独立化学优化目标，而是 direct-XYZ 质量乘子。它用于惩罚“坐标很粗糙，但 xTB 优化后性质看起来合格”的答案。
@@ -79,6 +93,12 @@ FINAL ANSWER:
 | `xtb_gap_gfn2_v1` | `homo_lumo_gap` | `verifiers/xtb/xtb_gap.py` | local `xtb` CLI, GFN2-xTB |
 | `xtb_dipole_gfn2_v1` | `dipole_moment` | `verifiers/xtb/xtb_dipole.py` | local `xtb` CLI, GFN2-xTB |
 | `xtb_relaxation_energy_gfn2_v1` | `relaxation_energy` | `verifiers/xtb/xtb_relaxation_energy.py` | local `xtb` CLI, GFN2-xTB |
+| `xtb_lumo_gfn2_v1` | `lumo_energy` | `verifiers/xtb/xtb_lumo.py` | local `xtb` CLI, GFN2-xTB |
+| `xtb_polarizability_gfn2_v1` | `polarizability_per_heavy_atom` | `verifiers/xtb/xtb_polarizability.py` | local `xtb` CLI, GFN2-xTB |
+| `xtb_solvation_selectivity_alpb_v1` | `alpb_water_hexane_selectivity` | `verifiers/xtb/xtb_solvation_selectivity.py` | local `xtb` CLI, GFN2-xTB with ALPB water/hexane runs |
+| `xtb_electrophilicity_gfn1_ipea_v1` | `global_electrophilicity` | `verifiers/xtb/xtb_electrophilicity.py` | local `xtb` CLI, optimized geometry plus GFN1-xTB/IPEA property run |
+| `xtb_fukui_gfn1_v1` | `max_f_plus_on_carbon` | `verifiers/xtb/xtb_fukui.py` | local `xtb` CLI, optimized geometry plus GFN1-xTB Fukui run |
+| `xtb_hessian_thermo_gfn2_v1` | `entropy_298_per_heavy_atom` | `verifiers/xtb/xtb_hessian_thermo.py` | local `xtb` CLI, GFN2-xTB hessian thermochemistry |
 
 真实执行流程：
 
@@ -89,15 +109,29 @@ FINAL ANSWER:
 5. `XTBRunner` 调用本地 `xtb` executable：
    - gap / dipole：`xtb candidate.xyz --gfn 2 --chrg 0 --uhf 0 --opt`
    - relaxation：一次 single-point 加一次 `--opt`
+   - LUMO / polarizability：GFN2 optimization 后从 property printout 解析。
+   - ALPB selectivity：优化几何后分别运行 water 和 hexane ALPB solvent calculation。
+   - electrophilicity / Fukui：优化几何后运行对应 vertical property command。
+   - hessian thermo：优化几何后运行 hessian thermochemistry。
 6. backend 解析 total energy、HOMO-LUMO gap、dipole moment 和 optimization convergence 文本，并返回标准 result JSON。
 
 缺失 `xtb` 可执行文件映射为 `verifier_environment_error`，不视为候选分子本身错误。
 
-## 6. 打分计算方式
+## 6. 数据角色与公开边界
+
+xTB track 当前有三类数据，角色不同，不能混用：
+
+1. `tasks/xtb_xyz/sample_answers.jsonl` 是 public showcase examples。它只展示 answer schema、fenced XYZ 格式和 pipeline 跑通方式，数量少，不覆盖全部 13 个 formal tasks，也不代表 benchmark 分布或校准集分布。
+2. calibration corpora 是维护者私有校准数据，用于阈值、正负控制和可靠性检查。它不是 participant examples，不属于公开 benchmark artifact，也不应作为用户可参考样例发布。
+3. public tests 只验证 schema、format、routing 和 pipeline contract。真实校准应由 private calibration job 或私有 artifact 处理，避免把校准答案误发布为公开参考答案。
+
+发行包必须包含 formal task definitions、verifier specs 和 public showcase samples；不得包含 xTB private calibration answers 或 calibration manifest。
+
+## 7. 打分计算方式
 
 xTB 主性质沿用 RDKit backend 的统一 `score_constraint`。
 
-### 6.1 Window constraint
+### 7.1 Window constraint
 
 性质落在 `[min, max]` 内得 1.0。落在窗口外时按距离指数衰减：
 
@@ -105,19 +139,19 @@ xTB 主性质沿用 RDKit backend 的统一 `score_constraint`。
 score = exp(-distance_to_window / sigma)
 ```
 
-### 6.2 Maximize bounded
+### 7.2 Maximize bounded
 
 ```text
 score = clamp((value - lower) / (upper - lower), 0.0, 1.0)
 ```
 
-### 6.3 Minimize bounded
+### 7.3 Minimize bounded
 
 ```text
 score = clamp((upper - value) / (upper - lower), 0.0, 1.0)
 ```
 
-### 6.4 Relaxation energy
+### 7.4 Relaxation energy
 
 当前实现定义：
 
@@ -141,7 +175,7 @@ upper: 0.35
 geometry_quality_score = clamp((0.35 - relaxation_energy_eV) / 0.35, 0.0, 1.0)
 ```
 
-### 6.5 多目标聚合
+### 7.5 多目标聚合
 
 runner 将主性质和质量门分开聚合：
 
@@ -153,19 +187,24 @@ final_score = property_score * geometry_quality_score
 
 这意味着几何很差的 XYZ 可以把最终分数乘到 0，即使优化后 gap 或 dipole 达标。
 
-## 7. 实际化学意义
+## 8. 实际化学意义
 
 xTB track 的核心不是简单计算量子性质，而是评估模型能否直接生成一个可被低成本量子化学工具验证的三维分子候选：
 
 - HOMO-LUMO gap 是光电、有机电子、反应性和稳定性 proxy。窗口、最大化和最小化题分别测试模型是否能定向提出中等 gap、高 gap 或低 gap 分子。
+- LUMO energy 是 electron acceptor / reduction tendency proxy，低 LUMO 题测试模型是否能提出更强受电子结构。
 - Dipole moment 影响 solvation、crystal packing、dielectric response、binding 和极性材料性质。窗口和最大化题测试模型能否通过结构与官能团布置控制分子极性。
+- Polarizability 与 dipole 多目标题模拟极化响应和分子极性的共同优化。
+- ALPB water-over-hexane selectivity 让模型针对隐式溶剂稳定化差异提出结构，而不是只优化真空几何性质。
+- Global electrophilicity 和 carbon-site Fukui response 把反应性 proxy 纳入 direct-XYZ track。
+- Hessian thermochemistry task 同时要求零 imaginary frequencies 和较高 entropy，强调稳定局部极小点和热化学输出的可解析性。
 - Low-gap + high-dipole 多目标题模拟更接近材料/分子设计的 trade-off，而不是单一性质优化。
 - Relaxation energy 使 direct-XYZ 题真正评价 submitted geometry。xTB optimization 只用于标准化测量；如果输入坐标离局部低能结构太远，模型应被扣分。
 - 结构域约束和 formula denylist 防止 water、methane、HCN、benzene 等简单/common molecules 在优化题中成为无意义高分答案。
 
 GFN2-xTB 的计算成本低于 DFT，适合 benchmark runner 中重复调用；但文档明确当前性质是 fixed xTB surrogate，不等同实验 optical gap、实验偶极矩或高精度 ab initio 结果。
 
-## 8. 文献与资料支撑
+## 9. 文献与资料支撑
 
 - xTB 官方文档说明该程序面向 GFNn-xTB semiempirical quantum mechanical methods，并支持几何输入、命令行运行与性质输出：https://xtb-docs.readthedocs.io/
 - xTB properties 文档展示 HOMO-LUMO gap、Fermi-level 和 molecular dipole moment 输出，其中 dipole 总量以 Debye 给出：https://xtb-docs.readthedocs.io/en/latest/properties.html

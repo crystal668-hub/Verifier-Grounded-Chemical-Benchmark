@@ -480,8 +480,8 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 `tasks/xtb_xyz/` 已经形成第二个可复用模板：
 
 - 题目要求模型直接输出 fenced `xyz` block，而不是只输出 SMILES 或自报性质。
-- 当前包含 HOMO-LUMO gap、dipole moment、gap/dipole 多目标优化等任务。
-- `xtb_gap_gfn2_v1`、`xtb_dipole_gfn2_v1` 和 `xtb_relaxation_energy_gfn2_v1` 分别绑定 `verifiers/xtb/xtb_gap.py`、`xtb_dipole.py` 和 `xtb_relaxation_energy.py`。
+- 当前包含 13 个 formal tasks，覆盖 HOMO-LUMO gap、dipole moment、LUMO、polarizability/dipole、ALPB solvation selectivity、global electrophilicity、Fukui carbon-site response 和 hessian thermochemistry。
+- 当前包含 9 个 verifier specs，包括 gap、dipole、relaxation energy、LUMO、polarizability、ALPB selectivity、electrophilicity、Fukui 和 hessian thermo；每个 spec 绑定对应的 property-level `verifiers/xtb/*.py` 脚本。
 - `verifiers/backends/xtb_properties.py` 负责 XYZ 解析、元素和几何 domain 检查、连通性检查、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
 - relaxation energy 已作为 direct-XYZ 几何质量 gate 接入聚合逻辑，避免模型提交粗糙或非低能构型只靠优化后性质得分。
 

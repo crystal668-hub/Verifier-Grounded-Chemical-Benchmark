@@ -245,8 +245,9 @@ def test_xtb_xyz_sample_answers_use_fenced_xyz() -> None:
     tasks = load_tasks(TASK_DIR / "tasks.yaml")
     answers = load_answers_jsonl(TASK_DIR / "sample_answers.jsonl")
 
-    assert len(answers) == 7
+    assert answers
     for answer in answers:
+        assert answer["task_id"] in tasks
         normalized = normalize_answer_record(answer, tasks[answer["task_id"]])
         assert normalized.ok
         assert normalized.answer is not None

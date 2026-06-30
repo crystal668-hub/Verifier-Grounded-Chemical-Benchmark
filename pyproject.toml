@@ -34,11 +34,23 @@ materials = [
 [tool.uv]
 package = true
 
+[tool.hatch.build]
+exclude = [
+    "/tasks/xtb_xyz/calibration_answers.jsonl",
+    "/tasks/xtb_xyz/calibration_manifest.yaml",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["benchmark", "verifiers", "verifier_grounded_benchmark", "vgb"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"tasks" = "tasks"
+"tasks/atomisticskills_smoke" = "tasks/atomisticskills_smoke"
+"tasks/mace_materials" = "tasks/mace_materials"
+"tasks/matgl_materials" = "tasks/matgl_materials"
+"tasks/rdkit_baseline" = "tasks/rdkit_baseline"
+"tasks/xtb_xyz/sample_answers.jsonl" = "tasks/xtb_xyz/sample_answers.jsonl"
+"tasks/xtb_xyz/tasks.yaml" = "tasks/xtb_xyz/tasks.yaml"
+"tasks/xtb_xyz/verifier_specs.yaml" = "tasks/xtb_xyz/verifier_specs.yaml"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
