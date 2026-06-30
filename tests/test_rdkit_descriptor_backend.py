@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import importlib
+
 import pytest
 
 from verifiers.backends import rdkit_descriptors
@@ -49,3 +51,41 @@ def test_evaluate_descriptor_constraint_rejects_invalid_smiles() -> None:
     assert result["status"] == "error"
     assert result["failure_type"] == "parse_error"
     assert result["scores"]["score"] == 0.0
+
+
+def test_sa_score_import_failure_only_affects_sa_score(monkeypatch: pytest.MonkeyPatch) -> None:
+    real_import_module = importlib.import_module
+
+    def fail_sa_scorer(name: str, package: str | None = None):
+        if name == "rdkit.Contrib.SA_Score.sascorer":
+            raise ImportError("missing SA scorer")
+        return real_import_module(name, package)
+
+    monkeypatch.setattr(rdkit_descriptors.importlib, "import_module", fail_sa_scorer)
+
+    logp_result = evaluate_descriptor_constraint(
+        {"smiles": "CC(=O)Oc1ccccc1C(=O)O"},
+        TASK,
+        CONSTRAINT,
+        SPEC,
+    )
+
+    assert logp_result["status"] == "ok"
+    assert logp_result["failure_type"] is None
+    assert logp_result["properties"] == {"logp": pytest.approx(1.3101, abs=1e-4)}
+
+    sa_spec = {**SPEC, "verifier_id": "rdkit_sa_score_v1", "descriptor": "sa_score"}
+    sa_task = {"task_id": "rdkit_sa_score_minimize_001"}
+    sa_constraint = {"type": "minimize_bounded", "property": "sa_score", "lower": 1.0, "upper": 10.0}
+
+    sa_result = evaluate_descriptor_constraint(
+        {"smiles": "CC(=O)Oc1ccccc1C(=O)O"},
+        sa_task,
+        sa_constraint,
+        sa_spec,
+    )
+
+    assert sa_result["status"] == "error"
+    assert sa_result["failure_type"] == "verifier_environment_error"
+    assert "RDKit SA_Score scorer unavailable" in sa_result["message"]
+    assert sa_result["scores"]["score"] == 0.0

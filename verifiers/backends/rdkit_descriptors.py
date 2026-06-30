@@ -14,7 +14,6 @@ from verifiers.result_schema import error_result
 from verifiers.scoring import clamp
 from verifiers.scoring import score_constraint
 
-sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 
 DESCRIPTOR_FUNCTIONS = {
     "qed": QED.qed,
@@ -24,10 +23,13 @@ DESCRIPTOR_FUNCTIONS = {
     "hbd": rdMolDescriptors.CalcNumHBD,
     "hba": rdMolDescriptors.CalcNumHBA,
     "rotatable_bonds": rdMolDescriptors.CalcNumRotatableBonds,
-    "sa_score": sascorer.calculateScore,
     "fraction_csp3": rdMolDescriptors.CalcFractionCSP3,
     "ring_count": rdMolDescriptors.CalcNumRings,
 }
+
+
+class SAScorerUnavailable(RuntimeError):
+    """Raised when the optional RDKit Contrib SA_Score scorer is unavailable."""
 
 
 def evaluate_descriptor_constraint(
@@ -70,7 +72,11 @@ def evaluate_descriptor_constraint(
     if domain_error:
         return error_result(result, "domain_error", domain_error, properties=properties)
 
-    descriptor_properties = {descriptor: compute_descriptor(mol, descriptor)}
+    try:
+        descriptor_properties = {descriptor: compute_descriptor(mol, descriptor)}
+    except SAScorerUnavailable as exc:
+        return error_result(result, "verifier_environment_error", str(exc), properties=properties)
+
     constraint_score = {
         "property": constraint["property"],
         "type": constraint["type"],
@@ -96,11 +102,21 @@ def evaluate_descriptor_constraint(
 
 
 def compute_descriptor(mol: Chem.Mol, descriptor: str) -> float | int:
+    if descriptor == "sa_score":
+        return compute_sa_score(mol)
     try:
         function = DESCRIPTOR_FUNCTIONS[descriptor]
     except KeyError as exc:
         raise ValueError(f"unsupported descriptor: {descriptor}") from exc
     return function(mol)
+
+
+def compute_sa_score(mol: Chem.Mol) -> float:
+    try:
+        sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
+    except ImportError as exc:
+        raise SAScorerUnavailable("RDKit SA_Score scorer unavailable") from exc
+    return sascorer.calculateScore(mol)
 
 
 def compute_domain_properties(mol: Chem.Mol) -> dict[str, float | int]:
