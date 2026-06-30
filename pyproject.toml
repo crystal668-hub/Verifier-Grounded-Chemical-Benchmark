@@ -20,6 +20,9 @@ dependencies = [
     "rdkit==2026.3.2",
 ]
 
+[project.scripts]
+vgb-score = "verifier_grounded_benchmark.cli.score_answers:main"
+
 [dependency-groups]
 dev = [
     "pytest==8.4.2",

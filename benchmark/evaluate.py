@@ -95,7 +95,7 @@ def evaluate_many(
 ) -> dict[str, Any]:
     rows = [summarize_row(evaluate_one(answer, tasks, specs)) for answer in answers]
     return {
-        "summary": summarize_rows(rows),
+        "summary": summarize_rows(rows, answers=answers, tasks=tasks),
         "rows": rows,
     }
 
@@ -117,17 +117,60 @@ def summarize_row(result: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
-def summarize_rows(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def summarize_rows(
+    rows: list[dict[str, Any]],
+    *,
+    answers: list[dict[str, Any]] | None = None,
+    tasks: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     scores = [float(row.get("score") or 0.0) for row in rows]
     ok_count = sum(row.get("status") == "ok" for row in rows)
     error_count = len(rows) - ok_count
-    return {
+    mean_score = sum(scores) / len(scores) if scores else None
+    summary = {
         "num_answers": len(rows),
         "num_ok": ok_count,
         "num_error": error_count,
         "min_score": min(scores) if scores else None,
         "max_score": max(scores) if scores else None,
-        "mean_score": sum(scores) / len(scores) if scores else None,
+        "mean_score": mean_score,
+        "evaluated_mean_score": mean_score,
+    }
+    if answers is not None and tasks is not None:
+        coverage = summarize_coverage(answers, tasks)
+        summary["coverage"] = coverage
+        summary["benchmark_score"] = mean_score if coverage["complete"] else None
+    return summary
+
+
+def summarize_coverage(
+    answers: list[dict[str, Any]],
+    tasks: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    task_ids = list(tasks)
+    task_id_set = set(task_ids)
+    submitted_ids = [
+        answer.get("task_id")
+        for answer in answers
+        if isinstance(answer.get("task_id"), str) and answer.get("task_id")
+    ]
+    submitted_id_set = set(submitted_ids)
+    duplicate_ids = sorted(
+        task_id for task_id in submitted_id_set if submitted_ids.count(task_id) > 1
+    )
+    unknown_ids = sorted(task_id for task_id in submitted_id_set - task_id_set)
+    answered_known_ids = submitted_id_set & task_id_set
+    missing_ids = [task_id for task_id in task_ids if task_id not in answered_known_ids]
+    complete = not missing_ids and not duplicate_ids and not unknown_ids
+    return {
+        "num_tasks_total": len(task_ids),
+        "num_rows_submitted": len(answers),
+        "num_task_ids_submitted": len(submitted_id_set),
+        "num_tasks_answered": len(answered_known_ids),
+        "missing_task_ids": missing_ids,
+        "duplicate_task_ids": duplicate_ids,
+        "unknown_task_ids": unknown_ids,
+        "complete": complete,
     }
 
 

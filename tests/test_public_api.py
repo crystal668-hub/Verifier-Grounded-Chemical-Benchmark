@@ -90,6 +90,58 @@ def test_track_evaluate_answers_matches_existing_rdkit_summary() -> None:
     )
 
 
+def test_track_evaluate_answers_reports_partial_coverage() -> None:
+    track = vgb.load_track("rdkit")
+    answers = track.sample_answers()[:2]
+
+    report = track.evaluate_answers(answers)
+
+    coverage = report["summary"]["coverage"]
+    assert coverage["num_tasks_total"] == 10
+    assert coverage["num_rows_submitted"] == 2
+    assert coverage["num_task_ids_submitted"] == 2
+    assert coverage["num_tasks_answered"] == 2
+    assert coverage["duplicate_task_ids"] == []
+    assert coverage["unknown_task_ids"] == []
+    assert coverage["complete"] is False
+    assert len(coverage["missing_task_ids"]) == 8
+    assert report["summary"]["evaluated_mean_score"] == report["summary"]["mean_score"]
+    assert report["summary"]["benchmark_score"] is None
+
+
+def test_track_evaluate_answers_reports_complete_benchmark_score() -> None:
+    track = vgb.load_track("rdkit")
+
+    report = track.evaluate_answers(track.sample_answers())
+
+    coverage = report["summary"]["coverage"]
+    assert coverage["complete"] is True
+    assert coverage["missing_task_ids"] == []
+    assert coverage["duplicate_task_ids"] == []
+    assert coverage["unknown_task_ids"] == []
+    assert report["summary"]["benchmark_score"] == report["summary"]["evaluated_mean_score"]
+
+
+def test_track_evaluate_answers_coverage_detects_duplicate_and_unknown_task_ids() -> None:
+    track = vgb.load_track("rdkit")
+    answers = [
+        track.sample_answers()[0],
+        track.sample_answers()[0],
+        {"task_id": "missing_from_track", "candidates": [{"smiles": "CCO"}]},
+    ]
+
+    report = track.evaluate_answers(answers)
+
+    coverage = report["summary"]["coverage"]
+    assert coverage["num_rows_submitted"] == 3
+    assert coverage["num_task_ids_submitted"] == 2
+    assert coverage["num_tasks_answered"] == 1
+    assert coverage["duplicate_task_ids"] == ["rdkit_qed_max_001"]
+    assert coverage["unknown_task_ids"] == ["missing_from_track"]
+    assert coverage["complete"] is False
+    assert report["summary"]["benchmark_score"] is None
+
+
 def test_track_evaluate_one_returns_structured_xtb_parse_error() -> None:
     result = vgb.load_track("xtb").evaluate_one(
         {"task_id": "xtb_gap_window_001", "candidates": [{}]}

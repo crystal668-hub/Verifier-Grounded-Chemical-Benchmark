@@ -319,6 +319,57 @@ def test_score_answers_cli_accepts_track_name() -> None:
     assert len(report["rows"]) == 10
 
 
+def test_package_score_answers_cli_module_accepts_track_name() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "verifier_grounded_benchmark.cli.score_answers",
+            "--track",
+            "rdkit",
+            "--answers",
+            str(ANSWERS_PATH),
+        ],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    report = json.loads(completed.stdout)
+    assert report["summary"]["num_answers"] == 10
+    assert report["summary"]["coverage"]["complete"] is True
+    assert report["summary"]["benchmark_score"] == report["summary"]["evaluated_mean_score"]
+
+
+def test_score_answers_cli_require_complete_rejects_partial_track_answers(tmp_path: Path) -> None:
+    partial_answers = tmp_path / "partial_answers.jsonl"
+    partial_answers.write_text(ANSWERS_PATH.read_text().splitlines()[0] + "\n")
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "verifier_grounded_benchmark.cli.score_answers",
+            "--track",
+            "rdkit",
+            "--answers",
+            str(partial_answers),
+            "--require-complete",
+        ],
+        cwd=ROOT,
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+
+    assert completed.returncode == 2
+    error = json.loads(completed.stderr)
+    assert error["error"] == "incomplete_submission"
+    assert error["coverage"]["complete"] is False
+    assert len(error["coverage"]["missing_task_ids"]) == 9
+
+
 def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: Path) -> None:
     fake_script = tmp_path / "fake_matgl_verifier.py"
     fake_script.write_text(

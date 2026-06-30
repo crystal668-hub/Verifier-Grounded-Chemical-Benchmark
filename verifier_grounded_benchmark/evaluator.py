@@ -70,7 +70,7 @@ class Evaluator:
                     )
                 rows.append(summarize_row(result))
             report = {
-                "summary": summarize_rows(rows),
+                "summary": summarize_rows(rows, answers=answers, tasks=self.tasks),
                 "rows": rows,
             }
         else:
