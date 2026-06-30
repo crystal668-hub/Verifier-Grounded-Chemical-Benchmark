@@ -20,6 +20,11 @@ dependencies = [
     "rdkit==2026.3.2",
 ]
 
+[project.optional-dependencies]
+materials = [
+    "matgl==4.0.2",
+]
+
 [project.scripts]
 vgb-score = "verifier_grounded_benchmark.cli.score_answers:main"
 

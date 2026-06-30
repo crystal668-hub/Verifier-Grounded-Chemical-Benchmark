@@ -2561,6 +2561,11 @@ dependencies = [
     { name = "rdkit" },
 ]
 
+[package.optional-dependencies]
+materials = [
+    { name = "matgl" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
@@ -2575,6 +2580,7 @@ requires-dist = [
     { name = "ase", specifier = "==3.28.0" },
     { name = "cclib", specifier = "==1.8.1" },
     { name = "chembl-webresource-client", specifier = "==0.10.9" },
+    { name = "matgl", marker = "extra == 'materials'", specifier = "==4.0.2" },
     { name = "mcp", specifier = ">=1.27.2" },
     { name = "mp-api", specifier = "==0.46.1" },
     { name = "ord-schema", specifier = "==0.6.5" },
@@ -2582,6 +2588,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "rdkit", specifier = "==2026.3.2" },
 ]
+provides-extras = ["materials"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = "==8.4.2" }]
