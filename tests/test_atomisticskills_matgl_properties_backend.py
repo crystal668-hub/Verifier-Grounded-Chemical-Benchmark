@@ -215,3 +215,6 @@ def test_atomisticskills_matgl_property_maps_adapter_errors(
 
     assert result["status"] == "error"
     assert result["failure_type"] == failure_type
+    assert result["properties"]["reduced_formula"] == "Si"
+    assert result["properties"]["atom_count"] == 2
+    assert result["scores"]["validity_gate"] == 1.0

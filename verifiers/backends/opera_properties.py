@@ -35,8 +35,16 @@ def configured_opera_executable(spec: dict[str, Any]) -> str | None:
 def find_opera_executable(spec: dict[str, Any]) -> str | None:
     configured = configured_opera_executable(spec)
     if configured:
-        return str(configured) if Path(str(configured)).exists() else None
-    return shutil.which("opera") or shutil.which("OPERA")
+        path = Path(configured)
+        executable = str(path) if path.exists() else shutil.which(configured)
+        if executable is None:
+            return None
+        return executable if os.access(executable, os.X_OK) else None
+    for command in ("opera", "OPERA"):
+        executable = shutil.which(command)
+        if executable and os.access(executable, os.X_OK):
+            return executable
+    return None
 
 
 def resolve_mcr_directory(spec: dict[str, Any]) -> str | None:

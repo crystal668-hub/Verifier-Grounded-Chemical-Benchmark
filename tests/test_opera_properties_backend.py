@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.backends.opera_properties import evaluate_opera_constraint, parse_opera_output
+from verifiers.backends.opera_properties import evaluate_opera_constraint, find_opera_executable, parse_opera_output
 
 
 def payload() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -72,6 +72,38 @@ def test_evaluate_opera_constraint_bad_configured_executable_includes_path(tmp_p
     assert result["status"] == "error"
     assert result["failure_type"] == "verifier_environment_error"
     assert os.fspath(missing_executable) in result["message"]
+
+
+def test_find_opera_executable_resolves_configured_command_from_path(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    executable = tmp_path / "opera"
+    executable.write_text("#!/bin/sh\nprintf 'OPERA help\\n'\n")
+    executable.chmod(executable.stat().st_mode | 0o111)
+    monkeypatch.setenv("PATH", os.fspath(tmp_path))
+
+    assert find_opera_executable({"opera": {"executable": "opera"}}) == os.fspath(executable)
+
+
+def test_find_opera_executable_resolves_env_command_from_path(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    executable = tmp_path / "opera"
+    executable.write_text("#!/bin/sh\nprintf 'OPERA help\\n'\n")
+    executable.chmod(executable.stat().st_mode | 0o111)
+    monkeypatch.setenv("PATH", os.fspath(tmp_path))
+    monkeypatch.setenv("OPERA_EXECUTABLE", "opera")
+
+    assert find_opera_executable({}) == os.fspath(executable)
+
+
+def test_find_opera_executable_rejects_non_executable_configured_path(tmp_path) -> None:
+    executable = tmp_path / "opera"
+    executable.write_text("#!/bin/sh\nprintf 'OPERA help\\n'\n")
+
+    assert find_opera_executable({"opera": {"executable": os.fspath(executable)}}) is None
 
 
 def test_evaluate_opera_constraint_missing_mcr_directory_maps_to_environment_error(

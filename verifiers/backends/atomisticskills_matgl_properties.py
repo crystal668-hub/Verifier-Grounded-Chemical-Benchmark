@@ -57,11 +57,11 @@ def evaluate_atomisticskills_matgl_constraint(
             adapter = AtomisticSkillsMCPAdapter(str(spec.get("backend", {}).get("server", "matgl")))
             property_payload = compute_property(adapter, property_name, structure_path, spec)
         except AtomisticSkillsEnvironmentError as exc:
-            return error_result(result, "verifier_environment_error", str(exc))
+            return error_result(result, "verifier_environment_error", str(exc), properties=structure_properties)
         except AtomisticSkillsTimeoutError as exc:
-            return error_result(result, "verifier_timeout", str(exc))
+            return error_result(result, "verifier_timeout", str(exc), properties=structure_properties)
         except AtomisticSkillsToolError as exc:
-            return error_result(result, "verifier_tool_error", str(exc))
+            return error_result(result, "verifier_tool_error", str(exc), properties=structure_properties)
 
     property_error = parse_property_payload(property_name, property_payload)
     if isinstance(property_error, str):
