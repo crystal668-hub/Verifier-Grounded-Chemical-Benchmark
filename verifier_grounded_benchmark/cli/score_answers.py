@@ -6,24 +6,50 @@ import argparse
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 from benchmark.evaluate import (
     evaluate_many,
     load_answers_jsonl,
-    load_tasks,
-    load_verifier_specs,
 )
 from verifier_grounded_benchmark import load_track
+from verifier_grounded_benchmark.io import load_tasks_file, load_verifier_specs_file
+from verifier_grounded_benchmark.resources import materialize_verifier_specs
 
 DEFAULT_TASKS_PATH = Path("tasks/rdkit_baseline/tasks.yaml")
 DEFAULT_SPECS_PATH = Path("tasks/rdkit_baseline/verifier_specs.yaml")
 
 
+def load_development_task_pack(
+    tasks_path: Path,
+    specs_path: Path,
+    *,
+    script_root: Path | None = None,
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    resolved_script_root = script_root or specs_path.resolve().parent
+    specs = load_verifier_specs_file(specs_path)
+    return (
+        load_tasks_file(tasks_path),
+        materialize_verifier_specs(specs, script_root=resolved_script_root),
+    )
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--track")
-    parser.add_argument("--tasks", type=Path)
-    parser.add_argument("--specs", type=Path)
+    parser.add_argument(
+        "--track",
+        help="Public scoring path for built-in benchmark tracks.",
+    )
+    parser.add_argument(
+        "--tasks",
+        type=Path,
+        help="Development-only override for maintaining task packs.",
+    )
+    parser.add_argument(
+        "--specs",
+        type=Path,
+        help="Development-only verifier spec override for maintaining task packs.",
+    )
     parser.add_argument("--answers", required=True, type=Path)
     parser.add_argument(
         "--require-complete",
@@ -42,10 +68,17 @@ def main(argv: list[str] | None = None) -> int:
     if args.track:
         report = load_track(args.track).evaluate_answers(answers)
     else:
+        specs_path = args.specs or DEFAULT_SPECS_PATH
+        script_root = specs_path.resolve().parent if args.specs is not None else Path.cwd()
+        tasks, specs = load_development_task_pack(
+            args.tasks or DEFAULT_TASKS_PATH,
+            specs_path,
+            script_root=script_root,
+        )
         report = evaluate_many(
             answers,
-            load_tasks(args.tasks or DEFAULT_TASKS_PATH),
-            load_verifier_specs(args.specs or DEFAULT_SPECS_PATH),
+            tasks,
+            specs,
         )
 
     if args.require_complete:

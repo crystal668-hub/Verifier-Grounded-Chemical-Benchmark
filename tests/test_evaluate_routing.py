@@ -296,6 +296,26 @@ def test_score_answers_cli_outputs_summary_json() -> None:
     assert len(report["rows"]) == 10
 
 
+def test_package_score_answers_cli_default_development_paths_remain_repo_relative() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "verifier_grounded_benchmark.cli.score_answers",
+            "--answers",
+            str(ANSWERS_PATH),
+        ],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    report = json.loads(completed.stdout)
+    assert report["summary"]["num_ok"] == 10
+    assert report["summary"]["num_error"] == 0
+
+
 def test_score_answers_cli_accepts_track_name() -> None:
     completed = subprocess.run(
         [
@@ -340,6 +360,76 @@ def test_package_score_answers_cli_module_accepts_track_name() -> None:
     assert report["summary"]["num_answers"] == 10
     assert report["summary"]["coverage"]["complete"] is True
     assert report["summary"]["benchmark_score"] == report["summary"]["evaluated_mean_score"]
+
+
+def test_package_score_answers_cli_development_overrides_resolve_scripts_from_specs_dir(
+    tmp_path: Path,
+) -> None:
+    tasks_path = tmp_path / "tasks.yaml"
+    specs_path = tmp_path / "verifier_specs.yaml"
+    answers_path = tmp_path / "answers.jsonl"
+    verifier_path = tmp_path / "local_verifier.py"
+    tasks_path.write_text(
+        """
+tasks:
+  - task_id: local_task_1
+    constraints:
+      - type: maximize
+        property: local_sentinel
+        verifier_id: local_verifier_v1
+    scoring:
+      aggregation: geometric_mean
+""".lstrip()
+    )
+    specs_path.write_text(
+        """
+verifiers:
+  - verifier_id: local_verifier_v1
+    descriptor: local_sentinel
+    verification_script: local_verifier.py
+""".lstrip()
+    )
+    answers_path.write_text(
+        json.dumps({"task_id": "local_task_1", "candidates": [{"smiles": "CCO"}]})
+        + "\n"
+    )
+    verifier_path.write_text(
+        "import json, sys\n"
+        "payload = json.load(sys.stdin)\n"
+        "json.dump({\n"
+        "  'task_id': payload['task']['task_id'],\n"
+        "  'verifier_id': payload['verifier_spec']['verifier_id'],\n"
+        "  'status': 'ok',\n"
+        "  'canonical_smiles': None,\n"
+        "  'properties': {'local_verifier_sentinel': 'from_specs_dir'},\n"
+        "  'scores': {'constraint_scores': [{'property': 'local_sentinel', 'score': 1.0}], 'score': 1.0},\n"
+        "  'failure_type': None,\n"
+        "  'message': None,\n"
+        "  'versions': {'local_verifier': 'sentinel'}\n"
+        "}, sys.stdout)\n"
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "verifier_grounded_benchmark.cli.score_answers",
+            "--tasks",
+            str(tasks_path),
+            "--specs",
+            str(specs_path),
+            "--answers",
+            str(answers_path),
+        ],
+        cwd=ROOT,
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    report = json.loads(completed.stdout)
+    assert report["rows"][0]["status"] == "ok"
+    assert report["rows"][0]["properties"]["local_verifier_sentinel"] == "from_specs_dir"
 
 
 def test_score_answers_cli_require_complete_rejects_partial_track_answers(tmp_path: Path) -> None:
