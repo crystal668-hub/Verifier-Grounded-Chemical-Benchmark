@@ -35,7 +35,7 @@ task -> answer extraction -> verifier spec lookup -> property-level verification
 以下内容不纳入本阶段：
 
 - 不新增 RDKit/xTB 之外的新正式 benchmark task。
-- 不把 `matgl_materials`、`mace_materials` 或 `atomisticskills_smoke` 暴露为默认正式 track。
+- 不重新引入已移除的 `matgl_materials`、`mace_materials` 或 `atomisticskills_smoke` prototype task packs。
 - 不内置 OpenAI、Anthropic、本地模型或其他 provider adapter。
 - 不实现 provider retry、batch generation、prompt templating 或 agent orchestration。
 - 不在第一版引入 Python entry-points 插件系统。
@@ -167,7 +167,7 @@ Answer record 支持两种形态：
 
 ## Registry 设计
 
-Registry 采用显式注册，不扫描整个 `tasks/` 目录。原因是仓库中已有 prototype 和 smoke 内容，如果自动扫描会把非正式 task pack 错误暴露给用户。
+Registry 采用显式注册，不扫描整个 `tasks/` 目录。原因是仓库中仍可能存在非正式/prototype 内容，如果自动扫描会把非正式 task pack 错误暴露给用户。
 
 首批内置注册：
 
@@ -380,7 +380,7 @@ tasks/
 - `import vgb` 成功。
 - `vgb.list_tracks()` 只包含 `rdkit` 和 `xtb`。
 - `vgb.load_track("rdkit").tasks()` 返回 RDKit tasks。
-- `vgb.load_suite()` 默认包含 rdkit/xtb，不包含 matgl/mace/atomisticskills。
+- `vgb.load_suite()` 默认包含 rdkit/xtb，不包含 matgl/mace/atomisticskills prototype tasks。
 - `vgb.load_track("rdkit").evaluate_answers(sample_answers)` 与当前 `benchmark.evaluate.evaluate_many` summary 一致。
 - `vgb.load_track("xtb").evaluate_one(...)` 对缺失 XYZ candidate 返回结构化 `parse_error`。
 

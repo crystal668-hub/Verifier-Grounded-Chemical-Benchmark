@@ -3,7 +3,7 @@
 日期：2026-05-26
 更新：2026-05-27 补充近两年化学 LLM/agent benchmark 调研与设计规范提炼。
 更新：2026-06-02 明确最终 verifier 以单一 Docker 镜像发布，并将正式题目收紧到可计算化学性质。
-更新：2026-06-11 对照当前 repo 实现状态，明确 RDKit 与 xTB 两类题目已形成可复用雏形，MACE、MatGL 与 AtomisticSkills MCP 相关工作仍处于可用性测试和设计探索阶段。
+更新：2026-07-02 对照当前 repo 实现状态，明确 RDKit 与 xTB 两类题目已形成可复用雏形；AtomisticSkills MCP prototype 已移除，材料方向后续以 native Python 后端重新设计。
 
 ## 1. 项目动机
 
@@ -51,7 +51,7 @@ Candidate-selection 形式虽然工程上更容易控制，但如果候选项已
 
 每个正式评分约束应绑定一个可复现的验证脚本。验证脚本是某一化学性质或 descriptor 的计算入口：它读取模型给出的候选对象、task card 中的单个 constraint 和对应 verifier spec，在官方 verifier Docker 镜像内调用对应的计算后端，独立计算或预测该性质，然后根据候选对象与该约束之间的距离打分。
 
-这里的“绑定验证脚本”应按所计算的化学性质或 descriptor 分类，而不是按 task id 复制或包装一套 verifier。对用户和 runner 来说，每个评分 constraint 必须能追溯到唯一、明确、可独立执行的 `verification_script`；当多道题或多目标题计算同一种性质时，它们应调用同一个脚本，并使用相同输入输出契约。对工程实现来说，这个脚本内部可以复用共享后端库或工具环境，例如 RDKit descriptor backend、xTB workflow、ADMET 模型、CHGNet/MACE backend 或 AtomisticSkills 适配层。也就是说，分层应是：
+这里的“绑定验证脚本”应按所计算的化学性质或 descriptor 分类，而不是按 task id 复制或包装一套 verifier。对用户和 runner 来说，每个评分 constraint 必须能追溯到唯一、明确、可独立执行的 `verification_script`；当多道题或多目标题计算同一种性质时，它们应调用同一个脚本，并使用相同输入输出契约。对工程实现来说，这个脚本内部可以复用共享后端库或工具环境，例如 RDKit descriptor backend、xTB workflow、ADMET 模型、native MatGL backend 或未来 native MACE backend。也就是说，分层应是：
 
 ```text
 task constraint/property -> verification_script -> shared backend/tool environment
@@ -487,15 +487,13 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 
 这部分代表了“需要外部本地计算工具，但仍可用 property-level script + shared backend 固化”的设计路径。后续接入其他计算化学 verifier 时，应优先参考 xTB 的模式：把候选对象格式、计算前 domain gate、工具失败 taxonomy、资源上限和质量 gate 写入 spec，而不是把这些逻辑散落在题目或 runner 中。
 
-### 12.3 探索中：MACE、MatGL 与 AtomisticSkills MCP
+### 12.3 材料类 verifier 的当前边界
 
-当前 repo 中已经存在 `tasks/mace_materials/`、`tasks/matgl_materials/` 和 `tasks/atomisticskills_smoke/`，以及对应的 backend adapter、环境检查脚本和测试。但这些内容的定位与 RDKit/xTB 不同：
+AtomisticSkills MCP、MACE MCP 和 MatGL MCP prototype 已从当前 active codebase 中移除。当前正式发布面仍以 RDKit 与 xTB 为主；材料方向不再保留依赖外部 AtomisticSkills checkout、MCP server 或 agent-specific conda environment 的可执行路径。
 
-- MACE 与 MatGL 已有 CIF answer schema、材料 property-level 脚本和通过 AtomisticSkills MCP 调用后端的适配层，用来验证材料结构解析、MCP 调用链、错误映射和环境可用性。
-- AtomisticSkills smoke tasks 明确标记为 `formal_track: false`，用于 base-agent、drugdisc-agent 和 xrd-agent 的 MCP/script adapter 冒烟测试，不是正式 open-generation property-satisfaction 任务。
-- MACE/MatGL 当前虽然已经有 provisional task/spec/script，但其性质目标、候选材料空间、适用域、资源模型、模型版本冻结、容器化策略和正式题目设计仍未完成。它们在 task/spec 元数据中标记为 `formal_track: false` 和 `track_status: prototype`，应被视为“测试可用性和接口形态”的阶段性产物，而不是已经定稿的 benchmark 题目。
+保留的材料方向基础是 native MatGL Python backend：`verifiers/backends/matgl_properties.py` 与 `verifiers/materials/matgl_*.py`。这部分用于后续正式 MatGL task specs 的实现基础，但当前不作为内置正式 track 发布，也不复用已删除的 Si-only MCP prototype task pack。
 
-因此，后续材料类正式题目不应直接照搬当前 MACE/MatGL smoke/prototype 配置。正确路径是参考 RDKit 与 xTB 已成型的分层结构，同时重新完成材料 verifier 的题目设计、domain 设计、资源约束和正式 failure policy。
+MACE 将在 native Python backend、模型版本冻结、候选材料 domain、资源模型和正式 task design 明确后重新接入。后续材料类正式题目应参考 RDKit 与 xTB 已成型的分层结构，重新完成材料 verifier 的题目设计、domain 设计、资源约束和正式 failure policy。
 
 ## 13. 后续待讨论项
 
@@ -506,25 +504,23 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 - 将当前 task card、answer schema、verifier spec 和 result JSON 的实际字段整理成版本化 schema 文档，明确哪些字段为必填、哪些是实验字段。
 - 明确 property-level `verification_script` 的稳定 I/O 契约，包括 payload 字段、标准 result 字段、失败类型、版本字段和 artifacts 字段。
 - 把 RDKit 与 xTB 作为首批正式模板写入开发规范：新 verifier 必须说明它参考哪一类模板，或解释为什么需要新增模板。
-- 统一 `formal_track`、`experimental_smoke`、`prototype` 等状态标记，避免 MACE/MatGL 这类仍在测试阶段的题目被误认为已完成正式设计。
+- 统一 `formal_track`、`experimental_smoke`、`prototype` 等状态标记，避免未来材料类实验题目被误认为已完成正式设计。
 - 明确多目标聚合规则、quality gate 规则和 bounded scoring 的边界，特别是 `role: quality_gate` 与普通 property score 的关系。
 - 补充公开 dev/sample/test 题集的拆分规则，并说明 sample answers 只用于 smoke/regression，不代表 leaderboard 标准答案集合。
 
 ### 13.2 P0：补齐正式发布与可复现运行边界
 
 - 设计单一官方 verifier image 的构建、tag、发布和兼容性策略。
-- 明确哪些依赖必须进入镜像，哪些可以是外部可选依赖；xTB、MACE、MatGL、AtomisticSkills 这类外部工具需要有清晰的降级和环境错误报告。
+- 明确哪些依赖必须进入镜像，哪些可以是外部可选依赖；xTB、native MatGL、未来 native MACE 这类本地工具需要有清晰的降级和环境错误报告。
 - 为每个 verifier spec 固定工具版本、模型 checkpoint、reference assets、资源上限和 timeout 语义。
 - 明确 CI 中哪些测试必须完全离线、哪些是环境 smoke test、哪些需要手动或 nightly 运行。
 - 形成环境检查脚本的统一命名、输出 JSON 格式和 failure message 规范。
 
 ### 13.3 P1：材料类 verifier 的正式设计
 
-- 重新设计 MACE 与 MatGL 正式任务，而不是只沿用当前 Si-only prototype。需要确定候选材料空间、结构大小、允许元素、晶胞 sanity、去重规则和 domain gate。
+- 重新设计 MACE 与 MatGL 正式任务，不沿用已移除的 Si-only MCP prototype。需要确定候选材料空间、结构大小、允许元素、晶胞 sanity、去重规则和 domain gate。
 - 明确 MatGL band gap、MatGL formation energy、MACE energy 等性质的科学含义、单位、模型输出 convention、适用域和评分窗口。
 - 判断材料题是否需要 relaxation、energy above hull、fixed reference entries 或其他稳定性 gate；如果需要，应明确 reference asset 的冻结方式。
-- 评估 AtomisticSkills MCP 是否作为正式 verifier 后端进入官方 image，或仅作为本地实验/适配层保留。
-- 如果继续使用 MCP，需要固定 server 配置发现机制、conda/env 依赖策略、stdio timeout、JSON payload unwrap 规则和工具版本记录。
 
 ### 13.4 P1：扩展 verifier 接入规则
 
