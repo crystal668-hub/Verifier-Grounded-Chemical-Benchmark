@@ -212,3 +212,25 @@ QSAR/QSPR、read-across、片段贡献、随机森林、SVM、kNN、PLS、朴素
 - BioTransformer: <https://github.com/djoumbou/biotransformer>
 - AFLOW-ML: <https://aflow.org/aflow-ml/>
 - Magpie: <https://bitbucket.org/wolverton/magpie>
+
+## 8. 按预测性质所属化学子领域分类
+
+本节把上面的经典 QSAR/QSPR、专家规则和商业模型候选按预测性质所属的化学子领域汇总。
+平台型工具通常横跨多个 endpoint，因此会被重复列入多个子领域。后续如果转成机器可读
+registry，应允许一个候选拥有多个 `property_domain` 标签。
+
+| 化学子领域 | 主要候选 | 预测性质或 endpoint | Verifier 使用重点 |
+|---|---|---|---|
+| 小分子物理化学与药物样基础性质 | `EPI Suite KOWWIN`、`EPI Suite WSKOWWIN/WATERNT`、`EPI Suite MPBPWIN`、`ALOGPS 2.1`、`XLOGP3`、`Molinspiration`、`DataWarrior/OSIRIS-style property explorer`、`ACD/Labs Percepta PhysChem Suite`、`ChemAxon cxcalc`、`Schrodinger QikProp`、`SwissADME`、`OCHEM`、`QsarDB model packages` | logP/logKow、logS/water solubility、pKa、logD、melting/boiling point、vapor pressure、TPSA、drug-likeness、Rule-of-5 flags | 最适合构造低成本、端到端的小分子物化窗口任务；要固定 pH、温度、tautomer/ionization policy 和单位，避免与 RDKit 基础描述符重复计分。 |
+| 小分子 ADME 与药代相关性质 | `ACD/Labs Percepta ADME Suite`、`Simulations Plus ADMET Predictor`、`BIOVIA Discovery Studio ADMET models`、`Schrodinger QikProp`、`Optibrium StarDrop ADME QSAR`、`pkCSM`、`admetSAR`、`PreADMET`、`SwissADME`、`VEGA QSAR`、`OECD QSAR Toolbox`、`OCHEM` | Caco-2、MDCK、HIA/GI absorption、BBB、P-gp、CYP inhibition/substrate、clearance、PPB/FuB、VDss、bioavailability、skin permeability | 适合药物发现 multi-objective verifier；进入正式评分时必须明确 endpoint 是概率、分类、回归值还是规则判断，并记录 applicability-domain/confidence。 |
+| 毒理学、安全性、结构警示与监管 hazard | `US EPA TEST`、`VEGA QSAR`、`OECD QSAR Toolbox`、`Toxtree Cramer/TTC`、`Toxtree Benigni-Bossa`、`Toxtree skin/eye/protein/DNA alerts`、`lazar`、`AMBIT/OpenTox`、`GUSAR`、`ProTox-II`、`Derek Nexus`、`Sarah Nexus`、`CASE Ultra/MultiCASE`、`Leadscope Model Applier`、`ACD/Labs Tox Suite`、`Simulations Plus ADMET Predictor`、`BIOVIA TOPKAT`、`Danish QSAR Database`、`QsarDB model packages` | Ames/mutagenicity、carcinogenicity、LD50/acute toxicity、DILI、hERG、developmental/reproductive toxicity、skin sensitisation、irritation、organ toxicity、endocrine disruption、TTC/Cramer class、structural alerts | 是传统 QSAR 最成熟的应用区；很多输出是 hazard class、alert 或 expert likelihood，不应等同精确实验概率。ICH M7 类任务可用 Derek/Sarah/CASE/Leadscope consensus 思路。 |
+| 环境化学、生态毒理与环境归趋 | `EPI Suite HENRYWIN`、`EPI Suite AOPWIN`、`EPI Suite BIOWIN/BioHCwin`、`EPI Suite KOCWIN`、`EPI Suite BCFBAF`、`EPI Suite HYDROWIN`、`EPI Suite KOAWIN`、`EPI Suite AEROWIN/WVOLWIN`、`EPI Suite STPWIN`、`EPI Suite LEV3EPI`、`US EPA ECOSAR`、`US EPA TEST`、`VEGA QSAR`、`OECD QSAR Toolbox`、`Toxtree Verhaar/Modified Verhaar`、`ACD/Labs Tox Suite`、`BIOVIA TOPKAT`、`Danish QSAR Database`、`QsarDB model packages` | Aquatic acute/chronic toxicity、fish/Daphnia/algae endpoints、BCF/BAF、biodegradation、persistence、Koc、Henry constant、KOA、hydrolysis half-life、atmospheric oxidation half-life、sewage-treatment removal、multimedia fate | 适合建立区别于药物 ADMET 的环境化学 verifier；EPI/ECOSAR 类模型要固定环境场景参数，不能把场景模拟结果误写成纯分子性质。 |
+| 代谢、site-of-metabolism 与生物转化 | `SMARTCyp`、`MetaPrint2D`、`BioTransformer`、`Meteor Nexus`、`ACD/Labs Percepta ADME Suite`、`Simulations Plus ADMET Predictor`、`pkCSM`、`admetSAR`、`PreADMET`、`Optibrium StarDrop ADME QSAR` | CYP site-of-metabolism、metabolic soft spots、predicted metabolites、biotransformations、CYP substrate/inhibition、UGT/metabolism-related endpoints | 适合作为代谢软点规避或代谢产物 plausibility verifier；per-atom ranking 和 predicted metabolite 不等于 clearance，评分函数需单独设计。 |
+| 生物活性、靶点倾向与药理作用谱 | `PASS Online`、`Molinspiration`、`SwissTargetPrediction`、`ProTox-II`、`OCHEM`、`QsarDB model packages`、`Optibrium StarDrop Auto-Modeller` | Biological activity spectra、target class probability、GPCR/kinase/ion-channel/nuclear-receptor bioactivity score、pathway/target toxicity associations、user-trained potency/property models | 可作为窄域 target-likelihood 或 project-specific QSAR 储备；Web-only 和 similarity-heavy 模型容易泄漏 known-drug 信息，不适合作为首版唯一 potency oracle。 |
+| QSAR 平台、模型仓库与可复现模型基础设施 | `OECD QSAR Toolbox`、`AMBIT/OpenTox`、`OCHEM`、`Danish QSAR Database`、`QsarDB model packages`、`Optibrium StarDrop Auto-Modeller`、`lazar` | 取决于具体模型包或 workflow：toxicity、ADME、physchem、environmental endpoints、custom QSAR | 这些更像模型/工作流容器，而不是单一 endpoint；正式接入时必须拆成具体模型 id、训练数据、descriptor pipeline 和 fixed prediction command。 |
+| 材料化学与无机材料性质 | `AFLOW-ML`、`Magpie materials ML` | Formation enthalpy/energy、band gap、volume、elastic/thermal-like composition or crystal-derived properties | 作为经典/早期材料 ML 补充现代 MatGL/CHGNet/MACE；composition-only 模型只能作为 formula-level baseline，需要结构与稳定性 gate。 |
+
+从子领域覆盖看，本文候选对“小分子物化、ADME、毒理、安全性、环境归趋”最强，
+对材料和靶点活性只提供少量早期或平台型补充。首批工程验证建议优先从
+`Toxtree`、`ChemAxon cxcalc`、`BioTransformer`、`EPA TEST`、`VEGA`、`EPI Suite/ECOSAR`
+中各挑 1-2 个 endpoint 做 smoke 和输出解析，形成跨子领域的最小经典 QSAR verifier 集。

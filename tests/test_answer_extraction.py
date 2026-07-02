@@ -85,7 +85,7 @@ def test_normalize_answer_record_passes_structured_candidates_through() -> None:
 
 def test_normalize_answer_record_extracts_json_value() -> None:
     task = {
-        "task_id": "atomisticskills_base_supercell_001",
+        "task_id": "json_final_answer_example_001",
         "answer_schema": {
             "format": "final_answer_line",
             "final_answer_prefix": "FINAL ANSWER:",
@@ -96,7 +96,7 @@ def test_normalize_answer_record_extracts_json_value() -> None:
 
     result = normalize_answer_record(
         {
-            "task_id": "atomisticskills_base_supercell_001",
+            "task_id": "json_final_answer_example_001",
             "response": 'Reasoning...\nFINAL ANSWER: {"scaling_matrix": [2, 1, 1]}',
         },
         task,
@@ -110,7 +110,7 @@ def test_normalize_answer_record_extracts_json_value() -> None:
 
 def test_normalize_answer_record_rejects_invalid_json_value() -> None:
     task = {
-        "task_id": "atomisticskills_base_supercell_001",
+        "task_id": "json_final_answer_example_001",
         "answer_schema": {
             "format": "final_answer_line",
             "final_answer_prefix": "FINAL ANSWER:",
@@ -121,7 +121,7 @@ def test_normalize_answer_record_rejects_invalid_json_value() -> None:
 
     result = normalize_answer_record(
         {
-            "task_id": "atomisticskills_base_supercell_001",
+            "task_id": "json_final_answer_example_001",
             "response": "FINAL ANSWER: {not-json}",
         },
         task,
@@ -135,7 +135,7 @@ def test_normalize_answer_record_rejects_invalid_json_value() -> None:
 @pytest.mark.parametrize(("raw", "expected"), [("28.44", 28.44), ("2.844e1", 28.44)])
 def test_normalize_answer_record_extracts_number_value(raw: str, expected: float) -> None:
     task = {
-        "task_id": "atomisticskills_xrd_peak_001",
+        "task_id": "number_final_answer_example_001",
         "answer_schema": {
             "format": "final_answer_line",
             "final_answer_prefix": "FINAL ANSWER:",
@@ -146,7 +146,7 @@ def test_normalize_answer_record_extracts_number_value(raw: str, expected: float
 
     result = normalize_answer_record(
         {
-            "task_id": "atomisticskills_xrd_peak_001",
+            "task_id": "number_final_answer_example_001",
             "response": f"The strongest Si peak is near this angle.\nFINAL ANSWER: {raw}",
         },
         task,
@@ -159,7 +159,7 @@ def test_normalize_answer_record_extracts_number_value(raw: str, expected: float
 
 def test_normalize_answer_record_rejects_invalid_number_value() -> None:
     task = {
-        "task_id": "atomisticskills_xrd_peak_001",
+        "task_id": "number_final_answer_example_001",
         "answer_schema": {
             "format": "final_answer_line",
             "final_answer_prefix": "FINAL ANSWER:",
@@ -170,7 +170,7 @@ def test_normalize_answer_record_rejects_invalid_number_value() -> None:
 
     result = normalize_answer_record(
         {
-            "task_id": "atomisticskills_xrd_peak_001",
+            "task_id": "number_final_answer_example_001",
             "response": "FINAL ANSWER: twenty eight",
         },
         task,

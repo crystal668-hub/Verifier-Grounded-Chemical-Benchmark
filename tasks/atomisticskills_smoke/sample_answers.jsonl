@@ -1,3 +1,0 @@
-{"task_id": "atomisticskills_base_supercell_001", "response": "Use a diagonal supercell that doubles only a.\nFINAL ANSWER: {\"scaling_matrix\": [2, 1, 1]}"}
-{"task_id": "atomisticskills_drugdisc_descriptor_001", "response": "Ethanol is a compact C/H/O molecule with moderate QED.\nFINAL ANSWER: CCO"}
-{"task_id": "atomisticskills_xrd_peak_001", "response": "The fixed primitive silicon fixture gives its strongest calculated peak at low angle.\nFINAL ANSWER: 16.32"}

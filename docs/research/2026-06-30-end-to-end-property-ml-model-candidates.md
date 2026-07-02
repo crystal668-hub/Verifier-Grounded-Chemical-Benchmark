@@ -224,3 +224,25 @@ verifier_fit:
 - AiZynthFinder: https://github.com/MolecularAI/aizynthfinder
 - ASKCOS core: https://github.com/ASKCOS/askcos-core
 - RDKit force-field helpers: https://www.rdkit.org/docs/source/rdkit.Chem.rdForceFieldHelpers.html
+
+## 6. 按预测性质所属化学子领域分类
+
+本节按“候选模型主要预测的性质属于哪个化学子领域”重新组织候选。一个模型如果同时
+覆盖多个性质类型，会出现在多个子领域中；正式 registry 后续可以用
+`property_domain`、`property_family` 和 `endpoint_id` 做多标签索引。
+
+| 化学子领域 | 主要候选 | 预测性质或 endpoint | Verifier 使用重点 |
+|---|---|---|---|
+| 小分子 ADMET、药物样性质与通用 QSAR | `ADMET-AI`、`OPERA`、`SolTranNet`、`Chemprop`、`DeepChem`、`DGL-LifeSci`、`GROVER`、`ChemBERTa`、`MolCLR`、`Uni-Mol`、`MoLFormer`、`TorchDrug`、`Uni-pKa` | Solubility/logS、hERG、AMES、DILI、BBB、Caco-2、CYP、clearance、toxicity、pKa、MoleculeNet-style property | 最适合补齐 RDKit 基础描述符之外的固定小分子性质预测；进入 verifier 时必须绑定具体 endpoint、checkpoint、featurizer、单位和 applicability-domain policy。 |
+| 靶点活性、药物-靶标相互作用与蛋白-配体结合 | `DeepPurpose`、`DeepDTA`、`MolTrans`、`GraphDTA`、`gnina`、`DiffDock`、`EquiBind`、`TorchDrug`、`Uni-Mol` | DTI、binding affinity/proxy、docking score、pose confidence、protein-ligand pose plausibility | 适合窄 target family 或固定 receptor/box 的 binding proxy 任务；不应把 docking confidence 或跨 assay affinity 直接当作通用 potency oracle。 |
+| 分子量子化学、构象质量与神经势能 | `TorchANI`、`SchNetPack`、`TorchMD-Net`、`AIMNet2`、`PhysNet`、`DeepMD-kit`、`Graphormer`、`Uni-Mol`、`RDKit ETKDG + MMFF/UFF force-field workflow` | Energy、forces、dipole、polarizability、partial charges、HOMO-LUMO-gap-style graph property、3D embedding/strain/clash proxy | 可作为 xTB 的低成本 surrogate 或前置 geometry/domain gate；必须固定构象生成、charge/spin、元素域和跨分子能量解释规则。 |
+| 无机材料、晶体结构与 composition property | `MatGL`、`CHGNet`、`MACE/MACE-MP`、`MatterSim`、`SevenNet`、`Orb models`、`MEGNet`、`M3GNet`、`CGCNN`、`ALIGNN`、`MODNet`、`CrabNet`、`Roost`、`Matformer`、`AIRS/PotNet`、`MatDeepLearn`、`DeepMD-kit`、`NequIP`、`Allegro`、`NeuralForceField`、`SchNetPack` | Formation energy、band gap、energy above hull proxy、energy/forces/stress、magnetic moments、elastic/refractive/dielectric-like property、composition-only materials property | 是材料 track 的主体候选；structure-based 模型适合作为 stability/band-gap verifier，composition-only 模型只能作初筛或 formula-only 任务，不能单独证明结构可实现。 |
+| 催化、表面吸附与开放催化模型 | `FAIR-Chem/UMA`、`GemNet-OC/Open Catalyst checkpoint suite`、`EquiformerV2`、`MACE/MACE-MP`、`Orb models` | Slab+adsorbate energy、forces、adsorption/relaxation proxy、OC20/OC22 S2EF/IS2RE-style outputs | 适合后续催化或 adsorption-energy 任务；必须固定 slab、adsorbate、site 构建规则、checkpoint 和 relaxation protocol。 |
+| 反应、合成可行性与 retrosynthesis | `RXNMapper`、`rxn_yields/Yield-BERT`、`Chemformer`、`Molecular Transformer`、`AiZynthFinder`、`ASKCOS core` | Atom mapping confidence、reaction yield、forward reaction/product plausibility、retrosynthesis solved flag、route score/depth | 适合作为 reaction validity、yield surrogate 或 synthesizability gate；生成模型只能作固定 predictor/workflow，不能让模型生成后自证。 |
+| 生物大分子与 biomolecular dynamics 储备 | `AI2BMD`、`TorchDrug`、`DeepPurpose` | Biomolecular energy/force proxy、protein/drug graph tasks、protein-sequence-conditioned prediction | 当前更适合后续 peptide/protein fixture 或 DTI 任务储备；首版小分子 verifier 不宜直接扩展到大体系 MD。 |
+| 框架型或多领域模型库 | `Chemprop`、`DeepChem`、`TorchDrug`、`SchNetPack`、`DeepMD-kit`、`AIRS`、`MatDeepLearn` | 取决于具体 checkpoint/config：ADMET、toxicity、quantum property、materials property、MLIP 等 | 不能把框架本身注册为 oracle；必须拆成具体模型工件和 property-level verifier script。 |
+
+优先落地顺序仍建议保持为：小分子 ADMET/QSAR、材料 formation-energy/band-gap/stability、
+低成本量子/geometry gate、反应/合成 gate、催化/表面吸附。这个顺序与当前
+`INITIAL-DESIGN.md` 的 P0/P1 性质优先级一致，且能最大化复用已有 RDKit、xTB、
+ADMET-AI、OPERA、MatGL/CHGNet/MACE 相关 backend 经验。
