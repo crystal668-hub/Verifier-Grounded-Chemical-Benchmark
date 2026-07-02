@@ -40,7 +40,9 @@ def install_fake_matgl_modules(
             return 2
 
         @classmethod
-        def from_file(cls, path: object) -> "FakeStructure":
+        def from_str(cls, text: str, fmt: str) -> "FakeStructure":
+            assert text == check_matgl_env.SI_CIF_TEXT
+            assert fmt == "cif"
             return cls()
 
     matgl = types.ModuleType("matgl")

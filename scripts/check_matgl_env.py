@@ -13,7 +13,35 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SI_FIXTURE = ROOT / "tasks" / "matgl_materials" / "fixtures" / "Si.cif"
+SI_CIF_TEXT = """# generated using pymatgen
+data_Si
+_symmetry_space_group_name_H-M   'P 1'
+_cell_length_a   3.8401979337
+_cell_length_b   3.8401989943
+_cell_length_c   3.8401979337
+_cell_angle_alpha   119.9999908638
+_cell_angle_beta   90.0000000000
+_cell_angle_gamma   60.0000091371
+_symmetry_Int_Tables_number   1
+_chemical_formula_structural   Si
+_chemical_formula_sum   Si2
+_cell_volume   40.0478694978
+_cell_formula_units_Z   2
+loop_
+ _symmetry_equiv_pos_site_id
+ _symmetry_equiv_pos_as_xyz
+  1  'x, y, z'
+loop_
+ _atom_site_type_symbol
+ _atom_site_label
+ _atom_site_symmetry_multiplicity
+ _atom_site_fract_x
+ _atom_site_fract_y
+ _atom_site_fract_z
+ _atom_site_occupancy
+  Si  Si0  1  0.8750000000  0.8750000000  0.8750000000  1
+  Si  Si1  1  0.1250000000  0.1250000000  0.1250000000  1
+"""
 
 
 def environment_error(message: str, **details: Any) -> dict[str, Any]:
@@ -41,12 +69,12 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         )
 
     try:
-        structure = Structure.from_file(SI_FIXTURE)
+        structure = Structure.from_str(SI_CIF_TEXT, fmt="cif")
     except Exception as exc:
         return {
             "status": "missing",
             "failure_type": "verifier_environment_error",
-            "message": f"failed to parse fixture {SI_FIXTURE}: {exc}",
+            "message": f"failed to parse embedded Si CIF fixture: {exc}",
         }
 
     payload: dict[str, Any] = {
@@ -57,7 +85,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "torch": package_version("torch"),
         },
         "pymatgen": {
-            "fixture": str(SI_FIXTURE),
+            "fixture": "embedded_si_cif",
             "fixture_formula": structure.composition.reduced_formula,
             "atom_count": len(structure),
         },

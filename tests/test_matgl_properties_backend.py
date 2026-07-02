@@ -7,7 +7,7 @@ import pytest
 from verifiers.backends import matgl_properties
 
 
-SI_CIF = (Path(__file__).resolve().parents[1] / "tasks" / "matgl_materials" / "fixtures" / "Si.cif").read_text()
+SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()
 
 
 def bandgap_spec() -> dict:
