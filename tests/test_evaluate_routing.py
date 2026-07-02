@@ -491,7 +491,7 @@ def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: P
                 "fence_language": "cif",
                 "cardinality": "one",
             },
-            "constraints": [{"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_pbe_mcp_v1"}],
+            "constraints": [{"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_fake_v1"}],
             "scoring": {"aggregation": "geometric_mean"},
         },
         "matgl_bandgap_eform_si_003": {
@@ -506,20 +506,20 @@ def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: P
                 "cardinality": "one",
             },
             "constraints": [
-                {"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_pbe_mcp_v1"},
-                {"type": "window", "property": "formation_energy", "verifier_id": "matgl_formation_energy_mcp_v1"},
+                {"type": "window", "property": "bandgap", "verifier_id": "matgl_bandgap_fake_v1"},
+                {"type": "window", "property": "formation_energy", "verifier_id": "matgl_formation_energy_fake_v1"},
             ],
             "scoring": {"aggregation": "geometric_mean"},
         },
     }
     specs = {
-        "matgl_bandgap_pbe_mcp_v1": {
-            "verifier_id": "matgl_bandgap_pbe_mcp_v1",
+        "matgl_bandgap_fake_v1": {
+            "verifier_id": "matgl_bandgap_fake_v1",
             "verification_script": str(fake_script),
             "property_name": "bandgap",
         },
-        "matgl_formation_energy_mcp_v1": {
-            "verifier_id": "matgl_formation_energy_mcp_v1",
+        "matgl_formation_energy_fake_v1": {
+            "verifier_id": "matgl_formation_energy_fake_v1",
             "verification_script": str(fake_script),
             "property_name": "formation_energy",
         },
