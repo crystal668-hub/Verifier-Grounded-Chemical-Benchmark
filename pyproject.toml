@@ -45,7 +45,12 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["benchmark", "verifiers", "verifier_grounded_benchmark", "vgb"]
+packages = [
+    "src/benchmark",
+    "src/verifiers",
+    "src/verifier_grounded_benchmark",
+    "src/vgb",
+]
 
 [tool.hatch.build.targets.wheel.force-include]
 "tasks/rdkit_baseline" = "tasks/rdkit_baseline"
@@ -54,4 +59,4 @@ packages = ["benchmark", "verifiers", "verifier_grounded_benchmark", "vgb"]
 "tasks/xtb_xyz/verifier_specs.yaml" = "tasks/xtb_xyz/verifier_specs.yaml"
 
 [tool.pytest.ini_options]
-pythonpath = ["."]
+pythonpath = ["src", "."]

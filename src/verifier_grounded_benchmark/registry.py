@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from verifier_grounded_benchmark.resources import package_root, resolve_path
+from verifier_grounded_benchmark.resources import repository_root, resolve_path
 
 
 @dataclass(frozen=True)
@@ -31,7 +31,7 @@ class TrackDefinition:
     @property
     def root(self) -> Path:
         if self.resource_root is None:
-            return package_root()
+            return repository_root()
         return Path(self.resource_root).resolve()
 
     def resolve_path(self, path: str | Path) -> Path:
@@ -78,7 +78,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
             status="formal",
             tags=("small_molecule", "rdkit", "descriptor"),
-            resource_root=package_root(),
+            resource_root=repository_root(),
         ),
         TrackDefinition(
             name="xtb",
@@ -90,7 +90,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             status="formal",
             tags=("small_molecule_3d", "xtb", "xyz"),
             requirements=("xtb executable for real scoring",),
-            resource_root=package_root(),
+            resource_root=repository_root(),
         ),
     ]
 

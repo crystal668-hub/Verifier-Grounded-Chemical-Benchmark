@@ -9,7 +9,23 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+MODULE_ROOT = Path(__file__).resolve().parents[1]
+PYTHONPATH_ROOT = MODULE_ROOT if MODULE_ROOT.name == "src" else MODULE_ROOT.parent
+REPOSITORY_ROOT = PYTHONPATH_ROOT.parent if PYTHONPATH_ROOT.name == "src" else PYTHONPATH_ROOT
+
+
+def resolve_script_path(script_path: str | Path) -> Path:
+    script = Path(script_path).resolve()
+    if script.exists():
+        return script
+    try:
+        relative = script.relative_to(REPOSITORY_ROOT)
+    except ValueError:
+        return script
+    src_script = (PYTHONPATH_ROOT / relative).resolve()
+    if src_script.exists():
+        return src_script
+    return script
 
 
 def build_script_payload(
@@ -35,10 +51,14 @@ def run_verification_script(
     timeout_seconds: float,
     python_executable: str = sys.executable,
 ) -> dict[str, Any]:
-    script = Path(script_path)
+    script = resolve_script_path(script_path)
     env = os.environ.copy()
     pythonpath = env.get("PYTHONPATH")
-    env["PYTHONPATH"] = str(ROOT) if not pythonpath else f"{ROOT}{os.pathsep}{pythonpath}"
+    env["PYTHONPATH"] = (
+        str(PYTHONPATH_ROOT)
+        if not pythonpath
+        else f"{PYTHONPATH_ROOT}{os.pathsep}{pythonpath}"
+    )
     try:
         completed = subprocess.run(
             [python_executable, str(script)],

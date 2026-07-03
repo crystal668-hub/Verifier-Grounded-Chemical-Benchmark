@@ -9,6 +9,7 @@ from benchmark.evaluate import evaluate_one
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT / "src"
 TASK_DIR = ROOT / "tasks" / "rdkit_forcefield"
 
 
@@ -47,7 +48,7 @@ def test_rdkit_forcefield_task_pack_binds_to_specs() -> None:
             assert spec["property_name"] == constraint["property"] or constraint["property"] in spec.get(
                 "additional_property_names", []
             )
-            assert (ROOT / spec["verification_script"]).exists()
+            assert (SRC_DIR / spec["verification_script"]).exists()
 
 
 def test_rdkit_forcefield_sample_answers_score_successfully() -> None:

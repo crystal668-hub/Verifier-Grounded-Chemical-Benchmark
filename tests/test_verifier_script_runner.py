@@ -8,6 +8,9 @@ from pathlib import Path
 from benchmark.verifier_scripts import build_script_payload, run_verification_script
 
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
 def test_build_script_payload_uses_first_candidate() -> None:
     structural_domain = {"carbon_count_min": 2, "formula_denylist": ["H2O"]}
     task = {"task_id": "task_1", "constraints": [], "structural_domain": structural_domain}
@@ -30,6 +33,28 @@ def test_build_script_payload_uses_first_candidate() -> None:
     }
     assert "raw_answer" not in payload
     assert "extracted_answer" not in payload
+
+
+def test_run_verification_script_resolves_legacy_root_relative_script_path() -> None:
+    result = run_verification_script(
+        ROOT / "verifiers" / "xtb" / "xtb_gap.py",
+        {
+            "task": {"task_id": "xtb_gap_window_001"},
+            "constraint": {"property": "homo_lumo_gap", "verifier_id": "xtb_gap_gfn2_v1"},
+            "verifier_spec": {
+                "verifier_id": "xtb_gap_gfn2_v1",
+                "property_name": "homo_lumo_gap",
+                "domain": {},
+            },
+            "candidate": {},
+        },
+        timeout_seconds=5,
+        python_executable=sys.executable,
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "parse_error"
+    assert result["message"] == "candidate must include an XYZ string"
 
 
 def test_run_verification_script_round_trips_json(tmp_path: Path) -> None:

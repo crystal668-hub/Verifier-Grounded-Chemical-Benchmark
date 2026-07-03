@@ -12,12 +12,13 @@ from verifiers.backends.rdkit_descriptors import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT / "src"
 TASK_DIR = ROOT / "tasks" / "rdkit_baseline"
 
 
 def test_sa_score_import_avoids_static_contrib_import() -> None:
     for path in [
-        ROOT / "verifiers" / "backends" / "rdkit_descriptors.py",
+        SRC_DIR / "verifiers" / "backends" / "rdkit_descriptors.py",
         ROOT / "scripts" / "check_core_env.py",
     ]:
         tree = ast.parse(path.read_text())
@@ -81,7 +82,7 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
             assert spec["descriptor"] == constraint["property"]
             assert spec["verifier_image"] == "verifier-grounded:dev"
             assert spec["verification_script"] == f"verifiers/descriptors/{constraint['verifier_id'].removesuffix('_v1')}.py"
-            assert (ROOT / spec["verification_script"]).exists()
+            assert (SRC_DIR / spec["verification_script"]).exists()
             assert spec["backend"]["type"] == "rdkit_descriptors"
             assert "verifiers/tasks/rdkit_" not in spec["verification_script"]
             assert "rdkit_common" not in spec["verification_script"]
