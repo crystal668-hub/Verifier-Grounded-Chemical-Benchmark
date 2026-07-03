@@ -13,6 +13,9 @@ The first deployable target is an environment and verification harness, not a
 formal public task track. Formal OpenMM tasks should only follow after the local
 runtime can be installed, checked, and diagnosed consistently.
 
+This round is limited to a usable backend/runtime path. It should not design,
+add, register, or tune benchmark tasks.
+
 ## Scope
 
 This design covers:
@@ -34,6 +37,10 @@ This design does not cover:
 - Adding OpenMM/OpenFF/GAFF dependencies to default `pyproject.toml`
   dependencies.
 - Making OpenMM tasks formal or registering them as builtin public tracks.
+- Adding or modifying `tasks/` task packs, `sample_answers.jsonl`, or
+  `verifier_specs.yaml` files for OpenMM.
+- Designing task prompts, task thresholds, calibration sets, or benchmark
+  scoring distributions.
 - Supporting arbitrary protein-ligand preparation, protonation, tautomer
   enumeration, or receptor preparation.
 
@@ -317,6 +324,11 @@ Suggested missing-env payload:
 
 The local environment check should come first. After it is stable, implement
 the first backend under `src/verifiers/backends/`.
+
+Backend implementation must stop at reusable verifier code and environment
+diagnostics. It must not create OpenMM benchmark task packs in `tasks/`, add
+OpenMM sample answers, or register OpenMM as a formal track in the public
+registry during this round.
 
 Recommended backend names:
 
