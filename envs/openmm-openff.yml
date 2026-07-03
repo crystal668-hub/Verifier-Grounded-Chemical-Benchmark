@@ -1,0 +1,14 @@
+name: vgb-openmm-openff
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - openmm
+  - openff-toolkit
+  - openff-interchange
+  - openmmforcefields
+  - ambertools
+  - rdkit
+  - numpy
+  - pyyaml
+  - pytest
