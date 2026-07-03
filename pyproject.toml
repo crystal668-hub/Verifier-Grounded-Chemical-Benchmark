@@ -9,19 +9,21 @@ description = "Verifier-grounded chemical benchmark environment and tooling."
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "admet-ai==2.0.1",
-    "ase==3.28.0",
-    "cclib==1.8.1",
-    "chembl-webresource-client==0.10.9",
-    "mp-api==0.46.1",
-    "ord-schema==0.6.5",
-    "pymatgen==2026.5.4",
     "pyyaml==6.0.3",
     "rdkit==2026.3.2",
 ]
 
 [project.optional-dependencies]
+future-backends = [
+    "ase==3.28.0",
+    "cclib==1.8.1",
+    "chembl-webresource-client==0.10.9",
+    "mp-api==0.46.1",
+    "ord-schema==0.6.5",
+]
 materials = [
     "matgl==4.0.2",
+    "pymatgen==2026.5.4",
 ]
 
 [project.scripts]
@@ -31,8 +33,16 @@ vgb-score = "verifier_grounded_benchmark.cli.score_answers:main"
 dev = [
     "pytest==8.4.2",
 ]
+future-backends = [
+    "ase==3.28.0",
+    "cclib==1.8.1",
+    "chembl-webresource-client==0.10.9",
+    "mp-api==0.46.1",
+    "ord-schema==0.6.5",
+]
 materials = [
     "matgl==4.0.2",
+    "pymatgen==2026.5.4",
 ]
 
 [tool.uv]

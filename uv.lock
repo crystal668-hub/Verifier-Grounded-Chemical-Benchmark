@@ -2394,47 +2394,67 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "admet-ai" },
-    { name = "ase" },
-    { name = "cclib" },
-    { name = "chembl-webresource-client" },
-    { name = "mp-api" },
-    { name = "ord-schema" },
-    { name = "pymatgen" },
     { name = "pyyaml" },
     { name = "rdkit" },
 ]
 
 [package.optional-dependencies]
+future-backends = [
+    { name = "ase" },
+    { name = "cclib" },
+    { name = "chembl-webresource-client" },
+    { name = "mp-api" },
+    { name = "ord-schema" },
+]
 materials = [
     { name = "matgl" },
+    { name = "pymatgen" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "pytest" },
 ]
+future-backends = [
+    { name = "ase" },
+    { name = "cclib" },
+    { name = "chembl-webresource-client" },
+    { name = "mp-api" },
+    { name = "ord-schema" },
+]
 materials = [
     { name = "matgl" },
+    { name = "pymatgen" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "admet-ai", specifier = "==2.0.1" },
-    { name = "ase", specifier = "==3.28.0" },
-    { name = "cclib", specifier = "==1.8.1" },
-    { name = "chembl-webresource-client", specifier = "==0.10.9" },
+    { name = "ase", marker = "extra == 'future-backends'", specifier = "==3.28.0" },
+    { name = "cclib", marker = "extra == 'future-backends'", specifier = "==1.8.1" },
+    { name = "chembl-webresource-client", marker = "extra == 'future-backends'", specifier = "==0.10.9" },
     { name = "matgl", marker = "extra == 'materials'", specifier = "==4.0.2" },
-    { name = "mp-api", specifier = "==0.46.1" },
-    { name = "ord-schema", specifier = "==0.6.5" },
-    { name = "pymatgen", specifier = "==2026.5.4" },
+    { name = "mp-api", marker = "extra == 'future-backends'", specifier = "==0.46.1" },
+    { name = "ord-schema", marker = "extra == 'future-backends'", specifier = "==0.6.5" },
+    { name = "pymatgen", marker = "extra == 'materials'", specifier = "==2026.5.4" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "rdkit", specifier = "==2026.3.2" },
 ]
-provides-extras = ["materials"]
+provides-extras = ["future-backends", "materials"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "pytest", specifier = "==8.4.2" }]
-materials = [{ name = "matgl", specifier = "==4.0.2" }]
+future-backends = [
+    { name = "ase", specifier = "==3.28.0" },
+    { name = "cclib", specifier = "==1.8.1" },
+    { name = "chembl-webresource-client", specifier = "==0.10.9" },
+    { name = "mp-api", specifier = "==0.46.1" },
+    { name = "ord-schema", specifier = "==0.6.5" },
+]
+materials = [
+    { name = "matgl", specifier = "==4.0.2" },
+    { name = "pymatgen", specifier = "==2026.5.4" },
+]
 
 [[package]]
 name = "wrapt"

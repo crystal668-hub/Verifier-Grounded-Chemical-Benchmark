@@ -42,7 +42,7 @@ def test_distribution_artifacts_exclude_private_xtb_calibration_data(tmp_path: P
     assert REMOVED_PROTOTYPE_TASK_PACKS.isdisjoint(sdist_members)
 
 
-def test_wheel_metadata_publishes_matgl_materials_extra_only(tmp_path: Path) -> None:
+def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:
     subprocess.run(
         ["uv", "build", "--wheel", "--out-dir", str(tmp_path)],
         cwd=ROOT,
@@ -73,3 +73,48 @@ def test_wheel_metadata_publishes_matgl_materials_extra_only(tmp_path: Path) -> 
         )
         for requirement in requires_dist
     )
+    assert any(
+        requirement.startswith("pymatgen==2026.5.4")
+        and (
+            "extra == 'materials'" in requirement
+            or 'extra == "materials"' in requirement
+        )
+        for requirement in requires_dist
+    )
+
+
+def test_wheel_metadata_publishes_future_backends_extra(tmp_path: Path) -> None:
+    subprocess.run(
+        ["uv", "build", "--wheel", "--out-dir", str(tmp_path)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    wheel_path = next(tmp_path.glob("*.whl"))
+    with zipfile.ZipFile(wheel_path) as wheel:
+        metadata_name = next(
+            name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")
+        )
+        metadata = Parser().parsestr(wheel.read(metadata_name).decode())
+
+    provides_extra = metadata.get_all("Provides-Extra", [])
+    requires_dist = metadata.get_all("Requires-Dist", [])
+
+    assert "future-backends" in provides_extra
+    for package in [
+        "ase==3.28.0",
+        "cclib==1.8.1",
+        "chembl-webresource-client==0.10.9",
+        "mp-api==0.46.1",
+        "ord-schema==0.6.5",
+    ]:
+        assert any(
+            requirement.startswith(package)
+            and (
+                "extra == 'future-backends'" in requirement
+                or 'extra == "future-backends"' in requirement
+            )
+            for requirement in requires_dist
+        )
