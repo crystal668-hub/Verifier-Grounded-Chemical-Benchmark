@@ -106,6 +106,11 @@ def finite_float(value: float, label: str) -> float:
     return result
 
 
+def quantity_vector_norm(vector_quantity: Any, target_unit: Any) -> float:
+    vector = vector_quantity.value_in_unit(target_unit)
+    return math.sqrt(float(vector.x) ** 2 + float(vector.y) ** 2 + float(vector.z) ** 2)
+
+
 def run_core_smoke(preferred_platform: str = "Reference") -> dict[str, Any]:
     modules = load_core_modules()
     openmm = modules.openmm
@@ -129,7 +134,7 @@ def run_core_smoke(preferred_platform: str = "Reference") -> dict[str, Any]:
         minimized_energy = final_state.getPotentialEnergy().value_in_unit(unit.kilojoule_per_mole)
         forces = final_state.getForces()
         max_force = max(
-            vector.norm().value_in_unit(unit.kilojoule_per_mole / unit.nanometer)
+            quantity_vector_norm(vector, unit.kilojoule_per_mole / unit.nanometer)
             for vector in forces
         )
     finally:
@@ -168,7 +173,7 @@ def run_openmm_system_minimization(
         minimized_energy = final_state.getPotentialEnergy().value_in_unit(unit.kilojoule_per_mole)
         forces = final_state.getForces()
         max_force = max(
-            vector.norm().value_in_unit(unit.kilojoule_per_mole / unit.nanometer)
+            quantity_vector_norm(vector, unit.kilojoule_per_mole / unit.nanometer)
             for vector in forces
         )
     finally:

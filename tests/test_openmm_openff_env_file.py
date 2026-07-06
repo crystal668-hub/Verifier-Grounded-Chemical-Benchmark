@@ -38,6 +38,12 @@ def test_openmm_openff_conda_env_contains_required_packages() -> None:
     }
 
 
+def test_openmm_openff_conda_env_uses_python_311() -> None:
+    payload = yaml.safe_load(ENV_FILE.read_text())
+
+    assert "python=3.11" in payload["dependencies"]
+
+
 def test_openmm_openff_not_added_to_pyproject_defaults() -> None:
     pyproject = (ROOT / "pyproject.toml").read_text()
 

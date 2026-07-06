@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from typing import Any
@@ -8,6 +9,7 @@ from typing import Any
 import pytest
 
 from scripts import check_openmm_openff_env
+from verifiers.backends import openmm_runtime
 
 
 def test_check_openmm_openff_env_reports_missing_dependency_json(
@@ -81,3 +83,40 @@ def test_check_openmm_openff_env_rejects_invalid_mode() -> None:
 
     assert completed.returncode == 2
     assert "invalid choice" in completed.stderr
+
+
+def test_check_script_runs_from_checkout_without_pythonpath() -> None:
+    env = os.environ.copy()
+    env.pop("PYTHONPATH", None)
+
+    completed = subprocess.run(
+        [sys.executable, "-S", "scripts/check_openmm_openff_env.py", "--help"],
+        capture_output=True,
+        text=True,
+        timeout=30,
+        check=False,
+        env=env,
+    )
+
+    assert completed.returncode == 0
+    assert "--mode" in completed.stdout
+
+
+def test_quantity_vector_norm_uses_vec3_components() -> None:
+    class FakeUnit:
+        pass
+
+    class FakeQuantity:
+        def __init__(self, value: object) -> None:
+            self._value = value
+
+        def value_in_unit(self, target_unit: FakeUnit) -> object:
+            assert isinstance(target_unit, FakeUnit)
+            return self._value
+
+    class FakeVector:
+        x = 3.0
+        y = 4.0
+        z = 12.0
+
+    assert openmm_runtime.quantity_vector_norm(FakeQuantity(FakeVector()), FakeUnit()) == 13.0
