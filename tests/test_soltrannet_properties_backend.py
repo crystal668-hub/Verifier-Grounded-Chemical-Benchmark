@@ -94,6 +94,22 @@ def test_evaluate_soltrannet_rejects_property_mismatch() -> None:
     assert result["failure_type"] == "verifier_spec_error"
 
 
+def test_evaluate_soltrannet_rejects_unsupported_property(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(smiles: str, spec: dict[str, Any]) -> float:
+        raise AssertionError("prediction should not be called")
+
+    monkeypatch.setattr(soltrannet_properties, "predict_soltrannet_log_s", fail)
+    candidate, task, constraint, spec = payload()
+    constraint["property"] = "other_soltrannet_property"
+    spec["property_name"] = "other_soltrannet_property"
+
+    result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_spec_error"
+    assert "unsupported" in result["message"]
+
+
 def test_evaluate_soltrannet_rejects_multicomponent_smiles() -> None:
     candidate, task, constraint, spec = payload()
     candidate["smiles"] = "CCO.O"
@@ -102,3 +118,43 @@ def test_evaluate_soltrannet_rejects_multicomponent_smiles() -> None:
 
     assert result["status"] == "error"
     assert result["failure_type"] == "validity_error"
+
+
+def test_predict_soltrannet_uses_configured_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
+    ensure_calls: list[dict[str, Any]] = []
+    http_calls: list[dict[str, Any]] = []
+
+    def fake_ensure_http_container(**kwargs: Any) -> None:
+        ensure_calls.append(kwargs)
+
+    def fake_http_json(url: str, **kwargs: Any) -> list[dict[str, float]]:
+        http_calls.append({"url": url, **kwargs})
+        return [{"solubility": 2.1}]
+
+    monkeypatch.setattr(docker_model_runtime, "ensure_http_container", fake_ensure_http_container)
+    monkeypatch.setattr(docker_model_runtime, "http_json", fake_http_json)
+    _, _, _, spec = payload()
+    spec["soltrannet"] = {"base_url": "http://example.test/soltrannet/"}
+
+    value = soltrannet_properties.predict_soltrannet_log_s("CCO", spec)
+
+    assert value == pytest.approx(2.1)
+    assert ensure_calls == []
+    assert http_calls == [
+        {
+            "url": "http://example.test/soltrannet/run",
+            "method": "POST",
+            "payload": ["CCO"],
+            "timeout_seconds": 30.0,
+        }
+    ]
+
+
+def test_predict_soltrannet_rejects_unsupported_runtime() -> None:
+    _, _, _, spec = payload()
+    spec["soltrannet"] = {"runtime": "local"}
+
+    with pytest.raises(docker_model_runtime.DockerRuntimeEnvironmentError) as exc:
+        soltrannet_properties.predict_soltrannet_log_s("CCO", spec)
+
+    assert "unsupported SolTranNet runtime: local" in str(exc.value)

@@ -21,6 +21,7 @@ DEFAULT_CONTAINER_NAME = "vgb-soltrannet-eos6oli"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 18081
 DEFAULT_CONTAINER_PORT = 80
+SUPPORTED_SOLTRANNET_PROPERTIES = {"soltrannet_log_s"}
 
 
 def evaluate_soltrannet_constraint(
@@ -37,6 +38,8 @@ def evaluate_soltrannet_constraint(
             "verifier_spec_error",
             f"verifier property {property_name!r} does not match constraint property {constraint.get('property')!r}",
         )
+    if property_name not in SUPPORTED_SOLTRANNET_PROPERTIES:
+        return error_result(result, "verifier_spec_error", f"unsupported SolTranNet property {property_name!r}")
 
     smiles = candidate.get("smiles")
     if not smiles or not isinstance(smiles, str):
@@ -102,6 +105,10 @@ def evaluate_soltrannet_constraint(
 
 def predict_soltrannet_log_s(smiles: str, spec: dict[str, Any]) -> float:
     config = soltrannet_config(spec)
+    runtime_name = str(config.get("runtime", "external_docker"))
+    if runtime_name != "external_docker":
+        raise runtime.DockerRuntimeEnvironmentError(f"unsupported SolTranNet runtime: {runtime_name}")
+
     base_url = str(config.get("base_url") or os.environ.get("SOLTRANNET_BASE_URL") or "").rstrip("/")
     if not base_url:
         host = str(config["host"])
