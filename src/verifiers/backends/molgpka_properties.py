@@ -149,6 +149,8 @@ def parse_molgpka_response(payload: Any) -> dict[str, Any]:
     values_raw = payload[2]
     if not isinstance(values_raw, list):
         raise runtime.DockerRuntimeToolError("MolGpKa pKa values must be a list")
+    if any(isinstance(value, bool) for value in values_raw):
+        raise runtime.DockerRuntimeToolError("MolGpKa pKa values must be numeric")
     try:
         values = [float(value) for value in values_raw]
     except (TypeError, ValueError) as exc:

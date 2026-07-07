@@ -60,6 +60,11 @@ def test_parse_molgpka_response_rejects_nonnumeric_pka_value() -> None:
         molgpka_properties.parse_molgpka_response(["CC(O)=O", 1, ["not-a-number"]])
 
 
+def test_parse_molgpka_response_rejects_boolean_pka_value() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", 1, [True]])
+
+
 def test_parse_molgpka_response_rejects_boolean_count() -> None:
     with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
         molgpka_properties.parse_molgpka_response(["CC(O)=O", True, [8.34]])
