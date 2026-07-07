@@ -14,6 +14,11 @@ from dataclasses import dataclass
 from typing import Any
 
 
+VGB_DOCKER_LABEL_KEY = "verifier-grounded-benchmark.managed"
+VGB_DOCKER_LABEL_VALUE = "true"
+VGB_DOCKER_LABEL = f"{VGB_DOCKER_LABEL_KEY}={VGB_DOCKER_LABEL_VALUE}"
+
+
 class DockerRuntimeEnvironmentError(RuntimeError):
     """Raised when Docker, an image, or a model service is unavailable."""
 
@@ -153,12 +158,18 @@ def wait_for_http_json(
 ) -> Any:
     deadline = time.monotonic() + startup_timeout_seconds
     last_error: Exception | None = None
-    while time.monotonic() < deadline:
+    while True:
+        remaining_seconds = deadline - time.monotonic()
+        if remaining_seconds <= 0:
+            break
         try:
-            return http_json(url, timeout_seconds=min(5.0, startup_timeout_seconds))
+            return http_json(url, timeout_seconds=min(5.0, remaining_seconds))
         except (DockerRuntimeToolError, DockerRuntimeTimeout) as exc:
             last_error = exc
-            time.sleep(poll_interval_seconds)
+            remaining_seconds = deadline - time.monotonic()
+            if remaining_seconds <= 0:
+                break
+            time.sleep(min(poll_interval_seconds, remaining_seconds))
     raise DockerRuntimeTimeout(f"HTTP service did not become ready at {url}: {last_error}")
 
 
@@ -183,11 +194,29 @@ def ensure_http_container(
         wait_for_http_json(readiness_url, startup_timeout_seconds=startup_timeout_seconds)
         return
     if inspect.returncode == 0:
+        label = run_docker_command(
+            [
+                "container",
+                "inspect",
+                "-f",
+                f'{{{{ index .Config.Labels "{VGB_DOCKER_LABEL_KEY}" }}}}',
+                container_name,
+            ],
+            docker_executable=docker_executable,
+            timeout_seconds=10,
+            check=False,
+        )
+        if label.returncode != 0:
+            message = label.stderr.strip() or label.stdout.strip() or "failed to inspect container labels"
+            raise DockerRuntimeEnvironmentError(message)
+        if label.stdout.strip() != VGB_DOCKER_LABEL_VALUE:
+            raise DockerRuntimeEnvironmentError(
+                f"container name {container_name!r} is already used by an unmanaged container"
+            )
         run_docker_command(
             ["rm", container_name],
             docker_executable=docker_executable,
             timeout_seconds=10,
-            check=False,
         )
 
     run_docker_command(
@@ -197,6 +226,8 @@ def ensure_http_container(
             "-d",
             "--name",
             container_name,
+            "--label",
+            VGB_DOCKER_LABEL,
             "-p",
             f"{host}:{port}:{container_port}",
             image,
