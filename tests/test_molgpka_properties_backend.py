@@ -49,6 +49,37 @@ def test_parse_molgpka_response_rejects_bad_shape() -> None:
         molgpka_properties.parse_molgpka_response({"bad": "shape"})
 
 
+@pytest.mark.parametrize("bad_value", [float("nan"), "NaN"])
+def test_parse_molgpka_response_rejects_nonfinite_pka_value(bad_value: float | str) -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", 1, [bad_value]])
+
+
+def test_parse_molgpka_response_rejects_nonnumeric_pka_value() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", 1, ["not-a-number"]])
+
+
+def test_parse_molgpka_response_rejects_boolean_count() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", True, [8.34]])
+
+
+def test_parse_molgpka_response_rejects_float_count() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", 1.5, [8.34]])
+
+
+def test_parse_molgpka_response_rejects_negative_count() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", -1, [8.34]])
+
+
+def test_parse_molgpka_response_rejects_count_value_mismatch() -> None:
+    with pytest.raises(docker_model_runtime.DockerRuntimeToolError):
+        molgpka_properties.parse_molgpka_response(["CC(O)=O", 2, [8.34]])
+
+
 def test_parse_molgpka_stdout_reads_noisy_output() -> None:
     properties = molgpka_properties.parse_molgpka_stdout(
         "loading model\n"
@@ -130,6 +161,44 @@ def test_evaluate_molgpka_maps_runtime_environment_error(monkeypatch: pytest.Mon
 
     assert result["status"] == "error"
     assert result["failure_type"] == "verifier_environment_error"
+    assert result["properties"]["heavy_atom_count"] == 4
+
+
+def test_evaluate_molgpka_maps_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(smiles: str, spec: dict[str, Any]) -> dict[str, Any]:
+        raise docker_model_runtime.DockerRuntimeTimeout("slow")
+
+    monkeypatch.setattr(molgpka_properties, "predict_molgpka_properties", fail)
+    candidate, task, constraint, spec = payload("molgpka_max_pka")
+
+    result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_timeout"
+    assert result["properties"]["heavy_atom_count"] == 4
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        docker_model_runtime.DockerRuntimeToolError("bad model output"),
+        RuntimeError("unexpected model failure"),
+    ],
+)
+def test_evaluate_molgpka_maps_tool_errors_with_domain_properties(
+    monkeypatch: pytest.MonkeyPatch,
+    error: Exception,
+) -> None:
+    def fail(smiles: str, spec: dict[str, Any]) -> dict[str, Any]:
+        raise error
+
+    monkeypatch.setattr(molgpka_properties, "predict_molgpka_properties", fail)
+    candidate, task, constraint, spec = payload("molgpka_max_pka")
+
+    result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_tool_error"
     assert result["properties"]["heavy_atom_count"] == 4
 
 

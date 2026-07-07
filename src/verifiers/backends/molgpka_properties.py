@@ -141,10 +141,11 @@ def parse_molgpka_stdout(stdout: str) -> dict[str, Any]:
 def parse_molgpka_response(payload: Any) -> dict[str, Any]:
     if not isinstance(payload, list) or len(payload) != 3:
         raise runtime.DockerRuntimeToolError("MolGpKa response must be [smiles, site_count, pka_values]")
-    try:
-        site_count = int(payload[1])
-    except (TypeError, ValueError) as exc:
-        raise runtime.DockerRuntimeToolError("MolGpKa site count was not numeric") from exc
+    site_count = payload[1]
+    if isinstance(site_count, bool) or not isinstance(site_count, int):
+        raise runtime.DockerRuntimeToolError("MolGpKa site count must be an integer")
+    if site_count < 0:
+        raise runtime.DockerRuntimeToolError("MolGpKa site count must be non-negative")
     values_raw = payload[2]
     if not isinstance(values_raw, list):
         raise runtime.DockerRuntimeToolError("MolGpKa pKa values must be a list")
@@ -154,6 +155,8 @@ def parse_molgpka_response(payload: Any) -> dict[str, Any]:
         raise runtime.DockerRuntimeToolError("MolGpKa pKa values must be numeric") from exc
     if any(not math.isfinite(value) for value in values):
         raise runtime.DockerRuntimeToolError("MolGpKa pKa values must be finite")
+    if site_count != len(values):
+        raise runtime.DockerRuntimeToolError("MolGpKa site count does not match pKa value count")
 
     properties: dict[str, Any] = {
         "molgpka_pka_values": values,
