@@ -19,7 +19,6 @@ from verifiers.backends import soltrannet_properties
 
 
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:
-    effective_base_url = (args.base_url or f"http://{args.host}:{args.port}").rstrip("/")
     spec = {
         "verifier_image": "verifier-grounded:dev",
         "soltrannet": {
@@ -66,7 +65,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
             "image": args.image,
             "image_id": image.get("Id"),
             "mode": "external_docker",
-            "base_url": effective_base_url,
+            "base_url": args.base_url,
             "container_name": args.container_name,
             "host": args.host,
             "port": args.port,

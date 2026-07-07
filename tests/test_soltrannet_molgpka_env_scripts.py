@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from typing import Any
@@ -47,6 +48,39 @@ def test_check_soltrannet_env_reports_error_json(
     payload = json.loads(capsys.readouterr().out)
     assert payload["status"] == "error"
     assert payload["failure_type"] == "verifier_environment_error"
+
+
+def test_check_soltrannet_env_reports_configured_base_url_only(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen_spec: dict[str, Any] = {}
+
+    def fake_inspect(image: str, **kwargs: Any) -> dict[str, Any]:
+        assert image == "image:tag"
+        return {"Id": "sha256:123"}
+
+    def fake_predict(smiles: str, spec: dict[str, Any]) -> float:
+        assert smiles == "CCO"
+        seen_spec.update(spec)
+        return 2.29
+
+    monkeypatch.setattr(check_soltrannet_env.runtime, "docker_image_inspect", fake_inspect)
+    monkeypatch.setattr(check_soltrannet_env.soltrannet_properties, "predict_soltrannet_log_s", fake_predict)
+    args = argparse.Namespace(
+        smiles="CCO",
+        image="image:tag",
+        container_name="container",
+        host="127.0.0.1",
+        port=18081,
+        base_url=None,
+        docker_executable=None,
+        startup_timeout_seconds=60.0,
+        prediction_timeout_seconds=30.0,
+    )
+
+    payload = check_soltrannet_env.build_payload(args)
+
+    assert payload["status"] == "ok"
+    assert payload["runtime"]["base_url"] is None
+    assert seen_spec["soltrannet"]["base_url"] is None
 
 
 def test_check_molgpka_env_reports_success_json(
