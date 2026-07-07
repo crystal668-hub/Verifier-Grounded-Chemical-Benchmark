@@ -17,7 +17,7 @@ small-molecule SMILES.
 | `molgpka_pka_count` | Number of predicted ionizable pKa values. |
 
 The raw list is retained as `molgpka_pka_values` in verifier result
-diagnostics.
+properties.
 
 ## Runtime
 
