@@ -173,6 +173,32 @@ def wait_for_http_json(
     raise DockerRuntimeTimeout(f"HTTP service did not become ready at {url}: {last_error}")
 
 
+def _ensure_managed_container(
+    container_name: str,
+    *,
+    docker_executable: str | None,
+) -> None:
+    label = run_docker_command(
+        [
+            "container",
+            "inspect",
+            "-f",
+            f'{{{{ index .Config.Labels "{VGB_DOCKER_LABEL_KEY}" }}}}',
+            container_name,
+        ],
+        docker_executable=docker_executable,
+        timeout_seconds=10,
+        check=False,
+    )
+    if label.returncode != 0:
+        message = label.stderr.strip() or label.stdout.strip() or "failed to inspect container labels"
+        raise DockerRuntimeEnvironmentError(message)
+    if label.stdout.strip() != VGB_DOCKER_LABEL_VALUE:
+        raise DockerRuntimeEnvironmentError(
+            f"container name {container_name!r} is already used by an unmanaged container"
+        )
+
+
 def ensure_http_container(
     *,
     image: str,
@@ -191,28 +217,11 @@ def ensure_http_container(
         check=False,
     )
     if inspect.returncode == 0 and inspect.stdout.strip() == "true":
+        _ensure_managed_container(container_name, docker_executable=docker_executable)
         wait_for_http_json(readiness_url, startup_timeout_seconds=startup_timeout_seconds)
         return
     if inspect.returncode == 0:
-        label = run_docker_command(
-            [
-                "container",
-                "inspect",
-                "-f",
-                f'{{{{ index .Config.Labels "{VGB_DOCKER_LABEL_KEY}" }}}}',
-                container_name,
-            ],
-            docker_executable=docker_executable,
-            timeout_seconds=10,
-            check=False,
-        )
-        if label.returncode != 0:
-            message = label.stderr.strip() or label.stdout.strip() or "failed to inspect container labels"
-            raise DockerRuntimeEnvironmentError(message)
-        if label.stdout.strip() != VGB_DOCKER_LABEL_VALUE:
-            raise DockerRuntimeEnvironmentError(
-                f"container name {container_name!r} is already used by an unmanaged container"
-            )
+        _ensure_managed_container(container_name, docker_executable=docker_executable)
         run_docker_command(
             ["rm", container_name],
             docker_executable=docker_executable,
@@ -235,4 +244,13 @@ def ensure_http_container(
         docker_executable=docker_executable,
         timeout_seconds=startup_timeout_seconds,
     )
-    wait_for_http_json(readiness_url, startup_timeout_seconds=startup_timeout_seconds)
+    try:
+        wait_for_http_json(readiness_url, startup_timeout_seconds=startup_timeout_seconds)
+    except Exception:
+        run_docker_command(
+            ["rm", "-f", container_name],
+            docker_executable=docker_executable,
+            timeout_seconds=10,
+            check=False,
+        )
+        raise

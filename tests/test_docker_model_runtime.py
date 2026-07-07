@@ -190,7 +190,17 @@ def test_ensure_http_container_reuses_running_container(monkeypatch: pytest.Monk
     def fake_command(args: list[str], **kwargs: Any) -> runtime.DockerCommandResult:
         calls.append(args)
         assert kwargs["check"] is False
-        return runtime.DockerCommandResult(stdout="true\n", stderr="", returncode=0)
+        if args == ["container", "inspect", "-f", "{{.State.Running}}", "model"]:
+            return runtime.DockerCommandResult(stdout="true\n", stderr="", returncode=0)
+        if args == [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ]:
+            return runtime.DockerCommandResult(stdout="true\n", stderr="", returncode=0)
+        raise AssertionError(f"unexpected docker command: {args}")
 
     monkeypatch.setattr(runtime, "run_docker_command", fake_command)
     monkeypatch.setattr(runtime, "wait_for_http_json", lambda url, **kwargs: readiness_urls.append(url))
@@ -205,8 +215,174 @@ def test_ensure_http_container_reuses_running_container(monkeypatch: pytest.Monk
         startup_timeout_seconds=9,
     )
 
-    assert calls == [["container", "inspect", "-f", "{{.State.Running}}", "model"]]
+    assert calls == [
+        ["container", "inspect", "-f", "{{.State.Running}}", "model"],
+        [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ],
+    ]
     assert readiness_urls == ["http://127.0.0.1:8000/ready"]
+
+
+def test_ensure_http_container_removes_and_recreates_managed_stopped_container(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[list[str]] = []
+
+    def fake_command(args: list[str], **kwargs: Any) -> runtime.DockerCommandResult:
+        calls.append(args)
+        if args == ["container", "inspect", "-f", "{{.State.Running}}", "model"]:
+            assert kwargs["check"] is False
+            return runtime.DockerCommandResult(stdout="false\n", stderr="", returncode=0)
+        if args == [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ]:
+            assert kwargs["check"] is False
+            return runtime.DockerCommandResult(stdout="true\n", stderr="", returncode=0)
+        if args == ["rm", "model"]:
+            return runtime.DockerCommandResult(stdout="removed\n", stderr="", returncode=0)
+        if args[0] == "run":
+            return runtime.DockerCommandResult(stdout="container-id\n", stderr="", returncode=0)
+        raise AssertionError(f"unexpected docker command: {args}")
+
+    monkeypatch.setattr(runtime, "run_docker_command", fake_command)
+    monkeypatch.setattr(runtime, "wait_for_http_json", lambda url, **kwargs: {"ready": True})
+
+    runtime.ensure_http_container(
+        image="image:tag",
+        container_name="model",
+        host="127.0.0.1",
+        port=8000,
+        container_port=5000,
+        readiness_url="http://127.0.0.1:8000/ready",
+        startup_timeout_seconds=9,
+    )
+
+    assert calls == [
+        ["container", "inspect", "-f", "{{.State.Running}}", "model"],
+        [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ],
+        ["rm", "model"],
+        [
+            "run",
+            "--rm",
+            "-d",
+            "--name",
+            "model",
+            "--label",
+            runtime.VGB_DOCKER_LABEL,
+            "-p",
+            "127.0.0.1:8000:5000",
+            "image:tag",
+        ],
+    ]
+
+
+def test_ensure_http_container_rejects_unmanaged_running_container(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[list[str]] = []
+
+    def fake_command(args: list[str], **kwargs: Any) -> runtime.DockerCommandResult:
+        calls.append(args)
+        if args == ["container", "inspect", "-f", "{{.State.Running}}", "model"]:
+            return runtime.DockerCommandResult(stdout="true\n", stderr="", returncode=0)
+        if args == [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ]:
+            return runtime.DockerCommandResult(stdout="", stderr="", returncode=0)
+        raise AssertionError(f"unexpected docker command: {args}")
+
+    monkeypatch.setattr(runtime, "run_docker_command", fake_command)
+
+    with pytest.raises(runtime.DockerRuntimeEnvironmentError) as exc:
+        runtime.ensure_http_container(
+            image="image:tag",
+            container_name="model",
+            host="127.0.0.1",
+            port=8000,
+            container_port=5000,
+            readiness_url="http://127.0.0.1:8000/ready",
+            startup_timeout_seconds=9,
+        )
+
+    assert "unmanaged container" in str(exc.value)
+    assert calls == [
+        ["container", "inspect", "-f", "{{.State.Running}}", "model"],
+        [
+            "container",
+            "inspect",
+            "-f",
+            "{{ index .Config.Labels \"verifier-grounded-benchmark.managed\" }}",
+            "model",
+        ],
+    ]
+
+
+def test_ensure_http_container_cleans_up_new_container_when_readiness_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[list[str]] = []
+
+    def fake_command(args: list[str], **kwargs: Any) -> runtime.DockerCommandResult:
+        calls.append(args)
+        if args == ["container", "inspect", "-f", "{{.State.Running}}", "model"]:
+            return runtime.DockerCommandResult(stdout="", stderr="not found", returncode=1)
+        if args[0] == "run":
+            return runtime.DockerCommandResult(stdout="container-id\n", stderr="", returncode=0)
+        if args == ["rm", "-f", "model"]:
+            assert kwargs["check"] is False
+            return runtime.DockerCommandResult(stdout="removed\n", stderr="", returncode=0)
+        raise AssertionError(f"unexpected docker command: {args}")
+
+    def fake_wait_for_http_json(url: str, **kwargs: Any) -> Any:
+        raise runtime.DockerRuntimeTimeout("not ready")
+
+    monkeypatch.setattr(runtime, "run_docker_command", fake_command)
+    monkeypatch.setattr(runtime, "wait_for_http_json", fake_wait_for_http_json)
+
+    with pytest.raises(runtime.DockerRuntimeTimeout):
+        runtime.ensure_http_container(
+            image="image:tag",
+            container_name="model",
+            host="127.0.0.1",
+            port=8000,
+            container_port=5000,
+            readiness_url="http://127.0.0.1:8000/ready",
+            startup_timeout_seconds=9,
+        )
+
+    assert calls == [
+        ["container", "inspect", "-f", "{{.State.Running}}", "model"],
+        [
+            "run",
+            "--rm",
+            "-d",
+            "--name",
+            "model",
+            "--label",
+            runtime.VGB_DOCKER_LABEL,
+            "-p",
+            "127.0.0.1:8000:5000",
+            "image:tag",
+        ],
+        ["rm", "-f", "model"],
+    ]
 
 
 def test_ensure_http_container_starts_labeled_container_when_missing(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -215,6 +391,7 @@ def test_ensure_http_container_starts_labeled_container_when_missing(monkeypatch
     def fake_command(args: list[str], **kwargs: Any) -> runtime.DockerCommandResult:
         calls.append(args)
         if args[:3] == ["container", "inspect", "-f"]:
+            assert kwargs["check"] is False
             return runtime.DockerCommandResult(stdout="", stderr="not found", returncode=1)
         return runtime.DockerCommandResult(stdout="container-id\n", stderr="", returncode=0)
 
