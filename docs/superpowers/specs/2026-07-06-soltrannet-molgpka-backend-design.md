@@ -408,22 +408,45 @@ pytest
 
 Create or update:
 
-- `docs/tracks/SolTranNet-MolGpKa.md`
+- `docs/tracks/SolTranNet.md`
+- `docs/tracks/MolGpKa.md`
 
-The track document should state that this is a backend capability document, not
-a registered formal benchmark track. It should include:
+Each document should state that it is a backend capability document, not a
+registered formal benchmark track. The two models should not be combined into a
+single documentation page because they have different runtime paths, property
+semantics, and failure modes.
+
+`docs/tracks/SolTranNet.md` should include:
 
 - Model provenance and image references.
-- Supported properties and units/semantics.
-- Runtime modes.
-- Environment check commands.
-- Live Docker smoke command.
+- Supported property `soltrannet_log_s` and its logS-style aqueous solubility
+  semantics.
+- External Docker HTTP runtime mode and optional configured `base_url` mode.
+- `scripts/check_soltrannet_env.py` usage.
+- SolTranNet live Docker smoke command.
 - Known limitations:
-  - SolTranNet is a single logS-style aqueous solubility model.
+  - SolTranNet is a single aqueous solubility model.
+  - The Ersilia output field is named `solubility`; the verifier maps it to
+    `soltrannet_log_s`.
+  - External Docker runtime is a development deployment path, not the final
+    official release shape.
+
+`docs/tracks/MolGpKa.md` should include:
+
+- Model provenance and image references.
+- Supported properties `molgpka_min_pka`, `molgpka_max_pka`, and
+  `molgpka_pka_count`.
+- How the raw MolGpKa pKa list maps to scalar verifier properties.
+- External Docker one-shot Python entrypoint runtime mode.
+- `scripts/check_molgpka_env.py` usage.
+- MolGpKa live Docker smoke command.
+- Known limitations:
   - MolGpKa predicts a list of pKa values without an acidic/basic split in this
     first wrapper.
-  - MolGpKa currently uses an amd64 image and may run through emulation on
-    arm64 Docker Desktop.
+  - `molgpka_min_pka` and `molgpka_max_pka` require at least one predicted pKa
+    value, while `molgpka_pka_count` can return zero.
+  - The current image is amd64 and may run through emulation on arm64 Docker
+    Desktop.
   - External Docker runtime is a development deployment path, not the final
     official release shape.
 
@@ -504,6 +527,7 @@ when:
 - Opt-in live Docker smoke tests pass on a machine with the two validated images
   available.
 - Environment check scripts print structured JSON diagnostics.
-- Documentation describes the runtime requirements and migration path.
+- Separate SolTranNet and MolGpKa docs describe each model's runtime
+  requirements, property semantics, limitations, and migration path.
 - No new formal track is registered.
 - No new task pack is added.
