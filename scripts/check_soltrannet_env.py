@@ -19,6 +19,7 @@ from verifiers.backends import soltrannet_properties
 
 
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:
+    image_id = None
     spec = {
         "verifier_image": "verifier-grounded:dev",
         "soltrannet": {
@@ -33,8 +34,25 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     }
     if args.docker_executable:
         spec["soltrannet"]["docker_executable"] = args.docker_executable
+    if not args.base_url:
+        try:
+            image = runtime.docker_image_inspect(args.image, docker_executable=args.docker_executable)
+        except (runtime.DockerRuntimeEnvironmentError, runtime.DockerRuntimeToolError) as exc:
+            return {
+                "status": "error",
+                "failure_type": "verifier_environment_error",
+                "message": str(exc),
+                "runtime": {"image": args.image},
+            }
+        except runtime.DockerRuntimeTimeout as exc:
+            return {
+                "status": "error",
+                "failure_type": "verifier_timeout",
+                "message": str(exc),
+                "runtime": {"image": args.image},
+            }
+        image_id = image.get("Id")
     try:
-        image = runtime.docker_image_inspect(args.image, docker_executable=args.docker_executable)
         value = soltrannet_properties.predict_soltrannet_log_s(args.smiles, spec)
     except runtime.DockerRuntimeEnvironmentError as exc:
         return {
@@ -63,7 +81,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         "message": None,
         "runtime": {
             "image": args.image,
-            "image_id": image.get("Id"),
+            "image_id": image_id,
             "mode": "external_docker",
             "base_url": args.base_url,
             "container_name": args.container_name,

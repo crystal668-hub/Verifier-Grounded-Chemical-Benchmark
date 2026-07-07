@@ -31,6 +31,21 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         spec["molgpka"]["docker_executable"] = args.docker_executable
     try:
         image = runtime.docker_image_inspect(args.image, docker_executable=args.docker_executable)
+    except (runtime.DockerRuntimeEnvironmentError, runtime.DockerRuntimeToolError) as exc:
+        return {
+            "status": "error",
+            "failure_type": "verifier_environment_error",
+            "message": str(exc),
+            "runtime": {"image": args.image},
+        }
+    except runtime.DockerRuntimeTimeout as exc:
+        return {
+            "status": "error",
+            "failure_type": "verifier_timeout",
+            "message": str(exc),
+            "runtime": {"image": args.image},
+        }
+    try:
         prediction = molgpka_properties.predict_molgpka_properties(args.smiles, spec)
     except runtime.DockerRuntimeEnvironmentError as exc:
         return {
