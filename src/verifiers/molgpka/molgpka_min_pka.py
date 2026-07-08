@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from verifiers.physchem.molgpka_property_script import main
+from verifiers.molgpka.cli import main
 
 
 if __name__ == "__main__":

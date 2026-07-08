@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from verifiers.backends.soltrannet_properties import evaluate_soltrannet_constraint
+from verifiers.soltrannet.backend import evaluate_soltrannet_constraint
 from verifiers.common.property_cli import run_property_script
 
 

@@ -4,8 +4,8 @@ import os
 
 import pytest
 
-from verifiers.backends import molgpka_properties
-from verifiers.backends import soltrannet_properties
+from verifiers.molgpka import backend as molgpka_properties
+from verifiers.soltrannet import backend as soltrannet_properties
 
 
 pytestmark = pytest.mark.skipif(

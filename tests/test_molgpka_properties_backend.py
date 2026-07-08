@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from verifiers.common import docker_model_runtime
-from verifiers.backends import molgpka_properties
+from verifiers.molgpka import backend as molgpka_properties
 
 
 def payload(property_name: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:

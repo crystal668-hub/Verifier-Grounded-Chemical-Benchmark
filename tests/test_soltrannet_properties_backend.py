@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from verifiers.common import docker_model_runtime
-from verifiers.backends import soltrannet_properties
+from verifiers.soltrannet import backend as soltrannet_properties
 
 
 def payload() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:

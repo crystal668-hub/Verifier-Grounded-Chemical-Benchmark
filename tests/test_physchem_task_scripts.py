@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from verifiers.physchem import molgpka_property_script
-from verifiers.physchem import soltrannet_property_script
+from verifiers.molgpka import cli as molgpka_property_script
+from verifiers.soltrannet import cli as soltrannet_property_script
 
 
 def run_in_process(
