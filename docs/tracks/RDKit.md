@@ -72,18 +72,18 @@ FINAL ANSWER: <SMILES>
 
 ## 5. 对应 verifier
 
-当前 RDKit verifier 都通过 `verifiers/descriptors/rdkit_descriptor_script.py` 进入共享后端 `verifiers/backends/rdkit_descriptors.py`。
+当前 RDKit verifier 都通过 `verifiers/rdkit_descriptors/cli.py` 进入共享后端 `verifiers/rdkit_descriptors/backend.py`。
 
 | verifier_id | property / descriptor | verification_script |
 |---|---|---|
-| `rdkit_qed_v1` | `qed` | `verifiers/descriptors/rdkit_qed.py` |
-| `rdkit_logp_v1` | `logp` | `verifiers/descriptors/rdkit_logp.py` |
-| `rdkit_tpsa_v1` | `tpsa` | `verifiers/descriptors/rdkit_tpsa.py` |
-| `rdkit_mw_v1` | `mw` | `verifiers/descriptors/rdkit_mw.py` |
-| `rdkit_hba_v1` | `hba` | `verifiers/descriptors/rdkit_hba.py` |
-| `rdkit_hbd_v1` | `hbd` | `verifiers/descriptors/rdkit_hbd.py` |
-| `rdkit_sa_score_v1` | `sa_score` | `verifiers/descriptors/rdkit_sa_score.py` |
-| `rdkit_fraction_csp3_v1` | `fraction_csp3` | `verifiers/descriptors/rdkit_fraction_csp3.py` |
+| `rdkit_qed_v1` | `qed` | `verifiers/rdkit_descriptors/rdkit_qed.py` |
+| `rdkit_logp_v1` | `logp` | `verifiers/rdkit_descriptors/rdkit_logp.py` |
+| `rdkit_tpsa_v1` | `tpsa` | `verifiers/rdkit_descriptors/rdkit_tpsa.py` |
+| `rdkit_mw_v1` | `mw` | `verifiers/rdkit_descriptors/rdkit_mw.py` |
+| `rdkit_hba_v1` | `hba` | `verifiers/rdkit_descriptors/rdkit_hba.py` |
+| `rdkit_hbd_v1` | `hbd` | `verifiers/rdkit_descriptors/rdkit_hbd.py` |
+| `rdkit_sa_score_v1` | `sa_score` | `verifiers/rdkit_descriptors/rdkit_sa_score.py` |
+| `rdkit_fraction_csp3_v1` | `fraction_csp3` | `verifiers/rdkit_descriptors/rdkit_fraction_csp3.py` |
 
 真实执行流程：
 

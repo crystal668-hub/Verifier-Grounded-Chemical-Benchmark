@@ -86,7 +86,7 @@ FINAL ANSWER:
 
 ## 5. 对应 verifier
 
-当前 xTB verifier 都通过 `verifiers/xtb/xtb_property_script.py` 进入共享后端 `verifiers/backends/xtb_properties.py`。
+当前 xTB verifier 都通过 `verifiers/xtb/cli.py` 进入共享后端 `verifiers/xtb/backend.py`。
 
 | verifier_id | property_name | verification_script | 后端 |
 |---|---|---|---|

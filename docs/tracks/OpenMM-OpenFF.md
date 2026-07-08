@@ -43,11 +43,11 @@ environment unchanged.
 
 ## Implemented Backend Surfaces
 
-- `src/verifiers/backends/openmm_core_properties.py`
+- `src/verifiers/openmm/core_backend.py`
   - fixed fixture OpenMM energy/minimization smoke
   - no arbitrary SMILES
 
-- `src/verifiers/backends/openmm_openff_properties.py`
+- `src/verifiers/openmm/openff_backend.py`
   - single-component SMILES ligand path
   - OpenFF/SMIRNOFF primary mode
   - GAFF mode kept behind explicit backend config

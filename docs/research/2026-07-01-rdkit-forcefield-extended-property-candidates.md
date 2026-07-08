@@ -16,7 +16,7 @@
 
 ## 2. 当前实现核对
 
-当前 backend：`verifiers/backends/rdkit_forcefield.py`
+当前 backend：`verifiers/rdkit_forcefield/backend.py`
 
 输入和流程：
 

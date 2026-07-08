@@ -15,8 +15,8 @@
 - 题目数量：2。
 - verifier specs：2。
 - 输入：单组分 SMILES。
-- backend：`verifiers/backends/rdkit_forcefield.py`。
-- scripts：`verifiers/forcefield/rdkit_energy_range.py`、`verifiers/forcefield/rdkit_convergence.py`。
+- backend：`verifiers/rdkit_forcefield/backend.py`。
+- scripts：`verifiers/rdkit_forcefield/rdkit_energy_range.py`、`verifiers/rdkit_forcefield/rdkit_convergence.py`。
 
 统一 backend 配置：
 

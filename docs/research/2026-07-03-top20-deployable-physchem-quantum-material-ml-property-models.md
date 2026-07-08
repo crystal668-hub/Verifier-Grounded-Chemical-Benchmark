@@ -10,7 +10,7 @@
 - `2026-07-02-classical-ml-qsar-property-verifier-candidates.md`
 
 本版按用户最新要求增加一个硬约束：当前仓库已经实现的 backend 家族一律排除在
-TOP20 推荐部署清单之外。排除范围来自 `src/verifiers/backends/` 和对应
+TOP20 推荐部署清单之外。排除范围来自 `src/verifiers/*/backend.py` 和对应
 property-level scripts，包括：
 
 - RDKit descriptors 与 RDKit force-field workflows。

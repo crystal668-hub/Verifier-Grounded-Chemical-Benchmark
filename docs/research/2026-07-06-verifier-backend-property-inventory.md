@@ -12,7 +12,7 @@
 
 | Backend | 状态 | 输入 | 可计算/可预测的性质 | 备注 |
 |---|---:|---|---|---|
-| RDKit descriptors | 正式 track | SMILES | `qed`, `logp`, `tpsa`, `mw`, `hba`, `hbd`, `sa_score`, `fraction_csp3` | 已在 `rdkit_baseline` verifier specs 暴露。来源：`src/verifiers/backends/rdkit_descriptors.py` 与 `tasks/rdkit_baseline/verifier_specs.yaml`。 |
+| RDKit descriptors | 正式 track | SMILES | `qed`, `logp`, `tpsa`, `mw`, `hba`, `hbd`, `sa_score`, `fraction_csp3` | 已在 `rdkit_baseline` verifier specs 暴露。来源：`src/verifiers/rdkit_descriptors/backend.py` 与 `tasks/rdkit_baseline/verifier_specs.yaml`。 |
 | RDKit descriptors | backend 支持，未正式暴露 | SMILES | `rotatable_bonds`, `ring_count` | `DESCRIPTOR_FUNCTIONS` 已支持，但当前没有对应正式 task/script spec。 |
 | xTB local CLI | 正式 track | XYZ | `homo_lumo_gap`, `dipole_moment`, `relaxation_energy`, `lumo_energy`, `polarizability_per_heavy_atom`, `alpb_water_hexane_selectivity`, `global_electrophilicity`, `max_f_plus_on_carbon`, `entropy_298_per_heavy_atom` | 已在 `xtb_xyz` verifier specs 暴露。 |
 | xTB local CLI | 随结果返回/辅助约束 | XYZ | `molecular_polarizability`, `gsolv_water_eV`, `gsolv_hexane_eV`, `f_plus_contrast`, `max_f_plus_atom_index`, `max_f_plus_atom_symbol`, `imaginary_frequency_count`, `entropy_298` | 部分属性已作为 `additional_property_names` 可约束，例如 `f_plus_contrast`、`imaginary_frequency_count`。 |
@@ -37,14 +37,18 @@
 
 ## 主要来源文件
 
-- `src/verifiers/backends/rdkit_descriptors.py`
-- `src/verifiers/backends/xtb_properties.py`
-- `src/verifiers/backends/rdkit_forcefield.py`
-- `src/verifiers/backends/admet_ai_properties.py`
-- `src/verifiers/backends/matgl_properties.py`
-- `src/verifiers/backends/openmm_core_properties.py`
-- `src/verifiers/backends/openmm_openff_properties.py`
-- `src/verifiers/backends/openmm_runtime.py`
+- `src/verifiers/rdkit_descriptors/backend.py`
+- `src/verifiers/rdkit_descriptors/rdkit_qed.py`
+- `src/verifiers/xtb/backend.py`
+- `src/verifiers/rdkit_forcefield/backend.py`
+- `src/verifiers/rdkit_forcefield/rdkit_energy_range.py`
+- `src/verifiers/admet_ai/backend.py`
+- `src/verifiers/matgl/backend.py`
+- `src/verifiers/matgl/matgl_formation_energy.py`
+- `src/verifiers/openmm/core_backend.py`
+- `src/verifiers/openmm/openff_backend.py`
+- `src/verifiers/openmm/runtime.py`
+- `src/verifiers/common/scoring.py`
 - `tasks/rdkit_baseline/verifier_specs.yaml`
 - `tasks/xtb_xyz/verifier_specs.yaml`
 - `tasks/rdkit_forcefield/verifier_specs.yaml`

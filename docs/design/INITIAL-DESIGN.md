@@ -469,8 +469,8 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 `tasks/rdkit_baseline/` 已经形成首个稳定模板：
 
 - `tasks.yaml` 定义 open-generation 小分子题面、`FINAL ANSWER: <SMILES>` 答案格式、domain 约束、单目标和多目标 constraint。
-- `verifier_specs.yaml` 将每个 descriptor 绑定到 property-level 脚本，例如 `verifiers/descriptors/rdkit_qed.py`、`rdkit_logp.py`、`rdkit_tpsa.py`、`rdkit_sa_score.py` 等。
-- `verifiers/backends/rdkit_descriptors.py` 复用 RDKit descriptor 计算、SMILES 解析、canonicalization、domain gate 和通用 scoring。
+- `verifier_specs.yaml` 将每个 descriptor 绑定到 property-level 脚本，例如 `verifiers/rdkit_descriptors/rdkit_qed.py`、`rdkit_logp.py`、`rdkit_tpsa.py`、`rdkit_sa_score.py` 等。
+- `verifiers/rdkit_descriptors/backend.py` 复用 RDKit descriptor 计算、SMILES 解析、canonicalization、domain gate 和 `verifiers/common/scoring.py` 通用 scoring。
 - 测试覆盖了答案抽取、脚本路由、多约束聚合、descriptor 后端和 CLI 批量评分。
 
 这部分已经可以作为后续确定性 small-molecule verifier 的参考模式。后续如果接入更多 RDKit 或类似低成本 descriptor，应优先复用这套组织方式：一个性质一个 property-level 脚本，多个脚本共享后端，题目只通过 constraint 绑定 verifier id。
@@ -482,7 +482,7 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 - 题目要求模型直接输出 fenced `xyz` block，而不是只输出 SMILES 或自报性质。
 - 当前包含 13 个 formal tasks，覆盖 HOMO-LUMO gap、dipole moment、LUMO、polarizability/dipole、ALPB solvation selectivity、global electrophilicity、Fukui carbon-site response 和 hessian thermochemistry。
 - 当前包含 9 个 verifier specs，包括 gap、dipole、relaxation energy、LUMO、polarizability、ALPB selectivity、electrophilicity、Fukui 和 hessian thermo；每个 spec 绑定对应的 property-level `verifiers/xtb/*.py` 脚本。
-- `verifiers/backends/xtb_properties.py` 负责 XYZ 解析、元素和几何 domain 检查、连通性检查、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
+- `verifiers/xtb/backend.py` 负责 XYZ 解析、元素和几何 domain 检查、连通性检查、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
 - relaxation energy 已作为 direct-XYZ 几何质量 gate 接入聚合逻辑，避免模型提交粗糙或非低能构型只靠优化后性质得分。
 
 这部分代表了“需要外部本地计算工具，但仍可用 property-level script + shared backend 固化”的设计路径。后续接入其他计算化学 verifier 时，应优先参考 xTB 的模式：把候选对象格式、计算前 domain gate、工具失败 taxonomy、资源上限和质量 gate 写入 spec，而不是把这些逻辑散落在题目或 runner 中。
@@ -491,7 +491,7 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 
 AtomisticSkills MCP、MACE MCP 和 MatGL MCP prototype 已从当前 active codebase 中移除。当前正式发布面仍以 RDKit 与 xTB 为主；材料方向不再保留依赖外部 AtomisticSkills checkout、MCP server 或 agent-specific conda environment 的可执行路径。
 
-保留的材料方向基础是 native MatGL Python backend：`verifiers/backends/matgl_properties.py` 与 `verifiers/materials/matgl_*.py`。这部分用于后续正式 MatGL task specs 的实现基础，但当前不作为内置正式 track 发布，也不复用已删除的 Si-only MCP prototype task pack。
+保留的材料方向基础是 native MatGL Python backend：`verifiers/matgl/backend.py` 与 `verifiers/matgl/matgl_*.py`。这部分用于后续正式 MatGL task specs 的实现基础，但当前不作为内置正式 track 发布，也不复用已删除的 Si-only MCP prototype task pack。
 
 MACE 将在 native Python backend、模型版本冻结、候选材料 domain、资源模型和正式 task design 明确后重新接入。后续材料类正式题目应参考 RDKit 与 xTB 已成型的分层结构，重新完成材料 verifier 的题目设计、domain 设计、资源约束和正式 failure policy。
 

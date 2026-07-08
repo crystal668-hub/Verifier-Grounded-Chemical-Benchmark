@@ -12,8 +12,8 @@
 - `tasks/*/verifier_specs.yaml`
 - `tasks/rdkit_baseline/tasks.yaml`
 - `tasks/xtb_xyz/tasks.yaml`
-- `verifiers/backends/*.py`
-- `verifiers/atomisticskills_backend.py`
+- `verifiers/*/backend.py`
+- `verifiers/openmm/runtime.py`
 - 既有 track/research 文档：`docs/tracks/` 与 `docs/research/`
 
 外部方法调研优先采用官方文档、官方仓库、论文页或项目主页。报告中的“已实现”按代码和 task spec 认定；“正式 track”按 builtin registry 认定；“prototype / smoke”不等同于正式 benchmark track。
@@ -32,10 +32,8 @@
 | backend | 方法类别 | 当前性质 | 状态 |
 |---|---|---|---|
 | `admet_ai_properties` | 小分子 ML/QSAR | AqSolDB solubility、hERG、AMES、BBB、Caco-2 等脚本 | 已实现 backend，未进入 builtin registry |
-| `opera_properties` | 小分子 QSAR/监管模型 | OPERA endpoint wrapper，带 applicability-domain gate | 已实现 backend，依赖外部 OPERA/MCR，未进入 builtin registry |
-| `matgl_properties` | 材料 GNN/ML surrogate | formation energy、band gap | 已实现 native backend，prototype task 走 AtomisticSkills MatGL |
-| `atomisticskills_matgl_properties` | 材料 GNN/ML surrogate via MCP | band gap、formation energy | prototype |
-| `mace_properties` | 材料 MLIP via MCP | energy | prototype |
+| `matgl` | 材料 GNN/ML surrogate | formation energy、band gap | 已实现 native backend，未进入 builtin registry |
+| `mace_mp` | 材料 MLIP | energy、energy per atom、max force、stress norm | 已实现 native backend，未进入 builtin registry |
 | `atomisticskills_smoke` | 结构操作/描述符/XRD script | supercell、DrugDisc descriptors、XRD peak | smoke，非正式性质 track |
 
 主要覆盖强项：
@@ -75,7 +73,7 @@
 
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
-| `rdkit_descriptors` | SMILES | QED、logP、TPSA、MW、HBA、HBD、SA score、fraction Csp3；backend 还支持 rotatable bonds、ring count | `verifiers/backends/rdkit_descriptors.py` | 正式 track |
+| `rdkit_descriptors` | SMILES | QED、logP、TPSA、MW、HBA、HBD、SA score、fraction Csp3；backend 还支持 rotatable bonds、ring count | `verifiers/rdkit_descriptors/backend.py` | 正式 track |
 | AtomisticSkills DrugDisc descriptors | SMILES | descriptor/Ro5/Veber/QED 等外部 MCP 输出 | `tasks/atomisticskills_smoke/verifier_specs.yaml` | smoke |
 
 实现评价：
@@ -108,8 +106,8 @@
 
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
-| `local_xtb` | explicit-H XYZ | HOMO-LUMO gap、dipole moment、relaxation energy | `verifiers/backends/xtb_properties.py` | 正式 |
-| `local_xtb` | explicit-H XYZ | LUMO energy、polarizability per heavy atom、ALPB water/hexane selectivity、global electrophilicity、Fukui f+ carbon site、imaginary frequency count、entropy per heavy atom | `tasks/xtb_xyz/verifier_specs.yaml` + `verifiers/backends/xtb_properties.py` | 正式 spec/task；`docs/tracks/xTB.md` 旧文档未完全同步 |
+| `local_xtb` | explicit-H XYZ | HOMO-LUMO gap、dipole moment、relaxation energy | `verifiers/xtb/backend.py` | 正式 |
+| `local_xtb` | explicit-H XYZ | LUMO energy、polarizability per heavy atom、ALPB water/hexane selectivity、global electrophilicity、Fukui f+ carbon site、imaginary frequency count、entropy per heavy atom | `tasks/xtb_xyz/verifier_specs.yaml` + `verifiers/xtb/backend.py` | 正式 spec/task |
 
 实现评价：
 
@@ -145,14 +143,13 @@
 
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
-| `admet_ai_properties` | SMILES | ADMET-AI endpoint，例如 solubility、hERG、AMES、BBB、Caco-2 | `verifiers/backends/admet_ai_properties.py` 与 `verifiers/admet/*.py` | backend/task script 已实现，未进入 builtin registry |
-| `opera_properties` | SMILES | OPERA endpoint wrapper，带 `AD_<property>` gate | `verifiers/backends/opera_properties.py` | backend 已实现，依赖外部 OPERA/MCR，未进入 builtin registry |
+| `admet_ai` | SMILES | ADMET-AI endpoint，例如 solubility、hERG、AMES、BBB、Caco-2 | `verifiers/admet_ai/backend.py` 与 `verifiers/admet_ai/*.py` | backend/task script 已实现，未进入 builtin registry |
 
 实现评价：
 
 - ADMET-AI 是最接近可立即正式化的遗漏方向：`pyproject.toml` 已 pin `admet-ai==2.0.1`，backend 直接用 Python API。
-- OPERA wrapper 有价值，因为其官方定位包含 QSAR-ready 标准化、applicability domain 和 accuracy assessment；但当前本机/macOS arm64 环境无法直接完成 Linux/Windows OPERA 部署，适合作为 Linux verifier image 工作。
-- 当前缺少统一的 applicability-domain/uncertainty 接口；ADMET-AI backend 当前只用结构 domain gate，OPERA 使用官方 AD flag。
+- OPERA wrapper 曾作为外部部署候选评估；当前 active codebase 已移除 OPERA 路径，若恢复应作为 Linux verifier image 重新设计。
+- 当前缺少统一的 applicability-domain/uncertainty 接口；ADMET-AI backend 当前只用结构 domain gate。
 
 普遍使用方法：
 
@@ -184,14 +181,13 @@
 
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
-| `matgl_properties` | CIF | formation energy、band gap | `verifiers/backends/matgl_properties.py` | native backend 已实现 |
-| `atomisticskills_matgl_properties` | CIF | band gap、formation energy | `verifiers/backends/atomisticskills_matgl_properties.py` | prototype task |
-| `mace_properties` | CIF | MACE energy | `verifiers/backends/mace_properties.py` | prototype task |
+| `matgl` | CIF | formation energy、band gap | `verifiers/matgl/backend.py` | native backend 已实现 |
+| `mace_mp` | CIF | energy、energy per atom、max force、stress norm | `verifiers/mace_mp/backend.py` | native backend 已实现 |
 
 实现评价：
 
 - 当前材料 ML backend 已能解析 CIF、做元素/原子数/体积 gate，并调用 MatGL/MACE 预测。
-- `matgl_properties.py` 支持 native MatGL model load，是正式化的好基础；`atomisticskills_*` 则适合验证 MCP integration。
+- `verifiers/matgl/backend.py` 支持 native MatGL model load，是正式化的好基础；MCP prototype 路径已从 active codebase 移除。
 - 当前 prototype domain 只覆盖非常窄的 Si fixture/小结构，尚不能代表真正材料 discovery track。
 
 普遍使用方法：
