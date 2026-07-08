@@ -25,6 +25,15 @@ materials = [
     "matgl==4.0.2",
     "pymatgen==2026.5.4",
 ]
+torchani = [
+    "ase==3.28.0",
+    "torchani==2.8.2",
+]
+mace = [
+    "ase==3.28.0",
+    "mace-torch==0.3.16",
+    "pymatgen==2026.5.4",
+]
 
 [project.scripts]
 vgb-score = "verifier_grounded_benchmark.cli.score_answers:main"
@@ -42,6 +51,15 @@ future-backends = [
 ]
 materials = [
     "matgl==4.0.2",
+    "pymatgen==2026.5.4",
+]
+torchani = [
+    "ase==3.28.0",
+    "torchani==2.8.2",
+]
+mace = [
+    "ase==3.28.0",
+    "mace-torch==0.3.16",
     "pymatgen==2026.5.4",
 ]
 
