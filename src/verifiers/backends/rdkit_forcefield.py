@@ -10,7 +10,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors
 
 from verifiers.backends.rdkit_descriptors import score_constraint
-from verifiers.result_schema import base_result, error_result
+from verifiers.common.result_schema import base_result, error_result
 
 
 DEFAULT_BACKEND = {

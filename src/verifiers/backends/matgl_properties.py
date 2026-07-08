@@ -13,8 +13,8 @@ from typing import Any
 from pymatgen.core import Structure
 
 from verifiers.backends.rdkit_descriptors import score_constraint
-from verifiers.result_schema import base_result
-from verifiers.result_schema import error_result
+from verifiers.common.result_schema import base_result
+from verifiers.common.result_schema import error_result
 
 DEFAULT_MATGL_MODEL = "MEGNet-Eform-MP-2018.6.1"
 OUTPUT_SNIPPET_LIMIT = 500

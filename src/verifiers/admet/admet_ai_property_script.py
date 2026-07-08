@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from verifiers.backends.admet_ai_properties import evaluate_admet_ai_constraint
-from verifiers.script_cli import run_property_script
+from verifiers.common.property_cli import run_property_script
 
 
 def main(property_name: str) -> None:

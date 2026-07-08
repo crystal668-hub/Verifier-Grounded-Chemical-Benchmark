@@ -9,10 +9,10 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
 
-from verifiers.result_schema import base_result
-from verifiers.result_schema import error_result
-from verifiers.scoring import clamp
-from verifiers.scoring import score_constraint
+from verifiers.common.result_schema import base_result
+from verifiers.common.result_schema import error_result
+from verifiers.common.scoring import clamp
+from verifiers.common.scoring import score_constraint
 
 
 DESCRIPTOR_FUNCTIONS = {

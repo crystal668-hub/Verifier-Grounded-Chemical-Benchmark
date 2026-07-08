@@ -7,7 +7,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.script_cli import run_property_script
+from verifiers.common.property_cli import run_property_script
 
 
 def run_cli_with_payload(

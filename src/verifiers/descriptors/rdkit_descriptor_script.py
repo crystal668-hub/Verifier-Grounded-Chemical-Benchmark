@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from verifiers.backends.rdkit_descriptors import evaluate_descriptor_constraint
-from verifiers.script_cli import run_property_script
+from verifiers.common.property_cli import run_property_script
 
 
 def main(descriptor: str) -> None:

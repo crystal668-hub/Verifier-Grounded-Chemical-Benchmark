@@ -10,10 +10,10 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifiers.backends import docker_model_runtime as runtime
+from verifiers.common import docker_model_runtime as runtime
 from verifiers.backends.rdkit_descriptors import score_constraint
-from verifiers.result_schema import base_result
-from verifiers.result_schema import error_result
+from verifiers.common.result_schema import base_result
+from verifiers.common.result_schema import error_result
 
 
 DEFAULT_MOLGPKA_IMAGE = "ghcr.io/quanted/cts-molgpka:dev-acafcb3fb93dbf8dcf6c952cbf3b12161e7f468d"

@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.backends import docker_model_runtime as runtime
+from verifiers.common import docker_model_runtime as runtime
 
 
 def test_run_docker_command_maps_missing_executable(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.backends import docker_model_runtime
+from verifiers.common import docker_model_runtime
 from verifiers.backends import soltrannet_properties
 
 

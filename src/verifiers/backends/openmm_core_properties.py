@@ -13,7 +13,7 @@ from verifiers.backends.openmm_runtime import (
     run_core_smoke,
 )
 from verifiers.backends.rdkit_descriptors import score_constraint
-from verifiers.result_schema import base_result, error_result
+from verifiers.common.result_schema import base_result, error_result
 
 
 def evaluate_openmm_core_constraint(

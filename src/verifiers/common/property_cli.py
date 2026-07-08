@@ -7,7 +7,7 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
-from verifiers.result_schema import base_result, error_result
+from verifiers.common.result_schema import base_result, error_result
 
 Evaluator = Callable[[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]], dict[str, Any]]
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from verifiers.result_schema import base_result, error_result
+from verifiers.common.result_schema import base_result, error_result
 
 
 def test_base_result_builds_standard_error_skeleton_with_versions() -> None:

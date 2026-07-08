@@ -10,7 +10,7 @@ import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
 from benchmark.verifier_scripts import build_script_payload, run_verification_script
-from verifiers.scoring import score_constraint
+from verifiers.common.scoring import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]

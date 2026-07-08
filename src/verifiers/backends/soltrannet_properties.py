@@ -10,10 +10,10 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifiers.backends import docker_model_runtime as runtime
+from verifiers.common import docker_model_runtime as runtime
 from verifiers.backends.rdkit_descriptors import score_constraint
-from verifiers.result_schema import base_result
-from verifiers.result_schema import error_result
+from verifiers.common.result_schema import base_result
+from verifiers.common.result_schema import error_result
 
 
 DEFAULT_SOLTRANNET_IMAGE = "ersiliaos/eos6oli:v1.0.0"

@@ -14,7 +14,7 @@ SRC_ROOT = REPOSITORY_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from verifiers.backends import docker_model_runtime as runtime
+from verifiers.common import docker_model_runtime as runtime
 from verifiers.backends import soltrannet_properties
 
 
