@@ -4,9 +4,9 @@
 
 **Goal:** Build optional native TorchANI ANI-2x and MACE-MP verifier backends with property scripts, environment diagnostics, tests, and track documents, without adding formal task packs or default runtime dependencies.
 
-**Architecture:** Follow the existing property-script contract: each script reads verifier JSON from stdin and writes standardized result JSON. TorchANI uses direct XYZ input like the xTB backend, while MACE-MP uses CIF input like the MatGL backend. Both backends run as optional native Python runtimes behind narrow evaluator modules so the public result schema, scoring, and failure mapping remain consistent with existing verifier backends.
+**Architecture:** Follow the existing property-script contract: each script reads verifier JSON from stdin and writes standardized result JSON. TorchANI owns a direct-XYZ input path like the xTB backend, while MACE-MP owns a CIF input path like the MatGL backend. Do not add a shared `ase_inputs.py` abstraction in this round; each backend keeps its input parsing local so the two input domains remain independent.
 
-**Tech Stack:** Python 3.12, pytest, RDKit for lightweight element/domain checks, ASE, TorchANI 2.8.2, MACE-Torch 0.3.16, pymatgen for CIF parsing, existing `verifiers.script_cli`, `verifiers.result_schema`, and `verifiers.scoring`.
+**Tech Stack:** Python 3.12, pytest, ASE, TorchANI 2.8.2, MACE-Torch 0.3.16, pymatgen for CIF parsing, existing `verifiers.script_cli`, `verifiers.result_schema`, and `verifiers.scoring`.
 
 ---
 
@@ -15,11 +15,9 @@
 - Modify `pyproject.toml`
   - Add optional dependency groups `torchani` and `mace`.
   - Do not add TorchANI, MACE, ASE, pymatgen, or model packages to default `dependencies`.
-- Create `src/verifiers/backends/ase_inputs.py`
-  - Shared conversion helpers for XYZ and CIF to simple structures or ASE `Atoms`.
-  - Keep validation local and deterministic; do not load TorchANI or MACE in this helper.
 - Create `src/verifiers/backends/torchani_properties.py`
   - Native TorchANI ANI-2x evaluator for direct XYZ candidates.
+  - Owns XYZ parsing, ASE `Atoms` conversion, TorchANI domain checks, and ANI-2x prediction.
 - Create `src/verifiers/quantum_ml/__init__.py`
   - Package marker for quantum-ML verifier scripts.
 - Create `src/verifiers/quantum_ml/torchani_property_script.py`
@@ -32,6 +30,7 @@
   - Entry point for `torchani_max_force_hartree_per_angstrom`.
 - Create `src/verifiers/backends/mace_mp_properties.py`
   - Native MACE-MP evaluator for CIF candidates.
+  - Owns CIF parsing, pymatgen-to-ASE conversion, material domain checks, and MACE-MP prediction.
 - Create `src/verifiers/materials/mace_mp_property_script.py`
   - Shared property script wrapper for MACE-MP properties.
 - Create `src/verifiers/materials/mace_mp_energy.py`
@@ -52,8 +51,6 @@
   - Backend capability document.
 - Create `tests/test_mlip_optional_dependencies.py`
   - Dependency grouping tests.
-- Create `tests/test_ase_inputs.py`
-  - Shared input helper tests.
 - Create `tests/test_torchani_properties_backend.py`
   - TorchANI backend unit tests using fake model objects.
 - Create `tests/test_mace_mp_properties_backend.py`
@@ -225,194 +222,7 @@ git add pyproject.toml tests/test_mlip_optional_dependencies.py
 git commit -m "build: add optional MLIP dependency groups"
 ```
 
-## Task 2: Shared ASE Input Helpers
-
-**Files:**
-- Create: `src/verifiers/backends/ase_inputs.py`
-- Test: `tests/test_ase_inputs.py`
-
-- [ ] **Step 1: Write failing input helper tests**
-
-Create `tests/test_ase_inputs.py`:
-
-```python
-from __future__ import annotations
-
-from pathlib import Path
-
-import pytest
-
-from verifiers.backends import ase_inputs
-
-
-SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()
-
-WATER_XYZ = """3
-water
-O 0.000000 0.000000 0.000000
-H 0.758602 0.000000 0.504284
-H -0.758602 0.000000 0.504284
-"""
-
-
-def test_xyz_to_ase_atoms_preserves_symbols_and_positions() -> None:
-    atoms, properties = ase_inputs.xyz_to_atoms_and_properties(WATER_XYZ)
-
-    assert atoms.get_chemical_symbols() == ["O", "H", "H"]
-    assert properties["atom_count"] == 3
-    assert properties["heavy_atom_count"] == 1
-    assert properties["elements"] == ["H", "O"]
-    assert properties["formula"] == "H2O"
-    assert properties["pbc"] == [False, False, False]
-
-
-def test_cif_to_ase_atoms_preserves_periodic_structure_properties() -> None:
-    atoms, properties = ase_inputs.cif_to_atoms_and_properties(SI_CIF)
-
-    assert atoms.get_chemical_symbols() == ["Si", "Si"]
-    assert properties["reduced_formula"] == "Si"
-    assert properties["atom_count"] == 2
-    assert properties["elements"] == ["Si"]
-    assert properties["pbc"] == [True, True, True]
-    assert properties["volume"] == pytest.approx(160.191477991)
-
-
-def test_domain_check_rejects_disallowed_elements() -> None:
-    _, properties = ase_inputs.xyz_to_atoms_and_properties(WATER_XYZ)
-
-    message = ase_inputs.check_common_domain(properties, {"allowed_elements": ["C", "H"]})
-
-    assert message == "disallowed elements: O"
-
-
-def test_domain_check_rejects_atom_count_range() -> None:
-    _, properties = ase_inputs.xyz_to_atoms_and_properties(WATER_XYZ)
-
-    message = ase_inputs.check_common_domain(properties, {"atom_count": [4, 8]})
-
-    assert message == "atom_count outside [4, 8]"
-```
-
-- [ ] **Step 2: Run input helper tests and verify they fail**
-
-Run:
-
-```bash
-uv run pytest tests/test_ase_inputs.py -v
-```
-
-Expected: FAIL with `ImportError` because `ase_inputs.py` does not exist.
-
-- [ ] **Step 3: Implement shared input helpers**
-
-Create `src/verifiers/backends/ase_inputs.py` with these public functions:
-
-```python
-from __future__ import annotations
-
-from io import StringIO
-from typing import Any
-
-
-def xyz_to_atoms_and_properties(xyz: str) -> tuple[Any, dict[str, Any]]:
-    if not isinstance(xyz, str) or not xyz.strip():
-        raise ValueError("candidate must include an XYZ string")
-    try:
-        from ase.io import read
-    except Exception as exc:
-        raise ModuleNotFoundError("ASE is required for XYZ model backends") from exc
-
-    try:
-        atoms = read(StringIO(xyz), format="xyz")
-    except Exception as exc:
-        raise ValueError(f"XYZ parse failed: {exc}") from exc
-    properties = inspect_atoms(atoms)
-    properties["pbc"] = [bool(value) for value in atoms.pbc]
-    return atoms, properties
-
-
-def cif_to_atoms_and_properties(cif: str) -> tuple[Any, dict[str, Any]]:
-    if not isinstance(cif, str) or not cif.strip():
-        raise ValueError("candidate must include a CIF string")
-    try:
-        from pymatgen.core import Structure
-        from pymatgen.io.ase import AseAtomsAdaptor
-    except Exception as exc:
-        raise ModuleNotFoundError("pymatgen and ASE are required for CIF model backends") from exc
-
-    try:
-        structure = Structure.from_str(cif, fmt="cif")
-    except Exception as exc:
-        raise ValueError(f"CIF parse failed: {exc}") from exc
-    atoms = AseAtomsAdaptor.get_atoms(structure)
-    properties = inspect_atoms(atoms)
-    properties.update(
-        {
-            "reduced_formula": structure.composition.reduced_formula,
-            "volume": float(structure.volume),
-            "pbc": [bool(value) for value in atoms.pbc],
-        }
-    )
-    return atoms, properties
-
-
-def inspect_atoms(atoms: Any) -> dict[str, Any]:
-    symbols = list(atoms.get_chemical_symbols())
-    counts: dict[str, int] = {}
-    for symbol in symbols:
-        counts[symbol] = counts.get(symbol, 0) + 1
-    heavy_atom_count = sum(count for symbol, count in counts.items() if symbol != "H")
-    return {
-        "atom_count": len(symbols),
-        "heavy_atom_count": heavy_atom_count,
-        "elements": sorted(counts),
-        "formula": hill_formula(counts),
-    }
-
-
-def hill_formula(counts: dict[str, int]) -> str:
-    order: list[str] = []
-    if "C" in counts:
-        order.append("C")
-    if "H" in counts:
-        order.append("H")
-    order.extend(sorted(symbol for symbol in counts if symbol not in {"C", "H"}))
-    return "".join(f"{symbol}{'' if counts[symbol] == 1 else counts[symbol]}" for symbol in order)
-
-
-def check_common_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | None:
-    allowed_elements = domain.get("allowed_elements")
-    if allowed_elements:
-        disallowed = sorted(set(properties["elements"]) - set(allowed_elements))
-        if disallowed:
-            return f"disallowed elements: {', '.join(disallowed)}"
-
-    for key in ("atom_count", "heavy_atom_count", "volume"):
-        if key in domain:
-            lower, upper = domain[key]
-            if not float(lower) <= float(properties[key]) <= float(upper):
-                return f"{key} outside [{lower}, {upper}]"
-    return None
-```
-
-- [ ] **Step 4: Run input helper tests**
-
-Run:
-
-```bash
-uv run pytest tests/test_ase_inputs.py -v
-```
-
-Expected: PASS.
-
-- [ ] **Step 5: Commit**
-
-```bash
-git add src/verifiers/backends/ase_inputs.py tests/test_ase_inputs.py
-git commit -m "feat: add ASE input helpers"
-```
-
-## Task 3: TorchANI Backend
+## Task 2: TorchANI Backend
 
 **Files:**
 - Create: `src/verifiers/backends/torchani_properties.py`
@@ -577,12 +387,24 @@ Create `src/verifiers/backends/torchani_properties.py` with these public functio
   - Use `base_result(task["task_id"], spec.get("verifier_id"), torchani_versions(spec))`.
   - Reject mismatch unless `constraint["property"]` is `spec["property_name"]` or listed in `spec["additional_property_names"]`.
   - Accept only `candidate["xyz"]`.
-  - Use `ase_inputs.xyz_to_atoms_and_properties`.
-  - Apply `ase_inputs.check_common_domain`.
+  - Call local `parse_xyz_atoms(xyz)` in the same module.
+  - Call local `inspect_xyz_atoms(atoms)` in the same module.
+  - Call local `check_domain(properties, spec.get("domain") or {})` in the same module.
   - Call `predict_torchani_properties`.
   - Score with existing `score_constraint`.
   - Map `ModuleNotFoundError` and `ImportError` to `verifier_environment_error`.
   - Map all other model failures to `verifier_tool_error`.
+- `parse_xyz_atoms(xyz: str) -> Any`
+  - Import `ase.io.read` inside the function.
+  - Parse the direct XYZ string through `read(StringIO(xyz), format="xyz")`.
+  - Raise `ValueError("candidate must include an XYZ string")` for missing input.
+  - Raise `ValueError(f"XYZ parse failed: {exc}")` for malformed XYZ.
+- `inspect_xyz_atoms(atoms) -> dict[str, Any]`
+  - Return `atom_count`, `heavy_atom_count`, sorted `elements`, Hill `formula`, and `pbc`.
+  - For TorchANI, reject periodic input through domain checks unless all `pbc` values are false.
+- `check_domain(properties, domain) -> str | None`
+  - Support `allowed_elements`, `atom_count`, and `heavy_atom_count`.
+  - Return messages matching the test assertions, such as `disallowed elements: Si` and `atom_count outside [2, 80]`.
 - `predict_torchani_properties(atoms, spec) -> dict[str, float | str]`
   - Import `torch` and `torchani` inside the function.
   - Load only `ANI2x`; unsupported `model_name` raises `ValueError("unsupported TorchANI model_name: ...")`.
@@ -633,7 +455,7 @@ git add src/verifiers/backends/torchani_properties.py tests/test_torchani_proper
 git commit -m "feat: add TorchANI backend"
 ```
 
-## Task 4: TorchANI Property Scripts
+## Task 3: TorchANI Property Scripts
 
 **Files:**
 - Create: `src/verifiers/quantum_ml/__init__.py`
@@ -778,7 +600,7 @@ git add src/verifiers/quantum_ml tests/test_torchani_mace_task_scripts.py
 git commit -m "feat: add TorchANI property scripts"
 ```
 
-## Task 5: MACE-MP Backend
+## Task 4: MACE-MP Backend
 
 **Files:**
 - Create: `src/verifiers/backends/mace_mp_properties.py`
@@ -948,12 +770,24 @@ Create `src/verifiers/backends/mace_mp_properties.py` with these public function
 - `evaluate_mace_mp_constraint(candidate, task, constraint, spec) -> dict`
   - Use `base_result(task["task_id"], spec.get("verifier_id"), mace_mp_versions(spec))`.
   - Accept only `candidate["cif"]`.
-  - Use `ase_inputs.cif_to_atoms_and_properties`.
-  - Apply `ase_inputs.check_common_domain`.
+  - Call local `parse_cif_atoms(cif)` in the same module.
+  - Call local `inspect_structure(structure, atoms)` in the same module.
+  - Call local `check_domain(properties, spec.get("domain") or {})` in the same module.
   - Call `predict_mace_mp_properties`.
   - Score with `score_constraint`.
   - Map `ModuleNotFoundError` and `ImportError` to `verifier_environment_error`.
   - Map all other model failures to `verifier_tool_error`.
+- `parse_cif_atoms(cif: str) -> tuple[Any, Any]`
+  - Import `pymatgen.core.Structure` and `pymatgen.io.ase.AseAtomsAdaptor` inside the function.
+  - Parse the CIF with `Structure.from_str(cif, fmt="cif")`.
+  - Convert the structure to ASE `Atoms`.
+  - Raise `ValueError("candidate must include a CIF string")` for missing input.
+  - Raise `ValueError(f"CIF parse failed: {exc}")` for malformed CIF.
+- `inspect_structure(structure, atoms) -> dict[str, Any]`
+  - Return `reduced_formula`, `atom_count`, `volume`, sorted `elements`, and `pbc`.
+- `check_domain(properties, domain) -> str | None`
+  - Support `allowed_elements`, `atom_count`, and `volume`.
+  - Return messages matching MatGL conventions, such as `disallowed elements: Si` and `volume outside [1.0, 300.0]`.
 - `predict_mace_mp_properties(atoms, spec) -> dict[str, float | str]`
   - Import `mace.calculators.mace_mp` inside the function.
   - Load cached calculator using `model`, `device`, and `default_dtype`.
@@ -1001,7 +835,7 @@ git add src/verifiers/backends/mace_mp_properties.py tests/test_mace_mp_properti
 git commit -m "feat: add MACE-MP backend"
 ```
 
-## Task 6: MACE-MP Property Scripts
+## Task 5: MACE-MP Property Scripts
 
 **Files:**
 - Create: `src/verifiers/materials/mace_mp_property_script.py`
@@ -1140,7 +974,7 @@ git add src/verifiers/materials/mace_mp_*.py tests/test_torchani_mace_task_scrip
 git commit -m "feat: add MACE-MP property scripts"
 ```
 
-## Task 7: Environment Diagnostics
+## Task 6: Environment Diagnostics
 
 **Files:**
 - Create: `scripts/check_torchani_env.py`
@@ -1255,7 +1089,6 @@ import importlib.metadata as metadata
 import json
 from typing import Any
 
-from verifiers.backends import ase_inputs
 from verifiers.backends import torchani_properties
 
 
@@ -1277,7 +1110,8 @@ def package_version(name: str) -> str | None:
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     spec = {"torchani": {"model_name": args.model_name, "device": args.device}}
     try:
-        atoms, input_properties = ase_inputs.xyz_to_atoms_and_properties(WATER_XYZ)
+        atoms = torchani_properties.parse_xyz_atoms(WATER_XYZ)
+        input_properties = torchani_properties.inspect_xyz_atoms(atoms)
         prediction = torchani_properties.predict_torchani_properties(atoms, spec)
     except (ImportError, ModuleNotFoundError) as exc:
         return {"status": "error", "failure_type": "verifier_environment_error", "message": str(exc)}
@@ -1305,7 +1139,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Create `scripts/check_mace_mp_env.py` with the embedded silicon CIF from `scripts/check_matgl_env.py`, then call `mace_mp_properties.predict_mace_mp_properties` with `{"mace_mp": {"model": args.model, "device": args.device, "default_dtype": args.default_dtype}}`. Use the same JSON shape as `check_torchani_env.py`, with versions for `mace-torch`, `torch`, `ase`, and `pymatgen`.
+Create `scripts/check_mace_mp_env.py` with the embedded silicon CIF from `scripts/check_matgl_env.py`. It should call `mace_mp_properties.parse_cif_atoms(SI_CIF_TEXT)`, derive `input_properties` with `mace_mp_properties.inspect_structure(structure, atoms)`, and then call `mace_mp_properties.predict_mace_mp_properties` with `{"mace_mp": {"model": args.model, "device": args.device, "default_dtype": args.default_dtype}}`. Use the same JSON shape as `check_torchani_env.py`, with versions for `mace-torch`, `torch`, `ase`, and `pymatgen`.
 
 - [ ] **Step 4: Run diagnostic tests**
 
@@ -1324,7 +1158,7 @@ git add scripts/check_torchani_env.py scripts/check_mace_mp_env.py tests/test_to
 git commit -m "feat: add MLIP environment diagnostics"
 ```
 
-## Task 8: Opt-In Live Smoke Tests
+## Task 7: Opt-In Live Smoke Tests
 
 **Files:**
 - Create: `tests/test_torchani_mace_live_smoke.py`
@@ -1405,7 +1239,7 @@ git add tests/test_torchani_mace_live_smoke.py
 git commit -m "test: add opt-in MLIP live smoke"
 ```
 
-## Task 9: Backend Capability Documentation
+## Task 8: Backend Capability Documentation
 
 **Files:**
 - Create: `docs/tracks/TorchANI.md`
@@ -1522,10 +1356,10 @@ git add docs/tracks/TorchANI.md docs/tracks/MACE-MP.md
 git commit -m "docs: document MLIP backend capabilities"
 ```
 
-## Task 10: Final Verification
+## Task 9: Final Verification
 
 **Files:**
-- All files touched in Tasks 1-9.
+- All files touched in Tasks 1-8.
 
 - [ ] **Step 1: Run focused tests**
 
@@ -1534,7 +1368,6 @@ Run:
 ```bash
 uv run pytest \
   tests/test_mlip_optional_dependencies.py \
-  tests/test_ase_inputs.py \
   tests/test_torchani_properties_backend.py \
   tests/test_mace_mp_properties_backend.py \
   tests/test_torchani_mace_task_scripts.py \
@@ -1593,7 +1426,7 @@ git commit -m "feat: add TorchANI and MACE-MP backends"
 
 ## Self-Review
 
-- Spec coverage: The plan covers optional dependencies, shared input parsing, TorchANI backend, TorchANI scripts, MACE-MP backend, MACE-MP scripts, diagnostics, opt-in live smokes, and backend docs.
+- Spec coverage: The plan covers optional dependencies, TorchANI backend with local XYZ parsing, TorchANI scripts, MACE-MP backend with local CIF parsing, MACE-MP scripts, diagnostics, opt-in live smokes, and backend docs.
 - Scope: The plan intentionally excludes task packs, registry changes, calibration thresholds, sample answers, FAIR-Chem UMA, Docker images, and public benchmark exposure.
 - Type consistency: TorchANI property names use `torchani_*`; MACE property names use `mace_mp_*`; both evaluators return the existing result schema and use existing scoring.
 - Deployment risk: TorchANI and MACE are optional groups because the current default environment should stay light. Live smoke tests are opt-in because they may download model weights and take longer than normal unit tests.
