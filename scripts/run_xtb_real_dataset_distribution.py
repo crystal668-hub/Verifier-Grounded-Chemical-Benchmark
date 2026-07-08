@@ -18,7 +18,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from benchmark.evaluate import evaluate_one, load_verifier_specs
-from verifiers.backends.xtb_properties import XTBParseError, check_domain, inspect_xyz, parse_xyz
+from verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
 
 
 TASK_DIR = ROOT / "tasks" / "xtb_xyz"

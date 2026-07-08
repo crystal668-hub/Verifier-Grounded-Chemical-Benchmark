@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from verifiers.backends.xtb_properties import evaluate_xtb_property_constraint
+from verifiers.xtb.backend import evaluate_xtb_property_constraint
 from verifiers.common.property_cli import run_property_script
 
 

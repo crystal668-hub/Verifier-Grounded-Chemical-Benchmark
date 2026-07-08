@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.backends import xtb_properties
+from verifiers.xtb import backend as xtb_properties
 
 
 WATER_XYZ = """3

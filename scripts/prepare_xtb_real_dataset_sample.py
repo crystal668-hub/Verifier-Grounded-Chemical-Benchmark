@@ -19,7 +19,7 @@ if str(ROOT) not in sys.path:
 
 import yaml
 
-from verifiers.backends.xtb_properties import XTBParseError, check_domain, inspect_xyz, parse_xyz
+from verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
 
 
 DEFAULT_SEED = 20260615

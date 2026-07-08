@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from verifiers.backends.xtb_properties import XTBRunner, parse_xtb_output  # noqa: E402
+from verifiers.xtb.backend import XTBRunner, parse_xtb_output  # noqa: E402
 
 
 WATER_XYZ = """3
