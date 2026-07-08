@@ -8,7 +8,7 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifiers.backends.openmm_runtime import (
+from verifiers.openmm.runtime import (
     DEFAULT_OPENFF_FORCEFIELD,
     ENV_FAILURE,
     TOOL_FAILURE,

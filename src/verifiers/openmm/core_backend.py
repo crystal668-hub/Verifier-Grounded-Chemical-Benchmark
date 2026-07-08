@@ -5,7 +5,7 @@ from __future__ import annotations
 from importlib import metadata
 from typing import Any
 
-from verifiers.backends.openmm_runtime import (
+from verifiers.openmm.runtime import (
     ENV_FAILURE,
     TOOL_FAILURE,
     OpenMMEnvironmentError,

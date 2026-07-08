@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.backends import openmm_core_properties
-from verifiers.backends.openmm_runtime import OpenMMEnvironmentError, OpenMMToolError
+from verifiers.openmm import core_backend as openmm_core_properties
+from verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
 
 
 SPEC = {
