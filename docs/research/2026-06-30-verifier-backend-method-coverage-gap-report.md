@@ -27,25 +27,29 @@
 | `rdkit` | 传统规则/描述符 | SMILES | QED、logP、TPSA、MW、HBA/HBD、SA score、fraction Csp3 | 正式 |
 | `xtb` | 低成本半经验量子化学 | explicit-H XYZ | HOMO-LUMO gap、dipole、relaxation energy、LUMO、polarizability、ALPB solvation selectivity、electrophilicity、Fukui、Hessian thermo | 正式 |
 
-代码和 task specs 中还存在以下非正式或 prototype 后端：
+代码、property-level 脚本或测试中还存在以下非正式或 prototype 后端：
 
 | backend | 方法类别 | 当前性质 | 状态 |
 |---|---|---|---|
+| `rdkit_forcefield` | 小分子构象/经典力场 | MMFF/UFF energy range、optimization convergence | prototype task specs，未进入 builtin registry |
 | `admet_ai` | 小分子 ML/QSAR | AqSolDB solubility、hERG、AMES、BBB、Caco-2 等脚本 | 已实现 backend，未进入 builtin registry |
+| `soltrannet` | 小分子物化 ML/QSAR | logS-style aqueous solubility | 已实现 Docker-backed backend，未进入 builtin registry |
+| `molgpka` | 小分子 pKa ML/QSAR | pKa count、minimum pKa、maximum pKa | 已实现 Docker-backed backend，未进入 builtin registry |
 | `matgl` | 材料 GNN/ML surrogate | formation energy、band gap | 已实现 native backend，未进入 builtin registry |
 | `mace_mp` | 材料 MLIP | energy、energy per atom、max force、stress norm | 已实现 native backend，未进入 builtin registry |
-| `atomisticskills_smoke` | 结构操作/描述符/XRD script | supercell、DrugDisc descriptors、XRD peak | smoke，非正式性质 track |
+| `torchani` | 分子量子 ML surrogate | total energy、energy per atom、max force | 已实现 native backend，未进入 builtin registry |
+| `openmm` | 分子模拟/力场 probe | fixed-system energy drop、OpenFF ligand minimization energy/force | 已实现 backend 与环境 probe，未进入 builtin registry |
 
 主要覆盖强项：
 
 - 小分子 2D 描述符和基础 drug-likeness：覆盖较完整。
 - 小分子 3D 低成本量子性质：覆盖已从 gap/dipole 扩展到 LUMO、极化率、溶剂化、Fukui、热化学等。
-- 小分子 ADMET/QSAR：已有 backend 雏形，适合进入下一批正式 track。
-- 材料 ML surrogate：已有 MatGL/MACE 雏形，可扩成材料性质 track。
+- 小分子 ADMET/QSAR：已有 ADMET-AI、SolTranNet、MolGpKa backend 雏形，适合进入下一批正式 track。
+- 材料与分子 ML surrogate：已有 MatGL、MACE-MP、TorchANI 雏形，可扩成材料/量子性质 track。
 
 主要遗漏：
 
-- 经典力场、分子动力学、蒙特卡洛、吸附/扩散等分子模拟 backend。
+- 正式化经典力场、分子动力学、蒙特卡洛、吸附/扩散等分子模拟 backend。
 - DFT/ab initio 量子化学与通用量化输出解析 backend，例如 Psi4/ORCA/Gaussian+cclib。
 - 相图、energy-above-hull、CALPHAD、Pourbaix、电化学稳定窗口等热力学建模 backend。
 - 反应网络、动力学、自动机理生成、逆合成、反应有效性/产率预测 backend。
@@ -59,9 +63,9 @@
 |---|---|---|
 | P0 | ADMET-AI 正式小分子 ADMET track | backend 已实现，依赖已 pin，性质重要且低成本 |
 | P0 | Materials stability/phase backend：pymatgen PhaseDiagram + 冻结 entries + MatGL/MACE energy | 材料 benchmark 核心性质，能补足 formation energy 到 energy above hull 的落地链路 |
-| P1 | OpenMM/RDKit force-field conformer/strain backend | 低成本补足分子模拟与构象质量，能作为 RDKit/xTB 之间的桥 |
+| P1 | OpenMM/RDKit force-field conformer/strain formal track | 低成本补足分子模拟与构象质量，已有 prototype backend 可作为 RDKit/xTB 之间的桥 |
 | P1 | cclib/Psi4/ORCA parser backend | 扩展到可替换高精度 QM、TDDFT、IR/Raman/NMR 等谱学性质 |
-| P1 | XRD/phonon/elasticity backend | 材料结构-性质验证维度明确，已有 AtomisticSkills XRD smoke 可延展 |
+| P1 | XRD/phonon/elasticity backend | 材料结构-性质验证维度明确，但需要用 pymatgen/ASE/phonopy 等可复现依赖重新设计 |
 | P2 | Cantera/RMG reaction-network backend | 价值高，但输入 schema 和 domain 需要先收窄 |
 | P2 | Docking/adsorption/catalysis backend | 可做高区分任务，但 protocol 固化复杂，首批需窄 target/窄 slab |
 
@@ -74,7 +78,6 @@
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
 | `rdkit_descriptors` | SMILES | QED、logP、TPSA、MW、HBA、HBD、SA score、fraction Csp3；backend 还支持 rotatable bonds、ring count | `verifiers/rdkit_descriptors/backend.py` | 正式 track |
-| AtomisticSkills DrugDisc descriptors | SMILES | descriptor/Ro5/Veber/QED 等外部 MCP 输出 | `tasks/atomisticskills_smoke/verifier_specs.yaml` | smoke |
 
 实现评价：
 
@@ -144,10 +147,13 @@
 | backend/spec | 输入 | 性质 | 代码入口 | 状态 |
 |---|---|---|---|---|
 | `admet_ai` | SMILES | ADMET-AI endpoint，例如 solubility、hERG、AMES、BBB、Caco-2 | `verifiers/admet_ai/backend.py` 与 `verifiers/admet_ai/*.py` | backend/task script 已实现，未进入 builtin registry |
+| `soltrannet` | SMILES | `soltrannet_log_s` | `verifiers/soltrannet/backend.py` 与 `verifiers/soltrannet/soltrannet_log_s.py` | Docker-backed backend/task script 已实现，未进入 builtin registry |
+| `molgpka` | SMILES | `molgpka_min_pka`、`molgpka_max_pka`、`molgpka_pka_count` | `verifiers/molgpka/backend.py` 与 `verifiers/molgpka/molgpka_*.py` | Docker-backed backend/task scripts 已实现，未进入 builtin registry |
 
 实现评价：
 
 - ADMET-AI 是最接近可立即正式化的遗漏方向：`pyproject.toml` 已 pin `admet-ai==2.0.1`，backend 直接用 Python API。
+- SolTranNet 与 MolGpKa 已经从候选模型进入 Docker-backed backend；后续重点是正式 task/spec、镜像 digest、输出 schema 和 CI smoke policy。
 - OPERA wrapper 曾作为外部部署候选评估；当前 active codebase 已移除 OPERA 路径，若恢复应作为 Linux verifier image 重新设计。
 - 当前缺少统一的 applicability-domain/uncertainty 接口；ADMET-AI backend 当前只用结构 domain gate。
 
@@ -162,8 +168,9 @@
 遗漏方向：
 
 - 将 ADMET-AI endpoint 正式注册为 track，并明确分类/回归分数含义、单位、阈值、calibration 和 AD gate。
-- OPERA Linux verifier image，使用固定 OPERA release 和 MATLAB Runtime 目录。
-- SolTranNet/ESOL/FreeSolv 等独立物化性质模型，用于交叉验证 logS/hydration free energy。
+- 将 SolTranNet 与 MolGpKa 正式化，并固定 Docker digest、schema、applicability-domain 和失败语义。
+- ESOL/FreeSolv/hydration free energy 等独立物化性质模型，用于交叉验证 logS/hydration free energy。
+- OPERA 仅保留为已移除的架构不适配历史候选；除非重新设计 Linux image，否则不列入当前实现路线。
 - ChEMBL/BindingDB/TDC DTI 冻结快照或 DeepPurpose/DeepDTA 类 target activity backend。
 - 多目标 ADMET 聚合：例如 solubility + hERG + AMES + BBB/Caco-2。
 
@@ -215,7 +222,7 @@
 
 ### 3.5 分子模拟、力场、MD 与 MC
 
-当前实现：没有正式 backend。`pyproject.toml` 已包含 `ase==3.28.0` 和 `cclib==1.8.1`，但尚无 OpenMM/GROMACS/LAMMPS/RASPA/ASE simulation verifier。
+当前实现：没有正式分子模拟/MD track。`rdkit_forcefield` 已有 conformer energy/convergence prototype，`openmm` 已有 fixed-system probe 和 OpenFF ligand minimization backend；但尚无正式 GROMACS/LAMMPS/RASPA/长时 MD/MC verifier。
 
 普遍使用方法：
 
@@ -255,7 +262,7 @@
 
 ### 3.6 热力学建模、相图与稳定性
 
-当前实现：没有正式 phase/stability backend。MatGL 已能给 formation energy，AtomisticSkills 调研中也识别了 `mat-stability.compute_ehull` 和 `mat-phase-diagram.get_phase_diagram` 的潜力，但当前仓库未实现冻结 entries + PhaseDiagram verifier。
+当前实现：没有正式 phase/stability backend。MatGL 已能给 formation energy，但当前仓库未实现冻结 entries + PhaseDiagram verifier。
 
 普遍使用方法：
 
@@ -339,15 +346,15 @@
 
 | 分类 | 当前实现程度 | 已有 backend/verifier | 当前性质 | 主要遗漏 |
 |---|---|---|---|---|
-| 传统规则/描述符 | 高 | RDKit, DrugDisc smoke | QED、logP、TPSA、MW、HBA/HBD、SA、Fsp3 | rotatable/ring tasks、alerts、novelty、standardization |
+| 传统规则/描述符 | 高 | RDKit | QED、logP、TPSA、MW、HBA/HBD、SA、Fsp3 | rotatable/ring tasks、alerts、novelty、standardization |
 | 量子化学 | 中高 | xTB | gap、dipole、relaxation、LUMO、polarizability、solvation、electrophilicity、Fukui、thermo | DFT/ab initio、spectroscopy、charges、BDE/redox/pKa、conformer ensemble |
 | 小分子 ML/QSAR | 中 | ADMET-AI, SolTranNet, MolGpKa | ADMET endpoints、logS、pKa count/min/max | formal track、AD/uncertainty、DTI/activity |
-| 材料 ML/GNN/MLIP | 中 | MatGL, MACE | formation energy、band gap、energy | E_hull、relaxation、elasticity、phonon、dielectric、magnetism、surface/defect |
-| 分子模拟/MD/MC | 低 | none | none | OpenMM/OpenFF、ASE/LAMMPS/GROMACS、RASPA、diffusion/adsorption/free energy |
+| 材料 ML/GNN/MLIP | 中 | MatGL, MACE-MP | formation energy、band gap、energy、force、stress | E_hull、relaxation、elasticity、phonon、dielectric、magnetism、surface/defect |
+| 分子模拟/MD/MC | 低-中 | RDKit forcefield, OpenMM | MMFF/UFF conformer energy、OpenFF minimization probe | formal MD/MC、ASE/LAMMPS/GROMACS、RASPA、diffusion/adsorption/free energy |
 | 热力学建模 | 低 | none | none | pymatgen PhaseDiagram/E_hull、CALPHAD、Pourbaix、Cantera thermo |
 | 反应网络/合成 | 低 | none | none | RDKit reactions、RXNMapper、AiZynthFinder、yield predictor、Cantera/RMG |
 | 数据库快照/标签 | 低 | partial dependencies only | none | MP/Matbench/ChEMBL/BindingDB/ORD frozen snapshots |
-| 实验谱图/结构验证 | 低-中 | XRD smoke | XRD peak smoke | full XRD pattern, NMR/IR/Raman/UV, phonon spectra |
+| 实验谱图/结构验证 | 低 | none | none | XRD pattern, NMR/IR/Raman/UV, phonon spectra |
 
 ## 5. 重要遗漏小方向清单
 
@@ -377,7 +384,7 @@
 | 介电/光学 | dielectric constant、refractive index、band edges | MP/Matbench labels, ML surrogate | 中 |
 | 表面/吸附/催化 | adsorption energy、HER ΔG_H、selectivity | ASE slab + FairChem/UMA/MACE/DFT | 中-低 |
 | 缺陷 | defect formation energy, migration barrier | pymatgen defects + MLIP/DFT | 低-中 |
-| XRD/结构指纹 | peak positions/intensity, pattern match | pymatgen/ASE/AtomisticSkills XRD | 高 |
+| XRD/结构指纹 | peak positions/intensity, pattern match | pymatgen/ASE diffraction workflow | 高 |
 
 ### 5.3 热力学与反应
 
@@ -411,7 +418,7 @@
    - 将 MatGL/MACE formation/static energy 输出纳入统一 reference convention，避免混用单位/参考态。
 
 4. XRD pattern verifier
-   - 从当前 AtomisticSkills XRD peak smoke 扩为 CIF 输入的正式/半正式结构 verifier。
+   - 基于 pymatgen/ASE 等可复现依赖重新设计 CIF 输入的正式/半正式结构 verifier。
    - 先做 peak position/intensity tolerance，再做 full-pattern similarity。
 
 ### 6.2 中期可做：提高 benchmark 区分度
