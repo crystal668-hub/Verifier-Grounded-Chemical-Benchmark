@@ -25,7 +25,7 @@ unavailable.
 
 The environment is pinned to Python 3.11. Local validation found that the
 Python 3.12 solve imported OpenFF Interchange 0.4.10, which fails during
-OpenFF mode import with `unsupported operand type(s) for |:
+OpenFF mode import with `unsupported binary argument type(s) for |:
 'typing.TypeAliasType' and 'str'`. Python 3.11 resolves a compatible
 OpenFF/OpenMM stack for this optional runtime while leaving the default project
 environment unchanged.

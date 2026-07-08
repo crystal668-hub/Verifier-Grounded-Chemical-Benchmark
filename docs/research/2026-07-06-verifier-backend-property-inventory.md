@@ -20,7 +20,6 @@
 | RDKit forcefield | prototype，未注册正式 track | SMILES | `energy_range_kcal_mol`, `optimization_converged_fraction` | ETKDG conformer generation + MMFF94s/MMFF94/UFF minimization。 |
 | RDKit forcefield | 随结果返回 | SMILES | `best_energy_kcal_mol`, `min_energy_kcal_mol`, `median_energy_kcal_mol`, `max_energy_kcal_mol`, `embedding_success_rate`, `min_nonbonded_distance_angstrom`, `conformer_count`, `forcefield_parameterized` | 更像构象/参数化质量与力场能量代理指标。 |
 | ADMET-AI | 已实现 backend + 5 个脚本入口，未注册正式 track | SMILES | `Solubility_AqSolDB`, `hERG`, `AMES`, `BBB_Martins`, `Caco2_Wang` | backend 按 `property_name` 读取 ADMET-AI 输出；当前脚本入口实现这 5 个。 |
-| OPERA | 已实现通用 backend，未注册正式 track | SMILES | 任意配置的 OPERA 数值 endpoint；当前测试覆盖 `WS` | 会同时读取 `AD_<property>` applicability-domain flag。 |
 | MatGL | 已实现 backend，未注册正式 track | CIF | `formation_energy`, `bandgap` | `formation_energy` 单位 eV/atom；`bandgap` 单位 eV，支持 bandgap fidelity/state_attr。 |
 | MatGL structure/domain | 辅助材料结构属性 | CIF | `reduced_formula`, `atom_count`, `volume`, `elements` | 从 pymatgen `Structure` 派生，用于材料结构域检查。 |
 | OpenMM core | 已实现环境/固定体系 probe，未注册正式 track | 固定 fixture | `initial_energy_kj_mol`, `minimized_energy_kj_mol`, `energy_drop_kj_mol`, `final_max_force_kj_mol_nm` | 固定双粒子 harmonic bond smoke，不依赖候选分子。 |
@@ -42,7 +41,6 @@
 - `src/verifiers/backends/xtb_properties.py`
 - `src/verifiers/backends/rdkit_forcefield.py`
 - `src/verifiers/backends/admet_ai_properties.py`
-- `src/verifiers/backends/opera_properties.py`
 - `src/verifiers/backends/matgl_properties.py`
 - `src/verifiers/backends/openmm_core_properties.py`
 - `src/verifiers/backends/openmm_openff_properties.py`
