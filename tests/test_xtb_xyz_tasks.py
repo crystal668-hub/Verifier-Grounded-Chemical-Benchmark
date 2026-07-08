@@ -142,7 +142,7 @@ def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
 
 
 def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
-    from verifiers.backends.rdkit_descriptors import score_constraint
+    from verifiers.common.scoring import score_constraint
 
     tasks = load_tasks(TASK_DIR / "tasks.yaml")
 

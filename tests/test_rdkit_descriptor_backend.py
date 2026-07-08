@@ -4,8 +4,8 @@ import importlib
 
 import pytest
 
-from verifiers.backends import rdkit_descriptors
-from verifiers.backends.rdkit_descriptors import evaluate_descriptor_constraint
+from verifiers.rdkit_descriptors import backend as rdkit_descriptors
+from verifiers.rdkit_descriptors.backend import evaluate_descriptor_constraint
 
 
 SPEC = {

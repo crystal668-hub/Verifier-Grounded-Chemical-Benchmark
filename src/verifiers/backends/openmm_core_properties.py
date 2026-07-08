@@ -12,7 +12,7 @@ from verifiers.backends.openmm_runtime import (
     OpenMMToolError,
     run_core_smoke,
 )
-from verifiers.backends.rdkit_descriptors import score_constraint
+from verifiers.common.scoring import score_constraint
 from verifiers.common.result_schema import base_result, error_result
 
 

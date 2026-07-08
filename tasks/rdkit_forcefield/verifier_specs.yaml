@@ -5,7 +5,7 @@ verifiers:
     formal_track: false
     track_status: prototype
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/forcefield/rdkit_energy_range.py
+    verification_script: verifiers/rdkit_forcefield/rdkit_energy_range.py
     timeout_seconds: 60
     property_name: energy_range_kcal_mol
     additional_property_names:
@@ -53,7 +53,7 @@ verifiers:
     formal_track: false
     track_status: prototype
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/forcefield/rdkit_convergence.py
+    verification_script: verifiers/rdkit_forcefield/rdkit_convergence.py
     timeout_seconds: 60
     property_name: optimization_converged_fraction
     additional_property_names:

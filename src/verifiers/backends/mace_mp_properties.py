@@ -7,7 +7,7 @@ from functools import lru_cache
 from importlib import metadata
 from typing import Any
 
-from verifiers.backends.rdkit_descriptors import score_constraint
+from verifiers.common.scoring import score_constraint
 from verifiers.common.result_schema import base_result
 from verifiers.common.result_schema import error_result
 

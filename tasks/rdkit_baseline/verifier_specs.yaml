@@ -3,7 +3,7 @@ verifiers:
     name: RDKit QED Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_qed.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_qed.py
     timeout_seconds: 60
     descriptor: qed
     resources: &resources
@@ -38,7 +38,7 @@ verifiers:
     name: RDKit logP Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_logp.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_logp.py
     timeout_seconds: 60
     descriptor: logp
     resources: *resources
@@ -54,7 +54,7 @@ verifiers:
     name: RDKit TPSA Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_tpsa.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_tpsa.py
     timeout_seconds: 60
     descriptor: tpsa
     resources: *resources
@@ -71,7 +71,7 @@ verifiers:
     name: RDKit Molecular Weight Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_mw.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_mw.py
     timeout_seconds: 60
     descriptor: mw
     resources: *resources
@@ -88,7 +88,7 @@ verifiers:
     name: RDKit Hydrogen-Bond Acceptor Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_hba.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_hba.py
     timeout_seconds: 60
     descriptor: hba
     resources: *resources
@@ -104,7 +104,7 @@ verifiers:
     name: RDKit Hydrogen-Bond Donor Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_hbd.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_hbd.py
     timeout_seconds: 60
     descriptor: hbd
     resources: *resources
@@ -120,7 +120,7 @@ verifiers:
     name: RDKit Synthetic Accessibility Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_sa_score.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_sa_score.py
     timeout_seconds: 60
     descriptor: sa_score
     resources: *resources
@@ -137,7 +137,7 @@ verifiers:
     name: RDKit Fraction Csp3 Descriptor Verifier
     version: 1
     verifier_image: verifier-grounded:dev
-    verification_script: verifiers/descriptors/rdkit_fraction_csp3.py
+    verification_script: verifiers/rdkit_descriptors/rdkit_fraction_csp3.py
     timeout_seconds: 60
     descriptor: fraction_csp3
     resources: *resources

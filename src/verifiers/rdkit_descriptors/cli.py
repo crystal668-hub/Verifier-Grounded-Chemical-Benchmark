@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from verifiers.backends.rdkit_descriptors import evaluate_descriptor_constraint
+from verifiers.rdkit_descriptors.backend import evaluate_descriptor_constraint
 from verifiers.common.property_cli import run_property_script
 
 

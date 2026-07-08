@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from verifiers.backends.rdkit_forcefield import evaluate_forcefield_constraint
+from verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
 from verifiers.common.property_cli import run_property_script
 
 

@@ -12,7 +12,7 @@ def test_rdkit_forcefield_script_outputs_single_constraint_result_json() -> None
     spec = {
         "verifier_id": "rdkit_forcefield_energy_range_v1",
         "verifier_image": "verifier-grounded:dev",
-        "verification_script": "verifiers/forcefield/rdkit_energy_range.py",
+        "verification_script": "verifiers/rdkit_forcefield/rdkit_energy_range.py",
         "property_name": "energy_range_kcal_mol",
         "backend": {
             "type": "rdkit_forcefield",

@@ -11,7 +11,7 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifiers.backends.rdkit_descriptors import score_constraint
+from verifiers.common.scoring import score_constraint
 from verifiers.common.result_schema import base_result, error_result
 
 

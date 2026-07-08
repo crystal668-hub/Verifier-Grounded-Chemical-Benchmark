@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.backends.rdkit_forcefield import evaluate_forcefield_constraint
+from verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
 
 
 SPEC = {

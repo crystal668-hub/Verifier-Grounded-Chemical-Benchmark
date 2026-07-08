@@ -15,7 +15,7 @@ def test_build_script_payload_uses_first_candidate() -> None:
     structural_domain = {"carbon_count_min": 2, "formula_denylist": ["H2O"]}
     task = {"task_id": "task_1", "constraints": [], "structural_domain": structural_domain}
     constraint = {"type": "window", "property": "logp", "verifier_id": "rdkit_logp_v1"}
-    spec = {"verifier_id": "rdkit_logp_v1", "verification_script": "verifiers/descriptors/rdkit_logp.py"}
+    spec = {"verifier_id": "rdkit_logp_v1", "verification_script": "verifiers/rdkit_descriptors/rdkit_logp.py"}
     answer = {
         "task_id": "task_1",
         "candidates": [{"smiles": "CCO"}],
