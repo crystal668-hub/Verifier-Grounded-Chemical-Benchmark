@@ -63,7 +63,6 @@ def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:
 
     assert not any(requirement.startswith("m" + "cp") for requirement in requires_dist)
     assert "materials" in provides_extra
-    assert "mace" not in provides_extra
     assert "atomistic" + "skills" not in provides_extra
     assert any(
         requirement.startswith("matgl==4.0.2")
@@ -73,6 +72,44 @@ def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:
         )
         for requirement in requires_dist
     )
+
+
+def test_wheel_metadata_publishes_mlip_extras(tmp_path: Path) -> None:
+    subprocess.run(
+        ["uv", "build", "--wheel", "--out-dir", str(tmp_path)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    wheel_path = next(tmp_path.glob("*.whl"))
+    with zipfile.ZipFile(wheel_path) as wheel:
+        metadata_name = next(
+            name for name in wheel.namelist() if name.endswith(".dist-info/METADATA")
+        )
+        metadata = Parser().parsestr(wheel.read(metadata_name).decode())
+
+    provides_extra = metadata.get_all("Provides-Extra", [])
+    requires_dist = metadata.get_all("Requires-Dist", [])
+
+    assert "torchani" in provides_extra
+    assert "mace" in provides_extra
+    for package, extra in [
+        ("torchani==2.8.2", "torchani"),
+        ("ase==3.28.0", "torchani"),
+        ("mace-torch==0.3.16", "mace"),
+        ("ase==3.28.0", "mace"),
+        ("pymatgen==2026.5.4", "mace"),
+    ]:
+        assert any(
+            requirement.startswith(package)
+            and (
+                f"extra == '{extra}'" in requirement
+                or f'extra == "{extra}"' in requirement
+            )
+            for requirement in requires_dist
+        )
     assert any(
         requirement.startswith("pymatgen==2026.5.4")
         and (
