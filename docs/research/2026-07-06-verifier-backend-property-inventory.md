@@ -20,8 +20,12 @@
 | RDKit forcefield | prototype，未注册正式 track | SMILES | `energy_range_kcal_mol`, `optimization_converged_fraction` | ETKDG conformer generation + MMFF94s/MMFF94/UFF minimization。 |
 | RDKit forcefield | 随结果返回 | SMILES | `best_energy_kcal_mol`, `min_energy_kcal_mol`, `median_energy_kcal_mol`, `max_energy_kcal_mol`, `embedding_success_rate`, `min_nonbonded_distance_angstrom`, `conformer_count`, `forcefield_parameterized` | 更像构象/参数化质量与力场能量代理指标。 |
 | ADMET-AI | 已实现 backend + 5 个脚本入口，未注册正式 track | SMILES | `Solubility_AqSolDB`, `hERG`, `AMES`, `BBB_Martins`, `Caco2_Wang` | backend 按 `property_name` 读取 ADMET-AI 输出；当前脚本入口实现这 5 个。 |
+| SolTranNet | 已实现 Docker-backed backend，未注册正式 track | SMILES | `soltrannet_log_s` | 通过 Ersilia `eos6oli` 服务预测 aqueous solubility/logS-style 标量。 |
+| MolGpKa | 已实现 Docker-backed backend，未注册正式 track | SMILES | `molgpka_min_pka`, `molgpka_max_pka`, `molgpka_pka_count` | 通过 GHCR MolGpKa 镜像预测 pKa 列表，并派生标量性质。 |
 | MatGL | 已实现 backend，未注册正式 track | CIF | `formation_energy`, `bandgap` | `formation_energy` 单位 eV/atom；`bandgap` 单位 eV，支持 bandgap fidelity/state_attr。 |
 | MatGL structure/domain | 辅助材料结构属性 | CIF | `reduced_formula`, `atom_count`, `volume`, `elements` | 从 pymatgen `Structure` 派生，用于材料结构域检查。 |
+| MACE-MP | 已实现 native backend，未注册正式 track | CIF | `mace_mp_energy_ev`, `mace_mp_energy_per_atom_ev`, `mace_mp_max_force_ev_per_angstrom`, `mace_mp_stress_norm_ev_per_angstrom3` | 通过 MACE ASE calculator 计算材料 MLIP 能量、力和应力代理指标。 |
+| TorchANI | 已实现 native backend，未注册正式 track | XYZ | `torchani_total_energy_hartree`, `torchani_energy_per_atom_hartree`, `torchani_max_force_hartree_per_angstrom` | 通过 TorchANI ANI-2x 计算分子能量和力代理指标。 |
 | OpenMM core | 已实现环境/固定体系 probe，未注册正式 track | 固定 fixture | `initial_energy_kj_mol`, `minimized_energy_kj_mol`, `energy_drop_kj_mol`, `final_max_force_kj_mol_nm` | 固定双粒子 harmonic bond smoke，不依赖候选分子。 |
 | OpenMM + OpenFF | 已实现 ligand minimization backend，未注册正式 track | SMILES | `initial_energy_kj_mol`, `minimized_energy_kj_mol`, `energy_drop_kj_mol`, `final_max_force_kj_mol_nm` | OpenFF 分支会参数化候选 ligand 并最小化。 |
 | OpenMM + OpenFF | 随结果返回 | SMILES | `parameterization_success`, `system_particle_count`, `charge_method`, `forcefield_family`, `forcefield_name`, `selected_platform` | GAFF 分支目前主要是可用性 smoke，不产生 ligand 能量指标。 |
@@ -33,7 +37,7 @@
 - `rdkit`：RDKit baseline small-molecule descriptor tasks。
 - `xtb`：xTB direct-XYZ small-molecule tasks。
 
-其余 backend 已有实现或测试覆盖，但未进入内置正式 track；其中 `tasks/rdkit_forcefield/verifier_specs.yaml` 标记为 prototype，OpenMM backend 测试也明确不创建正式 task pack。
+其余 backend 已有实现或测试覆盖，但未进入内置正式 track；其中 `tasks/rdkit_forcefield/verifier_specs.yaml` 标记为 prototype，OpenMM、SolTranNet、MolGpKa、MACE-MP 和 TorchANI 等 backend 当前也不创建正式 task pack。
 
 ## 主要来源文件
 
@@ -43,8 +47,12 @@
 - `src/verifiers/rdkit_forcefield/backend.py`
 - `src/verifiers/rdkit_forcefield/rdkit_energy_range.py`
 - `src/verifiers/admet_ai/backend.py`
+- `src/verifiers/soltrannet/backend.py`
+- `src/verifiers/molgpka/backend.py`
 - `src/verifiers/matgl/backend.py`
 - `src/verifiers/matgl/matgl_formation_energy.py`
+- `src/verifiers/mace_mp/backend.py`
+- `src/verifiers/torchani/backend.py`
 - `src/verifiers/openmm/core_backend.py`
 - `src/verifiers/openmm/openff_backend.py`
 - `src/verifiers/openmm/runtime.py`

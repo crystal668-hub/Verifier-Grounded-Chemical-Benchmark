@@ -31,7 +31,7 @@
 
 | backend | 方法类别 | 当前性质 | 状态 |
 |---|---|---|---|
-| `admet_ai_properties` | 小分子 ML/QSAR | AqSolDB solubility、hERG、AMES、BBB、Caco-2 等脚本 | 已实现 backend，未进入 builtin registry |
+| `admet_ai` | 小分子 ML/QSAR | AqSolDB solubility、hERG、AMES、BBB、Caco-2 等脚本 | 已实现 backend，未进入 builtin registry |
 | `matgl` | 材料 GNN/ML surrogate | formation energy、band gap | 已实现 native backend，未进入 builtin registry |
 | `mace_mp` | 材料 MLIP | energy、energy per atom、max force、stress norm | 已实现 native backend，未进入 builtin registry |
 | `atomisticskills_smoke` | 结构操作/描述符/XRD script | supercell、DrugDisc descriptors、XRD peak | smoke，非正式性质 track |
