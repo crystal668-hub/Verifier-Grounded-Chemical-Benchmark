@@ -341,7 +341,7 @@
 |---|---|---|---|---|
 | 传统规则/描述符 | 高 | RDKit, DrugDisc smoke | QED、logP、TPSA、MW、HBA/HBD、SA、Fsp3 | rotatable/ring tasks、alerts、novelty、standardization |
 | 量子化学 | 中高 | xTB | gap、dipole、relaxation、LUMO、polarizability、solvation、electrophilicity、Fukui、thermo | DFT/ab initio、spectroscopy、charges、BDE/redox/pKa、conformer ensemble |
-| 小分子 ML/QSAR | 中 | ADMET-AI, OPERA | ADMET endpoints wrapper | formal track、AD/uncertainty、SolTranNet、DTI/activity |
+| 小分子 ML/QSAR | 中 | ADMET-AI, SolTranNet, MolGpKa | ADMET endpoints、logS、pKa count/min/max | formal track、AD/uncertainty、DTI/activity |
 | 材料 ML/GNN/MLIP | 中 | MatGL, MACE | formation energy、band gap、energy | E_hull、relaxation、elasticity、phonon、dielectric、magnetism、surface/defect |
 | 分子模拟/MD/MC | 低 | none | none | OpenMM/OpenFF、ASE/LAMMPS/GROMACS、RASPA、diffusion/adsorption/free energy |
 | 热力学建模 | 低 | none | none | pymatgen PhaseDiagram/E_hull、CALPHAD、Pourbaix、Cantera thermo |
@@ -357,11 +357,11 @@
 
 | 小方向 | 性质 | 推荐方法 | 落地性 |
 |---|---|---|---|
-| ADMET formal track | logS、hERG、AMES、BBB、Caco-2、CYP、DILI、clearance | ADMET-AI first，OPERA second | 高 |
+| ADMET formal track | logS、hERG、AMES、BBB、Caco-2、CYP、DILI、clearance | ADMET-AI first；OPERA 已作为本机架构不适配尝试移除 | 高 |
 | 结构 alerts | PAINS、Brenk、reactive groups | RDKit SMARTS filters | 高 |
 | 构象/strain | MMFF/UFF minimized energy、clash、conformer diversity | RDKit ETKDG/MMFF, OpenMM/OpenFF | 高 |
 | 电荷/极性 | Gasteiger、AM1-BCC、RESP-like、xTB charges | RDKit/OpenFF/xTB/cclib | 中 |
-| 水合/溶剂化 | FreeSolv/hydration free energy、logD/pKa | OPERA、SolTranNet、xTB GBSA/ALPB、ML models | 中 |
+| 水合/溶剂化 | FreeSolv/hydration free energy、logD/pKa | SolTranNet、MolGpKa、xTB GBSA/ALPB、ML models；OPERA 仅作为移除的历史候选 | 中 |
 | 谱学 | IR/Raman/NMR/UV-Vis | DFT/xTB/cclib, ML surrogate | 中-低 |
 | 靶点活性 | pChEMBL/pKi/pKd/probability | ChEMBL snapshot, DeepPurpose/DeepDTA | 中 |
 | 合成可行性 | route solved、route depth、stock cost | AiZynthFinder | 中 |
