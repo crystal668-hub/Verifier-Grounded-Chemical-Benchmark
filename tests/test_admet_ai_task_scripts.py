@@ -21,7 +21,7 @@ def payload(property_name: str) -> dict[str, Any]:
         },
         "verifier_spec": {
             "verifier_id": "admet_ai_property_v1",
-            "verification_script": "verifiers/admet/admet_ai_herg.py",
+            "verification_script": "verifiers/admet_ai/admet_ai_herg.py",
             "property_name": property_name,
             "verifier_image": "verifier-grounded:dev",
             "admet_ai": {"include_physchem": False, "drugbank_percentiles": False, "num_workers": 0},
@@ -38,7 +38,7 @@ def payload(property_name: str) -> dict[str, Any]:
 
 def test_admet_ai_herg_script_outputs_standard_json_result() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "admet" / "admet_ai_herg.py",
+        ROOT / "verifiers" / "admet_ai" / "admet_ai_herg.py",
         payload("hERG"),
         timeout_seconds=90,
     )
@@ -50,7 +50,7 @@ def test_admet_ai_herg_script_outputs_standard_json_result() -> None:
 
 def test_admet_ai_herg_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "admet" / "admet_ai_herg.py",
+        ROOT / "verifiers" / "admet_ai" / "admet_ai_herg.py",
         payload("AMES"),
         timeout_seconds=90,
     )

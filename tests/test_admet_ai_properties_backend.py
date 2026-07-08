@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.backends import admet_ai_properties
+from verifiers.admet_ai import backend as admet_ai_properties
 
 
 class FakeADMETModel:

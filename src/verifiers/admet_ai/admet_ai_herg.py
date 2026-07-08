@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from verifiers.admet.admet_ai_property_script import main
+from verifiers.admet_ai.cli import main
 
 
 if __name__ == "__main__":
