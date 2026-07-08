@@ -1,4 +1,4 @@
-from verifiers.quantum_ml.torchani_property_script import main
+from verifiers.torchani.cli import main
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.backends import mace_mp_properties
+from verifiers.mace_mp import backend as mace_mp_properties
 
 
 SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()

@@ -23,7 +23,7 @@ def bandgap_payload() -> dict:
         },
         "verifier_spec": {
             "verifier_id": "matgl_bandgap_native_v1",
-            "verification_script": "verifiers/materials/matgl_bandgap.py",
+            "verification_script": "verifiers/matgl/matgl_bandgap.py",
             "property_name": "formation_energy",
             "backend": {"type": "native_matgl"},
         },
@@ -44,7 +44,7 @@ def formation_energy_payload() -> dict:
         },
         "verifier_spec": {
             "verifier_id": "matgl_formation_energy_native_v1",
-            "verification_script": "verifiers/materials/matgl_formation_energy.py",
+            "verification_script": "verifiers/matgl/matgl_formation_energy.py",
             "property_name": "bandgap",
             "backend": {"type": "native_matgl"},
         },
@@ -73,7 +73,7 @@ def test_matgl_property_scripts_reject_property_mismatch(
     expected_message: str,
 ) -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "materials" / script_name,
+        ROOT / "verifiers" / "matgl" / script_name,
         payload,
         timeout_seconds=60,
     )

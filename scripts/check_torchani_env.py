@@ -8,7 +8,7 @@ import importlib.metadata as metadata
 import json
 from typing import Any
 
-from verifiers.backends import torchani_properties
+from verifiers.torchani import backend as torchani_properties
 
 
 WATER_XYZ = """3

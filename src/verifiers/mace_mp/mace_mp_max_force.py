@@ -1,4 +1,4 @@
-from verifiers.materials.mace_mp_property_script import main
+from verifiers.mace_mp.cli import main
 
 
 if __name__ == "__main__":

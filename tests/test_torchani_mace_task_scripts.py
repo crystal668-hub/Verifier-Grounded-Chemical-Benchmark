@@ -21,7 +21,7 @@ def torchani_payload(spec_property: str = "torchani_energy_per_atom_hartree") ->
         },
         "verifier_spec": {
             "verifier_id": "torchani_total_energy_ani2x_v1",
-            "verification_script": "verifiers/quantum_ml/torchani_total_energy.py",
+            "verification_script": "verifiers/torchani/torchani_total_energy.py",
             "property_name": spec_property,
             "backend": {"type": "native_torchani"},
         },
@@ -31,7 +31,7 @@ def torchani_payload(spec_property: str = "torchani_energy_per_atom_hartree") ->
 
 def test_torchani_property_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "quantum_ml" / "torchani_total_energy.py",
+        ROOT / "verifiers" / "torchani" / "torchani_total_energy.py",
         torchani_payload(),
         timeout_seconds=60,
     )
@@ -57,7 +57,7 @@ def mace_payload(spec_property: str = "mace_mp_energy_ev") -> dict:
         },
         "verifier_spec": {
             "verifier_id": "mace_mp_energy_per_atom_small_v1",
-            "verification_script": "verifiers/materials/mace_mp_energy_per_atom.py",
+            "verification_script": "verifiers/mace_mp/mace_mp_energy_per_atom.py",
             "property_name": spec_property,
             "backend": {"type": "native_mace_mp"},
         },
@@ -67,7 +67,7 @@ def mace_payload(spec_property: str = "mace_mp_energy_ev") -> dict:
 
 def test_mace_property_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "materials" / "mace_mp_energy_per_atom.py",
+        ROOT / "verifiers" / "mace_mp" / "mace_mp_energy_per_atom.py",
         mace_payload(),
         timeout_seconds=60,
     )

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.backends import torchani_properties
+from verifiers.torchani import backend as torchani_properties
 
 
 WATER_XYZ = """3

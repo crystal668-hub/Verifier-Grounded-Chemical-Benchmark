@@ -8,7 +8,7 @@ import importlib.metadata as metadata
 import json
 from typing import Any
 
-from verifiers.backends import mace_mp_properties
+from verifiers.mace_mp import backend as mace_mp_properties
 
 
 SI_CIF_TEXT = """# generated using pymatgen
