@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_run_xtb_real_dataset_distribution_help() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/run_xtb_real_dataset_distribution.py", "--help"],
+        [sys.executable, "scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -45,7 +45,7 @@ def test_run_xtb_real_dataset_distribution_reports_missing_xtb(tmp_path) -> None
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/run_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py",
             "--sampled-records",
             str(sampled),
             "--tier",
@@ -67,7 +67,7 @@ def test_run_xtb_real_dataset_distribution_reports_missing_xtb(tmp_path) -> None
 
 
 def test_run_xtb_real_dataset_distribution_rows_expose_property_statuses() -> None:
-    from scripts.run_xtb_real_dataset_distribution import summarize
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import summarize
 
     rows = [
         {
@@ -94,7 +94,7 @@ def test_run_xtb_real_dataset_distribution_rows_expose_property_statuses() -> No
 
 
 def test_run_xtb_real_dataset_distribution_resume_skips_existing_rows(tmp_path) -> None:
-    from scripts.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
 
     output = tmp_path / "results.json"
     output.write_text(
@@ -126,7 +126,7 @@ def test_run_xtb_real_dataset_distribution_resume_skips_existing_rows(tmp_path) 
 
 
 def test_run_xtb_real_dataset_distribution_resume_does_not_skip_other_tiers(tmp_path) -> None:
-    from scripts.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
 
     output = tmp_path / "results.json"
     output.write_text(
@@ -155,7 +155,7 @@ def test_run_xtb_real_dataset_distribution_resume_does_not_skip_other_tiers(tmp_
 
 
 def test_run_xtb_real_dataset_distribution_resume_keeps_dataset_names_distinct(tmp_path) -> None:
-    from scripts.run_xtb_real_dataset_distribution import pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import pending_records
 
     existing = [{"dataset_name": "qmugs", "record_id": "same-record", "tier": "light"}]
     records = [
@@ -169,7 +169,7 @@ def test_run_xtb_real_dataset_distribution_resume_keeps_dataset_names_distinct(t
 
 
 def test_run_xtb_real_dataset_distribution_writes_checkpoint_payload(tmp_path) -> None:
-    from scripts.run_xtb_real_dataset_distribution import write_results
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import write_results
 
     output = tmp_path / "results.json"
     write_results(
@@ -233,7 +233,7 @@ def test_analyze_xtb_real_dataset_distribution_outputs_quantiles(tmp_path) -> No
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(results),
             "--output-dir",
@@ -312,7 +312,7 @@ def test_analyze_xtb_real_dataset_distribution_counts_errors_per_property_tier(t
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(light_results),
             str(medium_results),
@@ -366,7 +366,7 @@ def test_analyze_xtb_real_dataset_distribution_counts_partial_rows_per_property(
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(results),
             "--output-dir",
@@ -418,7 +418,7 @@ def test_analyze_xtb_real_dataset_distribution_omits_helper_properties(tmp_path)
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(results),
             "--output-dir",
@@ -473,7 +473,7 @@ def test_analyze_xtb_real_dataset_distribution_writes_expanded_readiness(tmp_pat
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(results),
             "--output-dir",
@@ -539,7 +539,7 @@ def test_analyze_xtb_real_dataset_distribution_readiness_uses_property_level_sta
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_real_dataset_distribution.py",
+            "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",
             "--inputs",
             str(results),
             "--output-dir",

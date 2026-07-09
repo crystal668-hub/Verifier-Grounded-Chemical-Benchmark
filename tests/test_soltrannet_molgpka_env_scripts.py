@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from scripts import check_molgpka_env
-from scripts import check_soltrannet_env
+from scripts.env import check_molgpka_env
+from scripts.env import check_soltrannet_env
 
 
 def soltrannet_args(**overrides: Any) -> Namespace:

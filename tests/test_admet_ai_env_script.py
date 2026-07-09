@@ -7,7 +7,7 @@ import sys
 
 def test_check_admet_ai_env_outputs_json() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_admet_ai_env.py", "--smiles", "CCO"],
+        [sys.executable, "scripts/env/check_admet_ai_env.py", "--smiles", "CCO"],
         capture_output=True,
         text=True,
         timeout=60,

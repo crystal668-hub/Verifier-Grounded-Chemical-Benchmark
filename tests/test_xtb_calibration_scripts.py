@@ -8,7 +8,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts" / "run_xtb_calibration.py"
+SCRIPT = ROOT / "scripts" / "xtb_calibration" / "run_xtb_calibration.py"
 
 
 def test_run_xtb_calibration_reports_missing_executable(tmp_path) -> None:
@@ -94,7 +94,7 @@ def test_analyze_xtb_calibration_writes_summary_files(tmp_path) -> None:
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/analyze_xtb_calibration.py",
+            "scripts/xtb_calibration/analyze_xtb_calibration.py",
             "--input",
             str(input_path),
             "--output-dir",

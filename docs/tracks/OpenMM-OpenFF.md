@@ -17,7 +17,7 @@ Create the optional conda environment:
 ```bash
 mamba env create -f envs/openmm-openff.yml
 conda activate vgb-openmm-openff
-python scripts/check_openmm_openff_env.py --mode all
+python scripts/env/check_openmm_openff_env.py --mode all
 ```
 
 Use `conda env create -f envs/openmm-openff.yml` only when `mamba` is

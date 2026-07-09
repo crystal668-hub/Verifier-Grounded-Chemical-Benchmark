@@ -10,7 +10,7 @@ sources:
       type: direct_http_archive
       files:
         gdb9.tar.gz: "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/gdb9.tar.gz"
-      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
+      conversion: "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py"
     license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
   qmugs:
     status: required
@@ -26,7 +26,7 @@ sources:
         structures.tar.gz: "https://libdrive.ethz.ch/index.php/s/X5vOBNSITAG5vzM/download?path=%2F&files=structures.tar.gz"
         download_links.txt: "https://libdrive.ethz.ch/public.php/webdav/download_links.txt"
         tarball_assignment.csv: "https://libdrive.ethz.ch/public.php/webdav/tarball_assignment.csv"
-      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
+      conversion: "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py"
       notes: "Use streaming/local conversion with a record limit; full structures archive is about 7.2 GB."
     license_note: "Use only for offline calibration; do not redistribute raw records unless license permits."
   geom_drugs:
@@ -43,7 +43,7 @@ sources:
         censo.tar.gz:
           file_id: 5858503
           url: "https://dataverse.harvard.edu/api/access/datafile/5858503"
-      conversion: "scripts/convert_xtb_real_dataset_sdf.py"
+      conversion: "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py"
       notes: "Drug files are large; censo.tar.gz is small enough for connectivity validation but may not be GEOM-Drugs coverage."
     license_note: "Use only sampled derived manifests in git."
   tartarus_opv:

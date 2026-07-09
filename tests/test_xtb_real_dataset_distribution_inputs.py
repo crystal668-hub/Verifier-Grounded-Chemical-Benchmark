@@ -54,7 +54,7 @@ def test_xtb_real_dataset_source_manifest_records_machine_access_paths() -> None
 
 def test_prepare_xtb_real_dataset_sample_help() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/prepare_xtb_real_dataset_sample.py", "--help"],
+        [sys.executable, "scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -102,7 +102,7 @@ def test_prepare_xtb_real_dataset_sample_can_process_tiny_fixture(tmp_path) -> N
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/prepare_xtb_real_dataset_sample.py",
+            "scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py",
             "--input-jsonl",
             str(fixture),
             "--output-dir",
@@ -149,7 +149,7 @@ $$$$
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_sdf.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
             "--input",
             str(sdf),
             "--dataset-name",
@@ -179,7 +179,7 @@ $$$$
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_sdf.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
             "--input",
             str(archive),
             "--dataset-name",
@@ -238,7 +238,7 @@ $$$$
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_sdf.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
             "--input",
             str(archive),
             "--dataset-name",
@@ -298,7 +298,7 @@ $$$$
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_sdf.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
             "--input",
             str(archive),
             "--dataset-name",
@@ -358,7 +358,7 @@ $$$$
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_sdf.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
             "--input",
             str(sdf),
             "--dataset-name",
@@ -408,7 +408,7 @@ def test_convert_xtb_real_dataset_geom_pickle_to_jsonl(tmp_path) -> None:
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_geom_pickle.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_geom_pickle.py",
             "--input",
             str(archive),
             "--output-jsonl",
@@ -464,7 +464,7 @@ def test_convert_xtb_real_dataset_geom_pickle_reports_skipped_members(tmp_path) 
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/convert_xtb_real_dataset_geom_pickle.py",
+            "scripts/xtb_real_dataset/convert_xtb_real_dataset_geom_pickle.py",
             "--input",
             str(archive),
             "--output-jsonl",
@@ -519,7 +519,7 @@ def test_prepare_xtb_real_dataset_sample_intermediate_writes_tier_files(tmp_path
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/prepare_xtb_real_dataset_sample.py",
+            "scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py",
             "--input-jsonl",
             str(fixture),
             "--output-dir",
@@ -587,7 +587,7 @@ def test_prepare_xtb_real_dataset_sample_expanded_writes_target_tier_files(tmp_p
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/prepare_xtb_real_dataset_sample.py",
+            "scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py",
             "--input-jsonl",
             str(fixture),
             "--output-dir",
@@ -615,7 +615,7 @@ def test_prepare_xtb_real_dataset_sample_expanded_writes_target_tier_files(tmp_p
 
 
 def test_prepare_xtb_real_dataset_sample_fills_underfilled_quota_to_target() -> None:
-    from scripts.prepare_xtb_real_dataset_sample import fit_sample_to_target
+    from scripts.xtb_real_dataset.prepare_xtb_real_dataset_sample import fit_sample_to_target
 
     def enriched(dataset_name: str, record_id: str) -> dict[str, object]:
         return {

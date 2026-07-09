@@ -19,7 +19,7 @@ TASK_DIR = ROOT / "tasks" / "rdkit_baseline"
 def test_sa_score_import_avoids_static_contrib_import() -> None:
     for path in [
         SRC_DIR / "verifiers" / "rdkit_descriptors" / "backend.py",
-        ROOT / "scripts" / "check_core_env.py",
+        ROOT / "scripts" / "env" / "check_core_env.py",
     ]:
         tree = ast.parse(path.read_text())
         static_contrib_imports = [

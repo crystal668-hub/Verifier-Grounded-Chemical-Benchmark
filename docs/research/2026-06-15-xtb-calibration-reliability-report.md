@@ -6,8 +6,8 @@
 - xTB executable: `/opt/homebrew/bin/xtb`
 - xTB version: 6.7.1 (edcfbbe), compiled 2025-09-04
 - Python: 3.12.13
-- Command: `uv run python scripts/run_xtb_calibration.py --answers tasks/xtb_xyz/calibration_answers.jsonl --output artifacts/xtb_calibration/2026-06-15/results.json`
-- Analysis command: `uv run python scripts/analyze_xtb_calibration.py --input artifacts/xtb_calibration/2026-06-15/results.json --output-dir artifacts/xtb_calibration/2026-06-15/analysis`
+- Command: `uv run python scripts/xtb_calibration/run_xtb_calibration.py --answers tasks/xtb_xyz/calibration_answers.jsonl --output artifacts/xtb_calibration/2026-06-15/results.json`
+- Analysis command: `uv run python scripts/xtb_calibration/analyze_xtb_calibration.py --input artifacts/xtb_calibration/2026-06-15/results.json --output-dir artifacts/xtb_calibration/2026-06-15/analysis`
 - Raw local artifacts: `artifacts/xtb_calibration/2026-06-15/results.json`, `artifacts/xtb_calibration/2026-06-15/analysis/summary.json`
 
 ## Summary
@@ -36,8 +36,8 @@ The 2026-06-15 findings for `xtb_lumo_min_008` through `xtb_hessian_thermo_stabi
 
 Commands:
 
-- `uv run python scripts/run_xtb_calibration.py --answers tasks/xtb_xyz/calibration_answers.jsonl --output artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-results.json`
-- `uv run python scripts/analyze_xtb_calibration.py --input artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-results.json --output-dir artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-analysis`
+- `uv run python scripts/xtb_calibration/run_xtb_calibration.py --answers tasks/xtb_xyz/calibration_answers.jsonl --output artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-results.json`
+- `uv run python scripts/xtb_calibration/analyze_xtb_calibration.py --input artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-results.json --output-dir artifacts/xtb_calibration/2026-06-19-advanced-iteration/final-analysis`
 
 Artifacts:
 

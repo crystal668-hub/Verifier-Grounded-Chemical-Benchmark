@@ -9,7 +9,7 @@ import sys
 def test_check_xtb_env_script_reports_missing_executable(tmp_path) -> None:
     env = {**os.environ, "PATH": str(tmp_path)}
     completed = subprocess.run(
-        [sys.executable, "scripts/check_xtb_env.py"],
+        [sys.executable, "scripts/env/check_xtb_env.py"],
         capture_output=True,
         text=True,
         check=False,

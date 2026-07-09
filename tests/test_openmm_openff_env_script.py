@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from scripts import check_openmm_openff_env
+from scripts.env import check_openmm_openff_env
 from verifiers.openmm import runtime as openmm_runtime
 
 
@@ -74,7 +74,7 @@ def test_check_openmm_openff_env_reports_success_json(
 
 def test_check_openmm_openff_env_rejects_invalid_mode() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_openmm_openff_env.py", "--mode", "invalid"],
+        [sys.executable, "scripts/env/check_openmm_openff_env.py", "--mode", "invalid"],
         capture_output=True,
         text=True,
         timeout=30,
@@ -90,7 +90,7 @@ def test_check_script_runs_from_checkout_without_pythonpath() -> None:
     env.pop("PYTHONPATH", None)
 
     completed = subprocess.run(
-        [sys.executable, "-S", "scripts/check_openmm_openff_env.py", "--help"],
+        [sys.executable, "-S", "scripts/env/check_openmm_openff_env.py", "--help"],
         capture_output=True,
         text=True,
         timeout=30,

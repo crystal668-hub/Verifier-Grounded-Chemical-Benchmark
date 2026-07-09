@@ -7,7 +7,7 @@
 - Python: project `uv` environment, Python 3.12
 - xTB executable: `/opt/homebrew/bin/xtb`
 - xTB version: 6.7.1 (`edcfbbe`, compiled 2025-09-04)
-- Environment smoke test: `uv run python scripts/check_xtb_env.py` returned `status: ok`; water smoke parsed gap, dipole, LUMO, polarizability, and total energy.
+- Environment smoke test: `uv run python scripts/env/check_xtb_env.py` returned `status: ok`; water smoke parsed gap, dipole, LUMO, polarizability, and total energy.
 
 ## Smoke Issue Review
 
@@ -44,23 +44,23 @@ The initial "unavailable" diagnosis conflated three different problems:
 New repair tooling:
 
 ```bash
-uv run python scripts/convert_xtb_real_dataset_sdf.py \
+uv run python scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py \
   --input <local.sdf-or-tar.gz> \
   --dataset-name qmugs \
   --output-jsonl .cache/xtb_real_datasets/qmugs/qmugs_sample.jsonl \
   --limit 1000
 ```
 
-The converter accepts local SDF files and tar/tar.gz archives containing SDF files, emits the normalized JSONL schema consumed by `scripts/prepare_xtb_real_dataset_sample.py`, and allows bounded conversion with `--limit`.
+The converter accepts local SDF files and tar/tar.gz archives containing SDF files, emits the normalized JSONL schema consumed by `scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py`, and allows bounded conversion with `--limit`.
 
 ## Sampling Method
 
-The rerun normalized 60 QM9 SDF records with fields required by `scripts/prepare_xtb_real_dataset_sample.py`: `dataset_name`, `record_id`, `xyz`, `charge`, `multiplicity`, and `geometry_source`. The deterministic smoke input selected records with at least one carbon atom, heavy atom count between 4 and 18, and atom count between 6 and 48 to exercise Fukui and hessian tiers without predictable domain failures. Sampling used seed `20260615`.
+The rerun normalized 60 QM9 SDF records with fields required by `scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py`: `dataset_name`, `record_id`, `xyz`, `charge`, `multiplicity`, and `geometry_source`. The deterministic smoke input selected records with at least one carbon atom, heavy atom count between 4 and 18, and atom count between 6 and 48 to exercise Fukui and hessian tiers without predictable domain failures. Sampling used seed `20260615`.
 
 Preparation command:
 
 ```bash
-uv run python scripts/prepare_xtb_real_dataset_sample.py \
+uv run python scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py \
   --source-manifest data/xtb_real_dataset_sources.yaml \
   --input-jsonl .cache/xtb_real_datasets/qm9/qm9_smoke60.jsonl \
   --output-dir artifacts/xtb_real_distribution/2026-06-15-rerun \
@@ -200,7 +200,7 @@ QMugs conversion emitted RDKit warnings that some molecules were tagged as 2D de
 Commands used for the bounded non-QM9 repair:
 
 ```bash
-uv run python scripts/convert_xtb_real_dataset_sdf.py \
+uv run python scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py \
   --input .cache/xtb_real_datasets/qmugs/structures.tar.gz \
   --dataset-name qmugs \
   --output-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded600.jsonl \
@@ -208,7 +208,7 @@ uv run python scripts/convert_xtb_real_dataset_sdf.py \
   --geometry-source dataset_sdf_3d_partial_archive \
   --limit 600
 
-uv run python scripts/convert_xtb_real_dataset_geom_pickle.py \
+uv run python scripts/xtb_real_dataset/convert_xtb_real_dataset_geom_pickle.py \
   --input .cache/xtb_real_datasets/geom_drugs/censo.tar.gz \
   --output-jsonl .cache/xtb_real_datasets/geom_drugs/geom_censo_bounded500.jsonl \
   --limit 500 \
@@ -218,7 +218,7 @@ uv run python scripts/convert_xtb_real_dataset_geom_pickle.py \
 The mixed intermediate sample preparation used QM9 plus both non-QM9 sources:
 
 ```bash
-uv run python scripts/prepare_xtb_real_dataset_sample.py \
+uv run python scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py \
   --source-manifest data/xtb_real_dataset_sources.yaml \
   --input-jsonl .cache/xtb_real_datasets/qm9/qm9_smoke60.jsonl \
   --input-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded600.jsonl \
@@ -308,7 +308,7 @@ Decision: `Dataset Expansion Prep / intermediate calibration` is now complete fo
 
 ## 2026-06-22 Expanded Run Preparation
 
-The next calibration pass added checkpoint/resume support to `scripts/run_xtb_real_dataset_distribution.py` and reran a larger non-QM9 light-tier slice. This directly addressed the previous readiness blocker, `non_qm9_ok_records_below_100`.
+The next calibration pass added checkpoint/resume support to `scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py` and reran a larger non-QM9 light-tier slice. This directly addressed the previous readiness blocker, `non_qm9_ok_records_below_100`.
 
 Runner preparation:
 
@@ -325,7 +325,7 @@ Expanded non-QM9 calibration input:
 Command:
 
 ```bash
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.light.non_qm9_unique140.jsonl \
   --tier light \
   --max-records 120 \
@@ -380,7 +380,7 @@ Initial command template, now superseded by the `2026-06-22 Expanded Input Scale
 RUN_ID=2026-06-22-expanded-run
 mkdir -p artifacts/xtb_real_distribution/$RUN_ID
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.light.jsonl \
   --tier light \
   --max-records 10000 \
@@ -389,7 +389,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 25 \
   --resume
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.medium.jsonl \
   --tier medium \
   --max-records 2000 \
@@ -398,7 +398,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 10 \
   --resume
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-21-expansion-prep/sampled_records.expensive.jsonl \
   --tier expensive \
   --max-records 500 \
@@ -407,7 +407,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 5 \
   --resume
 
-.venv/bin/python scripts/analyze_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py \
   --inputs \
     artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
     artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \
@@ -435,7 +435,7 @@ Input expansion:
 Expanded preparation command:
 
 ```bash
-.venv/bin/python scripts/prepare_xtb_real_dataset_sample.py \
+.venv/bin/python scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py \
   --source-manifest data/xtb_real_dataset_sources.yaml \
   --input-jsonl .cache/xtb_real_datasets/qm9/qm9_bounded6000.jsonl \
   --input-jsonl .cache/xtb_real_datasets/qmugs/qmugs_partial_bounded12000.jsonl \
@@ -461,7 +461,7 @@ Updated formal command template:
 RUN_ID=2026-06-22-expanded-run
 mkdir -p artifacts/xtb_real_distribution/$RUN_ID
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.light.jsonl \
   --tier light \
   --max-records 10000 \
@@ -470,7 +470,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 25 \
   --resume
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.medium.jsonl \
   --tier medium \
   --max-records 2000 \
@@ -479,7 +479,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 10 \
   --resume
 
-.venv/bin/python scripts/run_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py \
   --sampled-records artifacts/xtb_real_distribution/2026-06-22-expanded-inputs/sampled_records.expensive.jsonl \
   --tier expensive \
   --max-records 500 \
@@ -488,7 +488,7 @@ mkdir -p artifacts/xtb_real_distribution/$RUN_ID
   --progress-every 5 \
   --resume
 
-.venv/bin/python scripts/analyze_xtb_real_dataset_distribution.py \
+.venv/bin/python scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py \
   --inputs \
     artifacts/xtb_real_distribution/$RUN_ID/light_results.json \
     artifacts/xtb_real_distribution/$RUN_ID/medium_results.json \

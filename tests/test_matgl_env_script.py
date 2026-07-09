@@ -7,12 +7,12 @@ import types
 from collections.abc import Callable
 from typing import Any
 
-from scripts import check_matgl_env
+from scripts.env import check_matgl_env
 
 
 def test_check_matgl_env_reports_json() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_matgl_env.py", "--no-model-load"],
+        [sys.executable, "scripts/env/check_matgl_env.py", "--no-model-load"],
         capture_output=True,
         text=True,
         timeout=30,

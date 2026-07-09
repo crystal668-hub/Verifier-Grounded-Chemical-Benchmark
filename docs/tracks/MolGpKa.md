@@ -37,7 +37,7 @@ The backend uses a one-shot container command that calls
 ## Environment Check
 
 ```bash
-uv run python scripts/check_molgpka_env.py --smiles 'CC(O)=O'
+uv run python scripts/env/check_molgpka_env.py --smiles 'CC(O)=O'
 ```
 
 The script prints structured JSON with runtime metadata, pKa count, and pKa

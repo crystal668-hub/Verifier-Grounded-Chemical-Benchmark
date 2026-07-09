@@ -8,7 +8,7 @@ import shutil
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from benchmark.evaluate import evaluate_many, load_answers_jsonl, load_tasks, load_verifier_specs  # noqa: E402

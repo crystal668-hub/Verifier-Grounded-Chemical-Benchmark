@@ -35,7 +35,7 @@ service and does not manage a Docker container.
 ## Environment Check
 
 ```bash
-uv run python scripts/check_soltrannet_env.py --smiles CCO
+uv run python scripts/env/check_soltrannet_env.py --smiles CCO
 ```
 
 The script prints structured JSON with runtime metadata and a sample

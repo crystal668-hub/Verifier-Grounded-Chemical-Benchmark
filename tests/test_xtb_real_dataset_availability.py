@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_inspect_xtb_real_dataset_availability_help() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/inspect_xtb_real_dataset_availability.py", "--help"],
+        [sys.executable, "scripts/xtb_real_dataset/inspect_xtb_real_dataset_availability.py", "--help"],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -41,7 +41,7 @@ def test_inspect_xtb_real_dataset_availability_reports_missing_cache(tmp_path) -
                             "files": {
                                 "structures.tar.gz": "https://example.invalid/structures.tar.gz",
                             },
-                            "conversion": "scripts/convert_xtb_real_dataset_sdf.py",
+                            "conversion": "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py",
                         },
                     },
                     "tartarus_opv": {
@@ -59,7 +59,7 @@ def test_inspect_xtb_real_dataset_availability_reports_missing_cache(tmp_path) -
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/inspect_xtb_real_dataset_availability.py",
+            "scripts/xtb_real_dataset/inspect_xtb_real_dataset_availability.py",
             "--source-manifest",
             str(manifest),
             "--output-json",
@@ -76,7 +76,7 @@ def test_inspect_xtb_real_dataset_availability_reports_missing_cache(tmp_path) -
     assert payload["status"] == "ok"
     assert payload["remote_checked"] is False
     assert payload["sources"]["qmugs"]["local_files"]["structures.tar.gz"]["exists"] is False
-    assert payload["sources"]["qmugs"]["conversion"] == "scripts/convert_xtb_real_dataset_sdf.py"
+    assert payload["sources"]["qmugs"]["conversion"] == "scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py"
     assert payload["sources"]["tartarus_opv"]["access_status"] == "manual_or_generated_geometry_required"
     assert completed.stdout == output.read_text()
 
@@ -111,7 +111,7 @@ def test_inspect_xtb_real_dataset_availability_reports_existing_cache(tmp_path) 
     completed = subprocess.run(
         [
             sys.executable,
-            "scripts/inspect_xtb_real_dataset_availability.py",
+            "scripts/xtb_real_dataset/inspect_xtb_real_dataset_availability.py",
             "--source-manifest",
             str(manifest),
         ],
@@ -129,7 +129,7 @@ def test_inspect_xtb_real_dataset_availability_reports_existing_cache(tmp_path) 
 
 
 def test_inspect_xtb_real_dataset_availability_does_not_check_remote_by_default(tmp_path, monkeypatch) -> None:
-    from scripts import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
 
     manifest = tmp_path / "sources.yaml"
     manifest.write_text(
@@ -165,7 +165,7 @@ def test_inspect_xtb_real_dataset_availability_does_not_check_remote_by_default(
 
 
 def test_inspect_xtb_real_dataset_availability_check_remote_uses_declared_urls(tmp_path, monkeypatch) -> None:
-    from scripts import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
 
     manifest = tmp_path / "sources.yaml"
     manifest.write_text(
@@ -214,7 +214,7 @@ def test_inspect_xtb_real_dataset_availability_check_remote_uses_declared_urls(t
 
 
 def test_inspect_xtb_real_dataset_availability_reports_small_validation_files(tmp_path) -> None:
-    from scripts import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
 
     cache = tmp_path / "geom_drugs"
     cache.mkdir()

@@ -31,7 +31,7 @@ uv sync --group torchani
 Run the local diagnostic:
 
 ```bash
-uv run --group torchani python scripts/check_torchani_env.py
+uv run --group torchani python scripts/env/check_torchani_env.py
 ```
 
 ## Limitations

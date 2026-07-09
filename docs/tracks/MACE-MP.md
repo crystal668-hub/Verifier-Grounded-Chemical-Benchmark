@@ -33,7 +33,7 @@ uv sync --group mace
 Run the local diagnostic:
 
 ```bash
-uv run --group mace python scripts/check_mace_mp_env.py
+uv run --group mace python scripts/env/check_mace_mp_env.py
 ```
 
 The first run may download the selected MACE-MP checkpoint into `~/.cache/mace`.

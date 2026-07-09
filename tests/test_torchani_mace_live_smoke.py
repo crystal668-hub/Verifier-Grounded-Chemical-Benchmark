@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(
 
 def test_check_torchani_env_live_smoke() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_torchani_env.py"],
+        [sys.executable, "scripts/env/check_torchani_env.py"],
         check=False,
         capture_output=True,
         text=True,
@@ -29,7 +29,7 @@ def test_check_torchani_env_live_smoke() -> None:
 
 def test_check_mace_mp_env_live_smoke() -> None:
     completed = subprocess.run(
-        [sys.executable, "scripts/check_mace_mp_env.py"],
+        [sys.executable, "scripts/env/check_mace_mp_env.py"],
         check=False,
         capture_output=True,
         text=True,

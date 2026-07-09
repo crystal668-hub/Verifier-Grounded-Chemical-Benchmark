@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 SI_CIF_TEXT = """# generated using pymatgen
 data_Si
 _symmetry_space_group_name_H-M   'P 1'
