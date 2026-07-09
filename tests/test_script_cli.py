@@ -8,6 +8,7 @@ from typing import Any
 import pytest
 
 from verifiers.common.property_cli import run_property_script
+from verifiers.xtb import cli as xtb_cli
 
 
 def run_cli_with_payload(
@@ -121,3 +122,24 @@ def test_run_property_script_calls_evaluator_with_payload_parts(monkeypatch: pyt
     ]
     assert result["status"] == "ok"
     assert result["properties"] == {"homo_lumo_gap": 4.2}
+
+
+def test_xtb_cli_outputs_sorted_json_keys(monkeypatch: pytest.MonkeyPatch) -> None:
+    payload = {
+        "task": {"task_id": "xtb_gap_window_001"},
+        "constraint": {"property": "homo_lumo_gap"},
+        "verifier_spec": {"verifier_id": "xtb_gap_gfn2_v1", "property_name": "homo_lumo_gap"},
+        "candidate": {"xyz": "3\nwater\nO 0 0 0\nH 0 0 1\nH 1 0 0"},
+    }
+    stdout = io.StringIO()
+
+    def evaluator(candidate: dict[str, Any], task: dict[str, Any], constraint: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+        return {"z_key": 1, "a_key": {"z_nested": 2, "a_nested": 3}}
+
+    monkeypatch.setattr(xtb_cli, "evaluate_xtb_property_constraint", evaluator)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(payload)))
+    monkeypatch.setattr(sys, "stdout", stdout)
+
+    xtb_cli.main("homo_lumo_gap")
+
+    assert stdout.getvalue() == '{"a_key": {"a_nested": 3, "z_nested": 2}, "z_key": 1}'

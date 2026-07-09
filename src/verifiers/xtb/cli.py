@@ -12,7 +12,7 @@ def main(property_name: str) -> None:
         spec_field="property_name",
         mismatch_label="property",
         evaluator=evaluate_xtb_property_constraint,
-        sort_keys=False,
+        sort_keys=True,
     )
 
 
