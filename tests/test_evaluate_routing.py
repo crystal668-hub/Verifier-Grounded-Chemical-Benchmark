@@ -39,6 +39,10 @@ def test_legacy_atomistic_skills_verifier_module_has_been_removed() -> None:
     assert not (ROOT / "verifiers" / ("atomistic" + "skills.py")).exists()
 
 
+def test_score_answers_compatibility_wrapper_has_been_removed() -> None:
+    assert not (ROOT / "scripts" / "score_answers.py").exists()
+
+
 def test_evaluate_one_routes_by_constraint_descriptor_verifier() -> None:
     tasks = load_tasks(TASKS_PATH)
     specs = load_verifier_specs(SPECS_PATH)
@@ -275,27 +279,6 @@ def test_spec_without_verification_script_returns_structured_error() -> None:
     assert result["failure_type"] == "verifier_spec_error"
 
 
-def test_score_answers_cli_outputs_summary_json() -> None:
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "scripts/score_answers.py",
-            "--answers",
-            str(ANSWERS_PATH),
-        ],
-        cwd=ROOT,
-        check=True,
-        text=True,
-        capture_output=True,
-    )
-
-    report = json.loads(completed.stdout)
-    assert report["summary"]["num_answers"] == 10
-    assert report["summary"]["num_ok"] == 10
-    assert report["summary"]["num_error"] == 0
-    assert len(report["rows"]) == 10
-
-
 def test_package_score_answers_cli_default_development_paths_remain_repo_relative() -> None:
     completed = subprocess.run(
         [
@@ -314,29 +297,6 @@ def test_package_score_answers_cli_default_development_paths_remain_repo_relativ
     report = json.loads(completed.stdout)
     assert report["summary"]["num_ok"] == 10
     assert report["summary"]["num_error"] == 0
-
-
-def test_score_answers_cli_accepts_track_name() -> None:
-    completed = subprocess.run(
-        [
-            sys.executable,
-            "scripts/score_answers.py",
-            "--track",
-            "rdkit",
-            "--answers",
-            str(ANSWERS_PATH),
-        ],
-        cwd=ROOT,
-        check=True,
-        text=True,
-        capture_output=True,
-    )
-
-    report = json.loads(completed.stdout)
-    assert report["summary"]["num_answers"] == 10
-    assert report["summary"]["num_ok"] == 10
-    assert report["summary"]["num_error"] == 0
-    assert len(report["rows"]) == 10
 
 
 def test_package_score_answers_cli_module_accepts_track_name() -> None:
