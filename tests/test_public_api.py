@@ -40,7 +40,7 @@ def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     assert prompt["prompt"].startswith(
         "Propose one valid single-component molecule"
     )
-    assert len(track.sample_answers()) == 10
+    assert len(track.sample_answers()) == 11
 
 
 def test_load_suite_defaults_to_formal_tracks_only() -> None:
@@ -98,14 +98,14 @@ def test_track_evaluate_answers_reports_partial_coverage() -> None:
     report = track.evaluate_answers(answers)
 
     coverage = report["summary"]["coverage"]
-    assert coverage["num_tasks_total"] == 10
+    assert coverage["num_tasks_total"] == 11
     assert coverage["num_rows_submitted"] == 2
     assert coverage["num_task_ids_submitted"] == 2
     assert coverage["num_tasks_answered"] == 2
     assert coverage["duplicate_task_ids"] == []
     assert coverage["unknown_task_ids"] == []
     assert coverage["complete"] is False
-    assert len(coverage["missing_task_ids"]) == 8
+    assert len(coverage["missing_task_ids"]) == 9
     assert report["summary"]["evaluated_mean_score"] == report["summary"]["mean_score"]
     assert report["summary"]["benchmark_score"] is None
 

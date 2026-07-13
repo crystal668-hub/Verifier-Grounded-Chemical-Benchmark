@@ -63,8 +63,8 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
         "fraction_csp3": "rdkit_fraction_csp3_v1",
     }
 
-    assert len(tasks) == 10
-    assert len({task["task_id"] for task in tasks}) == 10
+    assert len(tasks) == 11
+    assert len({task["task_id"] for task in tasks}) == 11
     assert set(expected_by_property.values()).issubset(specs)
     assert all(task["task_id"] not in {"rdkit_mw_window_005", "rdkit_mw_qed_011"} for task in tasks)
     for task in tasks:
@@ -77,11 +77,21 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
         assert len(task["constraints"]) in {1, 2}
         for constraint in task["constraints"]:
             assert constraint["property"] != "mw"
-            assert constraint["verifier_id"] == expected_by_property[constraint["property"]]
+            expected_verifier = (
+                "rdkit_logp_expert_v1"
+                if task["task_id"] == "rdkit_logp_target_011"
+                else expected_by_property[constraint["property"]]
+            )
+            assert constraint["verifier_id"] == expected_verifier
             spec = specs[constraint["verifier_id"]]
             assert spec["descriptor"] == constraint["property"]
             assert spec["verifier_image"] == "verifier-grounded:dev"
-            assert spec["verification_script"] == f"verifiers/rdkit_descriptors/{constraint['verifier_id'].removesuffix('_v1')}.py"
+            expected_script = (
+                "verifiers/rdkit_descriptors/rdkit_logp.py"
+                if constraint["verifier_id"] == "rdkit_logp_expert_v1"
+                else f"verifiers/rdkit_descriptors/{constraint['verifier_id'].removesuffix('_v1')}.py"
+            )
+            assert spec["verification_script"] == expected_script
             assert (SRC_DIR / spec["verification_script"]).exists()
             assert spec["backend"]["type"] == "rdkit_descriptors"
             assert "verifiers/tasks/rdkit_" not in spec["verification_script"]
@@ -93,7 +103,10 @@ def test_rdkit_domain_gate_uses_only_mw_upper_bound() -> None:
 
     for spec in specs.values():
         if spec["backend"]["type"] == "rdkit_descriptors":
-            assert spec["domain"]["mw"] == [0.0, 600.0]
+            if spec["verifier_id"] == "rdkit_logp_expert_v1":
+                assert "mw" not in spec["domain"]
+            else:
+                assert spec["domain"]["mw"] == [0.0, 600.0]
 
 
 def test_prompts_expose_requirements_without_verifier_internals() -> None:
@@ -121,7 +134,24 @@ def test_prompts_expose_requirements_without_verifier_internals() -> None:
         prompt = task["prompt"]
         prompt_lower = prompt.lower()
         assert prompt.startswith("Propose one valid single-component molecule and provide it as a SMILES string.")
-        assert all(fragment in prompt for fragment in required_fragments)
+        if task["task_id"] == "rdkit_logp_target_011":
+            assert "Allowed elements: H, C, O, N, S, F, Cl." in prompt
+            assert "including hydrogens" in prompt
+            assert "at most 40" in prompt
+            assert "oxygen atoms" in prompt
+            assert "at least 10%" in prompt
+            assert "as close as possible to 3.0" in prompt
+            assert all(
+                fragment not in prompt
+                for fragment in (
+                    "Molecular weight",
+                    "Formal charge",
+                    "closed-shell",
+                    "Heavy atom count",
+                )
+            )
+        else:
+            assert all(fragment in prompt for fragment in required_fragments)
         assert "Your final answer must appear on its own line exactly in this format:" in prompt
         assert prompt.rstrip().endswith("FINAL ANSWER: <SMILES>")
         assert not any(fragment in prompt_lower for fragment in banned_fragments)
@@ -139,7 +169,7 @@ def test_sample_answers_score_successfully() -> None:
     specs = load_specs()
     samples = load_samples()
 
-    assert len(samples) == 10
+    assert len(samples) == 11
     assert all(sample["task_id"] in tasks for sample in samples)
     for sample in samples:
         task = tasks[sample["task_id"]]
@@ -157,6 +187,9 @@ def test_sample_answers_score_successfully() -> None:
         ({"type": "window", "property": "logp", "min": 1.0, "max": 3.0, "sigma": 0.5}, {"logp": 3.5}, pytest.approx(0.367879, rel=1e-5)),
         ({"type": "maximize_bounded", "property": "qed", "lower": 0.0, "upper": 1.0}, {"qed": 0.72}, 0.72),
         ({"type": "minimize_bounded", "property": "sa_score", "lower": 1.0, "upper": 10.0}, {"sa_score": 2.8}, pytest.approx(0.8)),
+        ({"type": "target_distance", "property": "logp", "target": 3.0, "scale": 0.5}, {"logp": 3.0}, 1.0),
+        ({"type": "target_distance", "property": "logp", "target": 3.0, "scale": 0.5}, {"logp": 2.5}, pytest.approx(0.367879, rel=1e-5)),
+        ({"type": "target_distance", "property": "logp", "target": 3.0, "scale": 0.5}, {"logp": 3.5}, pytest.approx(0.367879, rel=1e-5)),
     ],
 )
 def test_score_constraint_modes(constraint: dict, properties: dict, expected: float) -> None:
@@ -173,6 +206,19 @@ def test_bounded_scoring_does_not_accept_good_at_or_baseline() -> None:
                 "lower": 0.0,
                 "upper": 1.0,
                 "good_at": 0.8,
+            },
+        )
+
+
+def test_target_distance_requires_positive_scale() -> None:
+    with pytest.raises(ValueError, match="scale"):
+        score_constraint(
+            {"logp": 3.0},
+            {
+                "type": "target_distance",
+                "property": "logp",
+                "target": 3.0,
+                "scale": 0.0,
             },
         )
 

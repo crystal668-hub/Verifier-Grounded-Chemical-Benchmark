@@ -219,13 +219,13 @@ def test_evaluate_many_scores_sample_answers_with_summary() -> None:
 
     report = evaluate_many(answers, tasks, specs)
 
-    assert report["summary"]["num_answers"] == 10
-    assert report["summary"]["num_ok"] == 10
+    assert report["summary"]["num_answers"] == 11
+    assert report["summary"]["num_ok"] == 11
     assert report["summary"]["num_error"] == 0
     assert report["summary"]["min_score"] == pytest.approx(0.863812109226767)
     assert report["summary"]["max_score"] == 1.0
-    assert report["summary"]["mean_score"] == pytest.approx(0.9547086473382975)
-    assert len(report["rows"]) == 10
+    assert report["summary"]["mean_score"] == pytest.approx(0.9588224067440643)
+    assert len(report["rows"]) == 11
 
 
 def test_unknown_task_id_returns_structured_error() -> None:
@@ -295,7 +295,7 @@ def test_package_score_answers_cli_default_development_paths_remain_repo_relativ
     )
 
     report = json.loads(completed.stdout)
-    assert report["summary"]["num_ok"] == 10
+    assert report["summary"]["num_ok"] == 11
     assert report["summary"]["num_error"] == 0
 
 
@@ -317,7 +317,7 @@ def test_package_score_answers_cli_module_accepts_track_name() -> None:
     )
 
     report = json.loads(completed.stdout)
-    assert report["summary"]["num_answers"] == 10
+    assert report["summary"]["num_answers"] == 11
     assert report["summary"]["coverage"]["complete"] is True
     assert report["summary"]["benchmark_score"] == report["summary"]["evaluated_mean_score"]
 
@@ -417,7 +417,7 @@ def test_score_answers_cli_require_complete_rejects_partial_track_answers(tmp_pa
     error = json.loads(completed.stderr)
     assert error["error"] == "incomplete_submission"
     assert error["coverage"]["complete"] is False
-    assert len(error["coverage"]["missing_task_ids"]) == 9
+    assert len(error["coverage"]["missing_task_ids"]) == 10
 
 
 def test_evaluate_many_routes_matgl_material_tasks_with_script_specs(tmp_path: Path) -> None:
@@ -530,6 +530,7 @@ def test_evaluate_one_reuses_same_verifier_measurement_for_multiple_constraints(
             "constraints": [
                 {"type": "maximize_bounded", "property": "a", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
                 {"type": "minimize_bounded", "property": "b", "verifier_id": "fake_multi_v1", "lower": 0.0, "upper": 10.0},
+                {"type": "target_distance", "property": "b", "verifier_id": "fake_multi_v1", "target": 3.0, "scale": 1.0},
             ],
             "scoring": {"aggregation": "geometric_mean"},
         }
@@ -552,6 +553,7 @@ def test_evaluate_one_reuses_same_verifier_measurement_for_multiple_constraints(
     assert result["scores"]["constraint_scores"] == [
         {"property": "a", "type": "maximize_bounded", "score": 1.0},
         {"property": "b", "type": "minimize_bounded", "score": 0.6},
+        {"property": "b", "type": "target_distance", "score": pytest.approx(0.3678794412)},
     ]
     assert counter_path.read_text() == "1"
 

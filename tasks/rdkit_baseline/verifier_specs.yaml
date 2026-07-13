@@ -50,6 +50,31 @@ verifiers:
     scoring: *scoring
     failure_policy: *failure_policy
 
+  - verifier_id: rdkit_logp_expert_v1
+    name: RDKit Expert logP Target Verifier
+    version: 1
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/rdkit_descriptors/rdkit_logp.py
+    timeout_seconds: 60
+    descriptor: logp
+    resources: *resources
+    backend: *backend
+    package_versions: *package_versions
+    domain:
+      allowed_elements: [H, C, O, N, S, F, Cl]
+      atom_count: [1, 40]
+      element_fraction_min:
+        O: 0.10
+    property:
+      source: rdkit.Chem.Crippen.MolLogP
+    scoring:
+      supported_modes: [target_distance]
+      final_score_range: [0.0, 1.0]
+    failure_policy:
+      parse_error: invalid answer JSON shape, missing SMILES, or unparseable SMILES
+      validity_error: multi-component SMILES or unsanitizable molecule
+      domain_error: outside allowed elements, total atom count, or oxygen atom fraction
+
   - verifier_id: rdkit_tpsa_v1
     name: RDKit TPSA Descriptor Verifier
     version: 1

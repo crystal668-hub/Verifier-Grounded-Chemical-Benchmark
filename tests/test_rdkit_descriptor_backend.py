@@ -53,6 +53,92 @@ def test_evaluate_descriptor_constraint_rejects_invalid_smiles() -> None:
     assert result["scores"]["score"] == 0.0
 
 
+def test_expert_domain_counts_all_atoms_and_oxygen_fraction() -> None:
+    spec = {
+        **SPEC,
+        "verifier_id": "rdkit_logp_expert_v1",
+        "domain": {
+            "allowed_elements": ["H", "C", "O", "N", "S", "F", "Cl"],
+            "atom_count": [1, 40],
+            "element_fraction_min": {"O": 0.10},
+        },
+    }
+    constraint = {
+        "type": "target_distance",
+        "property": "logp",
+        "target": 3.0,
+        "scale": 0.5,
+    }
+
+    result = evaluate_descriptor_constraint(
+        {"smiles": "CCCCCC(=O)O"},
+        {"task_id": "rdkit_logp_target_011"},
+        constraint,
+        spec,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["atom_count"] == 20
+    assert result["properties"]["element_counts"] == {"C": 6, "H": 12, "O": 2}
+    assert result["properties"]["element_fractions"]["O"] == pytest.approx(0.10)
+
+
+@pytest.mark.parametrize(
+    ("smiles", "domain", "expected_status"),
+    [
+        ("CCCCCCCCCCCCN", {"atom_count": [1, 40]}, "ok"),
+        ("CCCCCCCCCCCCCN", {"atom_count": [1, 40]}, "error"),
+        ("CCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "ok"),
+        ("CCCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "error"),
+        ("C(C(=O)O)[NH3+]", {"element_fraction_min": {"O": 0.10}}, "ok"),
+    ],
+)
+def test_expert_domain_boundaries(
+    smiles: str,
+    domain: dict,
+    expected_status: str,
+) -> None:
+    spec = {
+        **SPEC,
+        "domain": {
+            "allowed_elements": ["H", "C", "O", "N", "S", "F", "Cl"],
+            **domain,
+        },
+    }
+    result = evaluate_descriptor_constraint(
+        {"smiles": smiles},
+        {"task_id": "expert"},
+        {"type": "target_distance", "property": "logp", "target": 3.0, "scale": 0.5},
+        spec,
+    )
+
+    assert result["status"] == expected_status
+    if expected_status == "error":
+        assert result["failure_type"] == "domain_error"
+
+
+def test_expert_domain_rejects_disallowed_elements() -> None:
+    spec = {
+        **SPEC,
+        "domain": {
+            "allowed_elements": ["H", "C", "O", "N", "S", "F", "Cl"],
+            "atom_count": [1, 40],
+            "element_fraction_min": {"O": 0.10},
+        },
+    }
+
+    result = evaluate_descriptor_constraint(
+        {"smiles": "O=C(O)c1ccc(Br)cc1"},
+        {"task_id": "expert"},
+        {"type": "target_distance", "property": "logp", "target": 3.0, "scale": 0.5},
+        spec,
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "domain_error"
+    assert "Br" in result["message"]
+
+
 def test_sa_score_import_failure_only_affects_sa_score(monkeypatch: pytest.MonkeyPatch) -> None:
     real_import_module = importlib.import_module
 

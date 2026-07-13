@@ -120,7 +120,15 @@ score = clamp((value - lower) / (upper - lower), 0.0, 1.0)
 score = clamp((upper - value) / (upper - lower), 0.0, 1.0)
 ```
 
-### 6.4 多目标聚合
+### 6.4 Target distance
+
+Expert target-value tasks use an exponential distance score:
+
+```text
+score = exp(-abs(value - target) / scale)
+```
+
+### 6.5 多目标聚合
 
 多目标任务由 runner 对多个 constraint score 做 geometric mean：
 

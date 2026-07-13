@@ -14,7 +14,12 @@ from verifiers.common.scoring import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REUSABLE_CONSTRAINT_TYPES = {"window", "maximize_bounded", "minimize_bounded"}
+REUSABLE_CONSTRAINT_TYPES = {
+    "window",
+    "maximize_bounded",
+    "minimize_bounded",
+    "target_distance",
+}
 
 
 def load_tasks(path: str | Path) -> dict[str, dict[str, Any]]:
