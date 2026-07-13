@@ -30,7 +30,6 @@ tasks:
         verifier_id: xtb_dipole_doublet_gfn2_v1
         lower: 0.0
         upper: 20.0
-        calibration_pending: true
     structural_domain:
       formula: C12H16N3O8
     scoring:
@@ -75,7 +74,6 @@ tasks:
         verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
         lower: 0.0
         upper: 10.0
-        calibration_pending: true
     structural_domain:
       allowed_elements: [H, C, O, N, S, F, Cl]
       atom_count: [1, 40]
@@ -114,7 +112,6 @@ tasks:
         verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
         lower: 0.0
         upper: 10.0
-        calibration_pending: true
     structural_domain:
       allowed_elements: [H, C, O, N, S, F, Cl]
       atom_count: [1, 40]
@@ -145,9 +142,8 @@ tasks:
       - type: minimize_bounded
         property: total_energy
         verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
-        lower: -100.0
-        upper: 0.0
-        calibration_pending: true
+        lower: -50.30
+        upper: -50.25
     structural_domain:
       formula: C12H9N3O2S
     structure_identity:
@@ -179,9 +175,8 @@ tasks:
       - type: minimize_bounded
         property: total_energy
         verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
-        lower: -200.0
-        upper: 0.0
-        calibration_pending: true
+        lower: -148.20
+        upper: -148.15
     structural_domain:
       formula: C37H48N6O5S2
     structure_identity:

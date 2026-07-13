@@ -3,7 +3,7 @@ verifiers:
     name: xTB GFN2 Neutral Doublet Dipole Verifier
     version: 1
     verification_script: verifiers/xtb/xtb_dipole.py
-    timeout_seconds: 600
+    timeout_seconds: 240
     property_name: dipole_moment
     resources: &resources
       cpu: 2
@@ -27,7 +27,7 @@ verifiers:
     name: xTB GFN2 Candidate-Charge Closed-Shell Gap Verifier
     version: 1
     verification_script: verifiers/xtb/xtb_gap.py
-    timeout_seconds: 600
+    timeout_seconds: 240
     property_name: homo_lumo_gap
     resources: *resources
     backend:
@@ -62,7 +62,7 @@ verifiers:
     name: xTB GFN2 Ritonavir Optimized Energy Verifier
     version: 1
     verification_script: verifiers/xtb/xtb_total_energy.py
-    timeout_seconds: 1800
+    timeout_seconds: 600
     property_name: total_energy
     resources:
       cpu: 2

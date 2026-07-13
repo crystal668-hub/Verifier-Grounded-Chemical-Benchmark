@@ -44,11 +44,31 @@ def test_expert_candidate_pack_is_complete_but_not_formal() -> None:
         assert task["answer_schema"]["fence_language"] == "xyz"
         assert task["scoring"]["aggregation"] == "geometric_mean"
         assert len(task["constraints"]) == 1
+        assert "calibration_pending" not in task["constraints"][0]
         assert all(
             constraint.get("role") != "quality_gate"
             and constraint["property"] != "relaxation_energy"
             for constraint in task["constraints"]
         )
+
+
+def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
+    tasks = load_tasks(TASKS_PATH)
+    specs = load_verifier_specs(SPECS_PATH)
+    expected = {
+        "xtb_formula_dipole_min_014": (0.0, 20.0, 240),
+        "xtb_two_fluorine_gap_min_015": (0.0, 10.0, 240),
+        "xtb_c10_f2_gap_min_016": (0.0, 10.0, 240),
+        "xtb_roy_singlepoint_energy_min_017": (-50.30, -50.25, 300),
+        "xtb_ritonavir_optimized_energy_min_018": (-148.20, -148.15, 600),
+    }
+
+    for task_id, (lower, upper, timeout) in expected.items():
+        constraint = tasks[task_id]["constraints"][0]
+        spec = specs[constraint["verifier_id"]]
+        assert constraint["lower"] == lower
+        assert constraint["upper"] == upper
+        assert spec["timeout_seconds"] == timeout
 
 
 def test_task_2_uses_exact_formula_and_neutral_doublet() -> None:
