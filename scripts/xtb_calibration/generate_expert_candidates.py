@@ -14,7 +14,10 @@ from rdkit.Chem import AllChem, rdMolDescriptors
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR = ROOT / "tasks" / "xtb_xyz" / "expert_calibration"
-TASK_2_SMILES = "CCO[C](O)Nc1cc([N+](=O)[O-])cc([N+](=O)[O-])c1CC(O)CO"
+TASK_2_SMILES = (
+    "[N](C(C)([N+](=O)[O-])C(=O)OCC=C)"
+    "C(C)([N+](=O)[O-])C(=O)OCC=C"
+)
 TASK_3_SMILES = "O=C1C(F)=CC(=O)C(F)=C1"
 TASK_4_SMILES = "O=C1C(F)=CC2=CC=CC(F)=C2C1=O"
 ROY_SMILES = "Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N"
@@ -80,8 +83,8 @@ def build_candidates() -> tuple[list[dict], dict]:
         (
             "xtb_formula_dipole_min_014",
             TASK_2_SMILES,
-            [17, 29],
-            "task2_radical",
+            [41, 53],
+            "task2_symmetric_aminyl",
             False,
             True,
         ),

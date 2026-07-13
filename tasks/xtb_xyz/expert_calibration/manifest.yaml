@@ -1,16 +1,16 @@
 version: 1
 candidates:
-  task2_radical_seed_17:
+  task2_symmetric_aminyl_seed_41:
     task_id: xtb_formula_dipole_min_014
     role: positive_candidate
-    source: RDKit ETKDG conformer of CCO[C](O)Nc1cc([N+](=O)[O-])cc([N+](=O)[O-])c1CC(O)CO
-    seed: 17
+    source: RDKit ETKDG conformer of [N](C(C)([N+](=O)[O-])C(=O)OCC=C)C(C)([N+](=O)[O-])C(=O)OCC=C
+    seed: 41
     formula: C12H16N3O8
-  task2_radical_seed_29:
+  task2_symmetric_aminyl_seed_53:
     task_id: xtb_formula_dipole_min_014
     role: positive_candidate
-    source: RDKit ETKDG conformer of CCO[C](O)Nc1cc([N+](=O)[O-])cc([N+](=O)[O-])c1CC(O)CO
-    seed: 29
+    source: RDKit ETKDG conformer of [N](C(C)([N+](=O)[O-])C(=O)OCC=C)C(C)([N+](=O)[O-])C(=O)OCC=C
+    seed: 53
     formula: C12H16N3O8
   task3_difluorobenzoquinone_seed_19:
     task_id: xtb_two_fluorine_gap_min_015
