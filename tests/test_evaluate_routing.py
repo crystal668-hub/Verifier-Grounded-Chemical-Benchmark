@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from benchmark.evaluate import (
+    aggregate_scores,
     aggregate_constraint_results,
     evaluate_many,
     evaluate_one,
@@ -28,6 +29,37 @@ FINAL_ANSWER_SCHEMA = {
     "final_answer_prefix": "FINAL ANSWER:",
     "value_type": "smiles",
     "cardinality": "one",
+}
+
+PROPERTY_TASK = {
+    "task_id": "property_calc_free_energy_001",
+    "task_type": "property_calculation",
+    "answer_schema": {
+        "format": "final_answer_line",
+        "final_answer_prefix": "FINAL ANSWER:",
+        "value_type": "json",
+        "cardinality": "one",
+    },
+    "requested_properties": [
+        {
+            "name": "free_energy_difference",
+            "value_type": "number",
+            "unit": "kJ/mol",
+            "comparison_group": "free_energy_difference",
+        }
+    ],
+    "gold_answers": [
+        {
+            "property": "free_energy_difference",
+            "value": 0.258031679,
+            "unit": "kJ/mol",
+            "absolute_tolerance": 0.001,
+        }
+    ],
+    "scoring": {
+        "aggregation": "arithmetic_mean",
+        "comparison_groups": [{"id": "free_energy_difference", "mode": "all"}],
+    },
 }
 
 
@@ -178,6 +210,123 @@ def test_evaluate_one_extracts_raw_response_before_routing() -> None:
     assert result["raw_answer"] == answer["response"]
     assert result["extracted_answer"] == "COc1ccc2cc([C@@H](C)C(=O)O)ccc2c1"
     assert result["scores"]["score"] == pytest.approx(0.8810778082204156)
+
+
+def test_property_calculation_routes_without_constraints_or_specs() -> None:
+    result = evaluate_one(
+        {
+            "task_id": PROPERTY_TASK["task_id"],
+            "answer": 0.258031679,
+            "unit": "kJ/mol",
+        },
+        {PROPERTY_TASK["task_id"]: PROPERTY_TASK},
+        {},
+    )
+
+    assert result["status"] == "ok"
+    assert result["scores"]["score"] == 1.0
+    assert result["versions"] == {"property_calculation_evaluator": 1}
+
+
+def test_property_calculation_raw_and_structured_answers_match() -> None:
+    tasks = {PROPERTY_TASK["task_id"]: PROPERTY_TASK}
+    structured = evaluate_one(
+        {
+            "task_id": PROPERTY_TASK["task_id"],
+            "answer": 0.258031679,
+            "unit": "kJ/mol",
+        },
+        tasks,
+        {},
+    )
+    raw = evaluate_one(
+        {
+            "task_id": PROPERTY_TASK["task_id"],
+            "response": 'FINAL ANSWER: {"answer":0.258031679,"unit":"kJ/mol"}',
+        },
+        tasks,
+        {},
+    )
+
+    assert raw["status"] == "ok"
+    assert raw["scores"] == structured["scores"]
+    assert raw["properties"] == structured["properties"]
+    assert "raw_answer" in raw
+    assert "extracted_answer" in raw
+
+
+def test_property_calculation_never_runs_verifier_script(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("property calculation must not run a verifier script")
+
+    monkeypatch.setattr("benchmark.evaluate.run_verification_script", fail_if_called)
+
+    result = evaluate_one(
+        {"task_id": PROPERTY_TASK["task_id"], "answer": 0.0, "unit": "kJ/mol"},
+        {PROPERTY_TASK["task_id"]: PROPERTY_TASK},
+        {},
+    )
+
+    assert result["status"] == "ok"
+    assert result["scores"]["score"] == 0.0
+
+
+def test_explicit_open_generation_uses_existing_constraint_path() -> None:
+    task = {
+        "task_id": "open_task",
+        "task_type": "open_generation",
+        "constraints": [],
+    }
+
+    result = evaluate_one(
+        {"task_id": "open_task", "candidates": [{"smiles": "CCO"}]},
+        {"open_task": task},
+        {},
+    )
+
+    assert result["failure_type"] == "verifier_spec_error"
+    assert "constraint" in result["message"]
+
+
+def test_unknown_task_type_returns_task_error() -> None:
+    task = {**PROPERTY_TASK, "task_id": "unknown_type", "task_type": "other"}
+
+    result = evaluate_one(
+        {"task_id": "unknown_type", "candidates": [{"value": 1}]},
+        {"unknown_type": task},
+        {},
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "task_error"
+    assert "task_type" in result["message"]
+
+
+def test_property_calculation_evaluate_many_uses_standard_summary_and_coverage() -> None:
+    tasks = {PROPERTY_TASK["task_id"]: PROPERTY_TASK}
+    answers = [
+        {
+            "task_id": PROPERTY_TASK["task_id"],
+            "answer": 0.258031679,
+            "unit": "kJ/mol",
+        }
+    ]
+
+    report = evaluate_many(answers, tasks, {})
+
+    assert report["summary"]["num_ok"] == 1
+    assert report["summary"]["benchmark_score"] == 1.0
+    assert report["summary"]["coverage"]["complete"] is True
+    assert report["rows"][0]["score"] == 1.0
+
+
+def test_aggregate_scores_supports_arithmetic_mean_without_changing_default() -> None:
+    assert aggregate_scores([1.0, 0.0], "arithmetic_mean") == 0.5
+    assert aggregate_scores([1.2, -0.2], "arithmetic_mean") == 0.5
+    assert aggregate_scores([], "arithmetic_mean") == 0.0
+    assert aggregate_scores([1.0, 0.25], "geometric_mean") == 0.5
 
 
 def test_evaluate_one_returns_parse_error_for_missing_final_answer_line() -> None:
