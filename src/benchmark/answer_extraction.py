@@ -20,6 +20,12 @@ class ExtractionResult:
 
 
 def normalize_answer_record(record: dict[str, Any], task: dict[str, Any]) -> ExtractionResult:
+    task_type = task.get("task_type", "open_generation")
+    if task_type == "property_calculation" and not isinstance(
+        record.get("response", record.get("raw_answer")), str
+    ):
+        return normalize_property_answer(record, record)
+
     if "candidates" in record:
         return ExtractionResult(record, None, None)
 
@@ -52,9 +58,17 @@ def normalize_answer_record(record: dict[str, Any], task: dict[str, Any]) -> Ext
         candidate = {"smiles": extracted}
     elif value_type == "json":
         try:
-            candidate = {"json": json.loads(extracted)}
+            parsed_json = json.loads(extracted)
         except json.JSONDecodeError as exc:
             return ExtractionResult(None, "parse_error", f"invalid JSON final answer: {exc.msg}")
+        if task_type == "property_calculation":
+            return normalize_property_answer(
+                record,
+                parsed_json,
+                raw_answer=raw_answer,
+                extracted_answer=extracted,
+            )
+        candidate = {"json": parsed_json}
     elif value_type == "number":
         try:
             candidate = {"value": float(extracted), "raw_value": extracted}
@@ -73,6 +87,65 @@ def normalize_answer_record(record: dict[str, Any], task: dict[str, Any]) -> Ext
         None,
         None,
     )
+
+
+def normalize_property_answer(
+    record: dict[str, Any],
+    payload: Any,
+    *,
+    raw_answer: str | None = None,
+    extracted_answer: str | None = None,
+) -> ExtractionResult:
+    if not isinstance(payload, dict):
+        return ExtractionResult(None, "parse_error", "property answer must be a JSON object")
+
+    normalized: dict[str, Any] = {"task_id": record.get("task_id")}
+    if "answers" in payload:
+        answers = payload["answers"]
+        if not isinstance(answers, list):
+            return ExtractionResult(None, "parse_error", "property answers must be a list")
+        normalized_answers: list[dict[str, Any]] = []
+        property_names: set[str] = set()
+        for item in answers:
+            if not isinstance(item, dict):
+                return ExtractionResult(
+                    None,
+                    "parse_error",
+                    "property answer entries must be objects",
+                )
+            property_name = item.get("property")
+            if not isinstance(property_name, str) or not property_name:
+                return ExtractionResult(
+                    None,
+                    "parse_error",
+                    "property answer entries must include a property string",
+                )
+            if property_name in property_names:
+                return ExtractionResult(
+                    None,
+                    "parse_error",
+                    f"duplicate property in answer: {property_name}",
+                )
+            property_names.add(property_name)
+            normalized_answers.append(dict(item))
+        normalized["answers"] = normalized_answers
+    elif "answer" in payload or "unit" in payload:
+        if "answer" in payload:
+            normalized["answer"] = payload["answer"]
+        if "unit" in payload:
+            normalized["unit"] = payload["unit"]
+    else:
+        return ExtractionResult(
+            None,
+            "parse_error",
+            "property answer must include answer or answers",
+        )
+
+    if raw_answer is not None:
+        normalized["raw_answer"] = raw_answer
+    if extracted_answer is not None:
+        normalized["extracted_answer"] = extracted_answer
+    return ExtractionResult(normalized, None, None)
 
 
 def normalize_final_answer_block(record: dict[str, Any], raw_answer: str, schema: dict[str, Any]) -> ExtractionResult:
