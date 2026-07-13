@@ -110,3 +110,32 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     assert property_report["summary"]["coverage"]["complete"] is True
     assert property_report["summary"]["benchmark_score"] == 1.0
     assert [row["score"] for row in property_report["rows"]] == [1.0, 1.0]
+
+    python = venv_dir / ("Scripts" if sys.platform == "win32" else "bin") / "python"
+    xtb_completed = subprocess.run(
+        [
+            str(python),
+            "-c",
+            (
+                "import json, verifier_grounded_benchmark as v; "
+                "t=v.load_track('xtb'); "
+                "print(json.dumps({'task_ids':[x['task_id'] for x in t.tasks()],"
+                "'num_specs':len(t.verifier_specs_by_id)}))"
+            ),
+        ],
+        cwd=tmp_path,
+        check=True,
+        text=True,
+        capture_output=True,
+        env=env,
+    )
+    xtb_payload = json.loads(xtb_completed.stdout)
+    assert len(xtb_payload["task_ids"]) == 18
+    assert xtb_payload["num_specs"] == 13
+    assert {
+        "xtb_formula_dipole_min_014",
+        "xtb_two_fluorine_gap_min_015",
+        "xtb_c10_f2_gap_min_016",
+        "xtb_roy_singlepoint_energy_min_017",
+        "xtb_ritonavir_optimized_energy_min_018",
+    }.issubset(xtb_payload["task_ids"])
