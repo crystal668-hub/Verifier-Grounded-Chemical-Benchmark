@@ -38,7 +38,13 @@ def build_script_payload(
     candidate = candidates[0] if isinstance(candidates, list) and candidates and isinstance(candidates[0], dict) else {}
     task_payload = {
         key: task[key]
-        for key in ("task_id", "version", "object_type", "structural_domain")
+        for key in (
+            "task_id",
+            "version",
+            "object_type",
+            "structural_domain",
+            "structure_identity",
+        )
         if key in task
     }
     return {"task": task_payload, "constraint": constraint, "verifier_spec": spec, "candidate": candidate}
