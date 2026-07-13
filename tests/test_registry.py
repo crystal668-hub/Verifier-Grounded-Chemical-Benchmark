@@ -42,10 +42,14 @@ def test_registry_lists_only_formal_tracks_by_default() -> None:
     ]
 
 
-def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
+def test_public_registry_exposes_all_formal_builtins() -> None:
     tracks = vgb.list_tracks()
 
-    assert [track.name for track in tracks] == ["rdkit", "xtb"]
+    assert [track.name for track in tracks] == [
+        "rdkit",
+        "xtb",
+        "property_calculation",
+    ]
     assert tracks[0] == TrackDefinition(
         name="rdkit",
         version="0.1.0",
@@ -67,6 +71,17 @@ def test_public_registry_exposes_only_rdkit_and_xtb_builtins() -> None:
         status="formal",
         tags=("small_molecule_3d", "xtb", "xyz"),
         requirements=("xtb executable for real scoring",),
+        resource_root=ROOT,
+    )
+    assert tracks[2] == TrackDefinition(
+        name="property_calculation",
+        version="0.1.0",
+        display_name="Fixed-input property calculation tasks",
+        task_pack_path="tasks/property_calculation/tasks.yaml",
+        verifier_specs_path="tasks/property_calculation/verifier_specs.yaml",
+        sample_answers_path="tasks/property_calculation/sample_answers.jsonl",
+        status="formal",
+        tags=("property_calculation", "fixed_input", "crystal"),
         resource_root=ROOT,
     )
 

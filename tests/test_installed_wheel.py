@@ -11,6 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ANSWERS_PATH = ROOT / "tasks" / "rdkit_baseline" / "sample_answers.jsonl"
+PROPERTY_ANSWERS_PATH = ROOT / "tasks" / "property_calculation" / "sample_answers.jsonl"
 PROJECT_SITE_PACKAGE_PREFIXES = (
     "_editable_impl_verifier_grounded_benchmark",
     "benchmark",
@@ -89,3 +90,23 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     report = json.loads(completed.stdout)
     assert report["summary"]["coverage"]["complete"] is True
     assert report["summary"]["benchmark_score"] is not None
+
+    property_completed = subprocess.run(
+        [
+            str(executable),
+            "--track",
+            "property_calculation",
+            "--answers",
+            str(PROPERTY_ANSWERS_PATH),
+            "--require-complete",
+        ],
+        cwd=tmp_path,
+        check=True,
+        text=True,
+        capture_output=True,
+        env=env,
+    )
+    property_report = json.loads(property_completed.stdout)
+    assert property_report["summary"]["coverage"]["complete"] is True
+    assert property_report["summary"]["benchmark_score"] == 1.0
+    assert [row["score"] for row in property_report["rows"]] == [1.0, 1.0]

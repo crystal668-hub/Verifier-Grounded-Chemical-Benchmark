@@ -20,6 +20,11 @@ REMOVED_PROTOTYPE_TASK_PACKS = {
     "tasks/mace_materials/tasks.yaml",
     "tasks/matgl_materials/tasks.yaml",
 }
+PROPERTY_CALCULATION_FILES = {
+    "tasks/property_calculation/tasks.yaml",
+    "tasks/property_calculation/verifier_specs.yaml",
+    "tasks/property_calculation/sample_answers.jsonl",
+}
 
 
 def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path) -> None:
@@ -45,6 +50,8 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert REMOVED_COMPATIBILITY_SCRIPTS.isdisjoint(sdist_members)
     assert REMOVED_PROTOTYPE_TASK_PACKS.isdisjoint(wheel_members)
     assert REMOVED_PROTOTYPE_TASK_PACKS.isdisjoint(sdist_members)
+    assert PROPERTY_CALCULATION_FILES.issubset(wheel_members)
+    assert PROPERTY_CALCULATION_FILES.issubset(sdist_members)
 
 
 def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:
