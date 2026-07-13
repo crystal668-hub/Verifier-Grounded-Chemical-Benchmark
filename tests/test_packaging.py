@@ -6,6 +6,8 @@ import zipfile
 from email.parser import Parser
 from pathlib import Path
 
+import yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_XTB_CALIBRATION_FILES = {
@@ -29,6 +31,13 @@ PROPERTY_CALCULATION_FILES = {
     "tasks/property_calculation/verifier_specs.yaml",
     "tasks/property_calculation/sample_answers.jsonl",
 }
+FORMAL_EXPERT_XTB_TASK_IDS = {
+    "xtb_formula_dipole_min_014",
+    "xtb_two_fluorine_gap_min_015",
+    "xtb_c10_f2_gap_min_016",
+    "xtb_roy_singlepoint_energy_min_017",
+    "xtb_ritonavir_optimized_energy_min_018",
+}
 
 
 def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path) -> None:
@@ -45,8 +54,15 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
 
     with zipfile.ZipFile(wheel_path) as wheel:
         wheel_members = set(wheel.namelist())
+        wheel_tasks = yaml.safe_load(wheel.read("tasks/xtb_xyz/tasks.yaml"))
     with tarfile.open(sdist_path) as sdist:
         sdist_members = {"/".join(Path(member.name).parts[1:]) for member in sdist.getmembers()}
+        tasks_member = next(
+            member for member in sdist.getmembers() if member.name.endswith("/tasks/xtb_xyz/tasks.yaml")
+        )
+        extracted_tasks = sdist.extractfile(tasks_member)
+        assert extracted_tasks is not None
+        sdist_tasks = yaml.safe_load(extracted_tasks.read())
 
     assert PRIVATE_XTB_CALIBRATION_FILES.isdisjoint(wheel_members)
     assert PRIVATE_XTB_CALIBRATION_FILES.isdisjoint(sdist_members)
@@ -56,6 +72,12 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert REMOVED_PROTOTYPE_TASK_PACKS.isdisjoint(sdist_members)
     assert PROPERTY_CALCULATION_FILES.issubset(wheel_members)
     assert PROPERTY_CALCULATION_FILES.issubset(sdist_members)
+    assert FORMAL_EXPERT_XTB_TASK_IDS.issubset(
+        {task["task_id"] for task in wheel_tasks["tasks"]}
+    )
+    assert FORMAL_EXPERT_XTB_TASK_IDS.issubset(
+        {task["task_id"] for task in sdist_tasks["tasks"]}
+    )
 
 
 def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:
