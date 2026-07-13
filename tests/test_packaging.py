@@ -11,6 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_XTB_CALIBRATION_FILES = {
     "tasks/xtb_xyz/calibration_answers.jsonl",
     "tasks/xtb_xyz/calibration_manifest.yaml",
+    "tasks/xtb_xyz/expert_calibration/tasks.yaml",
+    "tasks/xtb_xyz/expert_calibration/verifier_specs.yaml",
+    "tasks/xtb_xyz/expert_calibration/answers.jsonl",
+    "tasks/xtb_xyz/expert_calibration/manifest.yaml",
 }
 REMOVED_COMPATIBILITY_SCRIPTS = {
     "scripts/score_answers.py",

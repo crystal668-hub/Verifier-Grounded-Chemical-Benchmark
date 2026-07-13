@@ -70,6 +70,7 @@ package = true
 exclude = [
     "/tasks/xtb_xyz/calibration_answers.jsonl",
     "/tasks/xtb_xyz/calibration_manifest.yaml",
+    "/tasks/xtb_xyz/expert_calibration/",
 ]
 
 [tool.hatch.build.targets.wheel]

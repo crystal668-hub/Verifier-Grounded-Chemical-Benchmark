@@ -1,0 +1,79 @@
+verifiers:
+  - verifier_id: xtb_dipole_doublet_gfn2_v1
+    name: xTB GFN2 Neutral Doublet Dipole Verifier
+    version: 1
+    verification_script: verifiers/xtb/xtb_dipole.py
+    timeout_seconds: 600
+    property_name: dipole_moment
+    resources: &resources
+      cpu: 2
+      memory_mb: 4096
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 1
+      validate_electron_parity: true
+    domain: &base_domain
+      max_absolute_coordinate: 30.0
+      min_interatomic_distance: 0.45
+      inferred_components: 1
+    scoring: &scoring
+      supported_modes: [minimize_bounded]
+      final_score_range: [0.0, 1.0]
+
+  - verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
+    name: xTB GFN2 Candidate-Charge Closed-Shell Gap Verifier
+    version: 1
+    verification_script: verifiers/xtb/xtb_gap.py
+    timeout_seconds: 600
+    property_name: homo_lumo_gap
+    resources: *resources
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge_source: xyz_comment
+      uhf: 0
+      validate_electron_parity: true
+    domain: *base_domain
+    scoring: *scoring
+
+  - verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
+    name: xTB GFN2 ROY Submitted-Geometry Energy Verifier
+    version: 1
+    verification_script: verifiers/xtb/xtb_total_energy.py
+    timeout_seconds: 300
+    property_name: total_energy
+    resources: *resources
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      validate_electron_parity: true
+      calculation_mode: submitted_singlepoint
+    domain: *base_domain
+    scoring: *scoring
+
+  - verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
+    name: xTB GFN2 Ritonavir Optimized Energy Verifier
+    version: 1
+    verification_script: verifiers/xtb/xtb_total_energy.py
+    timeout_seconds: 1800
+    property_name: total_energy
+    resources:
+      cpu: 2
+      memory_mb: 8192
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      validate_electron_parity: true
+      calculation_mode: optimized
+    domain: *base_domain
+    scoring: *scoring

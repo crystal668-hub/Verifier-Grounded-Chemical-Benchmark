@@ -20,6 +20,7 @@ EXPECTED_SCRIPT_PATHS = {
     "scripts/validation/check_xtb_xyz_samples.py",
     "scripts/xtb_calibration/__init__.py",
     "scripts/xtb_calibration/analyze_xtb_calibration.py",
+    "scripts/xtb_calibration/generate_expert_candidates.py",
     "scripts/xtb_calibration/run_xtb_calibration.py",
     "scripts/xtb_real_dataset/__init__.py",
     "scripts/xtb_real_dataset/analyze_xtb_real_dataset_distribution.py",

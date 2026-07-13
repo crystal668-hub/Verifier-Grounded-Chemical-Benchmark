@@ -1,0 +1,94 @@
+version: 1
+candidates:
+  task2_radical_seed_17:
+    task_id: xtb_formula_dipole_min_014
+    role: positive_candidate
+    source: RDKit ETKDG conformer of CCO[C](O)Nc1cc([N+](=O)[O-])cc([N+](=O)[O-])c1CC(O)CO
+    seed: 17
+    formula: C12H16N3O8
+  task2_radical_seed_29:
+    task_id: xtb_formula_dipole_min_014
+    role: positive_candidate
+    source: RDKit ETKDG conformer of CCO[C](O)Nc1cc([N+](=O)[O-])cc([N+](=O)[O-])c1CC(O)CO
+    seed: 29
+    formula: C12H16N3O8
+  task3_difluorobenzoquinone_seed_19:
+    task_id: xtb_two_fluorine_gap_min_015
+    role: positive_candidate
+    source: RDKit ETKDG conformer of O=C1C(F)=CC(=O)C(F)=C1
+    seed: 19
+    formula: C6H2F2O2
+  task3_difluorobenzoquinone_seed_31:
+    task_id: xtb_two_fluorine_gap_min_015
+    role: positive_candidate
+    source: RDKit ETKDG conformer of O=C1C(F)=CC(=O)C(F)=C1
+    seed: 31
+    formula: C6H2F2O2
+  task4_difluoronaphthoquinone_seed_23:
+    task_id: xtb_c10_f2_gap_min_016
+    role: positive_candidate
+    source: RDKit ETKDG conformer of O=C1C(F)=CC2=CC=CC(F)=C2C1=O
+    seed: 23
+    formula: C10H4F2O2
+  task4_difluoronaphthoquinone_seed_37:
+    task_id: xtb_c10_f2_gap_min_016
+    role: positive_candidate
+    source: RDKit ETKDG conformer of O=C1C(F)=CC2=CC=CC(F)=C2C1=O
+    seed: 37
+    formula: C10H4F2O2
+  roy_seed_7:
+    task_id: xtb_roy_singlepoint_energy_min_017
+    role: positive_candidate
+    source: RDKit ETKDG conformer of Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
+    seed: 7
+    formula: C12H9N3O2S
+  roy_seed_11:
+    task_id: xtb_roy_singlepoint_energy_min_017
+    role: positive_candidate
+    source: RDKit ETKDG conformer of Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
+    seed: 11
+    formula: C12H9N3O2S
+  roy_seed_17:
+    task_id: xtb_roy_singlepoint_energy_min_017
+    role: positive_candidate
+    source: RDKit ETKDG conformer of Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
+    seed: 17
+    formula: C12H9N3O2S
+  ritonavir_seed_7:
+    task_id: xtb_ritonavir_optimized_energy_min_018
+    role: positive_candidate
+    source: RDKit ETKDG conformer of CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+    seed: 7
+    formula: C37H48N6O5S2
+  ritonavir_seed_13:
+    task_id: xtb_ritonavir_optimized_energy_min_018
+    role: positive_candidate
+    source: RDKit ETKDG conformer of CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+    seed: 13
+    formula: C37H48N6O5S2
+  ritonavir_seed_19:
+    task_id: xtb_ritonavir_optimized_energy_min_018
+    role: positive_candidate
+    source: RDKit ETKDG conformer of CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+    seed: 19
+    formula: C37H48N6O5S2
+  task2_negative_water:
+    task_id: xtb_formula_dipole_min_014
+    role: negative_baseline
+    source: negative formula
+  task3_negative_water:
+    task_id: xtb_two_fluorine_gap_min_015
+    role: negative_baseline
+    source: missing fluorine
+  task4_negative_methane:
+    task_id: xtb_c10_f2_gap_min_016
+    role: negative_baseline
+    source: wrong counts
+  roy_negative_acetonitrile:
+    task_id: xtb_roy_singlepoint_energy_min_017
+    role: negative_baseline
+    source: wrong identity
+  ritonavir_negative_roy:
+    task_id: xtb_ritonavir_optimized_energy_min_018
+    role: negative_baseline
+    source: wrong identity

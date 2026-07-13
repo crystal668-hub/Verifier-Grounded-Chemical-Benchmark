@@ -1,0 +1,193 @@
+tasks:
+  - task_id: xtb_formula_dipole_min_014
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: false
+    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, dipole_moment, doublet]
+    prompt: |
+      Propose one connected molecule with formula C12H16N3O8 as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain all hydrogens explicitly.
+      - Use a neutral doublet electronic state.
+      - Minimize the dipole moment after geometry optimization.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: &xyz_answer_schema
+      format: final_answer_block
+      final_answer_prefix: "FINAL ANSWER:"
+      value_type: xyz
+      fence_language: xyz
+      cardinality: one
+    constraints:
+      - type: minimize_bounded
+        property: dipole_moment
+        verifier_id: xtb_dipole_doublet_gfn2_v1
+        lower: 0.0
+        upper: 20.0
+        calibration_pending: true
+    structural_domain:
+      formula: C12H16N3O8
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: &failure_policy
+      malformed_final_answer: parse_error
+      invalid_xyz: parse_error
+      invalid_coordinates: validity_error
+      disconnected_geometry: validity_error
+      atom_overlap: validity_error
+      outside_domain: domain_error
+      missing_xtb: verifier_environment_error
+      backend_failure: verifier_tool_error
+      timeout: verifier_timeout
+
+  - task_id: xtb_two_fluorine_gap_min_015
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: false
+    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, homo_lumo_gap, charged_closed_shell]
+    prompt: |
+      Propose one connected closed-shell molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain all hydrogens explicitly.
+      - Allowed elements: H, C, O, N, S, F, Cl.
+      - The total atom count, including hydrogens, must be at most 40.
+      - The molecule must contain exactly 2 fluorine atoms and at most 10 carbon atoms.
+      - The XYZ comment line must have the exact form charge=<integer>.
+      - Minimize the HOMO-LUMO gap after geometry optimization.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: homo_lumo_gap
+        verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
+        lower: 0.0
+        upper: 10.0
+        calibration_pending: true
+    structural_domain:
+      allowed_elements: [H, C, O, N, S, F, Cl]
+      atom_count: [1, 40]
+      element_count_exact: {F: 2}
+      element_count_max: {C: 10}
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: xtb_c10_f2_gap_min_016
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: false
+    capability_tags: [open_generation, property_optimization, three_dimensional_geometry, xyz, homo_lumo_gap, charged_closed_shell]
+    prompt: |
+      Propose one connected closed-shell molecule as an XYZ geometry.
+
+      The molecule must satisfy these requirements:
+      - The XYZ must contain all hydrogens explicitly.
+      - Allowed elements: H, C, O, N, S, F, Cl.
+      - The total atom count, including hydrogens, must be at most 40.
+      - The molecule must contain exactly 10 carbon atoms and exactly 2 fluorine atoms.
+      - The XYZ comment line must have the exact form charge=<integer>.
+      - Minimize the HOMO-LUMO gap after geometry optimization.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: homo_lumo_gap
+        verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
+        lower: 0.0
+        upper: 10.0
+        calibration_pending: true
+    structural_domain:
+      allowed_elements: [H, C, O, N, S, F, Cl]
+      atom_count: [1, 40]
+      element_count_exact: {C: 10, F: 2}
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: xtb_roy_singlepoint_energy_min_017
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: advanced
+    formal_track: false
+    capability_tags: [open_generation, conformer_optimization, three_dimensional_geometry, xyz, total_energy, singlepoint]
+    prompt: |
+      Propose a low-energy 3D conformer of the ROY molecule with this reference SMILES:
+      Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
+
+      The XYZ must contain all hydrogens explicitly. Minimize the single-point energy of the submitted geometry; do not assume geometry optimization before scoring.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: total_energy
+        verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
+        lower: -100.0
+        upper: 0.0
+        calibration_pending: true
+    structural_domain:
+      formula: C12H9N3O2S
+    structure_identity:
+      reference_smiles: Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
+      require_stereochemistry: false
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: xtb_ritonavir_optimized_energy_min_018
+    version: 1
+    object_type: small_molecule_3d
+    difficulty: expert
+    formal_track: false
+    capability_tags: [open_generation, conformer_optimization, three_dimensional_geometry, xyz, total_energy, stereochemistry]
+    prompt: |
+      Propose a low-energy 3D conformer of Ritonavir with this isomeric reference SMILES:
+      CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+
+      The XYZ must contain all hydrogens explicitly. Minimize the energy after geometry optimization while preserving the molecular structure and specified stereochemistry.
+
+      Your final answer must appear exactly in this format:
+      FINAL ANSWER:
+      ```xyz
+      <XYZ content>
+      ```
+    answer_schema: *xyz_answer_schema
+    constraints:
+      - type: minimize_bounded
+        property: total_energy
+        verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
+        lower: -200.0
+        upper: 0.0
+        calibration_pending: true
+    structural_domain:
+      formula: C37H48N6O5S2
+    structure_identity:
+      reference_smiles: CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+      require_stereochemistry: true
+      recheck_after_optimization: true
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
