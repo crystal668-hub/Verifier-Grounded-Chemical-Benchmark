@@ -19,6 +19,8 @@ from rdkit import Chem
 from verifiers.common.scoring import score_constraint
 from verifiers.common.result_schema import base_result
 from verifiers.common.result_schema import error_result
+from verifiers.xtb.structure_identity import StructureIdentityError
+from verifiers.xtb.structure_identity import validate_structure_identity
 
 
 HARTREE_TO_EV = 27.211386245988
@@ -426,6 +428,26 @@ def evaluate_xtb_property_constraint(
         "uhf": electronic_state.uhf,
     }
 
+    identity_config = task.get("structure_identity") or {}
+    identity_properties: dict[str, Any] = {}
+    if identity_config:
+        try:
+            identity_properties = validate_structure_identity(
+                molecule,
+                reference_smiles=str(identity_config["reference_smiles"]),
+                charge=electronic_state.charge,
+                require_stereochemistry=bool(
+                    identity_config.get("require_stereochemistry", False)
+                ),
+            )
+        except (KeyError, StructureIdentityError) as exc:
+            return error_result(
+                result,
+                "domain_error",
+                str(exc),
+                properties=xyz_properties,
+            )
+
     xtb_runner = runner or XTBRunner(str((spec.get("backend") or {}).get("executable", "xtb")))
     timeout = float(spec.get("timeout_seconds", 60.0))
 
@@ -449,7 +471,42 @@ def evaluate_xtb_property_constraint(
         except XTBToolError as exc:
             return error_result(result, "verifier_tool_error", str(exc), properties=xyz_properties)
 
-    merged_properties = {**xyz_properties, **properties}
+        if identity_config.get("recheck_after_optimization"):
+            optimized_path = optimized_geometry_path(xyz_path)
+            try:
+                optimized_molecule = parse_xyz(optimized_path.read_text())
+                post_identity = validate_structure_identity(
+                    optimized_molecule,
+                    reference_smiles=str(identity_config["reference_smiles"]),
+                    charge=electronic_state.charge,
+                    require_stereochemistry=bool(
+                        identity_config.get("require_stereochemistry", False)
+                    ),
+                )
+            except (OSError, XTBParseError) as exc:
+                return error_result(
+                    result,
+                    "verifier_tool_error",
+                    f"could not read optimized geometry: {exc}",
+                    properties={**xyz_properties, **properties},
+                )
+            except StructureIdentityError as exc:
+                return error_result(
+                    result,
+                    "domain_error",
+                    f"optimized structure {exc}",
+                    properties={**xyz_properties, **properties},
+                )
+            identity_properties.update(
+                {
+                    "post_optimization_graph_match": post_identity["graph_match"],
+                    "post_optimization_stereochemistry_match": post_identity[
+                        "stereochemistry_match"
+                    ],
+                }
+            )
+
+    merged_properties = {**xyz_properties, **identity_properties, **properties}
     constraint_score = {
         "property": constraint["property"],
         "type": constraint["type"],
