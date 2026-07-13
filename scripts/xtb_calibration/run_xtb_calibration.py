@@ -7,6 +7,7 @@ import argparse
 import json
 import shutil
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -44,6 +45,79 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def calculation_mode(property_name: str | None, spec: dict[str, Any]) -> str | None:
+    backend = spec.get("backend") or {}
+    configured_mode = backend.get("calculation_mode")
+    if isinstance(configured_mode, str):
+        return configured_mode
+    if property_name == "relaxation_energy":
+        return "submitted_singlepoint_then_optimized"
+    if property_name == "entropy_298_per_heavy_atom":
+        return "optimized_hessian"
+    if property_name:
+        return "optimized"
+    return None
+
+
+def build_calibration_row(
+    *,
+    answer: dict[str, Any],
+    result: dict[str, Any],
+    task: dict[str, Any],
+    spec: dict[str, Any],
+    wall_time_seconds: float,
+) -> dict[str, Any]:
+    scores = result.get("scores") or {}
+    properties = result.get("properties") or {}
+    constraints = task.get("constraints") or []
+    primary_constraint = constraints[0] if constraints else {}
+    property_name = primary_constraint.get("property")
+    mode = calculation_mode(property_name, spec)
+    failure_type = result.get("failure_type")
+    if mode in {"submitted_singlepoint", None}:
+        converged = None
+    elif result.get("status") == "ok":
+        converged = True
+    elif failure_type in {"verifier_timeout", "verifier_tool_error"}:
+        converged = False
+    else:
+        converged = None
+
+    return {
+        "candidate_id": answer.get("candidate_id"),
+        "role": answer.get("role"),
+        "task_id": result.get("task_id"),
+        "status": result.get("status"),
+        "failure_type": failure_type,
+        "score": scores.get("score", 0.0),
+        "property_score": scores.get("property_score", 0.0),
+        "geometry_quality_score": scores.get("geometry_quality_score"),
+        "stability_gate_score": scores.get("stability_gate_score"),
+        "property_name": property_name,
+        "calculation_mode": mode,
+        "resolved_charge": properties.get("charge"),
+        "resolved_uhf": properties.get("uhf"),
+        "wall_time_seconds": wall_time_seconds,
+        "converged": converged,
+        "identity": {
+            "graph_match": properties.get("graph_match"),
+            "stereochemistry_match": properties.get("stereochemistry_match"),
+            "post_optimization_graph_match": properties.get(
+                "post_optimization_graph_match"
+            ),
+            "post_optimization_stereochemistry_match": properties.get(
+                "post_optimization_stereochemistry_match"
+            ),
+        },
+        # The shared process cannot attribute its high-water RSS to one candidate.
+        "peak_memory_mb": None,
+        "peak_memory_status": "unavailable",
+        "properties": properties,
+        "constraint_scores": scores.get("constraint_scores", []),
+        "message": result.get("message"),
+    }
+
+
 def main() -> int:
     args = parse_args()
     executable = shutil.which("xtb")
@@ -70,23 +144,20 @@ def main() -> int:
 
     rows: list[dict[str, Any]] = []
     for answer in answers:
+        task = tasks.get(str(answer.get("task_id")), {})
+        constraints = task.get("constraints") or []
+        primary_constraint = constraints[0] if constraints else {}
+        spec = specs.get(str(primary_constraint.get("verifier_id")), {})
+        started_at = time.perf_counter()
         result = evaluate_one(answer, tasks, specs)
-        scores = result.get("scores") or {}
         rows.append(
-            {
-                "candidate_id": answer.get("candidate_id"),
-                "role": answer.get("role"),
-                "task_id": result.get("task_id"),
-                "status": result.get("status"),
-                "failure_type": result.get("failure_type"),
-                "score": scores.get("score", 0.0),
-                "property_score": scores.get("property_score", 0.0),
-                "geometry_quality_score": scores.get("geometry_quality_score"),
-                "stability_gate_score": scores.get("stability_gate_score"),
-                "properties": result.get("properties", {}),
-                "constraint_scores": scores.get("constraint_scores", []),
-                "message": result.get("message"),
-            }
+            build_calibration_row(
+                answer=answer,
+                result=result,
+                task=task,
+                spec=spec,
+                wall_time_seconds=time.perf_counter() - started_at,
+            )
         )
 
     payload = {
