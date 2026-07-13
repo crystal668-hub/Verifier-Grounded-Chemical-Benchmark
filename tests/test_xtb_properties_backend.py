@@ -504,6 +504,130 @@ def test_xtb_relaxation_energy_uses_singlepoint_and_optimized_energies() -> None
     assert [call[0] for call in runner.calls] == ["singlepoint", "optimize"]
 
 
+@pytest.mark.parametrize(
+    ("calculation_mode", "expected_runner_mode", "expected_energy"),
+    [
+        ("submitted_singlepoint", "singlepoint", -5.0),
+        ("optimized", "optimize", -5.070680245292),
+    ],
+)
+def test_xtb_total_energy_supports_submitted_and_optimized_modes(
+    calculation_mode: str,
+    expected_runner_mode: str,
+    expected_energy: float,
+) -> None:
+    runner = FakeRunner()
+    current_task = {
+        "task_id": "total_energy_task",
+        "constraints": [
+            {
+                "type": "minimize_bounded",
+                "property": "total_energy",
+                "verifier_id": "xtb_total_energy_gfn2_v1",
+                "lower": -6.0,
+                "upper": -4.0,
+            }
+        ],
+    }
+    spec = advanced_spec(
+        "xtb_total_energy_gfn2_v1",
+        "total_energy",
+        {"calculation_mode": calculation_mode},
+    )
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": METHANE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["total_energy"] == pytest.approx(expected_energy)
+    assert result["properties"]["total_energy_unit"] == "hartree"
+    assert [call[0] for call in runner.calls] == [expected_runner_mode]
+
+
+def test_xtb_total_energy_rejects_unknown_calculation_mode() -> None:
+    current_task = {
+        "task_id": "total_energy_task",
+        "constraints": [
+            {
+                "type": "minimize_bounded",
+                "property": "total_energy",
+                "verifier_id": "xtb_total_energy_gfn2_v1",
+                "lower": -6.0,
+                "upper": -4.0,
+            }
+        ],
+    }
+    spec = advanced_spec(
+        "xtb_total_energy_gfn2_v1",
+        "total_energy",
+        {"calculation_mode": "unknown"},
+    )
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": METHANE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=FakeRunner(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_spec_error"
+    assert "calculation_mode" in result["message"]
+
+
+def test_xtb_total_energy_requires_energy_in_output() -> None:
+    class MissingEnergyRunner:
+        def run(
+            self,
+            mode: str,
+            xyz_path: Path,
+            timeout_seconds: float,
+            *,
+            spec: dict,
+        ) -> xtb_properties.XTBRunResult:
+            return xtb_properties.XTBRunResult(
+                stdout="normal termination of xtb",
+                stderr="",
+                returncode=0,
+            )
+
+    current_task = {
+        "task_id": "total_energy_task",
+        "constraints": [
+            {
+                "type": "minimize_bounded",
+                "property": "total_energy",
+                "verifier_id": "xtb_total_energy_gfn2_v1",
+                "lower": -6.0,
+                "upper": -4.0,
+            }
+        ],
+    }
+    spec = advanced_spec(
+        "xtb_total_energy_gfn2_v1",
+        "total_energy",
+        {"calculation_mode": "submitted_singlepoint"},
+    )
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": METHANE_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=MissingEnergyRunner(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "verifier_tool_error"
+    assert "total energy" in result["message"]
+
+
 def test_xtb_lumo_scores_fake_optimized_output() -> None:
     runner = AdvancedFakeRunner()
     current_task = task("lumo_energy", "minimize_bounded")

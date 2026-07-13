@@ -79,6 +79,10 @@ class XTBToolError(XTBError):
     """Raised when xTB execution or output parsing fails."""
 
 
+class XTBSpecError(XTBError):
+    """Raised when an xTB verifier spec is internally inconsistent."""
+
+
 class XTBTimeoutError(XTBError):
     """Raised when an xTB run times out."""
 
@@ -438,6 +442,8 @@ def evaluate_xtb_property_constraint(
             )
         except XTBEnvironmentError as exc:
             return error_result(result, "verifier_environment_error", str(exc), properties=xyz_properties)
+        except XTBSpecError as exc:
+            return error_result(result, "verifier_spec_error", str(exc), properties=xyz_properties)
         except XTBTimeoutError as exc:
             return error_result(result, "verifier_timeout", str(exc), properties=xyz_properties)
         except XTBToolError as exc:
@@ -475,6 +481,27 @@ def run_property_calculation(
     timeout_seconds: float,
     spec: dict[str, Any],
 ) -> dict[str, float | str]:
+    if property_name == "total_energy":
+        calculation_mode = (spec.get("backend") or {}).get("calculation_mode")
+        if calculation_mode == "submitted_singlepoint":
+            parsed = parse_xtb_output(
+                runner.run("singlepoint", xyz_path, timeout_seconds, spec=spec).stdout
+            )
+        elif calculation_mode == "optimized":
+            parsed = parse_xtb_output(
+                runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout,
+                require_converged=True,
+            )
+        else:
+            raise XTBSpecError(
+                f"unsupported total_energy calculation_mode: {calculation_mode}"
+            )
+        if "total_energy_hartree" not in parsed:
+            raise XTBToolError("xTB output missing total energy")
+        return {
+            "total_energy": parsed["total_energy_hartree"],
+            "total_energy_unit": "hartree",
+        }
     if property_name == "relaxation_energy":
         singlepoint = parse_xtb_output(runner.run("singlepoint", xyz_path, timeout_seconds, spec=spec).stdout)
         optimized = parse_xtb_output(runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout, require_converged=True)
