@@ -480,10 +480,10 @@ task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level ve
 `tasks/xtb_xyz/` 已经形成第二个可复用模板：
 
 - 题目要求模型直接输出 fenced `xyz` block，而不是只输出 SMILES 或自报性质。
-- 当前包含 13 个 formal tasks，覆盖 HOMO-LUMO gap、dipole moment、LUMO、polarizability/dipole、ALPB solvation selectivity、global electrophilicity、Fukui carbon-site response 和 hessian thermochemistry。
-- 当前包含 9 个 verifier specs，包括 gap、dipole、relaxation energy、LUMO、polarizability、ALPB selectivity、electrophilicity、Fukui 和 hessian thermo；每个 spec 绑定对应的 property-level `verifiers/xtb/*.py` 脚本。
-- `verifiers/xtb/backend.py` 负责 XYZ 解析、元素和几何 domain 检查、连通性检查、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
-- relaxation energy 已作为 direct-XYZ 几何质量 gate 接入聚合逻辑，避免模型提交粗糙或非低能构型只靠优化后性质得分。
+- 当前包含 18 个 formal tasks，覆盖 HOMO-LUMO gap、dipole moment、LUMO、polarizability/dipole、ALPB solvation selectivity、global electrophilicity、Fukui carbon-site response、hessian thermochemistry，以及固定分子式/电子态和 ROY、Ritonavir 构象能量题。
+- 当前包含 13 个 verifier specs；新增的 expert specs 支持 neutral doublet dipole、comment-declared charge closed-shell gap、submitted-geometry total energy 和 optimized total energy。
+- `verifiers/xtb/backend.py` 负责 XYZ 解析、精确组成和电子态验证、几何 domain 与连通性检查、分子图/立体化学 identity gate、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
+- relaxation energy 已作为原有 001-013 direct-XYZ 题的几何质量 gate 接入聚合逻辑；严格按专家题面实现的 014-018 不额外引入该 gate。
 
 这部分代表了“需要外部本地计算工具，但仍可用 property-level script + shared backend 固化”的设计路径。后续接入其他计算化学 verifier 时，应优先参考 xTB 的模式：把候选对象格式、计算前 domain gate、工具失败 taxonomy、资源上限和质量 gate 写入 spec，而不是把这些逻辑散落在题目或 runner 中。
 
