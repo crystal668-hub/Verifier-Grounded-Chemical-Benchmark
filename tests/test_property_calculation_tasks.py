@@ -1,0 +1,201 @@
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
+
+import pytest
+import yaml
+
+
+ROOT = Path(__file__).resolve().parents[1]
+TASK_DIR = ROOT / "tasks" / "property_calculation"
+EXPECTED_CIF = {
+    "ETDIAM01": (
+        43,
+        "83adc2a15c2a055782f584c51b20a0593ef217696379136e8a0b864176cc36fc",
+        24,
+        "H16 C4 N4",
+    ),
+    "ETDIAM18": (
+        43,
+        "b8b9b3c434ec6abda60cba8e7e7706716c33c72960f66390cece8210ca8458e9",
+        24,
+        "H16 C4 N4",
+    ),
+    "alpha_CONTCAR": (
+        147,
+        "5fbc76d737dfc685285d2ebea3a81f44a5c80ffe25006c6d215e0f40769bd7b5",
+        108,
+        "H12 C36 I36 N24",
+    ),
+    "beta_CONTCAR": (
+        147,
+        "ffeb5e8e658620edd65def789fb3859a92edb650fd4f3033e39a3c03cbe04590",
+        108,
+        "H12 C36 I36 N24",
+    ),
+}
+
+
+def load_tasks() -> dict[str, dict]:
+    with (TASK_DIR / "tasks.yaml").open() as handle:
+        return {task["task_id"]: task for task in yaml.safe_load(handle)["tasks"]}
+
+
+def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
+    tasks = load_tasks()
+
+    assert set(tasks) == {
+        "property_calc_free_energy_001",
+        "property_calc_crystal_phase_002",
+    }
+    for task in tasks.values():
+        assert task["version"] == 1
+        assert task["task_type"] == "property_calculation"
+        assert task["object_type"] == "crystal_pair"
+        assert task["formal_track"] is True
+        assert task["answer_schema"] == {
+            "format": "final_answer_line",
+            "final_answer_prefix": "FINAL ANSWER:",
+            "value_type": "json",
+            "cardinality": "one",
+        }
+        assert "constraints" not in task
+        assert task["gold_provenance"] == {
+            "disclosure": "withheld_initial_release"
+        }
+        assert task["scoring"]["aggregation"] == "arithmetic_mean"
+        assert "parse_error" in set(task["failure_policy"].values())
+
+
+def test_all_cif_inputs_are_complete_and_embedded_verbatim_in_prompts() -> None:
+    tasks = load_tasks()
+    objects = {
+        item["object_id"]: (task, item)
+        for task in tasks.values()
+        for item in task["input_objects"]
+    }
+
+    assert set(objects) == set(EXPECTED_CIF)
+    for object_id, (task, item) in objects.items():
+        expected_lines, expected_hash, _, _ = EXPECTED_CIF[object_id]
+        value = item["value"]
+        assert item["type"] == "cif"
+        assert item["presentation"] == "prompt_inline"
+        assert len(value.splitlines()) == expected_lines
+        assert hashlib.sha256(value.encode()).hexdigest() == expected_hash
+        assert value in task["prompt"]
+
+
+def test_cif_inputs_parse_to_expected_structures() -> None:
+    pymatgen = pytest.importorskip("pymatgen.core")
+    tasks = load_tasks()
+
+    for task in tasks.values():
+        for item in task["input_objects"]:
+            _, _, atom_count, formula = EXPECTED_CIF[item["object_id"]]
+            structure = pymatgen.Structure.from_str(item["value"], fmt="cif")
+            assert len(structure) == atom_count
+            assert structure.composition.formula == formula
+            assert structure.volume > 0
+
+
+def test_task_7_contract_and_gold() -> None:
+    task = load_tasks()["property_calc_free_energy_001"]
+
+    assert [item["object_id"] for item in task["input_objects"]] == [
+        "ETDIAM01",
+        "ETDIAM18",
+    ]
+    assert task["requested_properties"] == [
+        {
+            "name": "free_energy_difference",
+            "value_type": "number",
+            "unit": "kJ/mol",
+            "comparison_group": "free_energy_difference",
+        }
+    ]
+    assert task["gold_answers"] == [
+        {
+            "property": "free_energy_difference",
+            "value": 0.258031679,
+            "unit": "kJ/mol",
+            "absolute_tolerance": 0.001,
+        }
+    ]
+    assert task["scoring"]["comparison_groups"] == [
+        {"id": "free_energy_difference", "mode": "all"}
+    ]
+    assert "300 K" in task["prompt"]
+    assert "kJ/mol" in task["prompt"]
+    assert "meV" not in task["prompt"]
+    assert "0.258031679" not in task["prompt"]
+
+
+def test_task_8_contract_and_gold() -> None:
+    task = load_tasks()["property_calc_crystal_phase_002"]
+
+    assert [item["object_id"] for item in task["input_objects"]] == [
+        "alpha_CONTCAR",
+        "beta_CONTCAR",
+    ]
+    assert task["requested_properties"] == [
+        {
+            "name": "potential_energy_difference",
+            "value_type": "number",
+            "unit": "eV",
+            "comparison_group": "potential_energy_difference",
+        },
+        {
+            "name": "ambient_pressure_phase",
+            "value_type": "string",
+            "comparison_group": "pressure_phase_assignment",
+        },
+        {
+            "name": "high_pressure_phase",
+            "value_type": "string",
+            "comparison_group": "pressure_phase_assignment",
+        },
+    ]
+    assert task["gold_answers"] == [
+        {
+            "property": "potential_energy_difference",
+            "value": 0.079,
+            "unit": "eV",
+            "absolute_tolerance": 0.001,
+        },
+        {"property": "ambient_pressure_phase", "value": "alpha"},
+        {"property": "high_pressure_phase", "value": "beta"},
+    ]
+    assert task["scoring"]["comparison_groups"] == [
+        {"id": "potential_energy_difference", "mode": "all"},
+        {"id": "pressure_phase_assignment", "mode": "all"},
+    ]
+    assert "0.079" not in task["prompt"]
+    assert "alpha is" not in task["prompt"].lower()
+    assert "beta is" not in task["prompt"].lower()
+
+
+def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:
+    banned = [
+        "/Users/",
+        "attachment",
+        "upload",
+        "pymatgen",
+        "xTB",
+        "verifier",
+        "gold",
+        "generation protocol",
+    ]
+    for task in load_tasks().values():
+        prompt = task["prompt"]
+        assert prompt.isascii()
+        assert all(fragment.lower() not in prompt.lower() for fragment in banned)
+        assert prompt.count("```cif") == 2
+
+
+def test_property_track_has_no_runtime_verifier_specs() -> None:
+    with (TASK_DIR / "verifier_specs.yaml").open() as handle:
+        payload = yaml.safe_load(handle)
+
+    assert payload == {"verifiers": []}
