@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 from collections import Counter
+from copy import deepcopy
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
@@ -82,6 +83,10 @@ class XTBTimeoutError(XTBError):
     """Raised when an xTB run times out."""
 
 
+class XTBElectronicStateError(XTBError):
+    """Raised when charge, spin, and electron count are incompatible."""
+
+
 @dataclass(frozen=True)
 class XYZAtom:
     symbol: str
@@ -101,6 +106,13 @@ class XTBRunResult:
     stdout: str
     stderr: str
     returncode: int
+
+
+@dataclass(frozen=True)
+class ElectronicState:
+    charge: int
+    uhf: int
+    electron_count: int
 
 
 class XTBRunnerProtocol(Protocol):
@@ -147,6 +159,7 @@ def inspect_xyz(molecule: XYZMolecule) -> dict[str, Any]:
         "heavy_atom_count": heavy_atom_count,
         "elements": elements,
         "formula": hill_formula(dict(counts)),
+        "element_counts": dict(counts),
         "carbon_count": counts.get("C", 0),
         "hetero_atom_count": sum(count for element, count in counts.items() if element not in {"H", "C"}),
         "heavy_element_diversity": len({element for element in counts if element != "H"}),
@@ -180,6 +193,14 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
         lower, upper = domain["heavy_atom_count"]
         if not int(lower) <= int(properties["heavy_atom_count"]) <= int(upper):
             return f"heavy_atom_count outside [{lower}, {upper}]"
+    if "formula" in domain and properties["formula"] != domain["formula"]:
+        return f"formula must be {domain['formula']}"
+    for element, expected in domain.get("element_count_exact", {}).items():
+        if properties["element_counts"].get(element, 0) != int(expected):
+            return f"{element} count must be {expected}"
+    for element, maximum in domain.get("element_count_max", {}).items():
+        if properties["element_counts"].get(element, 0) > int(maximum):
+            return f"{element} count exceeds maximum {maximum}"
     if "carbon_count_min" in domain and properties["carbon_count"] < int(domain["carbon_count_min"]):
         return f"carbon_count below minimum {domain['carbon_count_min']}"
     if "hetero_atom_count_min" in domain and properties["hetero_atom_count"] < int(domain["hetero_atom_count_min"]):
@@ -207,6 +228,40 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
     if int(domain.get("inferred_components", 1)) == 1 and component_count(molecule) != 1:
         return "disconnected geometry is not accepted"
     return None
+
+
+def parse_xyz_charge(comment: str) -> int:
+    match = re.fullmatch(r"charge=([+-]?\d+)", comment)
+    if match is None:
+        raise XTBParseError("XYZ comment must have exact form charge=<integer>")
+    return int(match.group(1))
+
+
+def resolve_electronic_state(
+    molecule: XYZMolecule,
+    spec: dict[str, Any],
+) -> ElectronicState:
+    backend = spec.get("backend") or {}
+    charge_source = backend.get("charge_source", "fixed")
+    if charge_source == "xyz_comment":
+        charge = parse_xyz_charge(molecule.comment)
+    elif charge_source == "fixed":
+        charge = int(backend.get("charge", 0))
+    else:
+        raise XTBElectronicStateError(f"unsupported charge source: {charge_source}")
+    uhf = int(backend.get("uhf", 0))
+    if uhf < 0:
+        raise XTBElectronicStateError("UHF must be non-negative")
+
+    table = Chem.GetPeriodicTable()
+    electron_count = sum(table.GetAtomicNumber(atom.symbol) for atom in molecule.atoms) - charge
+    if electron_count <= 0:
+        raise XTBElectronicStateError("electron count must be positive")
+    if backend.get("validate_electron_parity") and (electron_count - uhf) % 2 != 0:
+        raise XTBElectronicStateError(
+            f"electron count {electron_count} is incompatible with UHF {uhf}"
+        )
+    return ElectronicState(charge=charge, uhf=uhf, electron_count=electron_count)
 
 
 def pairwise_distances(molecule: XYZMolecule) -> list[tuple[int, int, float]]:
@@ -340,23 +395,32 @@ def evaluate_xtb_property_constraint(
     domain_error = check_domain(molecule, xyz_properties, domain)
     if domain_error:
         failure_type = (
-            "domain_error"
-            if domain_error.startswith(
-                (
-                    "disallowed",
-                    "atom_count",
-                    "heavy_atom_count",
-                    "carbon_count",
-                    "hetero_atom_count",
-                    "heavy_element_diversity",
-                    "formula",
-                    "max_absolute",
-                    "unknown",
-                )
-            )
-            else "validity_error"
+            "validity_error"
+            if domain_error.startswith(("interatomic distance", "disconnected"))
+            else "domain_error"
         )
         return error_result(result, failure_type, domain_error, properties=xyz_properties)
+
+    try:
+        electronic_state = resolve_electronic_state(molecule, spec)
+    except XTBParseError as exc:
+        return error_result(result, "parse_error", str(exc), properties=xyz_properties)
+    except XTBElectronicStateError as exc:
+        return error_result(result, "domain_error", str(exc), properties=xyz_properties)
+
+    xyz_properties.update(
+        {
+            "charge": electronic_state.charge,
+            "uhf": electronic_state.uhf,
+            "electron_count": electronic_state.electron_count,
+        }
+    )
+    resolved_spec = deepcopy(spec)
+    resolved_spec["backend"] = {
+        **(resolved_spec.get("backend") or {}),
+        "charge": electronic_state.charge,
+        "uhf": electronic_state.uhf,
+    }
 
     xtb_runner = runner or XTBRunner(str((spec.get("backend") or {}).get("executable", "xtb")))
     timeout = float(spec.get("timeout_seconds", 60.0))
@@ -365,7 +429,13 @@ def evaluate_xtb_property_constraint(
         xyz_path = Path(temp_dir) / "candidate.xyz"
         xyz_path.write_text(xyz)
         try:
-            properties = run_property_calculation(property_name, xtb_runner, xyz_path, timeout, spec)
+            properties = run_property_calculation(
+                property_name,
+                xtb_runner,
+                xyz_path,
+                timeout,
+                resolved_spec,
+            )
         except XTBEnvironmentError as exc:
             return error_result(result, "verifier_environment_error", str(exc), properties=xyz_properties)
         except XTBTimeoutError as exc:

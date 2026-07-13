@@ -34,6 +34,20 @@ H -0.360000 -0.510000 0.883346
 H -0.360000 -0.510000 -0.883346
 """
 
+HYDRONIUM_XYZ = """4
+charge=1
+O 0.000000 0.000000 0.000000
+H 0.980000 0.000000 0.000000
+H -0.490000 0.848705 0.000000
+H -0.490000 -0.848705 0.000000
+"""
+
+NITRIC_OXIDE_XYZ = """2
+nitric oxide
+N 0.000000 0.000000 0.000000
+O 1.150000 0.000000 0.000000
+"""
+
 XTB_STDOUT = """
  | TOTAL ENERGY              -5.070680245292 Eh
  | HOMO-LUMO GAP              6.500000000000 eV
@@ -288,9 +302,108 @@ def test_inspect_xyz_reports_structural_domain_properties() -> None:
     assert water["heavy_element_diversity"] == 1
 
     assert acetonitrile["formula"] == "C2H3N"
+    assert acetonitrile["element_counts"] == {"C": 2, "N": 1, "H": 3}
     assert acetonitrile["carbon_count"] == 2
     assert acetonitrile["hetero_atom_count"] == 1
     assert acetonitrile["heavy_element_diversity"] == 2
+
+
+@pytest.mark.parametrize(
+    ("domain", "message"),
+    [
+        ({"formula": "C3H3N"}, "formula must be C3H3N"),
+        ({"element_count_exact": {"C": 3}}, "C count must be 3"),
+        ({"element_count_exact": {"F": 2}}, "F count must be 2"),
+        ({"element_count_max": {"C": 1}}, "C count exceeds maximum 1"),
+    ],
+)
+def test_check_domain_supports_exact_formula_and_element_counts(
+    domain: dict,
+    message: str,
+) -> None:
+    molecule = xtb_properties.parse_xyz(ACETONITRILE_XYZ)
+    properties = xtb_properties.inspect_xyz(molecule)
+
+    assert xtb_properties.check_domain(molecule, properties, domain) == message
+
+
+@pytest.mark.parametrize(
+    ("comment", "charge"),
+    [("charge=0", 0), ("charge=1", 1), ("charge=-2", -2)],
+)
+def test_parse_xyz_charge_accepts_exact_syntax(comment: str, charge: int) -> None:
+    assert xtb_properties.parse_xyz_charge(comment) == charge
+
+
+@pytest.mark.parametrize(
+    "comment",
+    ["", "charge =1", "charge=+1 extra", "molecule charge=1", "charge=1.0"],
+)
+def test_parse_xyz_charge_rejects_noncanonical_syntax(comment: str) -> None:
+    with pytest.raises(xtb_properties.XTBParseError, match="charge=<integer>"):
+        xtb_properties.parse_xyz_charge(comment)
+
+
+def test_resolve_electronic_state_accepts_fixed_doublet() -> None:
+    molecule = xtb_properties.parse_xyz(NITRIC_OXIDE_XYZ)
+    spec = {"backend": {"charge": 0, "uhf": 1, "validate_electron_parity": True}}
+
+    state = xtb_properties.resolve_electronic_state(molecule, spec)
+
+    assert state.charge == 0
+    assert state.uhf == 1
+    assert state.electron_count == 15
+
+
+def test_candidate_declared_charge_reaches_runner_and_result() -> None:
+    runner = AdvancedFakeRunner()
+    current_task = task("homo_lumo_gap")
+    spec = gap_spec()
+    spec["backend"] = {
+        **spec["backend"],
+        "charge_source": "xyz_comment",
+        "uhf": 0,
+        "validate_electron_parity": True,
+    }
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": HYDRONIUM_XYZ},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=runner,
+    )
+
+    assert result["status"] == "ok"
+    assert result["properties"]["charge"] == 1
+    assert result["properties"]["uhf"] == 0
+    assert result["properties"]["electron_count"] == 10
+    assert runner.calls[0][3]["backend"]["charge"] == 1
+    assert runner.calls[0][3]["backend"]["uhf"] == 0
+
+
+def test_candidate_declared_charge_rejects_odd_closed_shell_electron_count() -> None:
+    spec = gap_spec()
+    spec["backend"] = {
+        **spec["backend"],
+        "charge_source": "xyz_comment",
+        "uhf": 0,
+        "validate_electron_parity": True,
+    }
+    odd_water = WATER_XYZ.replace("water", "charge=1")
+    current_task = task("homo_lumo_gap")
+
+    result = xtb_properties.evaluate_xtb_property_constraint(
+        {"xyz": odd_water},
+        current_task,
+        current_task["constraints"][0],
+        spec,
+        runner=FakeRunner(),
+    )
+
+    assert result["status"] == "error"
+    assert result["failure_type"] == "domain_error"
+    assert "electron count" in result["message"]
 
 
 def test_parse_xtb_output_reads_xtb_671_full_dipole_line() -> None:
