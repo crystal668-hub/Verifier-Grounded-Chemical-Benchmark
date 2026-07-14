@@ -26,6 +26,13 @@ def score_constraint(properties: dict[str, Any], constraint: dict[str, Any]) -> 
         distance = minimum - value if value < minimum else value - maximum
         return clamp(math.exp(-distance / sigma))
 
+    if kind == "target_distance":
+        target = float(constraint["target"])
+        scale = float(constraint["scale"])
+        if scale <= 0:
+            raise ValueError("target_distance scale must be positive")
+        return clamp(math.exp(-abs(value - target) / scale))
+
     if kind in {"maximize_bounded", "minimize_bounded"}:
         forbidden = {"good_at", "baseline"} & set(constraint)
         if forbidden:

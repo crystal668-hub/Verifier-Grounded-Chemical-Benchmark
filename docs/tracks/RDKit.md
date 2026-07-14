@@ -24,7 +24,7 @@ task constraint/property -> verifier_id -> verification_script -> shared RDKit d
 FINAL ANSWER: <SMILES>
 ```
 
-统一 domain gate：
+基线题目的统一 domain gate：
 
 - 单组分 SMILES，不接受 dot-separated multi-component SMILES。
 - 允许元素：H、B、C、N、O、F、P、S、Cl、Br、I。
@@ -34,12 +34,14 @@ FINAL ANSWER: <SMILES>
 
 这些 gate 使题目保持在典型小分子/药物样化学空间内，并避免多盐、多组分、过大分子或异常价态成为高分答案。
 
+`rdkit_logp_target_011` 是专家约束题，不继承上述 MW、heavy atom 或 formal charge gate。它只限制题面明确给出的元素、含氢总原子数和氧原子比例。
+
 ## 3. 当前题目数量
 
 当前 task pack：`tasks/rdkit_baseline/`
 
-- 题目数量：10。
-- verifier specs：8。
+- 题目数量：11。
+- verifier specs：9。
 - 当前正式评分用到的性质：7 个。
 - 当前存在但只作为 spec/backend 能力保留、未被 task 直接评分的 verifier：`rdkit_mw_v1`。
 
@@ -49,12 +51,13 @@ FINAL ANSWER: <SMILES>
 | `rdkit_sa_min_002` | SA score | minimize bounded `[1.0, 10.0]` |
 | `rdkit_logp_window_003` | logP | window `[1.0, 3.0]`, `sigma=0.5` |
 | `rdkit_tpsa_window_004` | TPSA | window `[35.0, 75.0]`, `sigma=10.0` |
-| `rdkit_hba_window_006` | HBA | window `[2, 4]`, `sigma=1.0` |
-| `rdkit_hbd_window_007` | HBD | window `[1, 2]`, `sigma=1.0` |
-| `rdkit_fsp3_max_008` | fraction Csp3 | maximize bounded `[0.0, 1.0]` |
-| `rdkit_qed_sa_009` | QED + SA score | multi-objective |
-| `rdkit_logp_tpsa_010` | logP + TPSA | multi-objective |
-| `rdkit_hba_hbd_012` | HBA + HBD | multi-objective |
+| `rdkit_hba_window_005` | HBA | window `[2, 4]`, `sigma=1.0` |
+| `rdkit_hbd_window_006` | HBD | window `[1, 2]`, `sigma=1.0` |
+| `rdkit_fsp3_max_007` | fraction Csp3 | maximize bounded `[0.0, 1.0]` |
+| `rdkit_qed_sa_008` | QED + SA score | multi-objective |
+| `rdkit_logp_tpsa_009` | logP + TPSA | multi-objective |
+| `rdkit_hba_hbd_010` | HBA + HBD | multi-objective |
+| `rdkit_logp_target_011` | logP 接近 3.0 | target distance，`scale=0.5` |
 
 ## 4. 涉及的可验证化学性质
 
@@ -69,6 +72,7 @@ FINAL ANSWER: <SMILES>
 | fraction Csp3 | 评分目标 | `rdkit.Chem.rdMolDescriptors.CalcFractionCSP3` | 碳骨架饱和度/三维复杂度 proxy。 |
 | MW | domain gate；spec 保留 | `rdkit.Chem.Descriptors.MolWt` | 分子大小与 drug-like domain 控制。 |
 | heavy atom count / formal charge | domain gate | RDKit Mol API | 结构规模、离子态和适用域控制。 |
+| 含氢总原子数 / 氧原子比例 | `rdkit_logp_target_011` domain gate | `Chem.AddHs` 后计数 | 严格执行专家题面的全部原子口径。 |
 
 ## 5. 对应 verifier
 
@@ -78,6 +82,7 @@ FINAL ANSWER: <SMILES>
 |---|---|---|
 | `rdkit_qed_v1` | `qed` | `verifiers/rdkit_descriptors/rdkit_qed.py` |
 | `rdkit_logp_v1` | `logp` | `verifiers/rdkit_descriptors/rdkit_logp.py` |
+| `rdkit_logp_expert_v1` | `logp`，专家题专用 domain | `verifiers/rdkit_descriptors/rdkit_logp.py` |
 | `rdkit_tpsa_v1` | `tpsa` | `verifiers/rdkit_descriptors/rdkit_tpsa.py` |
 | `rdkit_mw_v1` | `mw` | `verifiers/rdkit_descriptors/rdkit_mw.py` |
 | `rdkit_hba_v1` | `hba` | `verifiers/rdkit_descriptors/rdkit_hba.py` |
@@ -120,7 +125,15 @@ score = clamp((value - lower) / (upper - lower), 0.0, 1.0)
 score = clamp((upper - value) / (upper - lower), 0.0, 1.0)
 ```
 
-### 6.4 多目标聚合
+### 6.4 Target distance
+
+Expert target-value tasks use an exponential distance score:
+
+```text
+score = exp(-abs(value - target) / scale)
+```
+
+### 6.5 多目标聚合
 
 多目标任务由 runner 对多个 constraint score 做 geometric mean：
 

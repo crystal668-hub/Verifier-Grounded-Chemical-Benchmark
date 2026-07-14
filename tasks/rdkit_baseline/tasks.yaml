@@ -126,7 +126,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hba_window_006
+  - task_id: rdkit_hba_window_005
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -156,7 +156,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hbd_window_007
+  - task_id: rdkit_hbd_window_006
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -186,7 +186,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_fsp3_max_008
+  - task_id: rdkit_fsp3_max_007
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -215,7 +215,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_qed_sa_009
+  - task_id: rdkit_qed_sa_008
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -250,7 +250,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_logp_tpsa_010
+  - task_id: rdkit_logp_tpsa_009
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -287,7 +287,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hba_hbd_012
+  - task_id: rdkit_hba_hbd_010
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -320,6 +320,35 @@ tasks:
         min: 1
         max: 2
         sigma: 1.0
+    scoring:
+      aggregation: geometric_mean
+    failure_policy: *failure_policy
+
+  - task_id: rdkit_logp_target_011
+    version: 1
+    object_type: small_molecule
+    difficulty: simple
+    formal_track: true
+    capability_tags: [open_generation, property_optimization, rdkit_descriptor, target_distance]
+    prompt: |
+      Propose one valid single-component molecule and provide it as a SMILES string.
+
+      The molecule must satisfy these requirements:
+      - The SMILES must describe exactly one component; dot-separated multi-component SMILES are not accepted.
+      - Allowed elements: H, C, O, N, S, F, Cl.
+      - After adding any implicit hydrogens, the total atom count including hydrogens must be at most 40.
+      - After adding any implicit hydrogens, oxygen atoms must make up at least 10% of all atoms.
+      - Make the logP value as close as possible to 3.0.
+
+      Your final answer must appear on its own line exactly in this format:
+      FINAL ANSWER: <SMILES>
+    answer_schema: *answer_schema
+    constraints:
+      - type: target_distance
+        property: logp
+        verifier_id: rdkit_logp_expert_v1
+        target: 3.0
+        scale: 0.5
     scoring:
       aggregation: geometric_mean
     failure_policy: *failure_policy

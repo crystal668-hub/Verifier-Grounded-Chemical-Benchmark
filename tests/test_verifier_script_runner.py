@@ -13,7 +13,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_build_script_payload_uses_first_candidate() -> None:
     structural_domain = {"carbon_count_min": 2, "formula_denylist": ["H2O"]}
-    task = {"task_id": "task_1", "constraints": [], "structural_domain": structural_domain}
+    structure_identity = {
+        "reference_smiles": "CCO",
+        "require_stereochemistry": False,
+    }
+    task = {
+        "task_id": "task_1",
+        "constraints": [],
+        "structural_domain": structural_domain,
+        "structure_identity": structure_identity,
+    }
     constraint = {"type": "window", "property": "logp", "verifier_id": "rdkit_logp_v1"}
     spec = {"verifier_id": "rdkit_logp_v1", "verification_script": "verifiers/rdkit_descriptors/rdkit_logp.py"}
     answer = {
@@ -26,7 +35,11 @@ def test_build_script_payload_uses_first_candidate() -> None:
     payload = build_script_payload(answer, task, constraint, spec)
 
     assert payload == {
-        "task": {"task_id": "task_1", "structural_domain": structural_domain},
+        "task": {
+            "task_id": "task_1",
+            "structural_domain": structural_domain,
+            "structure_identity": structure_identity,
+        },
         "constraint": constraint,
         "verifier_spec": spec,
         "candidate": {"smiles": "CCO"},

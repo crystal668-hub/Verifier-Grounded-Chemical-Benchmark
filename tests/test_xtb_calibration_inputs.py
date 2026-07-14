@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TASK_DIR = ROOT / "tasks" / "xtb_xyz"
 ANSWERS_PATH = TASK_DIR / "calibration_answers.jsonl"
 MANIFEST_PATH = TASK_DIR / "calibration_manifest.yaml"
+EXPERT_ANSWERS_PATH = TASK_DIR / "expert_calibration" / "answers.jsonl"
 ADVANCED_TASK_IDS = {
     "xtb_lumo_min_008",
     "xtb_polarizability_dipole_opt_009",
@@ -25,6 +26,11 @@ ADVANCED_TASK_IDS = {
 
 def _load_answers() -> list[dict]:
     with ANSWERS_PATH.open() as handle:
+        return [json.loads(line) for line in handle if line.strip()]
+
+
+def _load_expert_answers() -> list[dict]:
+    with EXPERT_ANSWERS_PATH.open() as handle:
         return [json.loads(line) for line in handle if line.strip()]
 
 
@@ -75,7 +81,7 @@ def test_xtb_calibration_manifest_matches_answers() -> None:
 
 def test_xtb_calibration_covers_every_task_with_positive_and_negative_cases() -> None:
     tasks = load_tasks(TASK_DIR / "tasks.yaml")
-    answers = _load_answers()
+    answers = _load_answers() + _load_expert_answers()
     for task_id in tasks:
         roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}
         assert "positive_candidate" in roles, task_id

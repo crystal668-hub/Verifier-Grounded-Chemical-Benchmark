@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 from collections import Counter
+from copy import deepcopy
 from dataclasses import dataclass
 from importlib import metadata
 from pathlib import Path
@@ -18,6 +19,8 @@ from rdkit import Chem
 from verifiers.common.scoring import score_constraint
 from verifiers.common.result_schema import base_result
 from verifiers.common.result_schema import error_result
+from verifiers.xtb.structure_identity import StructureIdentityError
+from verifiers.xtb.structure_identity import validate_structure_identity
 
 
 HARTREE_TO_EV = 27.211386245988
@@ -78,8 +81,16 @@ class XTBToolError(XTBError):
     """Raised when xTB execution or output parsing fails."""
 
 
+class XTBSpecError(XTBError):
+    """Raised when an xTB verifier spec is internally inconsistent."""
+
+
 class XTBTimeoutError(XTBError):
     """Raised when an xTB run times out."""
+
+
+class XTBElectronicStateError(XTBError):
+    """Raised when charge, spin, and electron count are incompatible."""
 
 
 @dataclass(frozen=True)
@@ -101,6 +112,13 @@ class XTBRunResult:
     stdout: str
     stderr: str
     returncode: int
+
+
+@dataclass(frozen=True)
+class ElectronicState:
+    charge: int
+    uhf: int
+    electron_count: int
 
 
 class XTBRunnerProtocol(Protocol):
@@ -147,6 +165,7 @@ def inspect_xyz(molecule: XYZMolecule) -> dict[str, Any]:
         "heavy_atom_count": heavy_atom_count,
         "elements": elements,
         "formula": hill_formula(dict(counts)),
+        "element_counts": dict(counts),
         "carbon_count": counts.get("C", 0),
         "hetero_atom_count": sum(count for element, count in counts.items() if element not in {"H", "C"}),
         "heavy_element_diversity": len({element for element in counts if element != "H"}),
@@ -180,6 +199,14 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
         lower, upper = domain["heavy_atom_count"]
         if not int(lower) <= int(properties["heavy_atom_count"]) <= int(upper):
             return f"heavy_atom_count outside [{lower}, {upper}]"
+    if "formula" in domain and properties["formula"] != domain["formula"]:
+        return f"formula must be {domain['formula']}"
+    for element, expected in domain.get("element_count_exact", {}).items():
+        if properties["element_counts"].get(element, 0) != int(expected):
+            return f"{element} count must be {expected}"
+    for element, maximum in domain.get("element_count_max", {}).items():
+        if properties["element_counts"].get(element, 0) > int(maximum):
+            return f"{element} count exceeds maximum {maximum}"
     if "carbon_count_min" in domain and properties["carbon_count"] < int(domain["carbon_count_min"]):
         return f"carbon_count below minimum {domain['carbon_count_min']}"
     if "hetero_atom_count_min" in domain and properties["hetero_atom_count"] < int(domain["hetero_atom_count_min"]):
@@ -207,6 +234,40 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
     if int(domain.get("inferred_components", 1)) == 1 and component_count(molecule) != 1:
         return "disconnected geometry is not accepted"
     return None
+
+
+def parse_xyz_charge(comment: str) -> int:
+    match = re.fullmatch(r"charge=([+-]?\d+)", comment)
+    if match is None:
+        raise XTBParseError("XYZ comment must have exact form charge=<integer>")
+    return int(match.group(1))
+
+
+def resolve_electronic_state(
+    molecule: XYZMolecule,
+    spec: dict[str, Any],
+) -> ElectronicState:
+    backend = spec.get("backend") or {}
+    charge_source = backend.get("charge_source", "fixed")
+    if charge_source == "xyz_comment":
+        charge = parse_xyz_charge(molecule.comment)
+    elif charge_source == "fixed":
+        charge = int(backend.get("charge", 0))
+    else:
+        raise XTBElectronicStateError(f"unsupported charge source: {charge_source}")
+    uhf = int(backend.get("uhf", 0))
+    if uhf < 0:
+        raise XTBElectronicStateError("UHF must be non-negative")
+
+    table = Chem.GetPeriodicTable()
+    electron_count = sum(table.GetAtomicNumber(atom.symbol) for atom in molecule.atoms) - charge
+    if electron_count <= 0:
+        raise XTBElectronicStateError("electron count must be positive")
+    if backend.get("validate_electron_parity") and (electron_count - uhf) % 2 != 0:
+        raise XTBElectronicStateError(
+            f"electron count {electron_count} is incompatible with UHF {uhf}"
+        )
+    return ElectronicState(charge=charge, uhf=uhf, electron_count=electron_count)
 
 
 def pairwise_distances(molecule: XYZMolecule) -> list[tuple[int, int, float]]:
@@ -340,23 +401,52 @@ def evaluate_xtb_property_constraint(
     domain_error = check_domain(molecule, xyz_properties, domain)
     if domain_error:
         failure_type = (
-            "domain_error"
-            if domain_error.startswith(
-                (
-                    "disallowed",
-                    "atom_count",
-                    "heavy_atom_count",
-                    "carbon_count",
-                    "hetero_atom_count",
-                    "heavy_element_diversity",
-                    "formula",
-                    "max_absolute",
-                    "unknown",
-                )
-            )
-            else "validity_error"
+            "validity_error"
+            if domain_error.startswith(("interatomic distance", "disconnected"))
+            else "domain_error"
         )
         return error_result(result, failure_type, domain_error, properties=xyz_properties)
+
+    try:
+        electronic_state = resolve_electronic_state(molecule, spec)
+    except XTBParseError as exc:
+        return error_result(result, "parse_error", str(exc), properties=xyz_properties)
+    except XTBElectronicStateError as exc:
+        return error_result(result, "domain_error", str(exc), properties=xyz_properties)
+
+    xyz_properties.update(
+        {
+            "charge": electronic_state.charge,
+            "uhf": electronic_state.uhf,
+            "electron_count": electronic_state.electron_count,
+        }
+    )
+    resolved_spec = deepcopy(spec)
+    resolved_spec["backend"] = {
+        **(resolved_spec.get("backend") or {}),
+        "charge": electronic_state.charge,
+        "uhf": electronic_state.uhf,
+    }
+
+    identity_config = task.get("structure_identity") or {}
+    identity_properties: dict[str, Any] = {}
+    if identity_config:
+        try:
+            identity_properties = validate_structure_identity(
+                molecule,
+                reference_smiles=str(identity_config["reference_smiles"]),
+                charge=electronic_state.charge,
+                require_stereochemistry=bool(
+                    identity_config.get("require_stereochemistry", False)
+                ),
+            )
+        except (KeyError, StructureIdentityError) as exc:
+            return error_result(
+                result,
+                "domain_error",
+                str(exc),
+                properties=xyz_properties,
+            )
 
     xtb_runner = runner or XTBRunner(str((spec.get("backend") or {}).get("executable", "xtb")))
     timeout = float(spec.get("timeout_seconds", 60.0))
@@ -365,15 +455,58 @@ def evaluate_xtb_property_constraint(
         xyz_path = Path(temp_dir) / "candidate.xyz"
         xyz_path.write_text(xyz)
         try:
-            properties = run_property_calculation(property_name, xtb_runner, xyz_path, timeout, spec)
+            properties = run_property_calculation(
+                property_name,
+                xtb_runner,
+                xyz_path,
+                timeout,
+                resolved_spec,
+            )
         except XTBEnvironmentError as exc:
             return error_result(result, "verifier_environment_error", str(exc), properties=xyz_properties)
+        except XTBSpecError as exc:
+            return error_result(result, "verifier_spec_error", str(exc), properties=xyz_properties)
         except XTBTimeoutError as exc:
             return error_result(result, "verifier_timeout", str(exc), properties=xyz_properties)
         except XTBToolError as exc:
             return error_result(result, "verifier_tool_error", str(exc), properties=xyz_properties)
 
-    merged_properties = {**xyz_properties, **properties}
+        if identity_config.get("recheck_after_optimization"):
+            optimized_path = optimized_geometry_path(xyz_path)
+            try:
+                optimized_molecule = parse_xyz(optimized_path.read_text())
+                post_identity = validate_structure_identity(
+                    optimized_molecule,
+                    reference_smiles=str(identity_config["reference_smiles"]),
+                    charge=electronic_state.charge,
+                    require_stereochemistry=bool(
+                        identity_config.get("require_stereochemistry", False)
+                    ),
+                )
+            except (OSError, XTBParseError) as exc:
+                return error_result(
+                    result,
+                    "verifier_tool_error",
+                    f"could not read optimized geometry: {exc}",
+                    properties={**xyz_properties, **properties},
+                )
+            except StructureIdentityError as exc:
+                return error_result(
+                    result,
+                    "domain_error",
+                    f"optimized structure {exc}",
+                    properties={**xyz_properties, **properties},
+                )
+            identity_properties.update(
+                {
+                    "post_optimization_graph_match": post_identity["graph_match"],
+                    "post_optimization_stereochemistry_match": post_identity[
+                        "stereochemistry_match"
+                    ],
+                }
+            )
+
+    merged_properties = {**xyz_properties, **identity_properties, **properties}
     constraint_score = {
         "property": constraint["property"],
         "type": constraint["type"],
@@ -405,6 +538,27 @@ def run_property_calculation(
     timeout_seconds: float,
     spec: dict[str, Any],
 ) -> dict[str, float | str]:
+    if property_name == "total_energy":
+        calculation_mode = (spec.get("backend") or {}).get("calculation_mode")
+        if calculation_mode == "submitted_singlepoint":
+            parsed = parse_xtb_output(
+                runner.run("singlepoint", xyz_path, timeout_seconds, spec=spec).stdout
+            )
+        elif calculation_mode == "optimized":
+            parsed = parse_xtb_output(
+                runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout,
+                require_converged=True,
+            )
+        else:
+            raise XTBSpecError(
+                f"unsupported total_energy calculation_mode: {calculation_mode}"
+            )
+        if "total_energy_hartree" not in parsed:
+            raise XTBToolError("xTB output missing total energy")
+        return {
+            "total_energy": parsed["total_energy_hartree"],
+            "total_energy_unit": "hartree",
+        }
     if property_name == "relaxation_energy":
         singlepoint = parse_xtb_output(runner.run("singlepoint", xyz_path, timeout_seconds, spec=spec).stdout)
         optimized = parse_xtb_output(runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout, require_converged=True)

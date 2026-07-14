@@ -9,12 +9,18 @@ from typing import Any
 import yaml
 
 from benchmark.answer_extraction import normalize_answer_record
+from benchmark.property_calculation import evaluate_property_calculation
 from benchmark.verifier_scripts import build_script_payload, run_verification_script
 from verifiers.common.scoring import score_constraint
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REUSABLE_CONSTRAINT_TYPES = {"window", "maximize_bounded", "minimize_bounded"}
+REUSABLE_CONSTRAINT_TYPES = {
+    "window",
+    "maximize_bounded",
+    "minimize_bounded",
+    "target_distance",
+}
 
 
 def load_tasks(path: str | Path) -> dict[str, dict[str, Any]]:
@@ -51,6 +57,16 @@ def evaluate_one(
     if not extraction.ok:
         return routing_error(task_id, extraction.failure_type or "parse_error", extraction.message or "answer parse failed")
     normalized_answer = extraction.answer or answer
+
+    task_type = task.get("task_type", "open_generation")
+    if task_type == "property_calculation":
+        result = evaluate_property_calculation(normalized_answer, task)
+        for field in ("raw_answer", "extracted_answer"):
+            if field in normalized_answer:
+                result[field] = normalized_answer[field]
+        return result
+    if task_type != "open_generation":
+        return routing_error(task_id, "task_error", f"unsupported task_type: {task_type}")
 
     constraints = task.get("constraints")
     if not isinstance(constraints, list) or not constraints:
@@ -257,6 +273,8 @@ def aggregate_scores(values: list[Any], aggregation: str) -> float:
     scores = [max(0.0, min(1.0, float(value))) for value in values]
     if not scores:
         return 0.0
+    if aggregation == "arithmetic_mean":
+        return sum(scores) / len(scores)
     if aggregation != "geometric_mean":
         raise ValueError(f"unsupported aggregation: {aggregation}")
     if any(score == 0.0 for score in scores):

@@ -92,6 +92,17 @@ def builtin_definitions() -> list[TrackDefinition]:
             requirements=("xtb executable for real scoring",),
             resource_root=repository_root(),
         ),
+        TrackDefinition(
+            name="property_calculation",
+            version="0.1.0",
+            display_name="Fixed-input property calculation tasks",
+            task_pack_path="tasks/property_calculation/tasks.yaml",
+            verifier_specs_path="tasks/property_calculation/verifier_specs.yaml",
+            sample_answers_path="tasks/property_calculation/sample_answers.jsonl",
+            status="formal",
+            tags=("property_calculation", "fixed_input", "crystal"),
+            resource_root=repository_root(),
+        ),
     ]
 
 

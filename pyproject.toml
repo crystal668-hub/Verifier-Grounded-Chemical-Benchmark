@@ -70,6 +70,7 @@ package = true
 exclude = [
     "/tasks/xtb_xyz/calibration_answers.jsonl",
     "/tasks/xtb_xyz/calibration_manifest.yaml",
+    "/tasks/xtb_xyz/expert_calibration/",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -85,6 +86,7 @@ packages = [
 "tasks/xtb_xyz/sample_answers.jsonl" = "tasks/xtb_xyz/sample_answers.jsonl"
 "tasks/xtb_xyz/tasks.yaml" = "tasks/xtb_xyz/tasks.yaml"
 "tasks/xtb_xyz/verifier_specs.yaml" = "tasks/xtb_xyz/verifier_specs.yaml"
+"tasks/property_calculation" = "tasks/property_calculation"
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
