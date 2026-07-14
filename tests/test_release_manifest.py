@@ -29,6 +29,15 @@ def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
     assert tagged_commit == canonical_commit
     assert manifest["version"] == inventory["package_version"] == "0.1.1"
     assert inventory == task_inventory("0.1.1")
+    openclaw = manifest["integrations"]["openclaw"]
+    assert openclaw["commit"] == "0026d64e3f144e28cc10307e97aa6b7d47729f79"
+    assert {
+        name: value["count"] for name, value in openclaw["datasets"].items()
+    } == {
+        "verifier_grounded_property_calculation": 2,
+        "verifier_grounded_rdkit": 11,
+        "verifier_grounded_xtb_xyz": 18,
+    }
 
     artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.1.1-py3-none-any.whl"

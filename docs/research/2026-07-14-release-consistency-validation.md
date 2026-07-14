@@ -37,3 +37,14 @@ normalized payload hash are stored under `releases/v0.1.1/`.
 Validation covers the full source test suite, package build tests, checksum
 verification, archive payload equality, and an installed-wheel smoke test run
 outside the repository working directory.
+
+## OpenClaw Integration
+
+OpenClaw commit `0026d64e3f144e28cc10307e97aa6b7d47729f79` pins this exact
+wheel and installs it into a hash-addressed virtual environment that is separate
+from the OpenClaw agent environment. Its evaluator uses only
+`verifier_grounded_benchmark.load_track(...).evaluate_one(...)`. The synchronized
+RDKit 11, xTB 18, and property_calculation 2 JSONL snapshots contain public
+prompts, reduced answer schemas, task IDs, track names, and release identity;
+they exclude source paths, schema examples, sample answers, gold, and verifier
+specs. Snapshot and release-config hashes are bound in the release manifest.
