@@ -65,6 +65,7 @@ def test_task_constraints_bind_to_descriptor_verifier_specs() -> None:
 
     assert len(tasks) == 11
     assert len({task["task_id"] for task in tasks}) == 11
+    assert [task["task_id"].rsplit("_", 1)[1] for task in tasks] == [f"{index:03d}" for index in range(1, 12)]
     assert set(expected_by_property.values()).issubset(specs)
     assert all(task["task_id"] not in {"rdkit_mw_window_005", "rdkit_mw_qed_011"} for task in tasks)
     for task in tasks:

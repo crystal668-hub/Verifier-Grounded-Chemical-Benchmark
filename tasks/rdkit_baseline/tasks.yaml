@@ -126,7 +126,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hba_window_006
+  - task_id: rdkit_hba_window_005
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -156,7 +156,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hbd_window_007
+  - task_id: rdkit_hbd_window_006
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -186,7 +186,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_fsp3_max_008
+  - task_id: rdkit_fsp3_max_007
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -215,7 +215,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_qed_sa_009
+  - task_id: rdkit_qed_sa_008
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -250,7 +250,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_logp_tpsa_010
+  - task_id: rdkit_logp_tpsa_009
     version: 1
     object_type: small_molecule
     difficulty: simple
@@ -287,7 +287,7 @@ tasks:
       aggregation: geometric_mean
     failure_policy: *failure_policy
 
-  - task_id: rdkit_hba_hbd_012
+  - task_id: rdkit_hba_hbd_010
     version: 1
     object_type: small_molecule
     difficulty: simple

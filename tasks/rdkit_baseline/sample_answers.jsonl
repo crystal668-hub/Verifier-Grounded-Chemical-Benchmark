@@ -2,10 +2,10 @@
 {"task_id":"rdkit_sa_min_002","candidates":[{"smiles":"O=C(O)c1ccccc1"}]}
 {"task_id":"rdkit_logp_window_003","candidates":[{"smiles":"CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O"}]}
 {"task_id":"rdkit_tpsa_window_004","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
-{"task_id":"rdkit_hba_window_006","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
-{"task_id":"rdkit_hbd_window_007","candidates":[{"smiles":"CC(=O)Nc1ccc(O)cc1"}]}
-{"task_id":"rdkit_fsp3_max_008","candidates":[{"smiles":"C1CCCCC1"}]}
-{"task_id":"rdkit_qed_sa_009","candidates":[{"smiles":"CCN(CC)CC(=O)Nc1c(C)cccc1C"}]}
-{"task_id":"rdkit_logp_tpsa_010","candidates":[{"smiles":"CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O"}]}
-{"task_id":"rdkit_hba_hbd_012","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
+{"task_id":"rdkit_hba_window_005","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
+{"task_id":"rdkit_hbd_window_006","candidates":[{"smiles":"CC(=O)Nc1ccc(O)cc1"}]}
+{"task_id":"rdkit_fsp3_max_007","candidates":[{"smiles":"C1CCCCC1"}]}
+{"task_id":"rdkit_qed_sa_008","candidates":[{"smiles":"CCN(CC)CC(=O)Nc1c(C)cccc1C"}]}
+{"task_id":"rdkit_logp_tpsa_009","candidates":[{"smiles":"CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O"}]}
+{"task_id":"rdkit_hba_hbd_010","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
 {"task_id":"rdkit_logp_target_011","candidates":[{"smiles":"Cc1cc(Cl)c(Cl)cc1C(=O)O"}]}

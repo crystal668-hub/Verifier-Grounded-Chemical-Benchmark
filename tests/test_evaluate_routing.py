@@ -94,7 +94,7 @@ def test_evaluate_one_routes_by_constraint_descriptor_verifier() -> None:
 def test_evaluate_one_aggregates_multi_descriptor_constraints() -> None:
     tasks = load_tasks(TASKS_PATH)
     specs = load_verifier_specs(SPECS_PATH)
-    answer = {"task_id": "rdkit_qed_sa_009", "candidates": [{"smiles": "CCN(CC)CC(=O)Nc1c(C)cccc1C"}]}
+    answer = {"task_id": "rdkit_qed_sa_008", "candidates": [{"smiles": "CCN(CC)CC(=O)Nc1c(C)cccc1C"}]}
 
     result = evaluate_one(answer, tasks, specs)
 

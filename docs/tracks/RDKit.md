@@ -51,13 +51,13 @@ FINAL ANSWER: <SMILES>
 | `rdkit_sa_min_002` | SA score | minimize bounded `[1.0, 10.0]` |
 | `rdkit_logp_window_003` | logP | window `[1.0, 3.0]`, `sigma=0.5` |
 | `rdkit_tpsa_window_004` | TPSA | window `[35.0, 75.0]`, `sigma=10.0` |
-| `rdkit_hba_window_006` | HBA | window `[2, 4]`, `sigma=1.0` |
-| `rdkit_hbd_window_007` | HBD | window `[1, 2]`, `sigma=1.0` |
-| `rdkit_fsp3_max_008` | fraction Csp3 | maximize bounded `[0.0, 1.0]` |
-| `rdkit_qed_sa_009` | QED + SA score | multi-objective |
-| `rdkit_logp_tpsa_010` | logP + TPSA | multi-objective |
+| `rdkit_hba_window_005` | HBA | window `[2, 4]`, `sigma=1.0` |
+| `rdkit_hbd_window_006` | HBD | window `[1, 2]`, `sigma=1.0` |
+| `rdkit_fsp3_max_007` | fraction Csp3 | maximize bounded `[0.0, 1.0]` |
+| `rdkit_qed_sa_008` | QED + SA score | multi-objective |
+| `rdkit_logp_tpsa_009` | logP + TPSA | multi-objective |
+| `rdkit_hba_hbd_010` | HBA + HBD | multi-objective |
 | `rdkit_logp_target_011` | logP 接近 3.0 | target distance，`scale=0.5` |
-| `rdkit_hba_hbd_012` | HBA + HBD | multi-objective |
 
 ## 4. 涉及的可验证化学性质
 
