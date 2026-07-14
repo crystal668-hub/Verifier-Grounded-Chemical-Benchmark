@@ -53,18 +53,20 @@ class Track:
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for track {self.name!r}: {task_id}") from exc
 
-    def prompts(self) -> list[dict[str, str]]:
-        prompts: list[dict[str, str]] = []
+    def prompts(self) -> list[dict[str, Any]]:
+        prompts: list[dict[str, Any]] = []
         for task in self._tasks_by_id.values():
             prompt = task.get("prompt")
             if isinstance(prompt, str):
-                prompts.append(
-                    {
-                        "track": self.name,
-                        "task_id": str(task["task_id"]),
-                        "prompt": prompt,
-                    }
-                )
+                item: dict[str, Any] = {
+                    "track": self.name,
+                    "task_id": str(task["task_id"]),
+                    "prompt": prompt,
+                }
+                answer_schema = task.get("answer_schema")
+                if isinstance(answer_schema, dict):
+                    item["answer_schema"] = deepcopy(answer_schema)
+                prompts.append(item)
         return prompts
 
     def sample_answers(self) -> list[dict[str, Any]]:
@@ -129,8 +131,8 @@ class Suite:
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for suite: {task_id}") from exc
 
-    def prompts(self) -> list[dict[str, str]]:
-        prompts: list[dict[str, str]] = []
+    def prompts(self) -> list[dict[str, Any]]:
+        prompts: list[dict[str, Any]] = []
         for track in self._tracks:
             prompts.extend(track.prompts())
         return prompts

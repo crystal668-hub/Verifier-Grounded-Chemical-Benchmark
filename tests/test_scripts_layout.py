@@ -16,6 +16,8 @@ EXPECTED_SCRIPT_PATHS = {
     "scripts/env/check_soltrannet_env.py",
     "scripts/env/check_torchani_env.py",
     "scripts/env/check_xtb_env.py",
+    "scripts/release/__init__.py",
+    "scripts/release/build_release.py",
     "scripts/validation/__init__.py",
     "scripts/validation/check_xtb_xyz_samples.py",
     "scripts/xtb_calibration/__init__.py",

@@ -8,6 +8,8 @@ from pathlib import Path
 
 import yaml
 
+from scripts.release.build_release import verify_archive_payloads
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_XTB_CALIBRATION_FILES = {
@@ -78,6 +80,9 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert FORMAL_EXPERT_XTB_TASK_IDS.issubset(
         {task["task_id"] for task in sdist_tasks["tasks"]}
     )
+    payload = verify_archive_payloads(wheel_path, sdist_path)
+    assert payload["file_count"] > 0
+    assert len(payload["sha256"]) == 64
 
 
 def test_wheel_metadata_publishes_materials_extra(tmp_path: Path) -> None:

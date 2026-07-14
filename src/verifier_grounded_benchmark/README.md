@@ -25,7 +25,7 @@ uv pip install .
 
 ```bash
 uv build --wheel
-pip install dist/verifier_grounded_benchmark-0.1.0-py3-none-any.whl
+pip install dist/verifier_grounded_benchmark-0.1.1-py3-none-any.whl
 ```
 
 如果后续发布到 PyPI 或私有包索引，才使用下面这种包名安装方式：
@@ -114,9 +114,18 @@ sample_answers = track.sample_answers()
         "track": "rdkit",
         "task_id": "rdkit_qed_max_001",
         "prompt": "...",
+        "answer_schema": {
+            "format": "final_answer_line",
+            "final_answer_prefix": "FINAL ANSWER:",
+            "value_type": "smiles",
+        },
     }
 ]
 ```
+
+该视图只公开模型作答所需的 prompt 和 answer schema，不包含 verifier spec、
+sample answer 或 gold。评分端应通过同一安装版本的 `track.evaluate_one(...)` 提交答案，
+不要从任务目录复制内部评分配置。
 
 加载多个 tracks 组成 suite：
 

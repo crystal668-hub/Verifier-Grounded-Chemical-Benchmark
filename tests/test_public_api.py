@@ -48,6 +48,8 @@ def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     assert prompt["prompt"].startswith(
         "Propose one valid single-component molecule"
     )
+    assert prompt["answer_schema"] == track.task("rdkit_qed_max_001")["answer_schema"]
+    assert set(prompt) == {"track", "task_id", "prompt", "answer_schema"}
     assert len(track.sample_answers()) == 11
 
 
