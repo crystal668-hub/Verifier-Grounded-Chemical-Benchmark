@@ -18,7 +18,8 @@ does not implement the tasks.
 
 - All model-facing tasks consist of one self-contained English text prompt.
 - The benchmark does not require file uploads or attachment resolution.
-- Any CIF input is copied in full into the prompt as standard CIF text.
+- Any CIF input includes all structure-bearing CIF data directly in the prompt;
+  non-structural source boilerplate comments may be omitted.
 - Model-facing prompts remain tool-neutral and do not name RDKit, xTB,
   verifier scripts, or gold-generation protocols.
 - Expert restrictions are enforced as written. Additional chemical-domain
@@ -52,9 +53,10 @@ only after their formalization gates pass. Tasks 7-8 establish the independent
 ## Model Input Policy
 
 The `prompt` field is the only model input. For tasks 7 and 8, each crystal is
-introduced by a stable label followed by a fenced `cif` block containing the
-complete source CIF. The runner does not read an external CIF path when
-constructing prompts.
+introduced by a stable label followed by a fenced `cif` block containing all
+structure-bearing CIF data. The runner does not read an external CIF path when
+constructing prompts. Task 8 omits the source files' non-structural CCDC comment
+headers.
 
 The task record also stores the same CIF values under `input_objects` for
 machine inspection. Tests must assert that each structured `input_objects`
@@ -196,8 +198,9 @@ The task score is 1 for a correct value and unit and 0 otherwise.
 
 ### Task 8: Crystal Potential-Energy Difference and Phase Assignment
 
-The English prompt contains the complete `alpha_CONTCAR` and `beta_CONTCAR`
-CIF values. It asks for the absolute potential-energy difference in eV and the
+The English prompt contains the complete structure-bearing `alpha_CONTCAR` and
+`beta_CONTCAR` CIF values, excluding their non-structural CCDC comment headers.
+It asks for the absolute potential-energy difference in eV and the
 ambient-pressure and high-pressure phase labels.
 
 The public gold values are:

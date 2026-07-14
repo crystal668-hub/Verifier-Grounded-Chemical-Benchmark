@@ -23,14 +23,14 @@ EXPECTED_CIF = {
         "H16 C4 N4",
     ),
     "alpha_CONTCAR": (
-        147,
-        "5fbc76d737dfc685285d2ebea3a81f44a5c80ffe25006c6d215e0f40769bd7b5",
+        132,
+        "aa8c4899bf7d5446194f96a6655ce0da31a3d7f1961d9d53463b8878ad17483a",
         108,
         "H12 C36 I36 N24",
     ),
     "beta_CONTCAR": (
-        147,
-        "ffeb5e8e658620edd65def789fb3859a92edb650fd4f3033e39a3c03cbe04590",
+        132,
+        "47833b594190b12f126bfddd5ee48ba6f18a482591d527d268ab950e8b6c6f77",
         108,
         "H12 C36 I36 N24",
     ),
@@ -174,6 +174,9 @@ def test_task_8_contract_and_gold() -> None:
     assert "0.079" not in task["prompt"]
     assert "alpha is" not in task["prompt"].lower()
     assert "beta is" not in task["prompt"].lower()
+    assert "Cambridge Crystallographic Data Centre" not in task["prompt"]
+    assert "CCDC" not in task["prompt"]
+    assert all("CCDC" not in item["value"] for item in task["input_objects"])
 
 
 def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:

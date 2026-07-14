@@ -407,8 +407,8 @@ git commit -m "feat: add crystal free-energy task"
 
 Assert:
 
-- both complete CIFs occur verbatim in the English prompt under stable outer
-  labels `alpha_CONTCAR` and `beta_CONTCAR`;
+- both complete structure-bearing CIF values occur verbatim in the English
+  prompt under stable outer labels `alpha_CONTCAR` and `beta_CONTCAR`;
 - the prompt contains no external paths or attachment instructions;
 - requested properties are numeric difference, ambient phase, and high-pressure
   phase, assigned to the approved two comparison groups;
@@ -425,12 +425,14 @@ uv run --group materials pytest tests/test_property_calculation_tasks.py -q
 
 Expected: FAIL because Task 8 is absent.
 
-- [ ] **Step 3: Add Task 8 with complete inline CIFs**
+- [ ] **Step 3: Add Task 8 with complete inline structure CIFs**
 
-Normalize line endings to LF and copy all 147 lines from each source. Preserve
-the CIF content even though both internal data blocks use
-`data_VESTA_phase_1`; the outer object ids and prompt labels disambiguate them.
-Keep Task 8 as one task and use the approved `answers` list example.
+Normalize line endings to LF and copy the 132 structure-bearing lines from each
+source. Omit the 15-line CCDC boilerplate comment header because it carries no
+crystal structure data. Preserve the CIF data block even though both internal
+blocks use `data_VESTA_phase_1`; the outer object ids and prompt labels
+disambiguate them. Keep Task 8 as one task and use the approved `answers` list
+example.
 
 - [ ] **Step 4: Run focused and full tests**
 
@@ -609,8 +611,8 @@ git commit -m "docs: document property calculation track"
   contract.
 - Task 8 scores the `0.079 +/- 0.001 eV` dimension and the complete
   `alpha`/`beta` phase mapping equally within one task.
-- Both prompts are English, tool-neutral, and contain complete inline CIF text;
-  evaluation requires no uploads, paths, or attachment lookup.
+- Both prompts are English, tool-neutral, and contain complete structure-bearing
+  inline CIF text; evaluation requires no uploads, paths, or attachment lookup.
 - Gold values are public while initial generation protocols remain withheld.
 - Incorrect but well-formed answers receive normal score rows; evaluator/task
   failures remain distinguishable through the standard failure taxonomy.
