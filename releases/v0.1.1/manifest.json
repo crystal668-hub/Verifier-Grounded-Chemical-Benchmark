@@ -18,7 +18,7 @@
   },
   "integrations": {
     "openclaw": {
-      "commit": "dae8d47ae25df330ed7c44ddefaaf0a45f3c8677",
+      "commit": "cc5814a9c0c0d3486f22009cbf7361dc2b3cefe8",
       "datasets": {
         "verifier_grounded_property_calculation": {
           "count": 2,

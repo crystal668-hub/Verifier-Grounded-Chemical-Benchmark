@@ -30,7 +30,7 @@ def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
     assert manifest["version"] == inventory["package_version"] == "0.1.1"
     assert inventory == task_inventory("0.1.1")
     openclaw = manifest["integrations"]["openclaw"]
-    assert openclaw["commit"] == "dae8d47ae25df330ed7c44ddefaaf0a45f3c8677"
+    assert openclaw["commit"] == "cc5814a9c0c0d3486f22009cbf7361dc2b3cefe8"
     assert {
         name: value["count"] for name, value in openclaw["datasets"].items()
     } == {
