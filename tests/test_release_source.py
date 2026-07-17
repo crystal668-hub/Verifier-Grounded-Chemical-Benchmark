@@ -53,7 +53,7 @@ EXPECTED_TASK_IDS = {
 def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     version = project["project"]["version"]
-    assert version == "0.1.1"
+    assert version == "0.2.0"
 
     inventory = task_inventory(version)
     for track_name, expected_ids in EXPECTED_TASK_IDS.items():
@@ -68,5 +68,5 @@ def test_package_readme_uses_current_release_version() -> None:
     readme = (ROOT / "src" / "verifier_grounded_benchmark" / "README.md").read_text(
         encoding="utf-8"
     )
-    assert "verifier_grounded_benchmark-0.1.1-py3-none-any.whl" in readme
+    assert "verifier_grounded_benchmark-0.2.0-py3-none-any.whl" in readme
     assert "verifier_grounded_benchmark-0.1.0" not in readme

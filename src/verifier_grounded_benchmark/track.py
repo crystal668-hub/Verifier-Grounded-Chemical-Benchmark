@@ -9,24 +9,20 @@ from verifier_grounded_benchmark.evaluator import (
     EvaluationReport,
     Evaluator,
 )
-from verifier_grounded_benchmark.io import (
-    load_answers_jsonl_file,
-    load_tasks_file,
-    load_verifier_specs_file,
-)
-from verifier_grounded_benchmark.registry import TrackDefinition
-from verifier_grounded_benchmark.resources import materialize_verifier_specs
+from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file, load_task_pack
+from verifier_grounded_benchmark.task.registry import TrackDefinition
+from verifier_grounded_benchmark.task.resources import materialize_verifier_specs
 
 
 class Track:
     def __init__(self, definition: TrackDefinition) -> None:
         self.definition = definition
-        self._tasks_by_id = load_tasks_file(
-            _resolve_track_path(definition, definition.task_pack_path)
+        self._task_pack = load_task_pack(
+            _resolve_track_resource(definition, definition.task_pack_path),
+            _resolve_track_resource(definition, definition.verifier_specs_path),
         )
-        specs = load_verifier_specs_file(
-            _resolve_track_path(definition, definition.verifier_specs_path)
-        )
+        self._tasks_by_id = self._task_pack.tasks_by_id
+        specs = self._task_pack.verifier_specs_by_id
         self._verifier_specs_by_id = materialize_verifier_specs(
             specs,
             script_root=_script_root_for(definition),
@@ -73,7 +69,7 @@ class Track:
         if self.definition.sample_answers_path is None:
             return []
         return load_answers_jsonl_file(
-            _resolve_track_path(self.definition, self.definition.sample_answers_path)
+            _resolve_track_resource(self.definition, self.definition.sample_answers_path)
         )
 
     def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
@@ -153,6 +149,8 @@ class Suite:
 
 
 def _script_root_for(definition: TrackDefinition) -> Path:
+    if definition.resource_pack is not None:
+        return Path(__file__).resolve().parents[1]
     if definition.resource_root is not None:
         return definition.root
 
@@ -168,6 +166,16 @@ def _script_root_for(definition: TrackDefinition) -> Path:
         return task_pack_path.parent
 
     return definition.root
+
+
+def _resolve_track_resource(
+    definition: TrackDefinition,
+    path: str | Path | None,
+) -> object:
+    resource = definition.resource(path)
+    if resource is None:
+        raise ValueError(f"Track {definition.name!r} requires a resource path")
+    return resource
 
 
 def _resolve_track_path(

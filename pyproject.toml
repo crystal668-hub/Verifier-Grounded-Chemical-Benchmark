@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "verifier-grounded-benchmark"
-version = "0.1.1"
+version = "0.2.0"
 description = "Verifier-grounded chemical benchmark environment and tooling."
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -69,6 +69,8 @@ package = true
 [tool.hatch.build]
 exclude = [
     "/releases/",
+    "/src/verifier_grounded_benchmark/task/calibration/",
+    "/src/verifier_grounded_benchmark/task/packs/experimental/",
     "/tasks/rdkit_forcefield/",
     "/tasks/xtb_xyz/calibration_answers.jsonl",
     "/tasks/xtb_xyz/calibration_manifest.yaml",

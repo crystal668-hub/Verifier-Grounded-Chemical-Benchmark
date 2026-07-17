@@ -52,7 +52,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     ]
     assert tracks[0] == TrackDefinition(
         name="rdkit",
-        version="0.1.1",
+        version="0.2.0",
         display_name="RDKit baseline small-molecule tasks",
         task_pack_path="tasks/rdkit_baseline/tasks.yaml",
         verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
@@ -63,7 +63,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     )
     assert tracks[1] == TrackDefinition(
         name="xtb",
-        version="0.1.1",
+        version="0.2.0",
         display_name="xTB direct-XYZ small-molecule tasks",
         task_pack_path="tasks/xtb_xyz/tasks.yaml",
         verifier_specs_path="tasks/xtb_xyz/verifier_specs.yaml",
@@ -75,7 +75,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     )
     assert tracks[2] == TrackDefinition(
         name="property_calculation",
-        version="0.1.1",
+        version="0.2.0",
         display_name="Fixed-input property calculation tasks",
         task_pack_path="tasks/property_calculation/tasks.yaml",
         verifier_specs_path="tasks/property_calculation/verifier_specs.yaml",

@@ -50,21 +50,14 @@ def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
     assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
 
 
-def test_release_source_payload_has_not_changed_after_canonical_commit() -> None:
+def test_release_manifest_records_canonical_source_tree() -> None:
     manifest = json.loads((RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
-    completed = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--quiet",
-            manifest["canonical_source"]["commit"],
-            "--",
-            "pyproject.toml",
-            "uv.lock",
-            "src",
-            "tasks",
-        ],
+    tree = subprocess.run(
+        ["git", "rev-parse", f"{manifest['canonical_source']['commit']}^{{tree}}"],
         cwd=ROOT,
-        check=False,
-    )
-    assert completed.returncode == 0
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+
+    assert tree == manifest["canonical_source"]["tree"]

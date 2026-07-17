@@ -5,7 +5,7 @@ from verifier_grounded_benchmark.evaluator import (
     EvaluationReport,
     Evaluator,
 )
-from verifier_grounded_benchmark.registry import DEFAULT_REGISTRY, Registry, TrackDefinition
+from verifier_grounded_benchmark.task.registry import DEFAULT_REGISTRY, Registry, TrackDefinition
 from verifier_grounded_benchmark.track import Suite, Track
 
 

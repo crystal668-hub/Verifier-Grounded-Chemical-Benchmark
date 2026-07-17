@@ -1,0 +1,1 @@
+"""RDKit task-pack resources."""

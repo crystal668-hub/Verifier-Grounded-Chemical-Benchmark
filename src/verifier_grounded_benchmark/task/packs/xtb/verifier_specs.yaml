@@ -1,0 +1,342 @@
+verifiers:
+  - verifier_id: xtb_gap_gfn2_v1
+    name: xTB GFN2 HOMO-LUMO Gap Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_gap.py
+    timeout_seconds: 240
+    property_name: homo_lumo_gap
+    resources: &xtb_resources
+      cpu: 2
+      memory_mb: 2048
+    backend: &xtb_backend
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      optimize_before_property: true
+    package_versions: &xtb_package_versions
+      xtb: external
+      rdkit: "2026.3.2"
+    domain: &xtb_xyz_domain
+      format: xyz
+      charge: 0
+      multiplicity: 1
+      allowed_elements: [H, C, N, O, F, P, S, Cl, Br]
+      atom_count: [3, 80]
+      heavy_atom_count: [1, 40]
+      coordinate_units: angstrom
+      max_absolute_coordinate: 30.0
+      min_interatomic_distance: 0.45
+      inferred_components: 1
+      require_explicit_hydrogens: true
+    property:
+      source: xTB GFN2-xTB optimized geometry property printout
+      units: eV
+      notes: Fixed xTB HOMO-LUMO orbital-energy gap, not an experimental optical gap.
+    scoring: &xtb_scoring
+      supported_modes:
+        - window
+        - maximize_bounded
+        - minimize_bounded
+      bounded_modes:
+        good_at_or_baseline: forbidden
+      final_score_range: [0.0, 1.0]
+    failure_policy: &xtb_failure_policy
+      parse_error: missing fenced XYZ block or unparseable XYZ content
+      validity_error: atom overlap, disconnected geometry, or invalid coordinate values
+      domain_error: outside element, atom-count, charge, spin, or coordinate domain
+      verifier_environment_error: xTB executable missing or unusable
+      verifier_tool_error: xTB calculation failed, optimization did not converge, or output property was missing
+      verifier_timeout: xTB calculation exceeded timeout
+
+  - verifier_id: xtb_dipole_gfn2_v1
+    name: xTB GFN2 Dipole Moment Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_dipole.py
+    timeout_seconds: 240
+    property_name: dipole_moment
+    resources: *xtb_resources
+    backend: *xtb_backend
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB optimized geometry molecular dipole printout
+      units: debye
+      notes: Total molecular dipole magnitude.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_relaxation_energy_gfn2_v1
+    name: xTB GFN2 Relaxation Energy Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_relaxation_energy.py
+    timeout_seconds: 300
+    property_name: relaxation_energy
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      input_singlepoint_before_optimization: true
+      optimize_before_property: true
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      role: geometry_quality_gate
+      source: xTB GFN2-xTB input single-point energy minus optimized total energy
+      units: eV
+      notes: Used as a universal direct-XYZ geometry quality multiplier, not as a standalone chemistry target.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_lumo_gfn2_v1
+    name: xTB GFN2 LUMO Energy Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_lumo.py
+    timeout_seconds: 240
+    property_name: lumo_energy
+    resources: *xtb_resources
+    backend: *xtb_backend
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB optimized geometry orbital energy printout
+      units: eV
+      notes: Lowest unoccupied molecular orbital energy parsed from the optimized-geometry xTB orbital table.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_polarizability_gfn2_v1
+    name: xTB GFN2 Polarizability Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_polarizability.py
+    timeout_seconds: 240
+    property_name: polarizability_per_heavy_atom
+    resources: *xtb_resources
+    backend: *xtb_backend
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB optimized geometry molecular polarizability printout
+      units: atomic_units_per_heavy_atom
+      notes: Molecular alpha(0) divided by submitted heavy atom count.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_solvation_selectivity_alpb_v1
+    name: xTB GFN2 ALPB Water-Hexane Selectivity Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_solvation_selectivity.py
+    timeout_seconds: 420
+    property_name: alpb_water_hexane_selectivity
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      solvent_runs:
+        - model: alpb
+          solvent: water
+        - model: alpb
+          solvent: hexane
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB GFN2-xTB ALPB Gsolv printout on optimized geometry
+      units: eV
+      notes: Computes Gsolv(hexane) - Gsolv(water); higher values indicate stronger water-selective stabilization.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_electrophilicity_gfn1_ipea_v1
+    name: xTB GFN1-IPEA Global Electrophilicity Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_electrophilicity.py
+    timeout_seconds: 360
+    property_name: global_electrophilicity
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      method: GFN1-xTB/IPEA
+      property_command: --vomega
+      optimize_before_property: true
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB vertical electrophilicity printout
+      units: eV
+      notes: Uses xTB --vomega on the optimized geometry and records GFN2 optimization plus GFN1-IPEA property provenance in the verifier spec.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_fukui_gfn1_v1
+    name: xTB GFN1 Fukui Carbon-Site Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_fukui.py
+    timeout_seconds: 360
+    property_name: max_f_plus_on_carbon
+    additional_property_names:
+      - f_plus_contrast
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      method: GFN1-xTB
+      property_command: --vfukui
+      optimize_before_property: true
+    package_versions: *xtb_package_versions
+    domain: *xtb_xyz_domain
+    property:
+      source: xTB vertical Fukui indices printout
+      units: dimensionless
+      notes: Parses atom-indexed f+ values and maps the strongest carbon value back to submitted XYZ atom order.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_hessian_thermo_gfn2_v1
+    name: xTB GFN2 Hessian Thermochemistry Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_hessian_thermo.py
+    timeout_seconds: 600
+    property_name: entropy_298_per_heavy_atom
+    additional_property_names:
+      - imaginary_frequency_count
+    resources: *xtb_resources
+    backend:
+      <<: *xtb_backend
+      property_command: --ohess
+      optimize_before_property: true
+    package_versions: *xtb_package_versions
+    domain:
+      <<: *xtb_xyz_domain
+      atom_count: [6, 48]
+      heavy_atom_count: [4, 18]
+    property:
+      source: xTB optimized hessian thermochemistry printout
+      units: J mol-1 K-1 per heavy atom
+      notes: Parses imaginary frequency count and 298.15 K entropy; molecule size is restricted for runtime.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_dipole_doublet_gfn2_v1
+    name: xTB GFN2 Neutral Doublet Dipole Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_dipole.py
+    timeout_seconds: 240
+    property_name: dipole_moment
+    resources: &xtb_expert_resources
+      cpu: 2
+      memory_mb: 4096
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 1
+      validate_electron_parity: true
+    package_versions: *xtb_package_versions
+    domain: &xtb_expert_domain
+      max_absolute_coordinate: 30.0
+      min_interatomic_distance: 0.45
+      inferred_components: 1
+    property:
+      source: xTB GFN2-xTB optimized geometry molecular dipole printout
+      units: debye
+      notes: Total molecular dipole magnitude for a neutral doublet.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
+    name: xTB GFN2 Candidate-Charge Closed-Shell Gap Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_gap.py
+    timeout_seconds: 240
+    property_name: homo_lumo_gap
+    resources: *xtb_expert_resources
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge_source: xyz_comment
+      uhf: 0
+      validate_electron_parity: true
+    package_versions: *xtb_package_versions
+    domain: *xtb_expert_domain
+    property:
+      source: xTB GFN2-xTB optimized geometry orbital-energy gap
+      units: eV
+      notes: Uses the exact candidate-declared charge with a closed-shell electronic state.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
+    name: xTB GFN2 ROY Submitted-Geometry Energy Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_total_energy.py
+    timeout_seconds: 300
+    property_name: total_energy
+    resources: *xtb_expert_resources
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      validate_electron_parity: true
+      calculation_mode: submitted_singlepoint
+    package_versions: *xtb_package_versions
+    domain: *xtb_expert_domain
+    property:
+      source: xTB GFN2-xTB submitted-geometry single-point total energy
+      units: hartree
+      notes: The energy range is calibrated only for graph-valid ROY conformers.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy
+
+  - verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
+    name: xTB GFN2 Ritonavir Optimized Energy Verifier
+    version: 1
+    formal_track: true
+    verifier_image: verifier-grounded:dev
+    verification_script: verifiers/xtb/xtb_total_energy.py
+    timeout_seconds: 600
+    property_name: total_energy
+    resources:
+      cpu: 2
+      memory_mb: 8192
+    backend:
+      type: local_xtb
+      executable: xtb
+      method: GFN2-xTB
+      charge: 0
+      uhf: 0
+      validate_electron_parity: true
+      calculation_mode: optimized
+    package_versions: *xtb_package_versions
+    domain: *xtb_expert_domain
+    property:
+      source: xTB GFN2-xTB optimized total energy
+      units: hartree
+      notes: Graph and stereochemistry are checked before and after optimization.
+    scoring: *xtb_scoring
+    failure_policy: *xtb_failure_policy

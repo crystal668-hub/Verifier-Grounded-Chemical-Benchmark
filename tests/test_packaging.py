@@ -33,6 +33,17 @@ PROPERTY_CALCULATION_FILES = {
     "tasks/property_calculation/verifier_specs.yaml",
     "tasks/property_calculation/sample_answers.jsonl",
 }
+FORMAL_V2_TASK_FILES = {
+    "verifier_grounded_benchmark/task/packs/rdkit/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/rdkit/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/rdkit/sample_answers.jsonl",
+    "verifier_grounded_benchmark/task/packs/xtb/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/xtb/sample_answers.jsonl",
+    "verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation/sample_answers.jsonl",
+}
 FORMAL_EXPERT_XTB_TASK_IDS = {
     "xtb_formula_dipole_min_014",
     "xtb_two_fluorine_gap_min_015",
@@ -74,6 +85,12 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert REMOVED_PROTOTYPE_TASK_PACKS.isdisjoint(sdist_members)
     assert PROPERTY_CALCULATION_FILES.issubset(wheel_members)
     assert PROPERTY_CALCULATION_FILES.issubset(sdist_members)
+    assert FORMAL_V2_TASK_FILES.issubset(wheel_members)
+    assert {f"src/{path}" for path in FORMAL_V2_TASK_FILES}.issubset(sdist_members)
+    assert not any("/task/calibration/" in path for path in wheel_members)
+    assert not any("/task/calibration/" in path for path in sdist_members)
+    assert not any("/task/packs/experimental/" in path for path in wheel_members)
+    assert not any("/task/packs/experimental/" in path for path in sdist_members)
     assert FORMAL_EXPERT_XTB_TASK_IDS.issubset(
         {task["task_id"] for task in wheel_tasks["tasks"]}
     )

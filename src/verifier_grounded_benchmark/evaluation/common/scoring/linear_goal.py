@@ -3,38 +3,9 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
 from numbers import Real
 
-
-@dataclass(frozen=True)
-class LinearGoalSpec:
-    """Full-score region and optional linear decay widths on either side."""
-
-    lower: float | None
-    upper: float | None
-    lower_width: float | None
-    upper_width: float | None
-
-    def __post_init__(self) -> None:
-        lower = _optional_finite_number(self.lower, "lower")
-        upper = _optional_finite_number(self.upper, "upper")
-        lower_width = _optional_positive_number(self.lower_width, "lower_width")
-        upper_width = _optional_positive_number(self.upper_width, "upper_width")
-
-        if lower is None and upper is None:
-            raise ValueError("linear goal requires at least one full-score boundary")
-        if lower is not None and upper is not None and lower > upper:
-            raise ValueError("linear goal requires lower <= upper")
-        if lower is None and lower_width is not None:
-            raise ValueError("lower_width requires a lower boundary")
-        if upper is None and upper_width is not None:
-            raise ValueError("upper_width requires an upper boundary")
-
-        object.__setattr__(self, "lower", lower)
-        object.__setattr__(self, "upper", upper)
-        object.__setattr__(self, "lower_width", lower_width)
-        object.__setattr__(self, "upper_width", upper_width)
+from verifier_grounded_benchmark.task.models import LinearGoalSpec
 
 
 def score(value: float, region: LinearGoalSpec) -> float:
@@ -73,19 +44,4 @@ def _finite_number(value: object, field: str) -> float:
     numeric = float(value)
     if not math.isfinite(numeric):
         raise ValueError(f"{field} must be a finite number")
-    return numeric
-
-
-def _optional_finite_number(value: object, field: str) -> float | None:
-    if value is None:
-        return None
-    return _finite_number(value, field)
-
-
-def _optional_positive_number(value: object, field: str) -> float | None:
-    if value is None:
-        return None
-    numeric = _finite_number(value, field)
-    if numeric <= 0.0:
-        raise ValueError(f"{field} must be positive")
     return numeric
