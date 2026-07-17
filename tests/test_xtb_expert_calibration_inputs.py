@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from importlib.resources import files
 
 import yaml
 
-from benchmark.answer_extraction import normalize_answer_record
-from benchmark.evaluate import load_tasks, load_verifier_specs
-from verifiers.xtb.backend import inspect_xyz, parse_xyz
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
+from verifier_grounded_benchmark.task.loader import (
+    load_task_pack,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import inspect_xyz, parse_xyz
 
 
-ROOT = Path(__file__).resolve().parents[1]
-CALIBRATION_DIR = ROOT / "tasks" / "xtb_xyz" / "expert_calibration"
-TASKS_PATH = CALIBRATION_DIR / "tasks.yaml"
-SPECS_PATH = CALIBRATION_DIR / "verifier_specs.yaml"
-ANSWERS_PATH = CALIBRATION_DIR / "answers.jsonl"
-MANIFEST_PATH = CALIBRATION_DIR / "manifest.yaml"
+CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
+TASKS_PATH = CALIBRATION_DIR.joinpath("tasks.yaml")
+SPECS_PATH = CALIBRATION_DIR.joinpath("verifier_specs.yaml")
+ANSWERS_PATH = CALIBRATION_DIR.joinpath("answers.jsonl")
+MANIFEST_PATH = CALIBRATION_DIR.joinpath("manifest.yaml")
 TASK_IDS = {
     "xtb_formula_dipole_min_014",
     "xtb_two_fluorine_gap_min_015",
@@ -30,9 +31,14 @@ def load_answers() -> list[dict]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
+def load_calibration_pack():
+    return load_task_pack(TASKS_PATH, SPECS_PATH)
+
+
 def test_expert_candidate_pack_is_complete_but_not_formal() -> None:
-    tasks = load_tasks(TASKS_PATH)
-    specs = load_verifier_specs(SPECS_PATH)
+    pack = load_calibration_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
 
     assert set(tasks) == TASK_IDS
     assert len(specs) == 4
@@ -53,8 +59,9 @@ def test_expert_candidate_pack_is_complete_but_not_formal() -> None:
 
 
 def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
-    tasks = load_tasks(TASKS_PATH)
-    specs = load_verifier_specs(SPECS_PATH)
+    pack = load_calibration_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
     expected = {
         "xtb_formula_dipole_min_014": (0.0, 20.0, 240),
         "xtb_two_fluorine_gap_min_015": (0.0, 10.0, 240),
@@ -66,14 +73,16 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
     for task_id, (lower, upper, timeout) in expected.items():
         constraint = tasks[task_id]["constraints"][0]
         spec = specs[constraint["verifier_id"]]
-        assert constraint["lower"] == lower
-        assert constraint["upper"] == upper
-        assert spec["timeout_seconds"] == timeout
+        profile = pack.scoring_profiles[constraint["scoring_profile"]]
+        assert profile["full_score_target"] == lower
+        assert profile["zero_score_anchor"] == upper
+        assert spec["executor"]["timeout_seconds"] == timeout
 
 
 def test_task_2_uses_exact_formula_and_neutral_doublet() -> None:
-    tasks = load_tasks(TASKS_PATH)
-    specs = load_verifier_specs(SPECS_PATH)
+    pack = load_calibration_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
     task = tasks["xtb_formula_dipole_min_014"]
     spec = specs[task["constraints"][0]["verifier_id"]]
 
@@ -87,8 +96,9 @@ def test_task_2_uses_exact_formula_and_neutral_doublet() -> None:
 
 
 def test_tasks_3_and_4_use_comment_charge_and_only_source_constraints() -> None:
-    tasks = load_tasks(TASKS_PATH)
-    specs = load_verifier_specs(SPECS_PATH)
+    pack = load_calibration_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
     task_3 = tasks["xtb_two_fluorine_gap_min_015"]
     task_4 = tasks["xtb_c10_f2_gap_min_016"]
     spec = specs[task_3["constraints"][0]["verifier_id"]]
@@ -117,8 +127,9 @@ def test_tasks_3_and_4_use_comment_charge_and_only_source_constraints() -> None:
 
 
 def test_roy_and_ritonavir_use_required_identity_and_energy_modes() -> None:
-    tasks = load_tasks(TASKS_PATH)
-    specs = load_verifier_specs(SPECS_PATH)
+    pack = load_calibration_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
     roy = tasks["xtb_roy_singlepoint_energy_min_017"]
     ritonavir = tasks["xtb_ritonavir_optimized_energy_min_018"]
     roy_spec = specs[roy["constraints"][0]["verifier_id"]]
@@ -138,7 +149,7 @@ def test_roy_and_ritonavir_use_required_identity_and_energy_modes() -> None:
 
 
 def test_calibration_answers_and_manifest_cover_valid_conformers_and_controls() -> None:
-    tasks = load_tasks(TASKS_PATH)
+    tasks = load_calibration_pack().tasks_by_id
     answers = load_answers()
     with MANIFEST_PATH.open() as handle:
         manifest = yaml.safe_load(handle)
@@ -160,7 +171,7 @@ def test_calibration_answers_and_manifest_cover_valid_conformers_and_controls() 
 
 
 def test_positive_candidate_formulas_and_charge_comments() -> None:
-    tasks = load_tasks(TASKS_PATH)
+    tasks = load_calibration_pack().tasks_by_id
     expected_formulas = {
         "xtb_formula_dipole_min_014": "C12H16N3O8",
         "xtb_roy_singlepoint_energy_min_017": "C12H9N3O2S",

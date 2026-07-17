@@ -14,8 +14,8 @@ SRC_ROOT = REPOSITORY_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from verifiers.common import docker_model_runtime as runtime
-from verifiers.soltrannet import backend as soltrannet_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime as runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import backend as soltrannet_properties
 
 
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.openmm import core_backend as openmm_core_properties
-from verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import core_backend as openmm_core_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
 
 
 SPEC = {
@@ -31,9 +31,8 @@ def test_openmm_core_backend_scores_mocked_properties(monkeypatch: pytest.Monkey
 
     result = openmm_core_properties.evaluate_openmm_core_constraint({}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["energy_drop_kj_mol"] == 4.0
-    assert result["scores"]["constraint_scores"][0]["property"] == "energy_drop_kj_mol"
     assert result["failure_type"] is None
 
 
@@ -45,7 +44,7 @@ def test_openmm_core_backend_reports_env_error(monkeypatch: pytest.MonkeyPatch) 
 
     result = openmm_core_properties.evaluate_openmm_core_constraint({}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_env_error"
     assert "openmm" in result["message"]
 
@@ -58,6 +57,6 @@ def test_openmm_core_backend_reports_tool_error(monkeypatch: pytest.MonkeyPatch)
 
     result = openmm_core_properties.evaluate_openmm_core_constraint({}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "not finite" in result["message"]

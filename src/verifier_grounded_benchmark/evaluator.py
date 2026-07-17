@@ -21,19 +21,11 @@ class Evaluator:
         config: EvaluationConfig | None = None,
     ) -> None:
         self.config = config or EvaluationConfig()
-        self._legacy: tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]] | None = None
         if isinstance(tasks, TaskPack):
             self.task_pack = tasks
-            self.engine = EvaluationEngine(tasks, self.config)
         else:
-            from benchmark.evaluate import evaluate_many, evaluate_one
-
-            specs = verifier_specs or {}
-            self.task_pack = task_pack_from_mappings(tasks, specs)
-            self.engine = None
-            self._legacy = (tasks, specs)
-            self._legacy_evaluate_one = evaluate_one
-            self._legacy_evaluate_many = evaluate_many
+            self.task_pack = task_pack_from_mappings(tasks, verifier_specs or {})
+        self.engine = EvaluationEngine(self.task_pack, self.config)
 
     @property
     def tasks(self) -> dict[str, dict[str, Any]]:
@@ -44,10 +36,7 @@ class Evaluator:
         return self.task_pack.verifier_specs_by_id
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
-        if self.engine is not None:
-            return self.engine.evaluate_one(answer)
-        assert self._legacy is not None
-        return self._legacy_evaluate_one(answer, *self._legacy)
+        return self.engine.evaluate_one(answer)
 
     def evaluate_many(
         self,
@@ -55,11 +44,5 @@ class Evaluator:
         *,
         as_report: bool = False,
     ) -> dict[str, Any] | EvaluationReport:
-        if self.engine is not None:
-            report = self.engine.evaluate_many(answers)
-            return report if as_report else report.to_dict()
-        assert self._legacy is not None
-        report_dict = self._legacy_evaluate_many(answers, *self._legacy)
-        if as_report:
-            return EvaluationReport(report_dict["summary"], report_dict["rows"])
-        return report_dict
+        report = self.engine.evaluate_many(answers)
+        return report if as_report else report.to_dict()

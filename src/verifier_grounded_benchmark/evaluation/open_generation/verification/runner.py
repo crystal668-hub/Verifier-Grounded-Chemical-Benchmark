@@ -172,3 +172,47 @@ def _plain(value: Any) -> Any:
     if isinstance(value, tuple):
         return [_plain(item) for item in value]
     return value
+
+
+def build_script_payload(
+    answer: dict[str, Any],
+    task: dict[str, Any],
+    constraint: dict[str, Any],
+    spec: dict[str, Any],
+) -> dict[str, Any]:
+    candidates = answer.get("candidates")
+    candidate = (
+        candidates[0]
+        if isinstance(candidates, list) and candidates and isinstance(candidates[0], dict)
+        else {}
+    )
+    return {
+        "task": {
+            key: task[key]
+            for key in ("task_id", "version", "object_type", "structural_domain", "structure_identity")
+            if key in task
+        },
+        "constraint": constraint,
+        "verifier_spec": spec,
+        "candidate": candidate,
+    }
+
+
+def run_verification_script(
+    script_path: str | Path,
+    payload: dict[str, Any],
+    *,
+    timeout_seconds: float,
+    python_executable: str = sys.executable,
+) -> dict[str, Any]:
+    spec = {
+        **payload.get("verifier_spec", {}),
+        "verification_script": str(script_path),
+        "timeout_seconds": timeout_seconds,
+    }
+    return SubprocessPropertyVerifier(python_executable=python_executable).verify(
+        payload.get("candidate", {}),
+        payload.get("task", {}),
+        payload.get("constraint", {}),
+        spec,
+    ).to_dict()

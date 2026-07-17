@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from benchmark.verifier_scripts import run_verification_script
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import run_verification_script
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,14 +73,15 @@ def test_matgl_property_scripts_reject_property_mismatch(
     expected_message: str,
 ) -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "matgl" / script_name,
+        ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "matgl" / script_name,
         payload,
         timeout_seconds=60,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["task_id"] == payload["task"]["task_id"]
     assert result["verifier_id"] == payload["verifier_spec"]["verifier_id"]
     assert result["failure_type"] == "verifier_spec_error"
     assert result["message"] == expected_message
-    assert result["scores"]["score"] == 0.0
+    assert result["failure_scope"] == "task"
+    assert "scores" not in result

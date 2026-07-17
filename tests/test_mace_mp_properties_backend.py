@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.mace_mp import backend as mace_mp_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.mace_mp import backend as mace_mp_properties
 
 
 SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()
@@ -54,11 +54,10 @@ def test_mace_scores_fake_energy_per_atom(monkeypatch: pytest.MonkeyPatch) -> No
         spec(),
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["mace_mp_energy_per_atom_ev"] == pytest.approx(-5.369234085083008)
     assert result["properties"]["reduced_formula"] == "Si"
     assert result["properties"]["atom_count"] == 2
-    assert result["scores"]["score"] == 1.0
 
 
 def test_mace_scores_force_property(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -81,8 +80,7 @@ def test_mace_scores_force_property(monkeypatch: pytest.MonkeyPatch) -> None:
         spec("mace_mp_max_force_ev_per_angstrom"),
     )
 
-    assert result["status"] == "ok"
-    assert result["scores"]["score"] == pytest.approx(0.75)
+    assert result["outcome"] == "verified"
 
 
 def test_mace_rejects_invalid_cif() -> None:
@@ -95,7 +93,7 @@ def test_mace_rejects_invalid_cif() -> None:
         spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
 
 
@@ -115,10 +113,9 @@ def test_mace_domain_error_preserves_structure_properties(monkeypatch: pytest.Mo
         current_spec,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert result["properties"]["reduced_formula"] == "Si"
-    assert result["scores"]["validity_gate"] == 1.0
 
 
 def test_mace_maps_missing_package_to_environment_error(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -135,6 +132,6 @@ def test_mace_maps_missing_package_to_environment_error(monkeypatch: pytest.Monk
         spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_environment_error"
     assert result["properties"]["reduced_formula"] == "Si"

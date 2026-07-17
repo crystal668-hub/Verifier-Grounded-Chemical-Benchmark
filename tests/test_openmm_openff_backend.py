@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.openmm import openff_backend as openmm_openff_properties
-from verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import openff_backend as openmm_openff_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
 
 
 SPEC = {
@@ -47,8 +47,8 @@ def test_openmm_openff_backend_scores_mocked_properties(monkeypatch: pytest.Monk
 
     result = openmm_openff_properties.evaluate_openmm_openff_constraint({"smiles": "CCO"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "ok"
-    assert result["canonical_smiles"] == "CCO"
+    assert result["outcome"] == "verified"
+    assert result["canonical_candidate"]["smiles"] == "CCO"
     assert result["properties"]["energy_drop_kj_mol"] == 7.0
     assert result["failure_type"] is None
 
@@ -61,7 +61,7 @@ def test_openmm_openff_backend_rejects_invalid_smiles() -> None:
         SPEC,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
 
 
@@ -73,7 +73,7 @@ def test_openmm_openff_backend_rejects_multi_component_smiles() -> None:
         SPEC,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "validity_error"
 
 
@@ -85,7 +85,7 @@ def test_openmm_openff_backend_rejects_disallowed_element() -> None:
         {**SPEC, "domain": {**SPEC["domain"], "allowed_elements": ["H", "C"]}},
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
 
 
@@ -97,7 +97,7 @@ def test_openmm_openff_backend_reports_env_error(monkeypatch: pytest.MonkeyPatch
 
     result = openmm_openff_properties.evaluate_openmm_openff_constraint({"smiles": "CCO"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_env_error"
     assert "openff.toolkit" in result["message"]
 
@@ -110,5 +110,5 @@ def test_openmm_openff_backend_reports_tool_error(monkeypatch: pytest.MonkeyPatc
 
     result = openmm_openff_properties.evaluate_openmm_openff_constraint({"smiles": "CCO"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"

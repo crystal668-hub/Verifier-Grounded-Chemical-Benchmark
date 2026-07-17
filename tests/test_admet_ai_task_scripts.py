@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from benchmark.verifier_scripts import run_verification_script
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import run_verification_script
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,22 +38,22 @@ def payload(property_name: str) -> dict[str, Any]:
 
 def test_admet_ai_herg_script_outputs_standard_json_result() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "admet_ai" / "admet_ai_herg.py",
+        ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "admet_ai" / "admet_ai_herg.py",
         payload("hERG"),
         timeout_seconds=90,
     )
 
-    assert result["status"] == "ok"
-    assert result["canonical_smiles"] == "CCO"
+    assert result["outcome"] == "verified"
+    assert result["canonical_candidate"]["smiles"] == "CCO"
     assert 0.0 <= result["properties"]["hERG"] <= 1.0
 
 
 def test_admet_ai_herg_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "admet_ai" / "admet_ai_herg.py",
+        ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "admet_ai" / "admet_ai_herg.py",
         payload("AMES"),
         timeout_seconds=90,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"

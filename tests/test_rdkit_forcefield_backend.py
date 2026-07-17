@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
 
 
 SPEC = {
@@ -44,10 +44,10 @@ def test_evaluate_forcefield_constraint_scores_conformer_ensemble() -> None:
         SPEC,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["task_id"] == TASK["task_id"]
     assert result["verifier_id"] == "rdkit_forcefield_energy_range_v1"
-    assert result["canonical_smiles"] == "CCOc1ccc(NC(C)=O)cc1"
+    assert result["canonical_candidate"]["smiles"] == "CCOc1ccc(NC(C)=O)cc1"
     assert result["properties"]["forcefield_name"] in {"MMFF94s", "MMFF94"}
     assert result["properties"]["forcefield_parameterized"] == 1
     assert result["properties"]["conformer_count"] >= 1
@@ -58,10 +58,6 @@ def test_evaluate_forcefield_constraint_scores_conformer_ensemble() -> None:
     )
     assert result["properties"]["energy_range_kcal_mol"] >= 0.0
     assert result["properties"]["min_nonbonded_distance_angstrom"] > 0.0
-    assert result["scores"]["constraint_scores"] == [
-        {"property": "energy_range_kcal_mol", "type": "window", "score": 1.0}
-    ]
-    assert result["scores"]["score"] == 1.0
     assert result["versions"]["rdkit"]
 
 
@@ -76,23 +72,21 @@ def test_evaluate_forcefield_constraint_allows_secondary_property_names() -> Non
 
     result = evaluate_forcefield_constraint({"smiles": "CCOc1ccc(NC(=O)C)cc1"}, TASK, constraint, spec)
 
-    assert result["status"] == "ok"
-    assert result["scores"]["constraint_scores"][0]["property"] == "optimization_converged_fraction"
-    assert 0.0 <= result["scores"]["score"] <= 1.0
+    assert result["outcome"] == "verified"
+    assert "optimization_converged_fraction" in result["properties"]
 
 
 def test_evaluate_forcefield_constraint_rejects_invalid_smiles() -> None:
     result = evaluate_forcefield_constraint({"smiles": "not a smiles"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
-    assert result["scores"]["score"] == 0.0
 
 
 def test_evaluate_forcefield_constraint_rejects_multi_component_smiles() -> None:
     result = evaluate_forcefield_constraint({"smiles": "CCO.O"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "validity_error"
 
 
@@ -105,6 +99,6 @@ def test_evaluate_forcefield_constraint_reports_parameterization_failure() -> No
 
     result = evaluate_forcefield_constraint({"smiles": "[Na]CC"}, TASK, CONSTRAINT, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "parameters" in result["message"]

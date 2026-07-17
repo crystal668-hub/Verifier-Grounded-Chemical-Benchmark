@@ -56,6 +56,10 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     assert version == "0.2.0"
 
     inventory = task_inventory(version)
+    assert inventory["schema_version"] == 2
+    assert inventory["result_schema_version"] == "2"
+    assert inventory["scoring_version"] == "linear_goal_v1"
+    assert inventory["scoring_profiles"]
     for track_name, expected_ids in EXPECTED_TASK_IDS.items():
         track = vgb.load_track(track_name)
         assert track.definition.version == version

@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from verifiers.admet_ai import backend as admet_ai_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.admet_ai import backend as admet_ai_properties
 
 
 class FakeADMETModel:
@@ -48,14 +48,13 @@ def test_scores_fake_herg_prediction(monkeypatch: pytest.MonkeyPatch) -> None:
 
     result = admet_ai_properties.evaluate_admet_ai_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "ok"
-    assert result["canonical_smiles"] == "CCO"
+    assert result["outcome"] == "verified"
+    assert result["canonical_candidate"]["smiles"] == "CCO"
     assert result["properties"]["hERG"] == pytest.approx(0.2)
     assert result["properties"]["mw"] == pytest.approx(46.069)
     assert result["properties"]["heavy_atom_count"] == 3
     assert result["properties"]["formal_charge"] == 0
     assert result["properties"]["elements"] == ["C", "O"]
-    assert result["scores"]["score"] == pytest.approx(0.8)
 
 
 def test_missing_smiles_returns_parse_error(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -65,7 +64,7 @@ def test_missing_smiles_returns_parse_error(monkeypatch: pytest.MonkeyPatch) -> 
 
     result = admet_ai_properties.evaluate_admet_ai_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
 
 
@@ -80,7 +79,7 @@ def test_disallowed_element_or_multicomponent_returns_domain_or_validity_error(
 
     result = admet_ai_properties.evaluate_admet_ai_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] in {"validity_error", "domain_error"}
 
 
@@ -90,7 +89,7 @@ def test_spec_property_mismatch_returns_verifier_spec_error(monkeypatch: pytest.
 
     result = admet_ai_properties.evaluate_admet_ai_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
 
 
@@ -144,6 +143,6 @@ def test_load_and_predict_suppress_third_party_stdout_stderr(
     result = admet_ai_properties.evaluate_admet_ai_constraint(candidate, task, constraint, spec)
 
     captured = capsys.readouterr()
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert captured.out == ""
     assert captured.err == ""

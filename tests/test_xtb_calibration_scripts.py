@@ -20,7 +20,7 @@ def test_run_xtb_calibration_reports_missing_executable(tmp_path) -> None:
             sys.executable,
             str(SCRIPT),
             "--answers",
-            "tasks/xtb_xyz/calibration_answers.jsonl",
+            "src/verifier_grounded_benchmark/task/calibration/xtb/legacy_answers.jsonl",
             "--output",
             str(tmp_path / "calibration-results.json"),
         ],
@@ -61,7 +61,7 @@ def test_build_calibration_row_records_expert_diagnostics() -> None:
         },
         result={
             "task_id": "xtb_ritonavir_optimized_energy_min_018",
-            "status": "ok",
+            "status": "scored",
             "failure_type": None,
             "properties": {
                 "charge": 0,

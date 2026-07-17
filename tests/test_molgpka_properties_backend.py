@@ -4,8 +4,8 @@ from typing import Any
 
 import pytest
 
-from verifiers.common import docker_model_runtime
-from verifiers.molgpka import backend as molgpka_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import backend as molgpka_properties
 
 
 def payload(property_name: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -117,10 +117,9 @@ def test_evaluate_molgpka_scores_min_max_and_count(monkeypatch: pytest.MonkeyPat
         if property_name == "molgpka_min_pka":
             constraint.update({"min": 4.0, "max": 4.5})
         result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
-        assert result["status"] == "ok"
-        assert result["canonical_smiles"] == "CC(=O)O"
+        assert result["outcome"] == "verified"
+        assert result["canonical_candidate"]["smiles"] == "CC(=O)O"
         assert result["properties"][property_name] == pytest.approx(expected)
-        assert result["scores"]["score"] == 1.0
 
 
 def test_evaluate_molgpka_allows_zero_count(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -134,9 +133,8 @@ def test_evaluate_molgpka_allows_zero_count(monkeypatch: pytest.MonkeyPatch) -> 
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["molgpka_pka_count"] == 0
-    assert result["scores"]["score"] == 1.0
 
 
 def test_evaluate_molgpka_min_errors_when_no_values(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -149,7 +147,7 @@ def test_evaluate_molgpka_min_errors_when_no_values(monkeypatch: pytest.MonkeyPa
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert "no ionizable" in result["message"].lower()
     assert result["properties"]["molgpka_pka_count"] == 0
@@ -164,7 +162,7 @@ def test_evaluate_molgpka_maps_runtime_environment_error(monkeypatch: pytest.Mon
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_environment_error"
     assert result["properties"]["heavy_atom_count"] == 4
 
@@ -178,7 +176,7 @@ def test_evaluate_molgpka_maps_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_timeout"
     assert result["properties"]["heavy_atom_count"] == 4
 
@@ -202,7 +200,7 @@ def test_evaluate_molgpka_maps_tool_errors_with_domain_properties(
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert result["properties"]["heavy_atom_count"] == 4
 
@@ -213,7 +211,7 @@ def test_evaluate_molgpka_rejects_property_mismatch() -> None:
 
     result = molgpka_properties.evaluate_molgpka_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
 
 

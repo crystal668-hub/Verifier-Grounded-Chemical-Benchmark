@@ -17,11 +17,12 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from benchmark.evaluate import evaluate_one, load_verifier_specs
-from verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
+from verifier_grounded_benchmark.evaluator import Evaluator
+from verifier_grounded_benchmark.task.loader import load_verifier_specs_file
+from verifier_grounded_benchmark.task.resources import package_resource
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
 
 
-TASK_DIR = ROOT / "tasks" / "xtb_xyz"
 TIER_PROPERTIES = {
     "light": [
         "homo_lumo_gap",
@@ -63,7 +64,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tier", choices=sorted(TIER_PROPERTIES), required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--max-records", type=int, default=None)
-    parser.add_argument("--specs", type=Path, default=TASK_DIR / "verifier_specs.yaml")
+    parser.add_argument(
+        "--specs",
+        type=Path,
+        default=Path(str(package_resource("xtb", "verifier_specs.yaml"))),
+    )
     parser.add_argument("--resume", action="store_true", help="Reuse completed rows already present in --output")
     parser.add_argument("--checkpoint-every", type=int, default=0, help="Write partial output after this many newly completed records")
     parser.add_argument("--progress-every", type=int, default=0, help="Print progress after this many newly completed records")
@@ -155,8 +160,10 @@ def run_record(record: dict[str, Any], tier: str, tasks: dict[str, dict[str, Any
                 "message": skip_reason,
             }
             continue
-        result = evaluate_one(answer_for_record(record, property_name), tasks, specs)
-        if result.get("status") != "ok":
+        result = Evaluator(tasks, specs).evaluate_one(
+            answer_for_record(record, property_name)
+        )
+        if result.get("status") != "scored":
             failure_type = result.get("failure_type")
             if property_name in {"max_f_plus_on_carbon", "f_plus_contrast"} and no_carbon_fukui_property(result):
                 failure_type = "domain_skip"
@@ -290,7 +297,7 @@ def main() -> int:
     if executable is None:
         return write_environment_error()
 
-    specs = load_verifier_specs(args.specs)
+    specs = load_verifier_specs_file(args.specs)
     tasks = {
         hidden_task_id(property_name): hidden_task(property_name, PROPERTY_VERIFIERS[property_name])
         for property_name in TIER_PROPERTIES[args.tier]

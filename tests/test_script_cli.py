@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from verifiers.common.property_cli import run_property_script
-from verifiers.xtb import cli as xtb_cli
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.property_cli import run_property_script
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import cli as xtb_cli
 
 
 def run_cli_with_payload(
@@ -61,18 +61,13 @@ def test_run_property_script_returns_standard_mismatch_error(monkeypatch: pytest
     )
 
     assert result == {
-        "canonical_smiles": None,
+        "canonical_candidate": {},
+        "diagnostics": {},
         "failure_type": "verifier_spec_error",
+        "failure_scope": "task",
         "message": "script descriptor 'qed' does not match verifier_spec descriptor 'logp'",
+        "outcome": "evaluation_failed",
         "properties": {},
-        "scores": {
-            "constraint_scores": [],
-            "domain_gate": 0.0,
-            "property_score": 0.0,
-            "score": 0.0,
-            "validity_gate": 0.0,
-        },
-        "status": "error",
         "task_id": "task_1",
         "verifier_id": "rdkit_logp_v1",
         "versions": {"verifier_image": "verifier-grounded:dev"},
@@ -91,12 +86,13 @@ def test_run_property_script_calls_evaluator_with_payload_parts(monkeypatch: pyt
     def evaluator(candidate: dict[str, Any], task: dict[str, Any], constraint: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
         calls.append((candidate, task, constraint, spec))
         return {
+            "outcome": "verified",
             "task_id": task["task_id"],
             "verifier_id": spec["verifier_id"],
-            "status": "ok",
-            "canonical_smiles": None,
+            "canonical_candidate": candidate,
             "properties": {"homo_lumo_gap": 4.2},
-            "scores": {"score": 1.0},
+            "diagnostics": {},
+            "failure_scope": None,
             "failure_type": None,
             "message": None,
             "versions": {"backend": "fake"},
@@ -120,7 +116,7 @@ def test_run_property_script_calls_evaluator_with_payload_parts(monkeypatch: pyt
             payload["verifier_spec"],
         )
     ]
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"] == {"homo_lumo_gap": 4.2}
 
 

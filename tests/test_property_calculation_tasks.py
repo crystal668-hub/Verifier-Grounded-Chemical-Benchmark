@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-from pathlib import Path
-
 import pytest
-import yaml
 
+from verifier_grounded_benchmark.task import load_task_pack
+from verifier_grounded_benchmark.task.resources import package_resource
 
-ROOT = Path(__file__).resolve().parents[1]
-TASK_DIR = ROOT / "tasks" / "property_calculation"
 EXPECTED_CIF = {
     "ETDIAM01": (
         43,
@@ -37,9 +34,15 @@ EXPECTED_CIF = {
 }
 
 
+def load_pack():
+    return load_task_pack(
+        package_resource("property_calculation", "tasks.yaml"),
+        package_resource("property_calculation", "verifier_specs.yaml"),
+    )
+
+
 def load_tasks() -> dict[str, dict]:
-    with (TASK_DIR / "tasks.yaml").open() as handle:
-        return {task["task_id"]: task for task in yaml.safe_load(handle)["tasks"]}
+    return load_pack().tasks_by_id
 
 
 def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
@@ -101,7 +104,8 @@ def test_cif_inputs_parse_to_expected_structures() -> None:
 
 
 def test_task_7_contract_and_gold() -> None:
-    task = load_tasks()["property_calc_free_energy_001"]
+    pack = load_pack()
+    task = pack.tasks_by_id["property_calc_free_energy_001"]
 
     assert [item["object_id"] for item in task["input_objects"]] == [
         "ETDIAM01",
@@ -120,9 +124,13 @@ def test_task_7_contract_and_gold() -> None:
             "property": "free_energy_difference",
             "value": 0.258031679,
             "unit": "kJ/mol",
-            "absolute_tolerance": 0.001,
+            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v1",
         }
     ]
+    profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
+    assert profile["lower_tolerance"] == 0.001
+    assert profile["upper_tolerance"] == 0.001
+    assert profile["provenance"]["review_status"] == "provisional"
     assert task["scoring"]["comparison_groups"] == [
         {"id": "free_energy_difference", "mode": "all"}
     ]
@@ -133,7 +141,8 @@ def test_task_7_contract_and_gold() -> None:
 
 
 def test_task_8_contract_and_gold() -> None:
-    task = load_tasks()["property_calc_crystal_phase_002"]
+    pack = load_pack()
+    task = pack.tasks_by_id["property_calc_crystal_phase_002"]
 
     assert [item["object_id"] for item in task["input_objects"]] == [
         "alpha_CONTCAR",
@@ -162,10 +171,18 @@ def test_task_8_contract_and_gold() -> None:
             "property": "potential_energy_difference",
             "value": 0.079,
             "unit": "eV",
-            "absolute_tolerance": 0.001,
+            "scoring_profile": "property_calculation_potential_energy_difference_numeric_gold_v1",
         },
-        {"property": "ambient_pressure_phase", "value": "alpha"},
-        {"property": "high_pressure_phase", "value": "beta"},
+        {
+            "property": "ambient_pressure_phase",
+            "value": "alpha",
+            "scoring_profile": "property_calculation_ambient_pressure_phase_exact_string_v1",
+        },
+        {
+            "property": "high_pressure_phase",
+            "value": "beta",
+            "scoring_profile": "property_calculation_high_pressure_phase_exact_string_v1",
+        },
     ]
     assert task["scoring"]["comparison_groups"] == [
         {"id": "potential_energy_difference", "mode": "all"},
@@ -198,7 +215,4 @@ def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None
 
 
 def test_property_track_has_no_runtime_verifier_specs() -> None:
-    with (TASK_DIR / "verifier_specs.yaml").open() as handle:
-        payload = yaml.safe_load(handle)
-
-    assert payload == {"verifiers": []}
+    assert load_pack().verifier_specs == ()

@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
-
 import yaml
 
+from verifier_grounded_benchmark.task.resources import package_resource
 
-ROOT = Path(__file__).resolve().parents[1]
-TASKS_DIR = ROOT / "tasks"
+PACKS = ("rdkit", "xtb", "property_calculation", "experimental/rdkit_forcefield")
 
 FORBIDDEN_PROMPT_FRAGMENTS = [
     "RDKit-calculated",
@@ -28,14 +26,15 @@ FORBIDDEN_PROMPT_FRAGMENTS = [
 def test_task_prompts_do_not_expose_tool_or_benchmark_internals() -> None:
     violations: list[str] = []
 
-    for tasks_path in sorted(TASKS_DIR.glob("*/tasks.yaml")):
-        with tasks_path.open() as handle:
-            payload = yaml.safe_load(handle)
+    for pack_name in PACKS:
+        tasks_resource = package_resource(pack_name, "tasks.yaml")
+        payload = yaml.safe_load(tasks_resource.read_text(encoding="utf-8"))
         for task in payload["tasks"]:
             prompt = task["prompt"]
             for fragment in FORBIDDEN_PROMPT_FRAGMENTS:
                 if fragment.lower() in prompt.lower():
-                    relative_path = tasks_path.relative_to(ROOT)
-                    violations.append(f"{relative_path}:{task['task_id']} contains {fragment!r}")
+                    violations.append(
+                        f"{pack_name}/tasks.yaml:{task['task_id']} contains {fragment!r}"
+                    )
 
     assert violations == []

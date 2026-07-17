@@ -1,2 +1,0 @@
-"""Benchmark evaluation helpers."""
-

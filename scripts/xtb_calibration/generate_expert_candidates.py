@@ -13,7 +13,14 @@ from rdkit.Chem import AllChem, rdMolDescriptors
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_OUTPUT_DIR = ROOT / "tasks" / "xtb_xyz" / "expert_calibration"
+DEFAULT_OUTPUT_DIR = (
+    ROOT
+    / "src"
+    / "verifier_grounded_benchmark"
+    / "task"
+    / "calibration"
+    / "xtb"
+)
 TASK_2_SMILES = (
     "[N](C(C)([N+](=O)[O-])C(=O)OCC=C)"
     "C(C)([N+](=O)[O-])C(=O)OCC=C"

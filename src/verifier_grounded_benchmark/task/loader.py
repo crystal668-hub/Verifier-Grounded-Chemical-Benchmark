@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from verifier_grounded_benchmark.task.models import (
+    ConstraintSpec,
     OpenGenerationTaskSpec,
     PropertyCalculationTaskSpec,
     TaskPack,
@@ -93,11 +95,120 @@ def load_answers_jsonl_file(resource: Any) -> list[dict[str, Any]]:
 def task_pack_from_mappings(
     tasks: dict[str, dict[str, Any]], verifier_specs: dict[str, dict[str, Any]]
 ) -> TaskPack:
-    return _load_legacy(
-        {"tasks": list(tasks.values())},
-        {"verifiers": list(verifier_specs.values())},
-        source="legacy mappings",
+    profiles: dict[str, dict[str, Any]] = {}
+    migrated_tasks: list[TaskSpec] = []
+    for task_id, source in tasks.items():
+        raw = deepcopy(source)
+        task_type = raw.get("task_type", "open_generation")
+        if task_type == "property_calculation":
+            requested = {item["name"]: item for item in raw["requested_properties"]}
+            for gold in raw["gold_answers"]:
+                profile_id = f"legacy_{task_id}_{gold['property']}"
+                if requested[gold["property"]]["value_type"] == "number":
+                    tolerance = gold.pop("absolute_tolerance")
+                    profiles[profile_id] = {
+                        "property": gold["property"],
+                        "type": "numeric_gold",
+                        "unit": gold["unit"],
+                        "lower_tolerance": tolerance,
+                        "upper_tolerance": tolerance,
+                    }
+                else:
+                    profiles[profile_id] = {
+                        "property": gold["property"],
+                        "type": "exact_string",
+                        "normalization": "exact",
+                    }
+                gold["scoring_profile"] = profile_id
+            raw["task_type"] = task_type
+            migrated_tasks.append(
+                PropertyCalculationTaskSpec(task_id, task_type, freeze_mapping(raw))
+            )
+            continue
+        constraints: list[ConstraintSpec] = []
+        for index, constraint in enumerate(raw.get("constraints") or []):
+            old = dict(constraint)
+            new_type, profile = _legacy_constraint_profile(old)
+            profile_id = f"legacy_{task_id}_{index}"
+            profiles[profile_id] = profile
+            replacement = {
+                "type": new_type,
+                "property": old["property"],
+                "verifier_id": old["verifier_id"],
+                "role": old.get("role", "main"),
+                "scoring_profile": profile_id,
+            }
+            constraint.clear()
+            constraint.update(replacement)
+            constraints.append(
+                ConstraintSpec(
+                    old["property"],
+                    new_type,
+                    replacement["role"],
+                    old["verifier_id"],
+                    profile_id,
+                )
+            )
+        raw["task_type"] = "open_generation"
+        migrated_tasks.append(
+            OpenGenerationTaskSpec(
+                task_id, "open_generation", freeze_mapping(raw), tuple(constraints)
+            )
+        )
+    return TaskPack.create(
+        schema_version=2,
+        pack_id="legacy_mappings",
+        version="legacy_migrated",
+        scoring_version=SCORING_VERSION,
+        tasks=migrated_tasks,
+        verifier_specs=[
+            VerifierSpec(verifier_id, freeze_mapping(raw))
+            for verifier_id, raw in verifier_specs.items()
+        ],
+        scoring_profiles=profiles,
     )
+
+
+def _legacy_constraint_profile(
+    constraint: dict[str, Any],
+) -> tuple[str, dict[str, Any]]:
+    kind = constraint["type"]
+    common = {"property": constraint["property"], "unit": "legacy_unit"}
+    if kind == "window":
+        return "window", {
+            **common,
+            "type": "window",
+            "full_score": {"min": constraint["min"], "max": constraint["max"]},
+            "decay": {
+                "lower_width": 2 * constraint["sigma"],
+                "upper_width": 2 * constraint["sigma"],
+            },
+        }
+    if kind == "target_distance":
+        return "target", {
+            **common,
+            "type": "target",
+            "full_score_target": constraint["target"],
+            "decay": {
+                "lower_width": 2 * constraint["scale"],
+                "upper_width": 2 * constraint["scale"],
+            },
+        }
+    if kind == "maximize_bounded":
+        return "maximize", {
+            **common,
+            "type": "maximize",
+            "full_score_target": constraint["upper"],
+            "zero_score_anchor": constraint["lower"],
+        }
+    if kind == "minimize_bounded":
+        return "minimize", {
+            **common,
+            "type": "minimize",
+            "full_score_target": constraint["lower"],
+            "zero_score_anchor": constraint["upper"],
+        }
+    raise ValueError(f"unsupported legacy constraint type: {kind}")
 
 
 def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPack:

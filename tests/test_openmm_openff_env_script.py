@@ -9,7 +9,7 @@ from typing import Any
 import pytest
 
 from scripts.env import check_openmm_openff_env
-from verifiers.openmm import runtime as openmm_runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import runtime as openmm_runtime
 
 
 def test_check_openmm_openff_env_reports_missing_dependency_json(
@@ -90,7 +90,7 @@ def test_check_script_runs_from_checkout_without_pythonpath() -> None:
     env.pop("PYTHONPATH", None)
 
     completed = subprocess.run(
-        [sys.executable, "-S", "scripts/env/check_openmm_openff_env.py", "--help"],
+        [sys.executable, "scripts/env/check_openmm_openff_env.py", "--help"],
         capture_output=True,
         text=True,
         timeout=30,

@@ -8,16 +8,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from benchmark.evaluate import (
-    evaluate_many,
-    load_answers_jsonl,
-)
 from verifier_grounded_benchmark import load_track
-from verifier_grounded_benchmark.io import load_tasks_file, load_verifier_specs_file
-from verifier_grounded_benchmark.resources import materialize_verifier_specs
-
-DEFAULT_TASKS_PATH = Path("tasks/rdkit_baseline/tasks.yaml")
-DEFAULT_SPECS_PATH = Path("tasks/rdkit_baseline/verifier_specs.yaml")
+from verifier_grounded_benchmark.evaluation import EvaluationEngine
+from verifier_grounded_benchmark.evaluation.io import load_answers_jsonl_file
+from verifier_grounded_benchmark.task.loader import (
+    load_tasks_file,
+    load_verifier_specs_file,
+    task_pack_from_mappings,
+)
+from verifier_grounded_benchmark.task.models import TaskPack
+from verifier_grounded_benchmark.task.resources import materialize_verifier_specs
 
 
 def load_development_task_pack(
@@ -25,10 +25,10 @@ def load_development_task_pack(
     specs_path: Path,
     *,
     script_root: Path | None = None,
-) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+) -> TaskPack:
     resolved_script_root = script_root or specs_path.resolve().parent
     specs = load_verifier_specs_file(specs_path)
-    return (
+    return task_pack_from_mappings(
         load_tasks_file(tasks_path),
         materialize_verifier_specs(specs, script_root=resolved_script_root),
     )
@@ -59,27 +59,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.track and (args.tasks is not None or args.specs is not None):
         parser.error("--track cannot be combined with --tasks or --specs")
+    if (args.tasks is None) != (args.specs is None):
+        parser.error("--tasks and --specs must be provided together")
     return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    answers = load_answers_jsonl(args.answers)
+    answers = load_answers_jsonl_file(args.answers)
     if args.track:
         report = load_track(args.track).evaluate_answers(answers)
+    elif args.tasks is None:
+        report = load_track("rdkit").evaluate_answers(answers)
     else:
-        specs_path = args.specs or DEFAULT_SPECS_PATH
-        script_root = specs_path.resolve().parent if args.specs is not None else Path.cwd()
-        tasks, specs = load_development_task_pack(
-            args.tasks or DEFAULT_TASKS_PATH,
-            specs_path,
-            script_root=script_root,
+        assert args.specs is not None
+        pack = load_development_task_pack(
+            args.tasks,
+            args.specs,
+            script_root=args.specs.resolve().parent,
         )
-        report = evaluate_many(
-            answers,
-            tasks,
-            specs,
-        )
+        report = EvaluationEngine(pack).evaluate_many(answers).to_dict()
 
     if args.require_complete:
         coverage = report.get("summary", {}).get("coverage")

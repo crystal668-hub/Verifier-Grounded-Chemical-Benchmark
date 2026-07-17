@@ -9,6 +9,7 @@ import shutil
 import sys
 import time
 from datetime import datetime, timezone
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
@@ -16,17 +17,18 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from benchmark.evaluate import evaluate_one, load_answers_jsonl, load_tasks, load_verifier_specs
+from verifier_grounded_benchmark.evaluation import EvaluationEngine
+from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file, load_task_pack
 
 
-TASK_DIR = ROOT / "tasks" / "xtb_xyz"
+CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--answers", type=Path, default=TASK_DIR / "calibration_answers.jsonl")
-    parser.add_argument("--tasks", type=Path, default=TASK_DIR / "tasks.yaml")
-    parser.add_argument("--specs", type=Path, default=TASK_DIR / "verifier_specs.yaml")
+    parser.add_argument("--answers", type=Path, default=Path(str(CALIBRATION_DIR / "answers.jsonl")))
+    parser.add_argument("--tasks", type=Path, default=Path(str(CALIBRATION_DIR / "tasks.yaml")))
+    parser.add_argument("--specs", type=Path, default=Path(str(CALIBRATION_DIR / "verifier_specs.yaml")))
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--max-candidates", type=int, default=None)
     return parser.parse_args()
@@ -34,7 +36,7 @@ def parse_args() -> argparse.Namespace:
 
 def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     scores = [float(row.get("score") or 0.0) for row in rows]
-    ok_count = sum(row.get("status") == "ok" for row in rows)
+    ok_count = sum(row.get("status") == "scored" for row in rows)
     return {
         "num_answers": len(rows),
         "num_ok": ok_count,
@@ -76,7 +78,7 @@ def build_calibration_row(
     failure_type = result.get("failure_type")
     if mode in {"submitted_singlepoint", None}:
         converged = None
-    elif result.get("status") == "ok":
+    elif result.get("status") == "scored":
         converged = True
     elif failure_type in {"verifier_timeout", "verifier_tool_error"}:
         converged = False
@@ -136,9 +138,11 @@ def main() -> int:
         )
         return 1
 
-    tasks = load_tasks(args.tasks)
-    specs = load_verifier_specs(args.specs)
-    answers = load_answers_jsonl(args.answers)
+    pack = load_task_pack(args.tasks, args.specs)
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
+    engine = EvaluationEngine(pack)
+    answers = load_answers_jsonl_file(args.answers)
     if args.max_candidates is not None:
         answers = answers[: args.max_candidates]
 
@@ -149,7 +153,7 @@ def main() -> int:
         primary_constraint = constraints[0] if constraints else {}
         spec = specs.get(str(primary_constraint.get("verifier_id")), {})
         started_at = time.perf_counter()
-        result = evaluate_one(answer, tasks, specs)
+        result = engine.evaluate_one(answer)
         rows.append(
             build_calibration_row(
                 answer=answer,

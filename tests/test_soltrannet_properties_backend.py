@@ -4,8 +4,8 @@ from typing import Any
 
 import pytest
 
-from verifiers.common import docker_model_runtime
-from verifiers.soltrannet import backend as soltrannet_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import backend as soltrannet_properties
 
 
 def payload() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -50,11 +50,10 @@ def test_evaluate_soltrannet_scores_mocked_prediction(monkeypatch: pytest.Monkey
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "ok"
-    assert result["canonical_smiles"] == "CCO"
+    assert result["outcome"] == "verified"
+    assert result["canonical_candidate"]["smiles"] == "CCO"
     assert result["properties"]["soltrannet_log_s"] == pytest.approx(2.297180414199829)
     assert result["properties"]["heavy_atom_count"] == 3
-    assert result["scores"]["score"] == 1.0
 
 
 def test_evaluate_soltrannet_dispatches_to_runtime(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -74,7 +73,7 @@ def test_evaluate_soltrannet_dispatches_to_runtime(monkeypatch: pytest.MonkeyPat
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["soltrannet_log_s"] == pytest.approx(2.25)
     assert ensure_calls == [
         {
@@ -109,7 +108,7 @@ def test_evaluate_soltrannet_maps_runtime_environment_error(monkeypatch: pytest.
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_environment_error"
     assert result["properties"]["heavy_atom_count"] == 3
 
@@ -123,7 +122,7 @@ def test_evaluate_soltrannet_maps_timeout(monkeypatch: pytest.MonkeyPatch) -> No
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_timeout"
 
 
@@ -133,7 +132,7 @@ def test_evaluate_soltrannet_rejects_property_mismatch() -> None:
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
 
 
@@ -148,7 +147,7 @@ def test_evaluate_soltrannet_rejects_unsupported_property(monkeypatch: pytest.Mo
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert "unsupported" in result["message"]
 
@@ -159,7 +158,7 @@ def test_evaluate_soltrannet_rejects_multicomponent_smiles() -> None:
 
     result = soltrannet_properties.evaluate_soltrannet_constraint(candidate, task, constraint, spec)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "validity_error"
 
 

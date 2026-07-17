@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from benchmark.verifier_scripts import run_verification_script
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import run_verification_script
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,12 +31,12 @@ def torchani_payload(spec_property: str = "torchani_energy_per_atom_hartree") ->
 
 def test_torchani_property_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "torchani" / "torchani_total_energy.py",
+        ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "torchani" / "torchani_total_energy.py",
         torchani_payload(),
         timeout_seconds=60,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert result["message"] == (
         "script property 'torchani_total_energy_hartree' does not match "
@@ -67,12 +67,12 @@ def mace_payload(spec_property: str = "mace_mp_energy_ev") -> dict:
 
 def test_mace_property_script_rejects_property_mismatch() -> None:
     result = run_verification_script(
-        ROOT / "verifiers" / "mace_mp" / "mace_mp_energy_per_atom.py",
+        ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "mace_mp" / "mace_mp_energy_per_atom.py",
         mace_payload(),
         timeout_seconds=60,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert result["message"] == (
         "script property 'mace_mp_energy_per_atom_ev' does not match "

@@ -71,26 +71,13 @@ exclude = [
     "/releases/",
     "/src/verifier_grounded_benchmark/task/calibration/",
     "/src/verifier_grounded_benchmark/task/packs/experimental/",
-    "/tasks/rdkit_forcefield/",
-    "/tasks/xtb_xyz/calibration_answers.jsonl",
-    "/tasks/xtb_xyz/calibration_manifest.yaml",
-    "/tasks/xtb_xyz/expert_calibration/",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "src/benchmark",
-    "src/verifiers",
     "src/verifier_grounded_benchmark",
     "src/vgb",
 ]
-
-[tool.hatch.build.targets.wheel.force-include]
-"tasks/rdkit_baseline" = "tasks/rdkit_baseline"
-"tasks/xtb_xyz/sample_answers.jsonl" = "tasks/xtb_xyz/sample_answers.jsonl"
-"tasks/xtb_xyz/tasks.yaml" = "tasks/xtb_xyz/tasks.yaml"
-"tasks/xtb_xyz/verifier_specs.yaml" = "tasks/xtb_xyz/verifier_specs.yaml"
-"tasks/property_calculation" = "tasks/property_calculation"
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]

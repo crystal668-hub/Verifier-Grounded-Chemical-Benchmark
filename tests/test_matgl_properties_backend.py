@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.matgl import backend as matgl_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.matgl import backend as matgl_properties
 
 
 SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()
@@ -95,19 +95,15 @@ def test_matgl_formation_energy_scores_fake_native_model(monkeypatch: pytest.Mon
         eform_spec(),
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["verifier_id"] == "matgl_formation_energy_native_v1"
-    assert result["canonical_smiles"] is None
+    assert result["canonical_candidate"]["cif"] == SI_CIF
     assert result["properties"]["formation_energy"] == pytest.approx(0.0052700042724609375)
     assert result["properties"]["formation_energy_unit"] == "eV/atom"
     assert result["properties"]["reduced_formula"] == "Si"
     assert result["properties"]["atom_count"] == 2
     assert result["properties"]["volume"] == pytest.approx(160.191477991)
     assert result["properties"]["elements"] == ["Si"]
-    assert result["scores"]["constraint_scores"] == [
-        {"property": "formation_energy", "type": "window", "score": 1.0}
-    ]
-    assert result["scores"]["score"] == 1.0
     assert fake_model.seen_formulas == ["Si"]
     assert loaded_models[0]["matgl"]["model_name"] == "MEGNet-Eform-MP-2018.6.1"
 
@@ -122,10 +118,9 @@ def test_matgl_bandgap_scores_fake_native_model(monkeypatch: pytest.MonkeyPatch)
         bandgap_spec(),
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["bandgap"] == pytest.approx(0.9873989820480347)
     assert result["properties"]["bandgap_unit"] == "eV"
-    assert result["scores"]["score"] == 1.0
 
 
 def test_matgl_bandgap_passes_configured_fidelity_state_attr(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -150,7 +145,7 @@ def test_matgl_bandgap_passes_configured_fidelity_state_attr(monkeypatch: pytest
         spec,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["bandgap"] == pytest.approx(1.12)
 
 
@@ -163,9 +158,8 @@ def test_matgl_property_reports_parse_error_for_missing_or_invalid_cif(candidate
         bandgap_spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
-    assert result["scores"]["score"] == 0.0
 
 
 def test_matgl_property_mismatch_returns_spec_error_before_model_load(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -183,7 +177,7 @@ def test_matgl_property_mismatch_returns_spec_error_before_model_load(monkeypatc
         spec,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert "does not match constraint property" in str(result["message"])
 
@@ -203,12 +197,10 @@ def test_matgl_property_reports_domain_error_for_disallowed_element(monkeypatch:
         spec,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert result["properties"]["reduced_formula"] == "Si"
     assert result["properties"]["elements"] == ["Si"]
-    assert result["scores"]["validity_gate"] == 1.0
-    assert result["scores"]["domain_gate"] == 0.0
     assert "disallowed elements: Si" in str(result["message"])
 
 
@@ -225,7 +217,7 @@ def test_matgl_import_error_maps_to_environment_error(monkeypatch: pytest.Monkey
         bandgap_spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_environment_error"
 
 
@@ -245,7 +237,7 @@ def test_matgl_prediction_failure_maps_to_tool_error_and_preserves_structure_pro
         bandgap_spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert result["properties"]["reduced_formula"] == "Si"
     assert result["properties"]["atom_count"] == 2
@@ -268,7 +260,7 @@ def test_matgl_prediction_import_error_maps_to_tool_error_and_preserves_structur
         bandgap_spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert result["properties"]["reduced_formula"] == "Si"
     assert "runtime import failed" in str(result["message"])
@@ -296,7 +288,7 @@ def test_matgl_noisy_prediction_failure_captures_diagnostics_without_leaking_out
 
     assert captured.out == ""
     assert captured.err == ""
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "prediction failed" in str(result["message"])
     assert "stdout: matgl stdout before failure" in str(result["message"])

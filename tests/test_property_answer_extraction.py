@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from benchmark.answer_extraction import normalize_answer_record
+from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatcher import normalize_answer_record
 
 
 TASK_7 = {

@@ -1,32 +1,32 @@
 from __future__ import annotations
 
-import json
-from pathlib import Path
+import importlib.util
 
-import yaml
+from verifier_grounded_benchmark.evaluation import EvaluationEngine
+from verifier_grounded_benchmark.task.loader import load_task_pack
+from verifier_grounded_benchmark.task.resources import package_resource
 
-from benchmark.evaluate import evaluate_one
 
-
-ROOT = Path(__file__).resolve().parents[1]
-SRC_DIR = ROOT / "src"
-TASK_DIR = ROOT / "tasks" / "rdkit_forcefield"
+PACK = load_task_pack(
+    package_resource("experimental/rdkit_forcefield", "tasks.yaml"),
+    package_resource("experimental/rdkit_forcefield", "verifier_specs.yaml"),
+)
 
 
 def load_tasks() -> list[dict]:
-    with (TASK_DIR / "tasks.yaml").open() as handle:
-        return yaml.safe_load(handle)["tasks"]
+    return list(PACK.tasks_by_id.values())
 
 
 def load_specs() -> dict[str, dict]:
-    with (TASK_DIR / "verifier_specs.yaml").open() as handle:
-        payload = yaml.safe_load(handle)
-    return {spec["verifier_id"]: spec for spec in payload["verifiers"]}
+    return PACK.verifier_specs_by_id
 
 
 def load_samples() -> list[dict]:
-    with (TASK_DIR / "sample_answers.jsonl").open() as handle:
-        return [json.loads(line) for line in handle if line.strip()]
+    from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file
+
+    return load_answers_jsonl_file(
+        package_resource("experimental/rdkit_forcefield", "sample_answers.jsonl")
+    )
 
 
 def test_rdkit_forcefield_task_pack_binds_to_specs() -> None:
@@ -48,16 +48,15 @@ def test_rdkit_forcefield_task_pack_binds_to_specs() -> None:
             assert spec["property_name"] == constraint["property"] or constraint["property"] in spec.get(
                 "additional_property_names", []
             )
-            assert (SRC_DIR / spec["verification_script"]).exists()
+            assert importlib.util.find_spec(spec["executor"]["module"]) is not None
 
 
 def test_rdkit_forcefield_sample_answers_score_successfully() -> None:
-    tasks = {task["task_id"]: task for task in load_tasks()}
-    specs = load_specs()
+    engine = EvaluationEngine(PACK)
 
     for sample in load_samples():
-        result = evaluate_one(sample, tasks, specs)
-        assert result["status"] == "ok"
+        result = engine.evaluate_one(sample)
+        assert result["status"] == "scored"
         assert result["failure_type"] is None
         assert result["canonical_smiles"]
         assert 0.0 <= result["scores"]["score"] <= 1.0

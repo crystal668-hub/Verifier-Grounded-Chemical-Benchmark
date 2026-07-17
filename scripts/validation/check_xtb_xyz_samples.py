@@ -11,10 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from benchmark.evaluate import evaluate_many, load_answers_jsonl, load_tasks, load_verifier_specs  # noqa: E402
-
-
-TASK_DIR = ROOT / "tasks" / "xtb_xyz"
+from verifier_grounded_benchmark import load_track  # noqa: E402
 MIN_SAMPLE_SCORE = 0.6
 
 
@@ -35,15 +32,12 @@ def main() -> int:
         )
         return 1
 
-    report = evaluate_many(
-        load_answers_jsonl(TASK_DIR / "sample_answers.jsonl"),
-        load_tasks(TASK_DIR / "tasks.yaml"),
-        load_verifier_specs(TASK_DIR / "verifier_specs.yaml"),
-    )
+    track = load_track("xtb")
+    report = track.evaluate_answers(track.sample_answers())
     failing_rows = [
         row
         for row in report["rows"]
-        if row.get("status") != "ok" or float(row.get("score") or 0.0) < MIN_SAMPLE_SCORE
+        if row.get("status") != "scored" or float(row.get("score") or 0.0) < MIN_SAMPLE_SCORE
     ]
     payload = {
         "status": "ok" if not failing_rows else "error",

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from verifiers.torchani import backend as torchani_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.torchani import backend as torchani_properties
 
 
 WATER_XYZ = """3
@@ -67,12 +67,11 @@ def test_torchani_scores_fake_total_energy(monkeypatch: pytest.MonkeyPatch) -> N
         spec(),
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["torchani_total_energy_hartree"] == pytest.approx(-76.38121032714844)
     assert result["properties"]["torchani_energy_per_atom_hartree"] == pytest.approx(-25.460403442382812)
     assert result["properties"]["torchani_max_force_hartree_per_angstrom"] == pytest.approx(0.01)
     assert result["properties"]["formula"] == "H2O"
-    assert result["scores"]["score"] == 1.0
 
 
 def test_torchani_scores_force_property(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -94,8 +93,7 @@ def test_torchani_scores_force_property(monkeypatch: pytest.MonkeyPatch) -> None
         spec("torchani_max_force_hartree_per_angstrom"),
     )
 
-    assert result["status"] == "ok"
-    assert result["scores"]["score"] == pytest.approx(0.75)
+    assert result["outcome"] == "verified"
 
 
 def test_torchani_rejects_property_mismatch() -> None:
@@ -108,7 +106,7 @@ def test_torchani_rejects_property_mismatch() -> None:
         spec("torchani_energy_per_atom_hartree"),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
 
 
@@ -122,7 +120,7 @@ def test_torchani_maps_missing_xyz_to_parse_error() -> None:
         spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
 
 
@@ -140,6 +138,6 @@ def test_torchani_maps_model_import_error_to_environment_error(monkeypatch: pyte
         spec(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_environment_error"
     assert result["properties"]["formula"] == "H2O"

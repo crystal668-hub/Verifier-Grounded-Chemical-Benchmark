@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from importlib.resources import files
 
 import yaml
 
-from benchmark.answer_extraction import normalize_answer_record
-from benchmark.evaluate import load_tasks
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
+from verifier_grounded_benchmark.task.loader import load_tasks_file as load_tasks
+from verifier_grounded_benchmark.task.resources import package_resource
 
 
-ROOT = Path(__file__).resolve().parents[1]
-TASK_DIR = ROOT / "tasks" / "xtb_xyz"
-ANSWERS_PATH = TASK_DIR / "calibration_answers.jsonl"
-MANIFEST_PATH = TASK_DIR / "calibration_manifest.yaml"
-EXPERT_ANSWERS_PATH = TASK_DIR / "expert_calibration" / "answers.jsonl"
+CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
+ANSWERS_PATH = CALIBRATION_DIR.joinpath("legacy_answers.jsonl")
+MANIFEST_PATH = CALIBRATION_DIR.joinpath("legacy_manifest.yaml")
+EXPERT_ANSWERS_PATH = CALIBRATION_DIR.joinpath("answers.jsonl")
 ADVANCED_TASK_IDS = {
     "xtb_lumo_min_008",
     "xtb_polarizability_dipole_opt_009",
@@ -53,7 +53,7 @@ def test_xtb_calibration_answers_have_unique_candidate_ids() -> None:
 
 
 def test_xtb_calibration_answers_reference_known_tasks_and_extract_xyz() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    tasks = load_tasks(package_resource("xtb", "tasks.yaml"))
     answers = _load_answers()
     for answer in answers:
         assert answer["task_id"] in tasks
@@ -80,7 +80,7 @@ def test_xtb_calibration_manifest_matches_answers() -> None:
 
 
 def test_xtb_calibration_covers_every_task_with_positive_and_negative_cases() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    tasks = load_tasks(package_resource("xtb", "tasks.yaml"))
     answers = _load_answers() + _load_expert_answers()
     for task_id in tasks:
         roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}

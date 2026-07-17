@@ -16,11 +16,11 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_NAME = "verifier-grounded-benchmark"
-ARCHIVE_PACKAGES = ("benchmark", "verifiers", "verifier_grounded_benchmark", "vgb")
+ARCHIVE_PACKAGES = ("verifier_grounded_benchmark", "vgb")
 FORMAL_TRACK_PATHS = {
-    "rdkit": ROOT / "tasks" / "rdkit_baseline" / "tasks.yaml",
-    "xtb": ROOT / "tasks" / "xtb_xyz" / "tasks.yaml",
-    "property_calculation": ROOT / "tasks" / "property_calculation" / "tasks.yaml",
+    "rdkit": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "rdkit" / "tasks.yaml",
+    "xtb": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "xtb" / "tasks.yaml",
+    "property_calculation": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation" / "tasks.yaml",
 }
 
 
@@ -31,6 +31,7 @@ def project_version() -> str:
 
 def task_inventory(version: str) -> dict[str, Any]:
     tracks: dict[str, Any] = {}
+    scoring_profiles: dict[str, Any] = {}
     for track, path in FORMAL_TRACK_PATHS.items():
         payload = yaml.safe_load(path.read_text(encoding="utf-8"))
         tasks = payload.get("tasks") if isinstance(payload, dict) else None
@@ -43,18 +44,39 @@ def task_inventory(version: str) -> dict[str, Any]:
             "count": len(task_ids),
             "task_ids": task_ids,
             "tasks_sha256": sha256_file(path),
+            "task_pack_version": payload["task_pack"]["version"],
+            "scoring_version": payload["task_pack"]["scoring_version"],
         }
-    return {"schema_version": 1, "package_version": version, "tracks": tracks}
+        for profile_id, profile in payload["scoring_profiles"].items():
+            encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
+            profile_hash = hashlib.sha256(encoded).hexdigest()
+            existing = scoring_profiles.get(profile_id)
+            if existing is not None and existing["sha256"] != profile_hash:
+                raise ValueError(f"Conflicting scoring profile: {profile_id}")
+            scoring_profiles[profile_id] = {
+                "definition": profile,
+                "sha256": profile_hash,
+            }
+    return {
+        "schema_version": 2,
+        "package_version": version,
+        "result_schema_version": "2",
+        "scoring_version": "linear_goal_v1",
+        "tracks": tracks,
+        "scoring_profiles": scoring_profiles,
+    }
 
 
 def normalized_release_payloads(
     wheel_path: Path,
     sdist_path: Path,
+    *,
+    archive_packages: tuple[str, ...] = ARCHIVE_PACKAGES,
 ) -> tuple[dict[str, bytes], dict[str, bytes]]:
     wheel_payloads: dict[str, bytes] = {}
     with zipfile.ZipFile(wheel_path) as archive:
         for name in archive.namelist():
-            normalized = _normalized_wheel_member(name)
+            normalized = _normalized_wheel_member(name, archive_packages)
             if normalized is not None:
                 wheel_payloads[normalized] = archive.read(name)
 
@@ -64,7 +86,7 @@ def normalized_release_payloads(
             if not member.isfile():
                 continue
             relative = "/".join(Path(member.name).parts[1:])
-            if not _is_release_payload(relative):
+            if not _is_release_payload(relative, archive_packages):
                 continue
             extracted = archive.extractfile(member)
             if extracted is None:
@@ -89,12 +111,12 @@ def verify_archive_payloads(wheel_path: Path, sdist_path: Path) -> dict[str, Any
         )
     required = {
         "src/verifier_grounded_benchmark/README.md",
-        "tasks/rdkit_baseline/tasks.yaml",
-        "tasks/rdkit_baseline/verifier_specs.yaml",
-        "tasks/xtb_xyz/tasks.yaml",
-        "tasks/xtb_xyz/verifier_specs.yaml",
-        "tasks/property_calculation/tasks.yaml",
-        "tasks/property_calculation/verifier_specs.yaml",
+        "src/verifier_grounded_benchmark/task/packs/rdkit/tasks.yaml",
+        "src/verifier_grounded_benchmark/task/packs/rdkit/verifier_specs.yaml",
+        "src/verifier_grounded_benchmark/task/packs/xtb/tasks.yaml",
+        "src/verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml",
+        "src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
+        "src/verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
     }
     missing = sorted(required - wheel_payloads.keys())
     if missing:
@@ -145,6 +167,8 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         "schema_version": 1,
         "package": PACKAGE_NAME,
         "version": version,
+        "result_schema_version": "2",
+        "scoring_version": "linear_goal_v1",
         "tag": f"v{version}",
         "canonical_source": {
             "commit": source_commit,
@@ -154,10 +178,20 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         "artifacts": artifacts,
         "verified_payload": payload,
         "task_inventory": "task-inventory.json",
+        "scoring_profiles": "scoring-profiles.json",
     }
     metadata_dir.mkdir(parents=True, exist_ok=True)
     _write_json(metadata_dir / "manifest.json", manifest)
     _write_json(metadata_dir / "task-inventory.json", inventory)
+    _write_json(
+        metadata_dir / "scoring-profiles.json",
+        {
+            "schema_version": 1,
+            "package_version": version,
+            "scoring_version": inventory["scoring_version"],
+            "profiles": inventory["scoring_profiles"],
+        },
+    )
     (metadata_dir / "SHA256SUMS").write_text(
         "".join(f"{item['sha256']}  {item['filename']}\n" for item in artifacts),
         encoding="ascii",
@@ -183,18 +217,22 @@ def payload_digest(payloads: dict[str, bytes]) -> str:
     return digest.hexdigest()
 
 
-def _normalized_wheel_member(name: str) -> str | None:
+def _normalized_wheel_member(
+    name: str, archive_packages: tuple[str, ...] = ARCHIVE_PACKAGES
+) -> str | None:
     if name.startswith("tasks/"):
         return name
-    if any(name.startswith(f"{package}/") for package in ARCHIVE_PACKAGES):
+    if any(name.startswith(f"{package}/") for package in archive_packages):
         return f"src/{name}"
     return None
 
 
-def _is_release_payload(path: str) -> bool:
+def _is_release_payload(
+    path: str, archive_packages: tuple[str, ...] = ARCHIVE_PACKAGES
+) -> bool:
     if path.startswith("tasks/"):
         return True
-    return any(path.startswith(f"src/{package}/") for package in ARCHIVE_PACKAGES)
+    return any(path.startswith(f"src/{package}/") for package in archive_packages)
 
 
 def _git(*args: str) -> str:

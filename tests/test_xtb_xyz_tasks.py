@@ -1,16 +1,28 @@
 from __future__ import annotations
 
-from pathlib import Path
+from importlib.resources import files
 
 import pytest
 import yaml
 
-from benchmark.answer_extraction import normalize_answer_record
-from benchmark.evaluate import load_answers_jsonl, load_tasks, load_verifier_specs
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
+from verifier_grounded_benchmark.evaluation.open_generation.scoring import score_constraint_value
+from verifier_grounded_benchmark.task.loader import (
+    load_answers_jsonl_file as load_answers_jsonl,
+    load_task_pack,
+    load_tasks_file as load_tasks,
+    load_verifier_specs_file as load_verifier_specs,
+)
+from verifier_grounded_benchmark.task.resources import package_resource
 
 
-ROOT = Path(__file__).resolve().parents[1]
-TASK_DIR = ROOT / "tasks" / "xtb_xyz"
+TASKS_RESOURCE = package_resource("xtb", "tasks.yaml")
+SPECS_RESOURCE = package_resource("xtb", "verifier_specs.yaml")
+ANSWERS_RESOURCE = package_resource("xtb", "sample_answers.jsonl")
+
+
+def load_xtb_pack():
+    return load_task_pack(TASKS_RESOURCE, SPECS_RESOURCE)
 LEGACY_TASK_IDS = {
     "xtb_gap_window_001",
     "xtb_dipole_window_002",
@@ -42,8 +54,9 @@ EXPERT_VERIFIER_IDS = {
 
 
 def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
-    specs = load_verifier_specs(TASK_DIR / "verifier_specs.yaml")
+    pack = load_xtb_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
 
     assert set(tasks) == LEGACY_TASK_IDS | EXPERT_TASK_IDS
     assert not any("relaxation_energy_min" in task_id for task_id in tasks)
@@ -58,9 +71,11 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
         "xtb_fukui_gfn1_v1",
         "xtb_hessian_thermo_gfn2_v1",
     } | EXPERT_VERIFIER_IDS
-    assert specs["xtb_gap_gfn2_v1"]["verification_script"] == "verifiers/xtb/xtb_gap.py"
-    assert specs["xtb_dipole_gfn2_v1"]["verification_script"] == "verifiers/xtb/xtb_dipole.py"
-    assert specs["xtb_relaxation_energy_gfn2_v1"]["verification_script"] == "verifiers/xtb/xtb_relaxation_energy.py"
+    assert specs["xtb_gap_gfn2_v1"]["executor"]["module"].endswith(".xtb.xtb_gap")
+    assert specs["xtb_dipole_gfn2_v1"]["executor"]["module"].endswith(".xtb.xtb_dipole")
+    assert specs["xtb_relaxation_energy_gfn2_v1"]["executor"]["module"].endswith(
+        ".xtb.xtb_relaxation_energy"
+    )
     assert specs["xtb_gap_gfn2_v1"]["property_name"] == "homo_lumo_gap"
     assert specs["xtb_dipole_gfn2_v1"]["property_name"] == "dipole_moment"
     assert specs["xtb_relaxation_energy_gfn2_v1"]["property_name"] == "relaxation_energy"
@@ -93,9 +108,10 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
             quality = quality_constraints[0]
             assert quality["property"] == "relaxation_energy"
             assert quality["verifier_id"] == "xtb_relaxation_energy_gfn2_v1"
-            assert quality["type"] == "minimize_bounded"
-            assert quality["lower"] == 0.0
-            assert quality["upper"] == 0.35
+            assert quality["type"] == "minimize"
+            profile = pack.scoring_profiles[quality["scoring_profile"]]
+            assert profile["full_score_target"] == 0.0
+            assert profile["zero_score_anchor"] == 0.35
         else:
             assert quality_constraints == []
             assert len(task["constraints"]) == 1
@@ -127,32 +143,35 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     task_006_constraints = tasks["xtb_low_gap_high_dipole_opt_006"]["constraints"]
     gap = next(item for item in task_006_constraints if item["property"] == "homo_lumo_gap")
     dipole = next(item for item in task_006_constraints if item["property"] == "dipole_moment")
-    assert gap["type"] == "minimize_bounded"
-    assert gap["upper"] == 5.0
-    assert dipole["type"] == "maximize_bounded"
-    assert dipole["lower"] == 3.0
-    assert dipole["upper"] == 8.0
+    assert gap["type"] == "minimize"
+    assert pack.scoring_profiles[gap["scoring_profile"]]["zero_score_anchor"] == 5.0
+    assert dipole["type"] == "maximize"
+    dipole_profile = pack.scoring_profiles[dipole["scoring_profile"]]
+    assert dipole_profile["zero_score_anchor"] == 3.0
+    assert dipole_profile["full_score_target"] == 8.0
 
     hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
     imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
     assert imaginary["role"] == "stability_gate"
     assert imaginary["type"] == "window"
-    assert imaginary["min"] == 0
-    assert imaginary["max"] == 0
-    assert entropy["type"] == "maximize_bounded"
+    imaginary_profile = pack.scoring_profiles[imaginary["scoring_profile"]]
+    assert imaginary_profile["full_score"] == {"min": 0, "max": 0}
+    assert entropy["type"] == "maximize"
     assert tasks["xtb_hessian_thermo_stability_013"]["structural_domain"]["heavy_atom_count"] == [4, 18]
 
 
 def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    pack = load_xtb_pack()
+    tasks = pack.tasks_by_id
     gap_max = tasks["xtb_gap_max_003"]
     gap_constraint = next(item for item in gap_max["constraints"] if item["property"] == "homo_lumo_gap")
     structural_domain = gap_max["structural_domain"]
 
-    assert gap_constraint["type"] == "maximize_bounded"
-    assert gap_constraint["lower"] == 10.0
-    assert gap_constraint["upper"] == 12.0
+    assert gap_constraint["type"] == "maximize"
+    profile = pack.scoring_profiles[gap_constraint["scoring_profile"]]
+    assert profile["zero_score_anchor"] == 10.0
+    assert profile["full_score_target"] == 12.0
     assert structural_domain["hetero_atom_count_min"] >= 2
     assert structural_domain["heavy_element_diversity_min"] >= 3
     assert "CF4" in structural_domain["formula_denylist"]
@@ -160,30 +179,31 @@ def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
 
 
 def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
-    from verifiers.common.scoring import score_constraint
-
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    pack = load_xtb_pack()
+    tasks = pack.tasks_by_id
 
     lumo = next(item for item in tasks["xtb_lumo_min_008"]["constraints"] if item["property"] == "lumo_energy")
-    assert lumo["type"] == "minimize_bounded"
-    assert lumo["lower"] == -9.0
-    assert lumo["upper"] == -6.0
-    assert score_constraint({"lumo_energy": -8.5664}, lumo) == pytest.approx(0.855467, rel=1e-4)
-    assert score_constraint({"lumo_energy": -8.0285}, lumo) == pytest.approx(0.676167, rel=1e-4)
-    assert score_constraint({"lumo_energy": -5.607}, lumo) == 0.0
+    assert lumo["type"] == "minimize"
+    lumo_profile = pack.scoring_profiles[lumo["scoring_profile"]]
+    assert lumo_profile["full_score_target"] == -9.0
+    assert lumo_profile["zero_score_anchor"] == -6.0
+    assert score_constraint_value(-8.5664, lumo_profile) == pytest.approx(0.855467, rel=1e-4)
+    assert score_constraint_value(-8.0285, lumo_profile) == pytest.approx(0.676167, rel=1e-4)
+    assert score_constraint_value(-5.607, lumo_profile) == 0.0
 
     hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
     imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
     assert imaginary["role"] == "stability_gate"
-    assert imaginary["min"] == 0
-    assert imaginary["max"] == 0
-    assert entropy["type"] == "maximize_bounded"
-    assert entropy["lower"] == 50.0
-    assert entropy["upper"] == 80.0
-    assert score_constraint({"entropy_298_per_heavy_atom": 43.397}, entropy) == 0.0
-    assert score_constraint({"entropy_298_per_heavy_atom": 65.298}, entropy) == pytest.approx(0.509933, rel=1e-4)
-    assert score_constraint({"entropy_298_per_heavy_atom": 75.229}, entropy) == pytest.approx(0.840967, rel=1e-4)
+    imaginary_profile = pack.scoring_profiles[imaginary["scoring_profile"]]
+    assert imaginary_profile["full_score"] == {"min": 0, "max": 0}
+    assert entropy["type"] == "maximize"
+    entropy_profile = pack.scoring_profiles[entropy["scoring_profile"]]
+    assert entropy_profile["zero_score_anchor"] == 50.0
+    assert entropy_profile["full_score_target"] == 80.0
+    assert score_constraint_value(43.397, entropy_profile) == 0.0
+    assert score_constraint_value(65.298, entropy_profile) == pytest.approx(0.509933, rel=1e-4)
+    assert score_constraint_value(75.229, entropy_profile) == pytest.approx(0.840967, rel=1e-4)
 
     polarizability = next(
         item
@@ -205,32 +225,41 @@ def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
         for item in tasks["xtb_fukui_carbon_site_012"]["constraints"]
         if item["property"] == "max_f_plus_on_carbon"
     )
-    assert polarizability["lower"] == 4.0
-    assert polarizability["upper"] == 12.0
-    assert solvation["lower"] == 0.0
-    assert solvation["upper"] == 0.35
-    assert score_constraint({"alpb_water_hexane_selectivity": 0.23772563040053657}, solvation) == pytest.approx(
+    polarizability_profile = pack.scoring_profiles[polarizability["scoring_profile"]]
+    assert polarizability_profile["zero_score_anchor"] == 4.0
+    assert polarizability_profile["full_score_target"] == 12.0
+    solvation_profile = pack.scoring_profiles[solvation["scoring_profile"]]
+    assert solvation_profile["zero_score_anchor"] == 0.0
+    assert solvation_profile["full_score_target"] == 0.35
+    assert score_constraint_value(0.23772563040053657, solvation_profile) == pytest.approx(
         0.679216,
         rel=1e-4,
     )
-    assert score_constraint({"alpb_water_hexane_selectivity": 0.055189565791327444}, solvation) == pytest.approx(
+    assert score_constraint_value(0.055189565791327444, solvation_profile) == pytest.approx(
         0.157685,
         rel=1e-4,
     )
-    assert electrophilicity["lower"] == 0.5
-    assert electrophilicity["upper"] == 3.8
-    assert score_constraint({"global_electrophilicity": 2.4939}, electrophilicity) == pytest.approx(0.604212, rel=1e-4)
-    assert score_constraint({"global_electrophilicity": 1.8535}, electrophilicity) == pytest.approx(0.410152, rel=1e-4)
-    assert fukui["lower"] == 0.05
-    assert fukui["upper"] == 0.35
+    electrophilicity_profile = pack.scoring_profiles[electrophilicity["scoring_profile"]]
+    assert electrophilicity_profile["zero_score_anchor"] == 0.5
+    assert electrophilicity_profile["full_score_target"] == 3.8
+    assert score_constraint_value(2.4939, electrophilicity_profile) == pytest.approx(0.604212, rel=1e-4)
+    assert score_constraint_value(1.8535, electrophilicity_profile) == pytest.approx(0.410152, rel=1e-4)
+    fukui_profile = pack.scoring_profiles[fukui["scoring_profile"]]
+    assert fukui_profile["zero_score_anchor"] == 0.05
+    assert fukui_profile["full_score_target"] == 0.35
 
 
 def test_formal_expert_tasks_match_calibrated_contracts() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
-    specs = load_verifier_specs(TASK_DIR / "verifier_specs.yaml")
-    calibration_dir = TASK_DIR / "expert_calibration"
-    calibration_tasks = load_tasks(calibration_dir / "tasks.yaml")
-    calibration_specs = load_verifier_specs(calibration_dir / "verifier_specs.yaml")
+    formal_pack = load_xtb_pack()
+    calibration_dir = files("verifier_grounded_benchmark.task.calibration.xtb")
+    calibration_pack = load_task_pack(
+        calibration_dir.joinpath("tasks.yaml"),
+        calibration_dir.joinpath("verifier_specs.yaml"),
+    )
+    tasks = formal_pack.tasks_by_id
+    specs = formal_pack.verifier_specs_by_id
+    calibration_tasks = calibration_pack.tasks_by_id
+    calibration_specs = calibration_pack.verifier_specs_by_id
 
     for task_id in EXPERT_TASK_IDS:
         formal = tasks[task_id]
@@ -248,6 +277,9 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
                 assert formal[field] == calibrated[field]
             else:
                 assert field not in formal
+        for constraint in calibrated["constraints"]:
+            profile_id = constraint["scoring_profile"]
+            assert calibration_pack.scoring_profiles[profile_id] == formal_pack.scoring_profiles[profile_id]
         assert {
             key: formal["answer_schema"][key]
             for key in ("format", "final_answer_prefix", "value_type", "fence_language", "cardinality")
@@ -258,8 +290,7 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
         calibrated = calibration_specs[verifier_id]
         assert formal["formal_track"] is True
         for field in (
-            "verification_script",
-            "timeout_seconds",
+            "executor",
             "property_name",
             "resources",
             "backend",
@@ -269,8 +300,9 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
 
 
 def test_formal_expert_tasks_keep_only_source_constraints() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
-    specs = load_verifier_specs(TASK_DIR / "verifier_specs.yaml")
+    pack = load_xtb_pack()
+    tasks = pack.tasks_by_id
+    specs = pack.verifier_specs_by_id
 
     task_2 = tasks["xtb_formula_dipole_min_014"]
     task_3 = tasks["xtb_two_fluorine_gap_min_015"]
@@ -315,7 +347,7 @@ def test_formal_expert_tasks_keep_only_source_constraints() -> None:
 
 
 def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
+    tasks = load_xtb_pack().tasks_by_id
 
     required = [
         "Allowed elements: H, C, N, O, F, P, S, Cl, Br.",
@@ -353,8 +385,8 @@ def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
 
 
 def test_xtb_xyz_sample_answers_use_fenced_xyz() -> None:
-    tasks = load_tasks(TASK_DIR / "tasks.yaml")
-    answers = load_answers_jsonl(TASK_DIR / "sample_answers.jsonl")
+    tasks = load_xtb_pack().tasks_by_id
+    answers = load_answers_jsonl(ANSWERS_RESOURCE)
 
     assert answers
     for answer in answers:
@@ -369,8 +401,7 @@ def test_xtb_xyz_sample_answers_use_fenced_xyz() -> None:
 
 
 def test_xtb_verifier_specs_are_yaml_loadable() -> None:
-    with (TASK_DIR / "verifier_specs.yaml").open() as handle:
-        payload = yaml.safe_load(handle)
+    payload = yaml.safe_load(SPECS_RESOURCE.read_text(encoding="utf-8"))
 
     assert len(payload["verifiers"]) == 13
     assert payload["verifiers"][0]["domain"]["allowed_elements"] == ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br"]

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from verifiers.xtb import backend as xtb_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import backend as xtb_properties
 
 
 WATER_XYZ = """3
@@ -374,7 +374,7 @@ def test_candidate_declared_charge_reaches_runner_and_result() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["charge"] == 1
     assert result["properties"]["uhf"] == 0
     assert result["properties"]["electron_count"] == 10
@@ -401,7 +401,7 @@ def test_candidate_declared_charge_rejects_odd_closed_shell_electron_count() -> 
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert "electron count" in result["message"]
 
@@ -460,11 +460,10 @@ def test_xtb_gap_scores_fake_optimized_output() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["homo_lumo_gap"] == pytest.approx(6.5)
     assert result["properties"]["homo_lumo_gap_unit"] == "eV"
     assert result["properties"]["atom_count"] == 3
-    assert result["scores"]["score"] == 1.0
     assert runner.calls == [("optimize", runner.calls[0][1], 60.0)]
 
 
@@ -479,10 +478,9 @@ def test_xtb_dipole_scores_fake_optimized_output() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["dipole_moment"] == pytest.approx(1.85)
     assert result["properties"]["dipole_moment_unit"] == "debye"
-    assert result["scores"]["score"] == pytest.approx(0.15416666666666667)
 
 
 def test_xtb_relaxation_energy_uses_singlepoint_and_optimized_energies() -> None:
@@ -496,11 +494,10 @@ def test_xtb_relaxation_energy_uses_singlepoint_and_optimized_energies() -> None
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     expected = (-5.000000000000 - -5.070680245292) * xtb_properties.HARTREE_TO_EV
     assert result["properties"]["relaxation_energy"] == pytest.approx(expected, rel=1e-9)
     assert result["properties"]["relaxation_energy_unit"] == "eV"
-    assert result["scores"]["score"] == 0.0
     assert [call[0] for call in runner.calls] == ["singlepoint", "optimize"]
 
 
@@ -543,7 +540,7 @@ def test_xtb_total_energy_supports_submitted_and_optimized_modes(
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["total_energy"] == pytest.approx(expected_energy)
     assert result["properties"]["total_energy_unit"] == "hartree"
     assert [call[0] for call in runner.calls] == [expected_runner_mode]
@@ -576,7 +573,7 @@ def test_xtb_total_energy_rejects_unknown_calculation_mode() -> None:
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert "calculation_mode" in result["message"]
 
@@ -623,7 +620,7 @@ def test_xtb_total_energy_requires_energy_in_output() -> None:
         runner=MissingEnergyRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "total energy" in result["message"]
 
@@ -639,7 +636,7 @@ def test_xtb_lumo_scores_fake_optimized_output() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["lumo_energy"] == pytest.approx(-5.5009)
     assert result["properties"]["lumo_energy_unit"] == "eV"
     assert [call[0] for call in runner.calls] == ["optimize"]
@@ -656,7 +653,7 @@ def test_xtb_polarizability_normalizes_by_heavy_atom_count() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["molecular_polarizability"] == pytest.approx(29.435445)
     assert result["properties"]["polarizability_per_heavy_atom"] == pytest.approx(29.435445 / 3)
     assert result["properties"]["polarizability_per_heavy_atom_unit"] == "atomic_units_per_heavy_atom"
@@ -685,7 +682,7 @@ def test_xtb_solvation_selectivity_uses_optimized_geometry_and_two_alpb_runs() -
     )
 
     expected = (-0.004657863364 - -0.012153418227) * xtb_properties.HARTREE_TO_EV
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["alpb_water_hexane_selectivity"] == pytest.approx(expected)
     assert result["properties"]["gsolv_water_eV"] == pytest.approx(-0.012153418227 * xtb_properties.HARTREE_TO_EV)
     assert result["properties"]["gsolv_hexane_eV"] == pytest.approx(-0.004657863364 * xtb_properties.HARTREE_TO_EV)
@@ -709,7 +706,7 @@ def test_xtb_electrophilicity_runs_vomega_property_command() -> None:
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["global_electrophilicity"] == pytest.approx(0.6862)
     assert result["properties"]["global_electrophilicity_unit"] == "eV"
     assert [call[0] for call in runner.calls] == ["optimize", "property"]
@@ -732,7 +729,7 @@ def test_xtb_fukui_allows_secondary_constraint_property_from_same_spec() -> None
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["max_f_plus_on_carbon"] == pytest.approx(0.221)
     assert result["properties"]["f_plus_contrast"] == pytest.approx(-0.12)
     assert [call[0] for call in runner.calls] == ["optimize", "property"]
@@ -756,11 +753,10 @@ def test_xtb_hessian_thermo_allows_imaginary_frequency_gate_from_same_spec() -> 
         runner=runner,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["imaginary_frequency_count"] == 0
     assert result["properties"]["entropy_298"] == pytest.approx(242.1509)
     assert result["properties"]["entropy_298_per_heavy_atom"] == pytest.approx(242.1509 / 3)
-    assert result["scores"]["constraint_scores"][0]["role"] == "stability_gate"
     assert [call[0] for call in runner.calls] == ["hessian"]
 
 
@@ -776,7 +772,7 @@ def test_xtb_property_reports_verifier_spec_error_for_property_mismatch() -> Non
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
     assert "does not match" in result["message"]
 
@@ -801,7 +797,7 @@ def test_xtb_property_maps_candidate_validation_errors(xyz: str, failure_type: s
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == failure_type
     assert message in str(result["message"])
 
@@ -828,7 +824,7 @@ def test_xtb_property_enforces_nontrivial_structural_domain(domain_update: dict,
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert result["message"] == message
 
@@ -847,7 +843,7 @@ def test_xtb_property_merges_task_structural_domain_with_verifier_domain() -> No
         runner=FakeRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert result["message"] == "carbon_count below minimum 1"
 
@@ -874,7 +870,7 @@ def test_xtb_property_maps_runner_errors(exception: Exception, failure_type: str
         runner=ErrorRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == failure_type
 
 
@@ -892,7 +888,7 @@ def test_xtb_property_reports_missing_property_from_output() -> None:
         runner=MissingPropertyRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "missing HOMO-LUMO gap" in str(result["message"])
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from benchmark.answer_extraction import normalize_answer_record
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
 
 
 XYZ_TASK = {

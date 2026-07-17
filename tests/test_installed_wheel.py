@@ -10,8 +10,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ANSWERS_PATH = ROOT / "tasks" / "rdkit_baseline" / "sample_answers.jsonl"
-PROPERTY_ANSWERS_PATH = ROOT / "tasks" / "property_calculation" / "sample_answers.jsonl"
 PROJECT_SITE_PACKAGE_PREFIXES = (
     "_editable_impl_verifier_grounded_benchmark",
     "benchmark",
@@ -72,13 +70,32 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     env["PYTHONPATH"] = str(dependency_site)
     if shutil.which("uv") is not None:
         env["UV_NO_SYNC"] = "1"
+    python = venv_dir / ("Scripts" if sys.platform == "win32" else "bin") / "python"
+    resources_completed = subprocess.run(
+        [
+            str(python),
+            "-c",
+            (
+                "from importlib.resources import files; import json; "
+                "print(json.dumps(["
+                "str(files('verifier_grounded_benchmark.task.packs.rdkit').joinpath('sample_answers.jsonl')),"
+                "str(files('verifier_grounded_benchmark.task.packs.property_calculation').joinpath('sample_answers.jsonl'))]))"
+            ),
+        ],
+        cwd=tmp_path,
+        check=True,
+        text=True,
+        capture_output=True,
+        env=env,
+    )
+    answers_path, property_answers_path = json.loads(resources_completed.stdout)
     completed = subprocess.run(
         [
             str(executable),
             "--track",
             "rdkit",
             "--answers",
-            str(ANSWERS_PATH),
+            answers_path,
         ],
         cwd=tmp_path,
         check=True,
@@ -97,7 +114,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
             "--track",
             "property_calculation",
             "--answers",
-            str(PROPERTY_ANSWERS_PATH),
+            property_answers_path,
             "--require-complete",
         ],
         cwd=tmp_path,
@@ -111,7 +128,6 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     assert property_report["summary"]["benchmark_score"] == 1.0
     assert [row["score"] for row in property_report["rows"]] == [1.0, 1.0]
 
-    python = venv_dir / ("Scripts" if sys.platform == "win32" else "bin") / "python"
     xtb_completed = subprocess.run(
         [
             str(python),

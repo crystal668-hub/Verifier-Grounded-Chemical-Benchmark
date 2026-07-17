@@ -1,2 +1,0 @@
-{"task_id":"property_calc_free_energy_001","answer":0.258031679,"unit":"kJ/mol"}
-{"task_id":"property_calc_crystal_phase_002","answers":[{"property":"potential_energy_difference","value":0.079,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}

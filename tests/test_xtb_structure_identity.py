@@ -7,9 +7,9 @@ import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from verifiers.xtb import backend as xtb_backend
-from verifiers.xtb.structure_identity import StructureIdentityError
-from verifiers.xtb.structure_identity import validate_structure_identity
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import backend as xtb_backend
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import StructureIdentityError
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import validate_structure_identity
 
 
 ROY_SMILES = "Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N"
@@ -159,6 +159,6 @@ def test_backend_rechecks_identity_after_optimization() -> None:
         runner=InvertingRunner(),
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert "stereochemistry" in result["message"]

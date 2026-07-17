@@ -7,8 +7,8 @@ from typing import Any
 
 import pytest
 
-from verifiers.molgpka import cli as molgpka_property_script
-from verifiers.soltrannet import cli as soltrannet_property_script
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import cli as molgpka_property_script
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import cli as soltrannet_property_script
 
 
 def run_in_process(
@@ -60,18 +60,13 @@ def test_soltrannet_script_helper_calls_evaluator(monkeypatch: pytest.MonkeyPatc
         assert candidate == {"smiles": "CCO"}
         assert constraint["property"] == "soltrannet_log_s"
         return {
+            "outcome": "verified",
             "task_id": task["task_id"],
             "verifier_id": spec["verifier_id"],
-            "status": "ok",
-            "canonical_smiles": "CCO",
+            "canonical_candidate": {"smiles": "CCO"},
             "properties": {"soltrannet_log_s": 2.2},
-            "scores": {
-                "validity_gate": 1.0,
-                "domain_gate": 1.0,
-                "constraint_scores": [],
-                "property_score": 1.0,
-                "score": 1.0,
-            },
+            "diagnostics": {},
+            "failure_scope": None,
             "failure_type": None,
             "message": None,
             "versions": {},
@@ -81,7 +76,7 @@ def test_soltrannet_script_helper_calls_evaluator(monkeypatch: pytest.MonkeyPatc
 
     result = run_in_process(soltrannet_property_script.main, "soltrannet_log_s", soltrannet_payload(), monkeypatch)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["soltrannet_log_s"] == 2.2
 
 
@@ -90,7 +85,7 @@ def test_soltrannet_script_helper_rejects_mismatch(monkeypatch: pytest.MonkeyPat
 
     result = run_in_process(soltrannet_property_script.main, "soltrannet_log_s", payload, monkeypatch)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"
 
 
@@ -104,18 +99,13 @@ def test_molgpka_script_helper_calls_evaluator(monkeypatch: pytest.MonkeyPatch) 
         assert candidate == {"smiles": "CC(O)=O"}
         assert constraint["property"] == "molgpka_pka_count"
         return {
+            "outcome": "verified",
             "task_id": task["task_id"],
             "verifier_id": spec["verifier_id"],
-            "status": "ok",
-            "canonical_smiles": "CC(=O)O",
+            "canonical_candidate": {"smiles": "CC(=O)O"},
             "properties": {"molgpka_pka_count": 1, "molgpka_pka_values": [8.34]},
-            "scores": {
-                "validity_gate": 1.0,
-                "domain_gate": 1.0,
-                "constraint_scores": [],
-                "property_score": 1.0,
-                "score": 1.0,
-            },
+            "diagnostics": {},
+            "failure_scope": None,
             "failure_type": None,
             "message": None,
             "versions": {},
@@ -125,7 +115,7 @@ def test_molgpka_script_helper_calls_evaluator(monkeypatch: pytest.MonkeyPatch) 
 
     result = run_in_process(molgpka_property_script.main, "molgpka_pka_count", molgpka_payload(), monkeypatch)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["molgpka_pka_count"] == 1
 
 
@@ -134,5 +124,5 @@ def test_molgpka_script_helper_rejects_mismatch(monkeypatch: pytest.MonkeyPatch)
 
     result = run_in_process(molgpka_property_script.main, "molgpka_pka_count", payload, monkeypatch)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_spec_error"

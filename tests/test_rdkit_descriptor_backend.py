@@ -4,8 +4,8 @@ import importlib
 
 import pytest
 
-from verifiers.rdkit_descriptors import backend as rdkit_descriptors
-from verifiers.rdkit_descriptors.backend import evaluate_descriptor_constraint
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors import backend as rdkit_descriptors
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.backend import evaluate_descriptor_constraint
 
 
 SPEC = {
@@ -31,13 +31,11 @@ CONSTRAINT = {"type": "window", "property": "logp", "min": 1.0, "max": 3.0, "sig
 def test_evaluate_descriptor_constraint_scores_valid_smiles() -> None:
     result = evaluate_descriptor_constraint({"smiles": "CC(=O)Oc1ccccc1C(=O)O"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["task_id"] == "rdkit_logp_window_003"
     assert result["verifier_id"] == "rdkit_logp_v1"
-    assert result["canonical_smiles"] == "CC(=O)Oc1ccccc1C(=O)O"
+    assert result["canonical_candidate"]["smiles"] == "CC(=O)Oc1ccccc1C(=O)O"
     assert result["properties"] == {"logp": pytest.approx(1.3101, abs=1e-4)}
-    assert result["scores"]["constraint_scores"] == [{"property": "logp", "type": "window", "score": 1.0}]
-    assert result["scores"]["score"] == 1.0
     assert result["versions"]["verifier_image"] == "verifier-grounded:dev"
 
 
@@ -48,9 +46,8 @@ def test_rdkit_backend_does_not_expose_unused_bulk_property_helper() -> None:
 def test_evaluate_descriptor_constraint_rejects_invalid_smiles() -> None:
     result = evaluate_descriptor_constraint({"smiles": "not a smiles"}, TASK, CONSTRAINT, SPEC)
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "parse_error"
-    assert result["scores"]["score"] == 0.0
 
 
 def test_expert_domain_counts_all_atoms_and_oxygen_fraction() -> None:
@@ -77,26 +74,26 @@ def test_expert_domain_counts_all_atoms_and_oxygen_fraction() -> None:
         spec,
     )
 
-    assert result["status"] == "ok"
+    assert result["outcome"] == "verified"
     assert result["properties"]["atom_count"] == 20
     assert result["properties"]["element_counts"] == {"C": 6, "H": 12, "O": 2}
     assert result["properties"]["element_fractions"]["O"] == pytest.approx(0.10)
 
 
 @pytest.mark.parametrize(
-    ("smiles", "domain", "expected_status"),
+    ("smiles", "domain", "expected_outcome"),
     [
-        ("CCCCCCCCCCCCN", {"atom_count": [1, 40]}, "ok"),
-        ("CCCCCCCCCCCCCN", {"atom_count": [1, 40]}, "error"),
-        ("CCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "ok"),
-        ("CCCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "error"),
-        ("C(C(=O)O)[NH3+]", {"element_fraction_min": {"O": 0.10}}, "ok"),
+        ("CCCCCCCCCCCCN", {"atom_count": [1, 40]}, "verified"),
+        ("CCCCCCCCCCCCCN", {"atom_count": [1, 40]}, "candidate_rejected"),
+        ("CCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "verified"),
+        ("CCCCCCC(=O)O", {"element_fraction_min": {"O": 0.10}}, "candidate_rejected"),
+        ("C(C(=O)O)[NH3+]", {"element_fraction_min": {"O": 0.10}}, "verified"),
     ],
 )
 def test_expert_domain_boundaries(
     smiles: str,
     domain: dict,
-    expected_status: str,
+    expected_outcome: str,
 ) -> None:
     spec = {
         **SPEC,
@@ -112,8 +109,8 @@ def test_expert_domain_boundaries(
         spec,
     )
 
-    assert result["status"] == expected_status
-    if expected_status == "error":
+    assert result["outcome"] == expected_outcome
+    if expected_outcome == "candidate_rejected":
         assert result["failure_type"] == "domain_error"
 
 
@@ -134,7 +131,7 @@ def test_expert_domain_rejects_disallowed_elements() -> None:
         spec,
     )
 
-    assert result["status"] == "error"
+    assert result["outcome"] != "verified"
     assert result["failure_type"] == "domain_error"
     assert "Br" in result["message"]
 
@@ -156,7 +153,7 @@ def test_sa_score_import_failure_only_affects_sa_score(monkeypatch: pytest.Monke
         SPEC,
     )
 
-    assert logp_result["status"] == "ok"
+    assert logp_result["outcome"] == "verified"
     assert logp_result["failure_type"] is None
     assert logp_result["properties"] == {"logp": pytest.approx(1.3101, abs=1e-4)}
 
@@ -171,7 +168,6 @@ def test_sa_score_import_failure_only_affects_sa_score(monkeypatch: pytest.Monke
         sa_spec,
     )
 
-    assert sa_result["status"] == "error"
+    assert sa_result["outcome"] != "verified"
     assert sa_result["failure_type"] == "verifier_environment_error"
     assert "RDKit SA_Score scorer unavailable" in sa_result["message"]
-    assert sa_result["scores"]["score"] == 0.0
