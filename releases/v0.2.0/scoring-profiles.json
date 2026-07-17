@@ -1,0 +1,810 @@
+{
+  "package_version": "0.2.0",
+  "profiles": {
+    "property_calculation_ambient_pressure_phase_exact_string_v1": {
+      "definition": {
+        "normalization": "exact",
+        "property": "ambient_pressure_phase",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "frozen_legacy_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "bd254ee0f40b65bb1f85dca616f42688658f65aa19a6b4f633720854e6212c55"
+    },
+    "property_calculation_free_energy_difference_numeric_gold_v1": {
+      "definition": {
+        "lower_tolerance": 0.001,
+        "property": "free_energy_difference",
+        "provenance": {
+          "decay_source": "legacy_absolute_tolerance_as_linear_zero_score_width",
+          "legacy_parameters": {
+            "absolute_tolerance": 0.001
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "frozen_legacy_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "kJ/mol",
+        "upper_tolerance": 0.001
+      },
+      "sha256": "da73c9ecba634f2290b76ccefeb405a3da45143e60ce399827f92458f5aee5f8"
+    },
+    "property_calculation_high_pressure_phase_exact_string_v1": {
+      "definition": {
+        "normalization": "exact",
+        "property": "high_pressure_phase",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "frozen_legacy_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "c20e7a0bb800f7dda08ff6217d83d1df45b696c2f6c30a1bd2144808e13b70a7"
+    },
+    "property_calculation_potential_energy_difference_numeric_gold_v1": {
+      "definition": {
+        "lower_tolerance": 0.001,
+        "property": "potential_energy_difference",
+        "provenance": {
+          "decay_source": "legacy_absolute_tolerance_as_linear_zero_score_width",
+          "legacy_parameters": {
+            "absolute_tolerance": 0.001
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "frozen_legacy_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "eV",
+        "upper_tolerance": 0.001
+      },
+      "sha256": "7b4a6dbffdaeb358ad56246c855f937ba751c23065610441cdcbd16bb8b963c5"
+    },
+    "rdkit_fraction_csp3_maximize_0p0_1p0_v1": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "fraction_csp3",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "maximize_bounded",
+            "upper": 1.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "fraction",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "31d3983b7bb72623889134d962e50dadadac5731062500396afcdc593e5bc6ad"
+    },
+    "rdkit_hba_window_2_4_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 4,
+          "min": 2
+        },
+        "property": "hba",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 4,
+            "min": 2,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "36dc9ae1b88ee4265c0d6a87bf41cd76e1fea5f050b976663e6a5e6e9a025085"
+    },
+    "rdkit_hbd_window_1_2_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 2,
+          "min": 1
+        },
+        "property": "hbd",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 2,
+            "min": 1,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "58f08df3520acd1c939aa7526a53567ff8b2065ba9c4dc0074c701c6adc87a95"
+    },
+    "rdkit_logp_target_3p0_0p5_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.0,
+          "upper_width": 1.0
+        },
+        "full_score_target": 3.0,
+        "property": "logp",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "scale": 0.5,
+            "target": 3.0,
+            "type": "target_distance"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "target",
+        "unit": "dimensionless"
+      },
+      "sha256": "fd0842325138532005464220d2ae2fb06199f575b7f3b95bb0782ac4f99ea893"
+    },
+    "rdkit_logp_window_1p0_3p0_0p5_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.0,
+          "upper_width": 1.0
+        },
+        "full_score": {
+          "max": 3.0,
+          "min": 1.0
+        },
+        "property": "logp",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 3.0,
+            "min": 1.0,
+            "sigma": 0.5,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "dimensionless"
+      },
+      "sha256": "65aefd08c068dc998a3a20bd4610fa8f415042790ca28148b34eb29411a7e33e"
+    },
+    "rdkit_qed_maximize_0p0_1p0_v1": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "qed",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "maximize_bounded",
+            "upper": 1.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "7b8fbb9dae68b3613550ddade53ac53e236e7b6b0e2425b37fbebefdcf294ff3"
+    },
+    "rdkit_sa_score_minimize_1p0_10p0_v1": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "sa_score",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 1.0,
+            "type": "minimize_bounded",
+            "upper": 10.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "score",
+        "zero_score_anchor": 10.0
+      },
+      "sha256": "59c6ca0a073bbc840d80c8f0c4155897d71b27c23a5e0798824b997c8495aa6f"
+    },
+    "rdkit_tpsa_window_35p0_75p0_10p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 20.0,
+          "upper_width": 20.0
+        },
+        "full_score": {
+          "max": 75.0,
+          "min": 35.0
+        },
+        "property": "tpsa",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 75.0,
+            "min": 35.0,
+            "sigma": 10.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "angstrom_squared"
+      },
+      "sha256": "9fca2b56e73275deb24cc40c52cd62feef44598e2b23538496c196e897ae0907"
+    },
+    "xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v1": {
+      "definition": {
+        "full_score_target": 0.35,
+        "property": "alpb_water_hexane_selectivity",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "maximize_bounded",
+            "upper": 0.35
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "d7622520a860f7a9b55d88808be77e5384d84208b37fa89ce3a406c5f0931d1d"
+    },
+    "xtb_dipole_moment_maximize_3p0_10p0_v1": {
+      "definition": {
+        "full_score_target": 10.0,
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 3.0,
+            "type": "maximize_bounded",
+            "upper": 10.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "debye",
+        "zero_score_anchor": 3.0
+      },
+      "sha256": "4298ca8263084e13974efb967c7722e7a1958f8ebbac617358975e346d099ddb"
+    },
+    "xtb_dipole_moment_maximize_3p0_8p0_v1": {
+      "definition": {
+        "full_score_target": 8.0,
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 3.0,
+            "type": "maximize_bounded",
+            "upper": 8.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "debye",
+        "zero_score_anchor": 3.0
+      },
+      "sha256": "0643706b6f91526ea1d5a2fc4b6162ae387bfbc17364f0638a5a3b10417ff308"
+    },
+    "xtb_dipole_moment_minimize_0p0_20p0_v1": {
+      "definition": {
+        "full_score_target": 0.0,
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "minimize_bounded",
+            "upper": 20.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "debye",
+        "zero_score_anchor": 20.0
+      },
+      "sha256": "5310f827280588cf2a41488a1d1f9c2532b96c28807df4afbde538bd84709711"
+    },
+    "xtb_dipole_moment_window_3p0_5p5_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 5.5,
+          "min": 3.0
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 5.5,
+            "min": 3.0,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "4b007eb9415eb73b20a9aa793a49d4a52a4a1b239554d9e4f0d9e5576f0ef5d4"
+    },
+    "xtb_dipole_moment_window_3p0_8p0_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 8.0,
+          "min": 3.0
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 8.0,
+            "min": 3.0,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "43f649bf78accbecf7dbdc86b33ec39f0f51fc6ce3ae81b7b05a7b1c6c2b5f71"
+    },
+    "xtb_dipole_moment_window_3p5_6p0_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 6.0,
+          "min": 3.5
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 6.0,
+            "min": 3.5,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "0d193c10caa1566d0356d4de1bf20c7796030e713c3b8371c8f14cabdecf41a1"
+    },
+    "xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v1": {
+      "definition": {
+        "full_score_target": 80.0,
+        "property": "entropy_298_per_heavy_atom",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 50.0,
+            "type": "maximize_bounded",
+            "upper": 80.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "J mol-1 K-1 per heavy atom",
+        "zero_score_anchor": 50.0
+      },
+      "sha256": "8bdd3dd3cb6fdc0553f5d6d2a15b6379ed93d08dfbf136bebf80e6abb93eaf6f"
+    },
+    "xtb_f_plus_contrast_maximize_0p0_0p15_v1": {
+      "definition": {
+        "full_score_target": 0.15,
+        "property": "f_plus_contrast",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "maximize_bounded",
+            "upper": 0.15
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "6cbd3fc5072a1348d2fee69b0adcdd960bb2c8d70bc97127287a810e890f18f6"
+    },
+    "xtb_global_electrophilicity_maximize_0p5_3p8_v1": {
+      "definition": {
+        "full_score_target": 3.8,
+        "property": "global_electrophilicity",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.5,
+            "type": "maximize_bounded",
+            "upper": 3.8
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": 0.5
+      },
+      "sha256": "d8ab8a4efe114dba8b477c48fe1a451b8a4e04f7218dcb582db7fda3373eb969"
+    },
+    "xtb_homo_lumo_gap_maximize_10p0_12p0_v1": {
+      "definition": {
+        "full_score_target": 12.0,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 10.0,
+            "type": "maximize_bounded",
+            "upper": 12.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": 10.0
+      },
+      "sha256": "3c2f775d62854b5a9a7dd51cf46383f08b9a707e37fd52058193291ef13b8a23"
+    },
+    "xtb_homo_lumo_gap_minimize_0p0_10p0_v1": {
+      "definition": {
+        "full_score_target": 0.0,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "minimize_bounded",
+            "upper": 10.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 10.0
+      },
+      "sha256": "d260ade067a5e6924c89f010ee50f4592afe65997c8d0b1a416de8655aecb7f5"
+    },
+    "xtb_homo_lumo_gap_minimize_0p0_5p0_v1": {
+      "definition": {
+        "full_score_target": 0.0,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "minimize_bounded",
+            "upper": 5.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 5.0
+      },
+      "sha256": "a81d9fa7ed7dde085d5390ad09547a1764542b9939f6a5cdbe3c121bc9448f46"
+    },
+    "xtb_homo_lumo_gap_window_2p5_4p2_0p75_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.5,
+          "upper_width": 1.5
+        },
+        "full_score": {
+          "max": 4.2,
+          "min": 2.5
+        },
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 4.2,
+            "min": 2.5,
+            "sigma": 0.75,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "eV"
+      },
+      "sha256": "930a5d19cd163d2725d8f8e4f922b02a5cba0597d87b1766a95712ca59d30f95"
+    },
+    "xtb_homo_lumo_gap_window_3p5_5p5_0p75_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.5,
+          "upper_width": 1.5
+        },
+        "full_score": {
+          "max": 5.5,
+          "min": 3.5
+        },
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 5.5,
+            "min": 3.5,
+            "sigma": 0.75,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "eV"
+      },
+      "sha256": "fe4ebd912948c351207bff5c760dafb787255ff05374b41aea9f03bfd882f6c0"
+    },
+    "xtb_imaginary_frequency_count_window_0_0_1p0_v1": {
+      "definition": {
+        "decay": {
+          "lower_width": null,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 0,
+          "min": 0
+        },
+        "property": "imaginary_frequency_count",
+        "provenance": {
+          "decay_source": "equal_area_linear_approximation_from_legacy_exponential_scale",
+          "legacy_parameters": {
+            "max": 0,
+            "min": 0,
+            "sigma": 1.0,
+            "type": "window"
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "38571b785503d348a70d2a07637e1a9179d0d24003f75b584aca2ffd503323a0"
+    },
+    "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v1": {
+      "definition": {
+        "full_score_target": -9.0,
+        "property": "lumo_energy",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": -9.0,
+            "type": "minimize_bounded",
+            "upper": -6.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": -6.0
+      },
+      "sha256": "9a573309da3828a03ef55eca3b97f756c55665e77afc7a3826e9c397042f69c6"
+    },
+    "xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v1": {
+      "definition": {
+        "full_score_target": 0.35,
+        "property": "max_f_plus_on_carbon",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.05,
+            "type": "maximize_bounded",
+            "upper": 0.35
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.05
+      },
+      "sha256": "a49d0077dcdd24d40845ddb92d6c7ecab436d3dc484300de624355ad1a6ca477"
+    },
+    "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v1": {
+      "definition": {
+        "full_score_target": 12.0,
+        "property": "polarizability_per_heavy_atom",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 4.0,
+            "type": "maximize_bounded",
+            "upper": 12.0
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "maximize",
+        "unit": "atomic_units_per_heavy_atom",
+        "zero_score_anchor": 4.0
+      },
+      "sha256": "3ac8ec691ea74b46a50f2eb9acf65e2536c360b810904a6eae18898ba55f2a8c"
+    },
+    "xtb_relaxation_energy_minimize_0p0_0p35_v1": {
+      "definition": {
+        "full_score_target": 0.0,
+        "property": "relaxation_energy",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": 0.0,
+            "type": "minimize_bounded",
+            "upper": 0.35
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 0.35
+      },
+      "sha256": "5e971895e857688dec455eb443eccfb211f74bfe8491bd58bf4235d78123832c"
+    },
+    "xtb_total_energy_minimize_neg_148p2_neg_148p15_v1": {
+      "definition": {
+        "full_score_target": -148.2,
+        "property": "total_energy",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": -148.2,
+            "type": "minimize_bounded",
+            "upper": -148.15
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "hartree",
+        "zero_score_anchor": -148.15
+      },
+      "sha256": "54939e562077c73336086c5f8450b4b7f2534ab719cc28e4e446160accf3759a"
+    },
+    "xtb_total_energy_minimize_neg_50p3_neg_50p25_v1": {
+      "definition": {
+        "full_score_target": -50.3,
+        "property": "total_energy",
+        "provenance": {
+          "decay_source": "exact_linear_mapping_from_legacy_bounds",
+          "legacy_parameters": {
+            "lower": -50.3,
+            "type": "minimize_bounded",
+            "upper": -50.25
+          },
+          "review_date": "2026-07-17",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "provisional",
+          "target_source": "legacy_task_constraint"
+        },
+        "type": "minimize",
+        "unit": "hartree",
+        "zero_score_anchor": -50.25
+      },
+      "sha256": "a5e2fe6fb70b78922192b4ddf988d024bf5af610841863bac583f7f8c29d2d59"
+    }
+  },
+  "schema_version": 1,
+  "scoring_version": "linear_goal_v1"
+}
