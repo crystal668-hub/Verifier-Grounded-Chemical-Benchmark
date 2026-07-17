@@ -4,12 +4,6 @@ from pathlib import Path
 
 import pytest
 
-from benchmark.evaluate import (
-    evaluate_many,
-    load_answers_jsonl,
-    load_tasks,
-    load_verifier_specs,
-)
 import verifier_grounded_benchmark as vgb
 
 
@@ -66,17 +60,18 @@ def test_load_suite_defaults_to_formal_tracks_only() -> None:
     assert not any(task_id.startswith("atomistic" + "skills_") for task_id in task_ids)
 
 
-def test_builtin_track_materialized_verifier_scripts_exist() -> None:
+def test_builtin_track_uses_importable_module_executors() -> None:
+    import importlib.util
+
     for track_name in ("rdkit", "xtb"):
         specs = vgb.load_track(track_name).verifier_specs_by_id
-        scripts = [
-            spec["verification_script"]
+        modules = [
+            spec["executor"]["module"]
             for spec in specs.values()
-            if spec.get("verification_script")
         ]
 
-        assert scripts
-        assert all(Path(script).exists() for script in scripts)
+        assert modules
+        assert all(importlib.util.find_spec(module) is not None for module in modules)
 
     assert vgb.load_track("property_calculation").verifier_specs_by_id == {}
 
@@ -98,22 +93,17 @@ def test_load_track_rejects_unknown_track() -> None:
         vgb.load_track("missing")
 
 
-def test_track_evaluate_answers_matches_existing_rdkit_summary() -> None:
+def test_track_evaluate_answers_uses_v2_result_and_scoring_contract() -> None:
     track = vgb.load_track("rdkit")
-    definition = track.definition
-    legacy_tasks = load_tasks(definition.resolve_path(definition.task_pack_path))
-    legacy_specs = load_verifier_specs(
-        definition.resolve_path(definition.verifier_specs_path)
-    )
-    legacy_answers = load_answers_jsonl(
-        definition.resolve_path(definition.sample_answers_path)
-    )
+    report = track.evaluate_answers(track.sample_answers())
 
-    assert track.sample_answers() == legacy_answers
-    assert track.evaluate_answers(track.sample_answers()) == evaluate_many(
-        legacy_answers,
-        legacy_tasks,
-        legacy_specs,
+    assert report["summary"]["coverage"]["complete"] is True
+    assert all(row["schema_version"] == 2 for row in report["rows"])
+    assert all(row["status"] == "scored" for row in report["rows"])
+    assert all(
+        item["scoring_version"] == "linear_goal_v1"
+        for row in report["rows"]
+        for item in row["constraint_scores"]
     )
 
 
@@ -174,9 +164,10 @@ def test_track_evaluate_one_returns_structured_xtb_parse_error() -> None:
         {"task_id": "xtb_gap_window_001", "candidates": [{}]}
     )
 
-    assert result["status"] == "error"
+    assert result["status"] == "scored"
     assert result["task_id"] == "xtb_gap_window_001"
     assert result["failure_type"] == "parse_error"
+    assert result["failure_scope"] == "candidate"
     assert result["message"] == "candidate must include an XYZ string"
 
 
@@ -186,10 +177,9 @@ def test_suite_evaluate_one_routes_by_task_id() -> None:
     )
 
     assert result["task_id"] == "rdkit_qed_max_001"
-    assert result["status"] in {"ok", "error"}
-    if result["status"] == "error":
-        assert result["failure_type"] == "domain_error"
-        assert result["scores"]["score"] == 0.0
+    assert result["status"] == "scored"
+    assert result["failure_type"] == "domain_error"
+    assert result["scores"]["score"] == 0.0
 
 
 def test_evaluation_report_wrapper_serializes_rows() -> None:

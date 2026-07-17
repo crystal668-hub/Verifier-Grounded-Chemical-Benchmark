@@ -93,9 +93,9 @@ def test_calibration_duplicates_reuse_formal_profiles() -> None:
             assert calibration.scoring_profiles[profile_id] == formal.scoring_profiles[profile_id]
 
 
-def test_public_tracks_remain_on_legacy_resources_until_engine_cutover() -> None:
+def test_public_tracks_use_validated_v2_package_resources() -> None:
     assert len(vgb.load_track("rdkit").tasks()) == 11
-    assert vgb.load_track("rdkit")._task_pack.schema_version == 1
+    assert vgb.load_track("rdkit")._task_pack.schema_version == 2
 
 
 def test_task_pack_is_immutable_and_accessors_return_copies() -> None:

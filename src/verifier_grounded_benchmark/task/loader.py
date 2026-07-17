@@ -111,7 +111,9 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     verifier_items = verifier_data.get("verifiers")
     if not isinstance(verifier_items, list):
         raise ValueError("verifiers must be a list")
-    verifiers_by_id = validate_verifier_specs(verifier_items)
+    verifiers_by_id = validate_verifier_specs(
+        verifier_items, require_module_executor=True
+    )
     tasks_by_id = index_unique(
         require_list(task_data.get("tasks"), "tasks"), "task_id", "task"
     )

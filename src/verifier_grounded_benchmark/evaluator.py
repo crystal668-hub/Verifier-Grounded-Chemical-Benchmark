@@ -1,54 +1,53 @@
+"""Public evaluator compatibility wrapper around EvaluationEngine."""
+
 from __future__ import annotations
 
-import json
-from copy import deepcopy
-from dataclasses import dataclass
 from typing import Any
 
-from benchmark.evaluate import (
-    evaluate_many as legacy_evaluate_many,
-    evaluate_one as legacy_evaluate_one,
-    summarize_row,
-    summarize_rows,
+from verifier_grounded_benchmark.evaluation import (
+    EvaluationConfig,
+    EvaluationEngine,
+    EvaluationReport,
 )
-
-
-@dataclass(frozen=True)
-class EvaluationConfig:
-    fail_fast: bool = False
-
-
-@dataclass(frozen=True)
-class EvaluationReport:
-    summary: dict[str, Any]
-    rows: list[dict[str, Any]]
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "summary": deepcopy(self.summary),
-            "rows": deepcopy(self.rows),
-        }
-
-    def to_json(self, *, indent: int | None = 2, sort_keys: bool = True) -> str:
-        return json.dumps(self.to_dict(), indent=indent, sort_keys=sort_keys)
-
-    def to_jsonl_rows(self, *, sort_keys: bool = True) -> str:
-        return "\n".join(json.dumps(row, sort_keys=sort_keys) for row in self.rows)
+from verifier_grounded_benchmark.task.loader import task_pack_from_mappings
+from verifier_grounded_benchmark.task.models import TaskPack
 
 
 class Evaluator:
     def __init__(
         self,
-        tasks: dict[str, dict[str, Any]],
-        verifier_specs: dict[str, dict[str, Any]],
+        tasks: TaskPack | dict[str, dict[str, Any]],
+        verifier_specs: dict[str, dict[str, Any]] | None = None,
         config: EvaluationConfig | None = None,
     ) -> None:
-        self.tasks = deepcopy(tasks)
-        self.verifier_specs = deepcopy(verifier_specs)
         self.config = config or EvaluationConfig()
+        self._legacy: tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]] | None = None
+        if isinstance(tasks, TaskPack):
+            self.task_pack = tasks
+            self.engine = EvaluationEngine(tasks, self.config)
+        else:
+            from benchmark.evaluate import evaluate_many, evaluate_one
+
+            specs = verifier_specs or {}
+            self.task_pack = task_pack_from_mappings(tasks, specs)
+            self.engine = None
+            self._legacy = (tasks, specs)
+            self._legacy_evaluate_one = evaluate_one
+            self._legacy_evaluate_many = evaluate_many
+
+    @property
+    def tasks(self) -> dict[str, dict[str, Any]]:
+        return self.task_pack.tasks_by_id
+
+    @property
+    def verifier_specs(self) -> dict[str, dict[str, Any]]:
+        return self.task_pack.verifier_specs_by_id
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
-        return legacy_evaluate_one(answer, self.tasks, self.verifier_specs)
+        if self.engine is not None:
+            return self.engine.evaluate_one(answer)
+        assert self._legacy is not None
+        return self._legacy_evaluate_one(answer, *self._legacy)
 
     def evaluate_many(
         self,
@@ -56,29 +55,11 @@ class Evaluator:
         *,
         as_report: bool = False,
     ) -> dict[str, Any] | EvaluationReport:
-        if self.config.fail_fast:
-            rows = []
-            for answer in answers:
-                result = self.evaluate_one(answer)
-                if result.get("status") != "ok":
-                    task_id = result.get("task_id")
-                    failure_type = result.get("failure_type")
-                    message = result.get("message")
-                    raise RuntimeError(
-                        f"evaluation failed for task_id={task_id!r}: "
-                        f"{failure_type}: {message}"
-                    )
-                rows.append(summarize_row(result))
-            report = {
-                "summary": summarize_rows(rows, answers=answers, tasks=self.tasks),
-                "rows": rows,
-            }
-        else:
-            report = legacy_evaluate_many(answers, self.tasks, self.verifier_specs)
-
+        if self.engine is not None:
+            report = self.engine.evaluate_many(answers)
+            return report if as_report else report.to_dict()
+        assert self._legacy is not None
+        report_dict = self._legacy_evaluate_many(answers, *self._legacy)
         if as_report:
-            return EvaluationReport(
-                summary=report["summary"],
-                rows=report["rows"],
-            )
-        return report
+            return EvaluationReport(report_dict["summary"], report_dict["rows"])
+        return report_dict

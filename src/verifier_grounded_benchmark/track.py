@@ -10,6 +10,7 @@ from verifier_grounded_benchmark.evaluator import (
     Evaluator,
 )
 from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file, load_task_pack
+from verifier_grounded_benchmark.task.models import merge_task_packs
 from verifier_grounded_benchmark.task.registry import TrackDefinition
 from verifier_grounded_benchmark.task.resources import materialize_verifier_specs
 
@@ -23,9 +24,13 @@ class Track:
         )
         self._tasks_by_id = self._task_pack.tasks_by_id
         specs = self._task_pack.verifier_specs_by_id
-        self._verifier_specs_by_id = materialize_verifier_specs(
-            specs,
-            script_root=_script_root_for(definition),
+        self._verifier_specs_by_id = (
+            specs
+            if self._task_pack.schema_version == 2
+            else materialize_verifier_specs(
+                specs,
+                script_root=_script_root_for(definition),
+            )
         )
 
     @property
@@ -73,7 +78,7 @@ class Track:
         )
 
     def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
-        return Evaluator(self._tasks_by_id, self._verifier_specs_by_id, config=config)
+        return Evaluator(self._task_pack, config=config)
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
         return self.evaluator().evaluate_one(answer)
@@ -106,6 +111,9 @@ class Suite:
                         f"Conflicting verifier spec across suite tracks: {verifier_id}"
                     )
                 self._verifier_specs_by_id[verifier_id] = deepcopy(spec)
+        self._task_pack = merge_task_packs(
+            [track._task_pack for track in self._tracks], pack_id="suite"
+        )
 
     def tracks(self) -> list[Track]:
         return list(self._tracks)
@@ -134,7 +142,7 @@ class Suite:
         return prompts
 
     def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
-        return Evaluator(self._tasks_by_id, self._verifier_specs_by_id, config=config)
+        return Evaluator(self._task_pack, config=config)
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
         return self.evaluator().evaluate_one(answer)

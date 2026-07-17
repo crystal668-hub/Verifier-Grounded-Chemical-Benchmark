@@ -78,25 +78,23 @@ def builtin_definitions() -> list[TrackDefinition]:
     return [
         TrackDefinition(
             name="rdkit", version="0.2.0", display_name="RDKit baseline small-molecule tasks",
-            task_pack_path="tasks/rdkit_baseline/tasks.yaml",
-            verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
-            sample_answers_path="tasks/rdkit_baseline/sample_answers.jsonl",
-            tags=("small_molecule", "rdkit", "descriptor"), resource_root=repository_root(),
+            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            sample_answers_path="sample_answers.jsonl",
+            tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
             name="xtb", version="0.2.0", display_name="xTB direct-XYZ small-molecule tasks",
-            task_pack_path="tasks/xtb_xyz/tasks.yaml",
-            verifier_specs_path="tasks/xtb_xyz/verifier_specs.yaml",
-            sample_answers_path="tasks/xtb_xyz/sample_answers.jsonl",
+            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule_3d", "xtb", "xyz"),
-            requirements=("xtb executable for real scoring",), resource_root=repository_root(),
+            requirements=("xtb executable for real scoring",), resource_pack="xtb",
         ),
         TrackDefinition(
             name="property_calculation", version="0.2.0", display_name="Fixed-input property calculation tasks",
-            task_pack_path="tasks/property_calculation/tasks.yaml",
-            verifier_specs_path="tasks/property_calculation/verifier_specs.yaml",
-            sample_answers_path="tasks/property_calculation/sample_answers.jsonl",
-            tags=("property_calculation", "fixed_input", "crystal"), resource_root=repository_root(),
+            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            sample_answers_path="sample_answers.jsonl",
+            tags=("property_calculation", "fixed_input", "crystal"),
+            resource_pack="property_calculation",
         ),
     ]
 

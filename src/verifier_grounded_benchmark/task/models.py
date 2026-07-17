@@ -118,6 +118,45 @@ def freeze_mapping(value: Mapping[str, Any]) -> Mapping[str, Any]:
     return _freeze(value)
 
 
+def merge_task_packs(packs: list[TaskPack], *, pack_id: str = "suite") -> TaskPack:
+    if not packs:
+        raise ValueError("suite requires at least one task pack")
+    scoring_versions = {pack.scoring_version for pack in packs}
+    if len(scoring_versions) != 1:
+        raise ValueError("suite task packs must share one scoring version")
+    tasks: list[TaskSpec] = []
+    task_ids: set[str] = set()
+    verifiers: dict[str, VerifierSpec] = {}
+    profiles: dict[str, Mapping[str, Any]] = {}
+    for pack in packs:
+        for task in pack.tasks:
+            if task.task_id in task_ids:
+                raise ValueError(f"Duplicate task_id across suite tracks: {task.task_id}")
+            task_ids.add(task.task_id)
+            tasks.append(task)
+        for verifier in pack.verifier_specs:
+            existing = verifiers.get(verifier.verifier_id)
+            if existing is not None and existing.raw != verifier.raw:
+                raise ValueError(
+                    f"Conflicting verifier spec across suite tracks: {verifier.verifier_id}"
+                )
+            verifiers[verifier.verifier_id] = verifier
+        for profile_id, profile in pack.scoring_profiles.items():
+            existing_profile = profiles.get(profile_id)
+            if existing_profile is not None and existing_profile != profile:
+                raise ValueError(f"Conflicting scoring profile across suite tracks: {profile_id}")
+            profiles[profile_id] = profile
+    return TaskPack.create(
+        schema_version=max(pack.schema_version for pack in packs),
+        pack_id=pack_id,
+        version="+".join(pack.version for pack in packs),
+        scoring_version=scoring_versions.pop(),
+        tasks=tasks,
+        verifier_specs=list(verifiers.values()),
+        scoring_profiles=profiles,
+    )
+
+
 def _freeze(value: Any) -> Any:
     if isinstance(value, Mapping):
         return MappingProxyType({str(key): _freeze(item) for key, item in value.items()})
