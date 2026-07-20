@@ -135,15 +135,25 @@ decay:
 
 ### 2.5 xTB full-score windows fixed by task statements
 
-The following xTB full-score windows remain unchanged. Their decay anchors are pending literature review together with the other xTB profiles.
+The following xTB full-score windows remain unchanged. Their decay widths are now fixed to one complete target-window width on each active side:
 
-| Property/task usage | Fixed full-score window |
-| --- | --- |
-| xTB gap, task 001 | `[3.5, 5.5] eV` |
-| xTB dipole, task 002 | `[3.0, 5.5] D` |
-| xTB gap, task 007 | `[2.5, 4.2] eV` |
-| xTB dipole, task 007 | `[3.5, 6.0] D` |
-| xTB dipole, task 009 | `[3.0, 8.0] D` |
+```text
+W = U - L
+rL = W
+rU = W
+B_L = L - W
+B_U = U + W
+```
+
+| Planned v2 profile | Fixed full-score window | `rL=rU` | Zero-score anchors |
+| --- | --- | ---: | --- |
+| `xtb_homo_lumo_gap_window_3p5_5p5_2p0_v2` | `[3.5, 5.5] eV` | `2.0 eV` | `1.5`, `7.5 eV` |
+| `xtb_dipole_moment_window_3p0_5p5_2p5_v2` | `[3.0, 5.5] D` | `2.5 D` | `0.5`, `8.0 D` |
+| `xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2` | `[2.5, 4.2] eV` | `1.7 eV` | `0.8`, `5.9 eV` |
+| `xtb_dipole_moment_window_3p5_6p0_2p5_v2` | `[3.5, 6.0] D` | `2.5 D` | `1.0`, `8.5 D` |
+| `xtb_dipole_moment_window_3p0_8p0_5p0_v2` | `[3.0, 8.0] D` | `5.0 D` | `-2.0`, `13.0 D` |
+
+These window values do not require literature-derived `T/B` research. Property-domain validation still takes precedence if an anchor lies outside the physically realizable domain.
 
 ### 2.6 Property Calculation numeric-gold policy
 
@@ -175,17 +185,9 @@ No value in this section may be copied from its v1 profile without independent a
 
 ### 3.1 xTB unresolved profile inventory
 
-The current xTB pack contains 22 scoring profiles. The relaxation-quality and imaginary-frequency profiles are approved above, leaving these 20 profiles unresolved:
+The current xTB pack contains 22 scoring profiles. The relaxation-quality, imaginary-frequency, and five window profiles are approved above, leaving these 15 profiles unresolved. All 15 require literature-supported `T/B` research.
 
-#### Window decay anchors: 5 profiles
-
-- `xtb_homo_lumo_gap_window_3p5_5p5_0p75_v1` (task 001): lower and upper anchors outside `[3.5, 5.5] eV`.
-- `xtb_dipole_moment_window_3p0_5p5_1p0_v1` (task 002): lower and upper anchors outside `[3.0, 5.5] D`.
-- `xtb_homo_lumo_gap_window_2p5_4p2_0p75_v1` (task 007): lower and upper anchors outside `[2.5, 4.2] eV`.
-- `xtb_dipole_moment_window_3p5_6p0_1p0_v1` (task 007): lower and upper anchors outside `[3.5, 6.0] D`.
-- `xtb_dipole_moment_window_3p0_8p0_1p0_v1` (task 009): lower and upper anchors outside `[3.0, 8.0] D`.
-
-#### T/B anchors: 13 profiles
+#### T/B anchors: 15 profiles
 
 - `xtb_homo_lumo_gap_maximize_10p0_12p0_v1` (task 003): gap maximize.
 - `xtb_homo_lumo_gap_minimize_0p0_5p0_v1` (tasks 004 and 006): gap minimize under the open-generation domain.
@@ -200,9 +202,6 @@ The current xTB pack contains 22 scoring profiles. The relaxation-quality and im
 - `xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v1` (task 013): entropy per heavy atom maximize.
 - `xtb_dipole_moment_minimize_0p0_20p0_v1` (task 014): fixed-formula dipole minimize.
 - `xtb_homo_lumo_gap_minimize_0p0_10p0_v1` (tasks 015 and 016): exact-composition gap minimize.
-
-#### Molecule- and protocol-specific energy anchors: 2 profiles
-
 - `xtb_total_energy_minimize_neg_50p3_neg_50p25_v1` (task 017): ROY same-molecule single-point energy.
 - `xtb_total_energy_minimize_neg_148p2_neg_148p15_v1` (task 018): Ritonavir same-molecule optimized energy.
 
@@ -210,12 +209,12 @@ The v1 suffixes above identify current profiles only; none of their legacy numbe
 
 ### 3.2 xTB literature and protocol requirements
 
-For each xTB profile, the literature investigation must produce two distinct anchors:
+For each unresolved xTB profile requiring `T/B`, the literature investigation must produce two distinct anchors:
 
 - `T`: an excellent literature-supported level in the task's optimization direction;
 - `B`: a literature-supported baseline, weak level, or failure-side reference.
 
-The research record must cite the literature source, identify the reference compounds or structures, explain why they represent excellent and baseline levels, and record their recomputed values under the frozen GFN2-xTB benchmark protocol. For window tasks, literature must likewise support a failure-side reference on each active side; the prompt-defined full-score window itself remains unchanged.
+The research record must cite the literature source, identify the reference compounds or structures, explain why they represent excellent and baseline levels, and record their recomputed values under the frozen GFN2-xTB benchmark protocol. Window profiles are excluded from this T/B research requirement because their widths are fixed by the target-window rule above.
 
 For ROY and Ritonavir, literature may identify relevant conformers or structures, but only same-molecule GFN2-xTB energies from the frozen single-point or optimization protocol may become numeric anchors.
 
@@ -279,6 +278,6 @@ For every implementation change:
 
 Resolve the pending values in this order so later choices can reuse earlier anchors consistently:
 
-1. xTB gap and dipole literature references, targets, anchors, and window decay relationships.
+1. xTB gap and dipole literature references, targets, and anchors.
 2. Remaining xTB advanced-property literature references, targets, and anchors.
-3. ROY and Ritonavir literature conformers, protocol-specific energy references, and energy scales.
+3. ROY and Ritonavir literature conformers, protocol-specific energy targets and anchors, and energy scales.
