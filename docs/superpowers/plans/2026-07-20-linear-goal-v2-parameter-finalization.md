@@ -24,6 +24,8 @@ The following rules are fixed for all remaining parameter decisions:
 6. A verifier-derived target and its anchors must use the same verifier version, method, protocol, units, hard domain, charge, and electronic-state policy.
 7. Formal `linear_goal_v2` profiles must have approved provenance. A `provisional` profile may be evaluated only as shadow scoring and may not enter a formal v2 release.
 8. `linear_goal_v1` profiles and release artifacts remain immutable. Approved values are introduced through new v2 profile ids and a new scoring version.
+9. For unresolved xTB objectives, chemical literature must support both endpoints. The full-score target `T` represents a literature-supported excellent level in the requested optimization direction. The zero-score anchor `B` represents a literature-supported baseline, weak level, or failure-side reference; `B` is not another excellent target.
+10. Literature values from experiments, DFT, or a different semiempirical method may identify the scientific level and reference compounds, but they may not be copied directly into a GFN2-xTB profile. The cited reference compounds must be recomputed with the frozen benchmark verifier protocol, and those recomputed values become the numeric `T/B` anchors.
 
 ## 2. Approved Decisions
 
@@ -92,51 +94,77 @@ This gives the discrete policy:
 
 The lower side is inactive because the property domain is nonnegative. The planned profile id is `xtb_imaginary_frequency_count_window_0_0_2p0_v2`.
 
-### 2.4 Full-score regions fixed by task statements
+### 2.4 RDKit window decay policy
 
-The following full-score regions are already part of the task definition and remain unchanged in v2. This decision does not approve their pending decay widths.
+For every RDKit descriptor window `[L, U]`, let `W = U - L`. Both decay widths are fixed to one complete target-window width:
 
-| Property/task usage | Type | Fixed full-score region or target | Decay status |
-| --- | --- | --- | --- |
-| RDKit logP window, tasks 003 and 009 | window | `[1.0, 3.0]` | pending |
-| RDKit TPSA window, tasks 004 and 009 | window | `[35.0, 75.0] angstrom^2` | pending |
-| RDKit HBA window, tasks 005 and 010 | window | integer `[2, 4]` | pending |
-| RDKit HBD window, tasks 006 and 010 | window | integer `[1, 2]` | pending |
-| RDKit logP target, task 011 | target | `3.0` | pending |
-| RDKit force-field energy range | window | `[0.0, 20.0] kcal/mol`; lower side inactive | upper width pending |
-| xTB gap window, task 001 | window | `[3.5, 5.5] eV` | pending |
-| xTB dipole window, task 002 | window | `[3.0, 5.5] D` | pending |
-| xTB gap window, task 007 | window | `[2.5, 4.2] eV` | pending |
-| xTB dipole window, task 007 | window | `[3.5, 6.0] D` | pending |
-| xTB dipole window, task 009 | window | `[3.0, 8.0] D` | pending |
+```text
+rL = W
+rU = W
+B_L = L - W
+B_U = U + W
+```
+
+Values at or beyond `B_L/B_U` score zero. This gives the following approved parameters:
+
+| Planned v2 profile | Full-score window | `rL` | `rU` | Zero-score anchors |
+| --- | --- | ---: | ---: | --- |
+| `rdkit_logp_window_1p0_3p0_2p0_v2` | `[1.0, 3.0]` | `2.0` | `2.0` | `-1.0`, `5.0` |
+| `rdkit_tpsa_window_35p0_75p0_40p0_v2` | `[35.0, 75.0] angstrom^2` | `40.0` | `40.0` | `-5.0`, `115.0 angstrom^2` |
+| `rdkit_hba_window_2_4_2p0_v2` | integer `[2, 4]` | `2.0` | `2.0` | `0`, `6` |
+| `rdkit_hbd_window_1_2_1p0_v2` | integer `[1, 2]` | `1.0` | `1.0` | `0`, `3` |
+
+Property-domain validation takes precedence over scoring. For example, a negative TPSA verifier result is an invalid measurement even though the mathematical lower zero-score anchor is `-5.0 angstrom^2`.
+
+The experimental RDKit force-field window uses the same one-window rule on its physically active upper side. For `[0.0, 20.0] kcal/mol`, the lower side remains inactive by the nonnegative property domain, `rU = 20.0 kcal/mol`, and the upper zero-score anchor is `40.0 kcal/mol`. The planned profile id is `rdkit_forcefield_energy_range_kcal_mol_window_0p0_20p0_20p0_v2`.
 
 Repeated uses of the same property, verifier protocol, and task semantics must reference the same approved profile. In particular, RDKit tasks 003/009, 004/009, 005/010, and 006/010 must not duplicate parameter definitions.
 
-### 2.5 Property Calculation fixed answers
+The RDKit logP target task is not a window task. Its target remains `3.0`, but its left and right decay widths remain pending.
 
-The following task answers remain fixed, but their numeric decay tolerances are not approved:
+### 2.5 xTB full-score windows fixed by task statements
 
-| Property | Fixed gold | Scoring primitive | Tolerance status |
-| --- | --- | --- | --- |
-| `free_energy_difference` | `0.258031679 kJ/mol` | numeric gold | pending protocol and error budget |
-| `potential_energy_difference` | `0.079 eV` | numeric gold | pending protocol and error budget |
-| `ambient_pressure_phase` | exact string `alpha` | exact string | fully determined |
-| `high_pressure_phase` | exact string `beta` | exact string | fully determined |
+The following xTB full-score windows remain unchanged. Their decay anchors are pending literature review together with the other xTB profiles.
 
-The numeric values are frozen task data, not evidence that the existing `0.001` tolerances are valid.
+| Property/task usage | Fixed full-score window |
+| --- | --- |
+| xTB gap, task 001 | `[3.5, 5.5] eV` |
+| xTB dipole, task 002 | `[3.0, 5.5] D` |
+| xTB gap, task 007 | `[2.5, 4.2] eV` |
+| xTB dipole, task 007 | `[3.5, 6.0] D` |
+| xTB dipole, task 009 | `[3.0, 8.0] D` |
+
+### 2.6 Property Calculation numeric-gold policy
+
+For each of the two current positive numeric gold answers `g`, the full-score target is `g` and both decay widths are the distance from the gold answer to zero, expressed in the gold-answer unit:
+
+```text
+L = U = g
+tauL = tauU = g - 0 = g
+B_L = 0
+B_U = 2g
+```
+
+This policy is approved for the two current tasks:
+
+| Planned v2 profile | Gold target | `tauL` | `tauU` | Zero-score anchors |
+| --- | ---: | ---: | ---: | ---: |
+| `property_calculation_free_energy_difference_numeric_gold_v2` | `0.258031679 kJ/mol` | `0.258031679 kJ/mol` | `0.258031679 kJ/mol` | `0`, `0.516063358 kJ/mol` |
+| `property_calculation_potential_energy_difference_numeric_gold_v2` | `0.079 eV` | `0.079 eV` | `0.079 eV` | `0`, `0.158 eV` |
+
+The score is one only at the gold answer, decays linearly to zero at zero and twice the gold answer, and is zero outside that support. This rule does not automatically extend to a future zero or negative gold answer because a decay width must remain positive.
+
+### 2.7 Property Calculation exact-string answers
+
+The `ambient_pressure_phase` gold remains exact string `alpha`, and the `high_pressure_phase` gold remains exact string `beta`.
 
 ## 3. Pending Decisions
 
 No value in this section may be copied from its v1 profile without independent approval.
 
-### 3.1 RDKit decay anchors
+### 3.1 RDKit target decay anchors
 
-- logP window `[1.0, 3.0]`: lower and upper zero-score anchors.
-- TPSA window `[35.0, 75.0]`: lower and upper zero-score anchors.
-- HBA window `[2, 4]`: lower and upper integer zero-score anchors.
-- HBD window `[1, 2]`: lower and upper integer zero-score anchors.
 - logP target `3.0`: lower and upper zero-score anchors.
-- Experimental force-field energy range `[0.0, 20.0] kcal/mol`: upper zero-score anchor.
 
 ### 3.2 xTB main-property profiles
 
@@ -148,17 +176,14 @@ No value in this section may be copied from its v1 profile without independent a
 
 The current v1 values remain calibration evidence only. They are not approved defaults.
 
-### 3.3 Property Calculation tolerances
+For each xTB profile, the literature investigation must produce two distinct anchors:
 
-The existing symmetric `0.001 kJ/mol` and `0.001 eV` values are not approved. Before selecting `tauL/tauU`, record:
+- `T`: an excellent literature-supported level in the task's optimization direction;
+- `B`: a literature-supported baseline, weak level, or failure-side reference.
 
-- the gold-generation method and software versions;
-- convergence parameters and numerical repeatability;
-- whether the expected answer is a protocol reproduction or a scientific estimate;
-- the reporting precision required by the prompt;
-- an error budget that distinguishes numerical precision from method discrepancy.
+The research record must cite the literature source, identify the reference compounds or structures, explain why they represent excellent and baseline levels, and record their recomputed values under the frozen GFN2-xTB benchmark protocol. For window tasks, literature must likewise support a failure-side reference on each active side; the prompt-defined full-score window itself remains unchanged.
 
-If the calculation is directionally asymmetric, `tauL` and `tauU` may differ, but the asymmetry must be justified by that error budget.
+For ROY and Ritonavir, literature may identify relevant conformers or structures, but only same-molecule GFN2-xTB energies from the frozen single-point or optimization protocol may become numeric anchors.
 
 ## 4. Approval Gate for Remaining Profiles
 
@@ -220,9 +245,7 @@ For every implementation change:
 
 Resolve the pending values in this order so later choices can reuse earlier anchors consistently:
 
-1. RDKit window and target decay anchors.
-2. xTB gap and dipole targets, anchors, and window decay relationships.
-3. Remaining xTB advanced-property targets and anchors.
-4. ROY and Ritonavir conformer-energy references and energy scales.
-5. Property Calculation gold protocols and numeric tolerances.
-6. Experimental RDKit force-field upper decay anchor.
+1. xTB gap and dipole literature references, targets, anchors, and window decay relationships.
+2. Remaining xTB advanced-property literature references, targets, and anchors.
+3. ROY and Ritonavir literature conformers, protocol-specific energy references, and energy scales.
+4. RDKit logP target decay anchors.
