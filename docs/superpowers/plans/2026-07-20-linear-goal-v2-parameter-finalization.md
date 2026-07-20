@@ -120,7 +120,18 @@ The experimental RDKit force-field window uses the same one-window rule on its p
 
 Repeated uses of the same property, verifier protocol, and task semantics must reference the same approved profile. In particular, RDKit tasks 003/009, 004/009, 005/010, and 006/010 must not duplicate parameter definitions.
 
-The RDKit logP target task is not a window task. Its target remains `3.0`, but its left and right decay widths remain pending.
+The RDKit logP target task is not a window task. Its target is `3.0`, and the requested `3-0` rule is interpreted symmetrically for the target primitive: both sides use `r=3.0-0=3.0`. The resulting zero-score anchors are `0.0` and `6.0`.
+
+The planned profile id is `rdkit_logp_target_3p0_3p0_v2`:
+
+```yaml
+type: target
+unit: dimensionless
+full_score_target: 3.0
+decay:
+  lower_width: 3.0
+  upper_width: 3.0
+```
 
 ### 2.5 xTB full-score windows fixed by task statements
 
@@ -162,19 +173,42 @@ The `ambient_pressure_phase` gold remains exact string `alpha`, and the `high_pr
 
 No value in this section may be copied from its v1 profile without independent approval.
 
-### 3.1 RDKit target decay anchors
+### 3.1 xTB unresolved profile inventory
 
-- logP target `3.0`: lower and upper zero-score anchors.
+The current xTB pack contains 22 scoring profiles. The relaxation-quality and imaginary-frequency profiles are approved above, leaving these 20 profiles unresolved:
 
-### 3.2 xTB main-property profiles
+#### Window decay anchors: 5 profiles
 
-- Window decay anchors for gap and dipole tasks 001, 002, 007, and 009.
-- Targets and anchors for gap maximize/minimize tasks 003, 004, 006, 015, and 016.
-- Targets and anchors for dipole maximize/minimize tasks 005, 006, and 014.
-- Targets and anchors for LUMO, polarizability per heavy atom, ALPB selectivity, global electrophilicity, carbon `f+`, `f+` contrast, and entropy per heavy atom.
-- Molecule- and protocol-specific targets and anchors for ROY and Ritonavir total energies.
+- `xtb_homo_lumo_gap_window_3p5_5p5_0p75_v1` (task 001): lower and upper anchors outside `[3.5, 5.5] eV`.
+- `xtb_dipole_moment_window_3p0_5p5_1p0_v1` (task 002): lower and upper anchors outside `[3.0, 5.5] D`.
+- `xtb_homo_lumo_gap_window_2p5_4p2_0p75_v1` (task 007): lower and upper anchors outside `[2.5, 4.2] eV`.
+- `xtb_dipole_moment_window_3p5_6p0_1p0_v1` (task 007): lower and upper anchors outside `[3.5, 6.0] D`.
+- `xtb_dipole_moment_window_3p0_8p0_1p0_v1` (task 009): lower and upper anchors outside `[3.0, 8.0] D`.
 
-The current v1 values remain calibration evidence only. They are not approved defaults.
+#### T/B anchors: 13 profiles
+
+- `xtb_homo_lumo_gap_maximize_10p0_12p0_v1` (task 003): gap maximize.
+- `xtb_homo_lumo_gap_minimize_0p0_5p0_v1` (tasks 004 and 006): gap minimize under the open-generation domain.
+- `xtb_dipole_moment_maximize_3p0_10p0_v1` (task 005): dipole maximize.
+- `xtb_dipole_moment_maximize_3p0_8p0_v1` (task 006): dipole maximize in the joint low-gap/high-dipole task.
+- `xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v1` (task 008): LUMO-energy minimize.
+- `xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v1` (task 009): polarizability per heavy atom maximize.
+- `xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v1` (task 010): ALPB selectivity maximize.
+- `xtb_global_electrophilicity_maximize_0p5_3p8_v1` (task 011): global electrophilicity maximize.
+- `xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v1` (task 012): maximum carbon-site `f+` maximize.
+- `xtb_f_plus_contrast_maximize_0p0_0p15_v1` (task 012): carbon-site `f+` contrast maximize.
+- `xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v1` (task 013): entropy per heavy atom maximize.
+- `xtb_dipole_moment_minimize_0p0_20p0_v1` (task 014): fixed-formula dipole minimize.
+- `xtb_homo_lumo_gap_minimize_0p0_10p0_v1` (tasks 015 and 016): exact-composition gap minimize.
+
+#### Molecule- and protocol-specific energy anchors: 2 profiles
+
+- `xtb_total_energy_minimize_neg_50p3_neg_50p25_v1` (task 017): ROY same-molecule single-point energy.
+- `xtb_total_energy_minimize_neg_148p2_neg_148p15_v1` (task 018): Ritonavir same-molecule optimized energy.
+
+The v1 suffixes above identify current profiles only; none of their legacy numbers are approved for v2.
+
+### 3.2 xTB literature and protocol requirements
 
 For each xTB profile, the literature investigation must produce two distinct anchors:
 
@@ -248,4 +282,3 @@ Resolve the pending values in this order so later choices can reuse earlier anch
 1. xTB gap and dipole literature references, targets, anchors, and window decay relationships.
 2. Remaining xTB advanced-property literature references, targets, and anchors.
 3. ROY and Ritonavir literature conformers, protocol-specific energy references, and energy scales.
-4. RDKit logP target decay anchors.
