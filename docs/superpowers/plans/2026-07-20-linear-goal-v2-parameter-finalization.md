@@ -300,7 +300,8 @@ parameters as follows:
 - [x] Update task prompts and public scoring documentation wherever a newly approved full-score or zero-score boundary is user-visible.
 - [x] Update the xTB calibration duplicate pack to reference the same v2 profiles as matching formal tasks.
 - [x] Add boundary, midpoint, profile-reuse, provenance, release, and regression tests.
-- [ ] Build a new release with v2 scoring-profile hashes and verify that v0.2.0 remains unchanged.
+- [x] Build the `v0.3.0` release with v2 scoring-profile hashes, verify that
+  `v0.2.0` remains unchanged, and sync the pinned OpenClaw runtime.
 
 Likely implementation files include:
 

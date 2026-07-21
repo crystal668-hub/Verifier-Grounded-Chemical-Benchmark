@@ -1,0 +1,674 @@
+{
+  "package_version": "0.3.0",
+  "profiles": {
+    "property_calculation_ambient_pressure_phase_exact_string_v2": {
+      "definition": {
+        "normalization": "exact",
+        "property": "ambient_pressure_phase",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "547eaeec7e8264158f568ee012b7591bef412d06ddd1e53a21f5af096d809afa"
+    },
+    "property_calculation_free_energy_difference_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.258031679,
+        "property": "free_energy_difference",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "kJ/mol",
+        "upper_tolerance": 0.258031679
+      },
+      "sha256": "584d089fab5a5c356ab5c27aeb7058d7312bb9b31205056bc128a135b7014014"
+    },
+    "property_calculation_high_pressure_phase_exact_string_v2": {
+      "definition": {
+        "normalization": "exact",
+        "property": "high_pressure_phase",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "4f70178040baf2c55396ed49a15d8d4a8dacb5ffed6a823f30050a6ac95ceec7"
+    },
+    "property_calculation_potential_energy_difference_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.079,
+        "property": "potential_energy_difference",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "eV",
+        "upper_tolerance": 0.079
+      },
+      "sha256": "6ffbb82e573160aced72b1808280859cdcd4dc97f0e5855595c814285b5906e1"
+    },
+    "rdkit_fraction_csp3_maximize_0p0_1p0_v2": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "fraction_csp3",
+        "provenance": {
+          "decay_source": "defined_metric_range",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "defined_metric_range"
+        },
+        "type": "maximize",
+        "unit": "fraction",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "74583652d865a75a268fbfb454addf57fb1bbe3c3237de88fc97d08a150d633a"
+    },
+    "rdkit_hba_window_2_4_2p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 4,
+          "min": 2
+        },
+        "property": "hba",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "7c77c406d00ac70b5321c63ba2f9d451bd0d57333813c8c05b04424c4df25c69"
+    },
+    "rdkit_hbd_window_1_2_1p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.0,
+          "upper_width": 1.0
+        },
+        "full_score": {
+          "max": 2,
+          "min": 1
+        },
+        "property": "hbd",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "03ca61fea0b3f4f5c068c70a83dac1874f7f00735ae76a30c0086b0bd557c7e0"
+    },
+    "rdkit_logp_target_3p0_3p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 3.0,
+          "upper_width": 3.0
+        },
+        "full_score_target": 3.0,
+        "property": "logp",
+        "provenance": {
+          "decay_source": "target_to_zero_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "target",
+        "unit": "dimensionless"
+      },
+      "sha256": "0c10eac944c2e39628e9909e232b15682a16b252e6d70b8d5dc0daeb158023c7"
+    },
+    "rdkit_logp_window_1p0_3p0_2p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 3.0,
+          "min": 1.0
+        },
+        "property": "logp",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "dimensionless"
+      },
+      "sha256": "478a022fb261608c83f1b55f0c35b9280bcdb50d2820aceb552daeb58ab49648"
+    },
+    "rdkit_qed_maximize_0p0_1p0_v2": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "qed",
+        "provenance": {
+          "decay_source": "defined_metric_range",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "defined_metric_range"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "31390fa57b37be94e16e25d4d4c11d199c3a23c7b0ad8b7813100a83a50bea62"
+    },
+    "rdkit_sa_score_minimize_1p0_10p0_v2": {
+      "definition": {
+        "full_score_target": 1.0,
+        "property": "sa_score",
+        "provenance": {
+          "decay_source": "defined_metric_range",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "defined_metric_range"
+        },
+        "type": "minimize",
+        "unit": "score",
+        "zero_score_anchor": 10.0
+      },
+      "sha256": "6ebe08b7839cda4220c6cf7b62636104bf99581265fbc31074987776e553628a"
+    },
+    "rdkit_tpsa_window_35p0_75p0_40p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 40.0,
+          "upper_width": 40.0
+        },
+        "full_score": {
+          "max": 75.0,
+          "min": 35.0
+        },
+        "property": "tpsa",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "angstrom_squared"
+      },
+      "sha256": "0bd3d9be96906fff096230a63dd3b990328b14fbbd3e91d276eb681f6a9c332d"
+    },
+    "xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2": {
+      "definition": {
+        "full_score_target": 0.3953163242456749,
+        "property": "alpb_water_hexane_selectivity",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": -0.17228322475548233
+      },
+      "sha256": "9e05263b509ba0b6295c70ad07ec5d494444d71458aebe7220eea9b0f5e0aa0d"
+    },
+    "xtb_dipole_moment_maximize_3p0_10p0_v2": {
+      "definition": {
+        "full_score_target": 13.374,
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
+          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "debye",
+        "zero_score_anchor": 3.32
+      },
+      "sha256": "54f18c8045d779d7203bbc144d60ebd8e360656d15e7935ee00f7eb676662e30"
+    },
+    "xtb_dipole_moment_minimize_0p0_20p0_v2": {
+      "definition": {
+        "full_score_target": 3.042,
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "frozen_benchmark_baseline_panel_supported_by_literature",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "frozen_benchmark_reference_panel_supported_by_literature"
+        },
+        "type": "minimize",
+        "unit": "debye",
+        "zero_score_anchor": 9.328
+      },
+      "sha256": "91a0e3d5688ac99d6dd916944e21e2bcae3c761f1c625aac5322a8e43f1d9f6e"
+    },
+    "xtb_dipole_moment_window_3p0_5p5_2p5_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.5,
+          "upper_width": 2.5
+        },
+        "full_score": {
+          "max": 5.5,
+          "min": 3.0
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "e385a9e884c39e0cccfa2f9e88d4334e1cf04be1e6e441bfab98431db45a1f04"
+    },
+    "xtb_dipole_moment_window_3p0_8p0_5p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 5.0,
+          "upper_width": 5.0
+        },
+        "full_score": {
+          "max": 8.0,
+          "min": 3.0
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "9503a4b5eca5ef332cf35a0b2b87d4e60cd0638059dd6234a7f4f1e7e1c7890f"
+    },
+    "xtb_dipole_moment_window_3p5_6p0_2p5_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.5,
+          "upper_width": 2.5
+        },
+        "full_score": {
+          "max": 6.0,
+          "min": 3.5
+        },
+        "property": "dipole_moment",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "debye"
+      },
+      "sha256": "a845a3f6bc0f29767d430975463fbc56607fa2458f39a6b5d5d324ad86c98201"
+    },
+    "xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2": {
+      "definition": {
+        "full_score_target": 76.094775,
+        "property": "entropy_298_per_heavy_atom",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "J mol-1 K-1 per heavy atom",
+        "zero_score_anchor": 40.59789
+      },
+      "sha256": "ee5889982fdbaa31de86fd761950aa75202471d1a84a93fa8ed1c058fdb6400c"
+    },
+    "xtb_f_plus_contrast_maximize_0p0_0p15_v2": {
+      "definition": {
+        "full_score_target": 0.094,
+        "property": "f_plus_contrast",
+        "provenance": {
+          "decay_source": "scientific_tie_boundary",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.0
+      },
+      "sha256": "189464eb00772298f3dafe3ccba88a46802caaf87b38bc5f8b4900a2746423a2"
+    },
+    "xtb_global_electrophilicity_maximize_0p5_3p8_v2": {
+      "definition": {
+        "full_score_target": 3.1359,
+        "property": "global_electrophilicity",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": 0.4862
+      },
+      "sha256": "3ff5346db723ee98c7d7375766d5b959ac91167b80248c5ddc967ccaf58f5d69"
+    },
+    "xtb_homo_lumo_gap_maximize_10p0_12p0_v2": {
+      "definition": {
+        "full_score_target": 9.749630028571,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
+          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "eV",
+        "zero_score_anchor": 1.389963462368
+      },
+      "sha256": "a9c078cf5810e6ab57dc5197233e987a4363abbf5ea04f9f7a4dee37b8c21e61"
+    },
+    "xtb_homo_lumo_gap_minimize_0p0_10p0_v2": {
+      "definition": {
+        "full_score_target": 1.242666887976,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 12.358052453139
+      },
+      "sha256": "da99839ce0dd1ea705c9065ee61dd401681c36976426f2a5f1f207ef7040ee6c"
+    },
+    "xtb_homo_lumo_gap_minimize_0p0_5p0_v2": {
+      "definition": {
+        "full_score_target": 1.389963462368,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
+          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 9.749630028571
+      },
+      "sha256": "48c87ed62a5d33b9f8ea266ff33a5182621ee5627e287d3c47e7429424913664"
+    },
+    "xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 1.7,
+          "upper_width": 1.7
+        },
+        "full_score": {
+          "max": 4.2,
+          "min": 2.5
+        },
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "eV"
+      },
+      "sha256": "eb2b8ddbd737643fb875ac72a79d1382421813a29d9f22cd2a3014c11013e8b1"
+    },
+    "xtb_homo_lumo_gap_window_3p5_5p5_2p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": 2.0,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 5.5,
+          "min": 3.5
+        },
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "target_window_width_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "eV"
+      },
+      "sha256": "0dc205bb28a0ec9100a35821bd75f94c1e824cd37c2c871ac968eb3bab5a3759"
+    },
+    "xtb_imaginary_frequency_count_window_0_0_2p0_v2": {
+      "definition": {
+        "decay": {
+          "lower_width": null,
+          "upper_width": 2.0
+        },
+        "full_score": {
+          "max": 0,
+          "min": 0
+        },
+        "property": "imaginary_frequency_count",
+        "provenance": {
+          "decay_source": "discrete_stability_count_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_statement"
+        },
+        "type": "window",
+        "unit": "count"
+      },
+      "sha256": "794254d9ed621621c6d4735c13d57a9b76a933b9e05cb2559e6aacc33055d07f"
+    },
+    "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2": {
+      "definition": {
+        "full_score_target": -10.6883,
+        "property": "lumo_energy",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": -1.94
+      },
+      "sha256": "b492768eb40e079fe5dc3b3fafa3d17cacb1553ed590a89b5354e76c36c398a5"
+    },
+    "xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2": {
+      "definition": {
+        "full_score_target": 0.276,
+        "property": "max_f_plus_on_carbon",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "dimensionless",
+        "zero_score_anchor": 0.076
+      },
+      "sha256": "9593a0244f0785dcd053b086866e77ad893cc4062a9f0ace36a2d9776017fb04"
+    },
+    "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2": {
+      "definition": {
+        "full_score_target": 9.3430346,
+        "property": "polarizability_per_heavy_atom",
+        "provenance": {
+          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
+          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_reference_recomputed_with_frozen_verifier"
+        },
+        "type": "maximize",
+        "unit": "atomic_units_per_heavy_atom",
+        "zero_score_anchor": 6.4845643
+      },
+      "sha256": "104759a4bb7dc28c6f07d489fd4b54ff2a22ce190d9e6dfa2b66dab8db11d425"
+    },
+    "xtb_relaxation_energy_minimize_0p05_0p35_v2": {
+      "definition": {
+        "full_score_target": 0.05,
+        "property": "relaxation_energy",
+        "provenance": {
+          "decay_source": "quality_gate_threshold_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "engineering_task_boundary"
+        },
+        "type": "minimize",
+        "unit": "eV",
+        "zero_score_anchor": 0.35
+      },
+      "sha256": "ff1356d7af9558c57982b311f67d8c2e3b4c2011d8cf764884f2e037fd92d6bd"
+    },
+    "xtb_total_energy_minimize_neg_148p2_neg_148p15_v2": {
+      "definition": {
+        "full_score_target": -148.192718517112,
+        "property": "total_energy",
+        "provenance": {
+          "decay_source": "literature_baseline_conformer_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md",
+          "evidence_id": "xtb-total-energy-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_conformer_family_recomputed_with_frozen_verifier"
+        },
+        "type": "minimize",
+        "unit": "hartree",
+        "zero_score_anchor": -148.183476873812
+      },
+      "sha256": "c378d3c8b65f1c085dea5804f9887844055c20b0cb449a1a23dd8024f21e7a30"
+    },
+    "xtb_total_energy_minimize_neg_50p3_neg_50p25_v2": {
+      "definition": {
+        "full_score_target": -50.289109041949,
+        "property": "total_energy",
+        "provenance": {
+          "decay_source": "literature_baseline_conformer_recomputed_with_frozen_verifier",
+          "decision_record": "docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md",
+          "evidence_id": "xtb-total-energy-dossier-2026-07-21",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "literature_conformer_family_recomputed_with_frozen_verifier"
+        },
+        "type": "minimize",
+        "unit": "hartree",
+        "zero_score_anchor": -50.287905192962
+      },
+      "sha256": "33302b2dffb08d1e519bd50248c7368a3cda74d6653ca22e0931395876a2f6e4"
+    }
+  },
+  "schema_version": 1,
+  "scoring_version": "linear_goal_v2"
+}
