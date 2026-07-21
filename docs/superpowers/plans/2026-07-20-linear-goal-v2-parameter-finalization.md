@@ -197,6 +197,28 @@ verifier, property, direction, unit, and hard electronic-state policy. The
 ordered controls and literature citations are part of the dossier; no legacy
 bound remains in the approved provenance.
 
+### 2.9 xTB advanced-property literature profiles
+
+The second literature-reviewed batch is frozen in
+`docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md`.
+
+| Profile | Direction | `T` | `B` | Unit |
+| --- | --- | ---: | ---: | --- |
+| `xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2` | minimize | `-10.6883` | `-1.94` | eV |
+| `xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2` | maximize | `9.3430346` | `6.4845643` | au/heavy atom |
+| `xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2` | maximize | `0.3953163242456749` | `-0.17228322475548233` | eV |
+| `xtb_global_electrophilicity_maximize_0p5_3p8_v2` | maximize | `3.1359` | `0.4862` | eV |
+| `xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2` | maximize | `0.276` | `0.076` | dimensionless |
+| `xtb_f_plus_contrast_maximize_0p0_0p15_v2` | maximize | `0.094` | `0.0` | dimensionless |
+| `xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2` | maximize | `76.094775` | `40.59789` | J mol-1 K-1/heavy atom |
+| `xtb_dipole_moment_minimize_0p0_20p0_v2` | minimize | `3.042` | `9.328` | D |
+| `xtb_homo_lumo_gap_minimize_0p0_10p0_v2` | minimize | `1.242666887976` | `12.358052453139` | eV |
+
+The 014 fixed-formula profile uses a pre-declared deterministic conformer panel
+supported by aminyl-radical literature; it is not calibrated from participant
+answers. The Fukui contrast zero anchor is the scientific carbon/non-carbon tie
+boundary.
+
 ## 3. Pending Decisions
 
 No value in this section may be copied from its v1 profile without independent approval.
@@ -205,20 +227,12 @@ No value in this section may be copied from its v1 profile without independent a
 
 The current xTB pack contains 21 scoring profiles after the dipole-max profile
 reuse above. The relaxation-quality, imaginary-frequency, five window profiles,
-and the three profiles in section 2.8 are approved, leaving these 11 profiles
-unresolved. All 11 require literature-supported `T/B` research.
+and the profiles in sections 2.8 and 2.9 are approved, leaving only the two
+same-molecule total-energy profiles unresolved. Both require protocol-specific
+conformer evidence.
 
-#### T/B anchors: 11 profiles
+#### T/B anchors: 2 profiles
 
-- `xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v1` (task 008): LUMO-energy minimize.
-- `xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v1` (task 009): polarizability per heavy atom maximize.
-- `xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v1` (task 010): ALPB selectivity maximize.
-- `xtb_global_electrophilicity_maximize_0p5_3p8_v1` (task 011): global electrophilicity maximize.
-- `xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v1` (task 012): maximum carbon-site `f+` maximize.
-- `xtb_f_plus_contrast_maximize_0p0_0p15_v1` (task 012): carbon-site `f+` contrast maximize.
-- `xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v1` (task 013): entropy per heavy atom maximize.
-- `xtb_dipole_moment_minimize_0p0_20p0_v1` (task 014): fixed-formula dipole minimize.
-- `xtb_homo_lumo_gap_minimize_0p0_10p0_v1` (tasks 015 and 016): exact-composition gap minimize.
 - `xtb_total_energy_minimize_neg_50p3_neg_50p25_v1` (task 017): ROY same-molecule single-point energy.
 - `xtb_total_energy_minimize_neg_148p2_neg_148p15_v1` (task 018): Ritonavir same-molecule optimized energy.
 

@@ -83,10 +83,10 @@ def test_evidence_reuse_never_reuses_constraint_score() -> None:
     )
 
     assert len(fake.calls) == 2
-    assert result["scores"]["property_score"] == pytest.approx(0.5)
+    assert result["scores"]["property_score"] == pytest.approx(0.687443701)
     assert result["scores"]["geometry_quality_score"] == pytest.approx(7 / 12)
     assert result["scores"]["stability_gate_score"] == pytest.approx(0.5)
-    assert result["scores"]["score"] == pytest.approx(7 / 48)
+    assert result["scores"]["score"] == pytest.approx(0.200504413)
     assert [item["property"] for item in result["scores"]["constraint_scores"]] == [
         "imaginary_frequency_count",
         "entropy_298_per_heavy_atom",

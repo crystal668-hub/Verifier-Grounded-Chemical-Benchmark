@@ -1,6 +1,6 @@
 # xTB 题目设计与实现同步
 
-更新日期：2026-06-30
+更新日期：2026-07-21
 
 ## 1. 设计来源
 
@@ -54,22 +54,22 @@ FINAL ANSWER:
 |---|---|---|
 | `xtb_gap_window_001` | HOMO-LUMO gap window `[3.5, 5.5]` eV | relaxation energy <= 0.35 eV |
 | `xtb_dipole_window_002` | dipole moment window `[3.0, 5.5]` Debye | relaxation energy <= 0.35 eV |
-| `xtb_gap_max_003` | maximize HOMO-LUMO gap, bounded `[10.0, 12.0]` eV | relaxation energy <= 0.35 eV |
-| `xtb_gap_min_004` | minimize HOMO-LUMO gap, bounded `[0.0, 5.0]` eV | relaxation energy <= 0.35 eV |
-| `xtb_dipole_max_005` | maximize dipole moment, bounded `[3.0, 10.0]` Debye | relaxation energy <= 0.35 eV |
+| `xtb_gap_max_003` | maximize HOMO-LUMO gap, `T=9.749630028571`, `B=1.389963462368` eV | relaxation energy <= 0.35 eV |
+| `xtb_gap_min_004` | minimize HOMO-LUMO gap, `T=1.389963462368`, `B=9.749630028571` eV | relaxation energy <= 0.35 eV |
+| `xtb_dipole_max_005` | maximize dipole moment, `T=13.374`, `B=3.320` Debye | relaxation energy <= 0.35 eV |
 | `xtb_low_gap_high_dipole_opt_006` | minimize gap + maximize dipole | relaxation energy <= 0.35 eV |
 | `xtb_gap_dipole_window_007` | gap window `[2.5, 4.2]` eV + dipole window `[3.5, 6.0]` Debye | relaxation energy <= 0.35 eV |
-| `xtb_lumo_min_008` | minimize LUMO energy, bounded `[-9.0, -6.0]` eV | relaxation energy <= 0.35 eV |
-| `xtb_polarizability_dipole_opt_009` | maximize polarizability per heavy atom + dipole window `[3.0, 8.0]` Debye | relaxation energy <= 0.35 eV |
-| `xtb_solvation_selectivity_alpb_010` | maximize ALPB water-over-hexane solvation selectivity, bounded `[0.0, 0.35]` eV | relaxation energy <= 0.35 eV |
-| `xtb_electrophilicity_max_011` | maximize global electrophilicity, bounded `[0.5, 3.8]` eV | relaxation energy <= 0.35 eV |
-| `xtb_fukui_carbon_site_012` | maximize carbon-site `f+` Fukui response, bounded `[0.05, 0.35]`, with contrast objective | relaxation energy <= 0.35 eV |
-| `xtb_hessian_thermo_stability_013` | maximize 298 K entropy per heavy atom with zero imaginary frequencies | relaxation energy <= 0.35 eV |
-| `xtb_formula_dipole_min_014` | minimize optimized dipole for exact `C12H16N3O8`, neutral doublet | none |
-| `xtb_two_fluorine_gap_min_015` | minimize optimized gap with exactly 2 F and at most 10 C, charged closed shell allowed | none |
-| `xtb_c10_f2_gap_min_016` | minimize optimized gap with exactly 10 C and 2 F, charged closed shell allowed | none |
-| `xtb_roy_singlepoint_energy_min_017` | minimize submitted-geometry single-point energy for graph-valid ROY | none |
-| `xtb_ritonavir_optimized_energy_min_018` | minimize optimized energy while retaining Ritonavir graph and four stereocenters | none |
+| `xtb_lumo_min_008` | minimize LUMO energy, `T=-10.6883`, `B=-1.94` eV | relaxation energy <= 0.35 eV |
+| `xtb_polarizability_dipole_opt_009` | maximize polarizability per heavy atom, `T=9.3430346`, `B=6.4845643`, plus dipole window `[3.0, 8.0]` D | relaxation energy <= 0.35 eV |
+| `xtb_solvation_selectivity_alpb_010` | maximize ALPB water-over-hexane selectivity, `T=0.3953163242456749`, `B=-0.17228322475548233` eV | relaxation energy <= 0.35 eV |
+| `xtb_electrophilicity_max_011` | maximize global electrophilicity, `T=3.1359`, `B=0.4862` eV | relaxation energy <= 0.35 eV |
+| `xtb_fukui_carbon_site_012` | maximize carbon `f+` (`T=0.276`, `B=0.076`) and contrast (`T=0.094`, `B=0`) | relaxation energy <= 0.35 eV |
+| `xtb_hessian_thermo_stability_013` | maximize 298 K entropy per heavy atom, `T=76.094775`, `B=40.59789`, with zero imaginary frequencies | relaxation energy <= 0.35 eV |
+| `xtb_formula_dipole_min_014` | minimize optimized dipole for exact `C12H16N3O8`, neutral doublet, `T=3.042`, `B=9.328` D | none |
+| `xtb_two_fluorine_gap_min_015` | minimize optimized gap with exactly 2 F and at most 10 C, `T=1.242666887976`, `B=12.358052453139` eV | none |
+| `xtb_c10_f2_gap_min_016` | same `C10F2` gap profile as task 015 | none |
+| `xtb_roy_singlepoint_energy_min_017` | minimize submitted-geometry single-point energy for graph-valid ROY; target/anchor dossier pending | none |
+| `xtb_ritonavir_optimized_energy_min_018` | minimize optimized energy while retaining Ritonavir graph and four stereocenters; target/anchor dossier pending | none |
 
 ## 4. 涉及的可验证化学性质
 

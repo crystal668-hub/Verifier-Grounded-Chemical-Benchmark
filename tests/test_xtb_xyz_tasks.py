@@ -178,18 +178,18 @@ def test_xtb_gap_max_task_uses_literature_reviewed_thresholds() -> None:
     assert "C2F6" in structural_domain["formula_denylist"]
 
 
-def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
+def test_xtb_advanced_tasks_use_literature_reviewed_thresholds() -> None:
     pack = load_xtb_pack()
     tasks = pack.tasks_by_id
 
     lumo = next(item for item in tasks["xtb_lumo_min_008"]["constraints"] if item["property"] == "lumo_energy")
     assert lumo["type"] == "minimize"
     lumo_profile = pack.scoring_profiles[lumo["scoring_profile"]]
-    assert lumo_profile["full_score_target"] == -9.0
-    assert lumo_profile["zero_score_anchor"] == -6.0
-    assert score_constraint_value(-8.5664, lumo_profile) == pytest.approx(0.855467, rel=1e-4)
-    assert score_constraint_value(-8.0285, lumo_profile) == pytest.approx(0.676167, rel=1e-4)
-    assert score_constraint_value(-5.607, lumo_profile) == 0.0
+    assert lumo_profile["full_score_target"] == -10.6883
+    assert lumo_profile["zero_score_anchor"] == -1.94
+    assert score_constraint_value(-8.5664, lumo_profile) == pytest.approx(0.75745, rel=1e-4)
+    assert score_constraint_value(-8.0285, lumo_profile) == pytest.approx(0.695964, rel=1e-4)
+    assert score_constraint_value(-1.0, lumo_profile) == 0.0
 
     hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
@@ -199,11 +199,11 @@ def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
     assert imaginary_profile["full_score"] == {"min": 0, "max": 0}
     assert entropy["type"] == "maximize"
     entropy_profile = pack.scoring_profiles[entropy["scoring_profile"]]
-    assert entropy_profile["zero_score_anchor"] == 50.0
-    assert entropy_profile["full_score_target"] == 80.0
-    assert score_constraint_value(43.397, entropy_profile) == 0.0
-    assert score_constraint_value(65.298, entropy_profile) == pytest.approx(0.509933, rel=1e-4)
-    assert score_constraint_value(75.229, entropy_profile) == pytest.approx(0.840967, rel=1e-4)
+    assert entropy_profile["zero_score_anchor"] == pytest.approx(40.59789)
+    assert entropy_profile["full_score_target"] == pytest.approx(76.094775)
+    assert score_constraint_value(43.397, entropy_profile) == pytest.approx(0.078855, rel=1e-4)
+    assert score_constraint_value(65.298, entropy_profile) == pytest.approx(0.695839, rel=1e-4)
+    assert score_constraint_value(75.229, entropy_profile) == pytest.approx(0.97561, rel=1e-4)
 
     polarizability = next(
         item
@@ -226,27 +226,27 @@ def test_xtb_advanced_tasks_use_calibrated_tightened_thresholds() -> None:
         if item["property"] == "max_f_plus_on_carbon"
     )
     polarizability_profile = pack.scoring_profiles[polarizability["scoring_profile"]]
-    assert polarizability_profile["zero_score_anchor"] == 4.0
-    assert polarizability_profile["full_score_target"] == 12.0
+    assert polarizability_profile["zero_score_anchor"] == pytest.approx(6.4845643)
+    assert polarizability_profile["full_score_target"] == pytest.approx(9.3430346)
     solvation_profile = pack.scoring_profiles[solvation["scoring_profile"]]
-    assert solvation_profile["zero_score_anchor"] == 0.0
-    assert solvation_profile["full_score_target"] == 0.35
+    assert solvation_profile["zero_score_anchor"] == pytest.approx(-0.17228322475548233)
+    assert solvation_profile["full_score_target"] == pytest.approx(0.3953163242456749)
     assert score_constraint_value(0.23772563040053657, solvation_profile) == pytest.approx(
-        0.679216,
+        0.722356,
         rel=1e-4,
     )
     assert score_constraint_value(0.055189565791327444, solvation_profile) == pytest.approx(
-        0.157685,
+        0.400763,
         rel=1e-4,
     )
     electrophilicity_profile = pack.scoring_profiles[electrophilicity["scoring_profile"]]
-    assert electrophilicity_profile["zero_score_anchor"] == 0.5
-    assert electrophilicity_profile["full_score_target"] == 3.8
-    assert score_constraint_value(2.4939, electrophilicity_profile) == pytest.approx(0.604212, rel=1e-4)
-    assert score_constraint_value(1.8535, electrophilicity_profile) == pytest.approx(0.410152, rel=1e-4)
+    assert electrophilicity_profile["zero_score_anchor"] == pytest.approx(0.4862)
+    assert electrophilicity_profile["full_score_target"] == pytest.approx(3.1359)
+    assert score_constraint_value(2.4939, electrophilicity_profile) == pytest.approx(0.757708, rel=1e-4)
+    assert score_constraint_value(1.8535, electrophilicity_profile) == pytest.approx(0.516021, rel=1e-4)
     fukui_profile = pack.scoring_profiles[fukui["scoring_profile"]]
-    assert fukui_profile["zero_score_anchor"] == 0.05
-    assert fukui_profile["full_score_target"] == 0.35
+    assert fukui_profile["zero_score_anchor"] == pytest.approx(0.076)
+    assert fukui_profile["full_score_target"] == pytest.approx(0.276)
 
 
 def test_formal_expert_tasks_match_calibrated_contracts() -> None:

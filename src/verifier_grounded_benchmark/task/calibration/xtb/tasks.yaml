@@ -9,33 +9,29 @@ scoring_profiles:
     property: dipole_moment
     type: minimize
     unit: debye
-    full_score_target: 0.0
-    zero_score_anchor: 20.0
+    full_score_target: 3.042
+    zero_score_anchor: 9.328
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: 0.0
-        upper: 20.0
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: frozen_benchmark_reference_panel_supported_by_literature
+      decay_source: frozen_benchmark_baseline_panel_supported_by_literature
+      evidence_id: xtb-advanced-property-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_minimize_0p0_10p0_v2:
     property: homo_lumo_gap
     type: minimize
     unit: eV
-    full_score_target: 0.0
-    zero_score_anchor: 10.0
+    full_score_target: 1.242666887976
+    zero_score_anchor: 12.358052453139
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: 0.0
-        upper: 10.0
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_reference_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
+      evidence_id: xtb-advanced-property-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_total_energy_minimize_neg_50p3_neg_50p25_v2:
     property: total_energy

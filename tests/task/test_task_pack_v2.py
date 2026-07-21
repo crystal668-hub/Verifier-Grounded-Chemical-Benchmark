@@ -104,6 +104,25 @@ def test_xtb_gap_dipole_profiles_have_approved_provenance() -> None:
         assert pack.scoring_profiles[profile_id]["provenance"]["review_status"] == "approved"
 
 
+def test_xtb_advanced_property_profiles_have_approved_provenance() -> None:
+    pack = _load("xtb")
+    profile_ids = (
+        "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2",
+        "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2",
+        "xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2",
+        "xtb_global_electrophilicity_maximize_0p5_3p8_v2",
+        "xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2",
+        "xtb_f_plus_contrast_maximize_0p0_0p15_v2",
+        "xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2",
+        "xtb_dipole_moment_minimize_0p0_20p0_v2",
+        "xtb_homo_lumo_gap_minimize_0p0_10p0_v2",
+    )
+    for profile_id in profile_ids:
+        provenance = pack.scoring_profiles[profile_id]["provenance"]
+        assert provenance["review_status"] == "approved"
+        assert provenance["evidence_id"] == "xtb-advanced-property-dossier-2026-07-21"
+
+
 def test_forcefield_window_uses_one_target_window_decay_width() -> None:
     pack = _load("experimental/rdkit_forcefield")
     profile = pack.scoring_profiles[

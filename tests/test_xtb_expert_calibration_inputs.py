@@ -63,9 +63,9 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
     expected = {
-        "xtb_formula_dipole_min_014": (0.0, 20.0, 240),
-        "xtb_two_fluorine_gap_min_015": (0.0, 10.0, 240),
-        "xtb_c10_f2_gap_min_016": (0.0, 10.0, 240),
+        "xtb_formula_dipole_min_014": (3.042, 9.328, 240),
+        "xtb_two_fluorine_gap_min_015": (1.242666887976, 12.358052453139, 240),
+        "xtb_c10_f2_gap_min_016": (1.242666887976, 12.358052453139, 240),
         "xtb_roy_singlepoint_energy_min_017": (-50.30, -50.25, 300),
         "xtb_ritonavir_optimized_energy_min_018": (-148.20, -148.15, 600),
     }
