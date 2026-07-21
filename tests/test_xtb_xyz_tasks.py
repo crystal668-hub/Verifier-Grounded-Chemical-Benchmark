@@ -110,7 +110,7 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
             assert quality["verifier_id"] == "xtb_relaxation_energy_gfn2_v1"
             assert quality["type"] == "minimize"
             profile = pack.scoring_profiles[quality["scoring_profile"]]
-            assert profile["full_score_target"] == 0.0
+            assert profile["full_score_target"] == 0.05
             assert profile["zero_score_anchor"] == 0.35
         else:
             assert quality_constraints == []
@@ -356,7 +356,8 @@ def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
         "all hydrogens explicit",
         "chemically plausible for a neutral closed-shell small molecule",
         "physically reasonable local minimum",
-        "more than about 0.35 eV of relaxation",
+            "relaxation energy at or below 0.05 eV",
+            "more than about 0.35 eV will receive little or no credit",
         "FINAL ANSWER:",
         "```xyz",
     ]

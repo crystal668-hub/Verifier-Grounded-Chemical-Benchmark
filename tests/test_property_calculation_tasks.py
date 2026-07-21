@@ -124,13 +124,13 @@ def test_task_7_contract_and_gold() -> None:
             "property": "free_energy_difference",
             "value": 0.258031679,
             "unit": "kJ/mol",
-            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v1",
+            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v2",
         }
     ]
     profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
-    assert profile["lower_tolerance"] == 0.001
-    assert profile["upper_tolerance"] == 0.001
-    assert profile["provenance"]["review_status"] == "provisional"
+    assert profile["lower_tolerance"] == 0.258031679
+    assert profile["upper_tolerance"] == 0.258031679
+    assert profile["provenance"]["review_status"] == "approved"
     assert task["scoring"]["comparison_groups"] == [
         {"id": "free_energy_difference", "mode": "all"}
     ]
@@ -171,17 +171,17 @@ def test_task_8_contract_and_gold() -> None:
             "property": "potential_energy_difference",
             "value": 0.079,
             "unit": "eV",
-            "scoring_profile": "property_calculation_potential_energy_difference_numeric_gold_v1",
+            "scoring_profile": "property_calculation_potential_energy_difference_numeric_gold_v2",
         },
         {
             "property": "ambient_pressure_phase",
             "value": "alpha",
-            "scoring_profile": "property_calculation_ambient_pressure_phase_exact_string_v1",
+            "scoring_profile": "property_calculation_ambient_pressure_phase_exact_string_v2",
         },
         {
             "property": "high_pressure_phase",
             "value": "beta",
-            "scoring_profile": "property_calculation_high_pressure_phase_exact_string_v1",
+            "scoring_profile": "property_calculation_high_pressure_phase_exact_string_v2",
         },
     ]
     assert task["scoring"]["comparison_groups"] == [

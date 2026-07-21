@@ -30,7 +30,7 @@ def test_four_top_level_packs_cover_exactly_33_unique_tasks() -> None:
     assert len(task_ids) == 33
     assert len(set(task_ids)) == 33
     assert all(pack.schema_version == 2 for pack in packs)
-    assert all(pack.scoring_version == "linear_goal_v1" for pack in packs)
+    assert all(pack.scoring_version == "linear_goal_v2" for pack in packs)
 
 
 def test_all_numeric_constraints_normalize_to_linear_goal() -> None:
@@ -91,6 +91,58 @@ def test_calibration_duplicates_reuse_formal_profiles() -> None:
         for constraint in calibration_task["constraints"]:
             profile_id = constraint["scoring_profile"]
             assert calibration.scoring_profiles[profile_id] == formal.scoring_profiles[profile_id]
+
+
+def test_xtb_pack_marks_unresolved_targets_as_shadow_scoring() -> None:
+    pack = _load("xtb")
+    assert pack.scoring_version == "linear_goal_v2"
+    assert pack.scoring_profiles["xtb_homo_lumo_gap_maximize_10p0_12p0_v2"]["provenance"]["review_status"] == "pending_research"
+
+
+def test_forcefield_window_uses_one_target_window_decay_width() -> None:
+    pack = _load("experimental/rdkit_forcefield")
+    profile = pack.scoring_profiles[
+        "rdkit_forcefield_energy_range_kcal_mol_window_0p0_20p0_20p0_v2"
+    ]
+    assert profile["decay"] == {"lower_width": None, "upper_width": 20.0}
+
+
+def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    broken = deepcopy(data)
+    profile = next(iter(broken["scoring_profiles"].values()))
+    profile["provenance"]["review_status"] = "pending_research"
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="approved review_status"):
+        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+
+def test_formal_v2_loader_rejects_legacy_profile_provenance(tmp_path) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    broken = deepcopy(data)
+    profile = next(iter(broken["scoring_profiles"].values()))
+    profile["provenance"]["target_source"] = "legacy_task_constraint"
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="cannot use legacy provenance"):
+        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+
+def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    broken = deepcopy(data)
+    broken["tasks"][0]["scoring"]["version"] = "linear_goal_v1"
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="does not match task_pack scoring_version"):
+        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
 
 
 def test_public_tracks_use_validated_v2_package_resources() -> None:

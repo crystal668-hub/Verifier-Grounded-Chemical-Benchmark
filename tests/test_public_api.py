@@ -101,7 +101,7 @@ def test_track_evaluate_answers_uses_v2_result_and_scoring_contract() -> None:
     assert all(row["schema_version"] == 2 for row in report["rows"])
     assert all(row["status"] == "scored" for row in report["rows"])
     assert all(
-        item["scoring_version"] == "linear_goal_v1"
+        item["scoring_version"] == "linear_goal_v2"
         for row in report["rows"]
         for item in row["constraint_scores"]
     )

@@ -2,41 +2,35 @@ schema_version: 2
 task_pack:
   id: rdkit
   version: 0.2.0
-  scoring_version: linear_goal_v1
+  scoring_version: linear_goal_v2
 scoring_profiles:
-  rdkit_qed_maximize_0p0_1p0_v1:
+  rdkit_qed_maximize_0p0_1p0_v2:
     property: qed
     type: maximize
     unit: dimensionless
     full_score_target: 1.0
     zero_score_anchor: 0.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: maximize_bounded
-        lower: 0.0
-        upper: 1.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: defined_metric_range
+      decay_source: defined_metric_range
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_sa_score_minimize_1p0_10p0_v1:
+  rdkit_sa_score_minimize_1p0_10p0_v2:
     property: sa_score
     type: minimize
     unit: score
     full_score_target: 1.0
     zero_score_anchor: 10.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: 1.0
-        upper: 10.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: defined_metric_range
+      decay_source: defined_metric_range
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_logp_window_1p0_3p0_0p5_v1:
+  rdkit_logp_window_1p0_3p0_2p0_v2:
     property: logp
     type: window
     unit: dimensionless
@@ -44,20 +38,16 @@ scoring_profiles:
       min: 1.0
       max: 3.0
     decay:
-      lower_width: 1.0
-      upper_width: 1.0
+      lower_width: 2.0
+      upper_width: 2.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: equal_area_linear_approximation_from_legacy_exponential_scale
-      legacy_parameters:
-        type: window
-        min: 1.0
-        max: 3.0
-        sigma: 0.5
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_statement
+      decay_source: target_window_width_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_tpsa_window_35p0_75p0_10p0_v1:
+  rdkit_tpsa_window_35p0_75p0_40p0_v2:
     property: tpsa
     type: window
     unit: angstrom_squared
@@ -65,20 +55,16 @@ scoring_profiles:
       min: 35.0
       max: 75.0
     decay:
-      lower_width: 20.0
-      upper_width: 20.0
+      lower_width: 40.0
+      upper_width: 40.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: equal_area_linear_approximation_from_legacy_exponential_scale
-      legacy_parameters:
-        type: window
-        min: 35.0
-        max: 75.0
-        sigma: 10.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_statement
+      decay_source: target_window_width_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_hba_window_2_4_1p0_v1:
+  rdkit_hba_window_2_4_2p0_v2:
     property: hba
     type: window
     unit: count
@@ -89,17 +75,13 @@ scoring_profiles:
       lower_width: 2.0
       upper_width: 2.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: equal_area_linear_approximation_from_legacy_exponential_scale
-      legacy_parameters:
-        type: window
-        min: 2
-        max: 4
-        sigma: 1.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_statement
+      decay_source: target_window_width_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_hbd_window_1_2_1p0_v1:
+  rdkit_hbd_window_1_2_1p0_v2:
     property: hbd
     type: window
     unit: count
@@ -107,52 +89,42 @@ scoring_profiles:
       min: 1
       max: 2
     decay:
-      lower_width: 2.0
-      upper_width: 2.0
+      lower_width: 1.0
+      upper_width: 1.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: equal_area_linear_approximation_from_legacy_exponential_scale
-      legacy_parameters:
-        type: window
-        min: 1
-        max: 2
-        sigma: 1.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_statement
+      decay_source: target_window_width_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_fraction_csp3_maximize_0p0_1p0_v1:
+  rdkit_fraction_csp3_maximize_0p0_1p0_v2:
     property: fraction_csp3
     type: maximize
     unit: fraction
     full_score_target: 1.0
     zero_score_anchor: 0.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: maximize_bounded
-        lower: 0.0
-        upper: 1.0
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: defined_metric_range
+      decay_source: defined_metric_range
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_logp_target_3p0_0p5_v1:
+  rdkit_logp_target_3p0_3p0_v2:
     property: logp
     type: target
     unit: dimensionless
     full_score_target: 3.0
     decay:
-      lower_width: 1.0
-      upper_width: 1.0
+      lower_width: 3.0
+      upper_width: 3.0
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: equal_area_linear_approximation_from_legacy_exponential_scale
-      legacy_parameters:
-        type: target_distance
-        target: 3.0
-        scale: 0.5
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_statement
+      decay_source: target_to_zero_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
 tasks:
 - task_id: rdkit_qed_max_001
@@ -187,10 +159,10 @@ tasks:
     property: qed
     verifier_id: rdkit_qed_v1
     role: main
-    scoring_profile: rdkit_qed_maximize_0p0_1p0_v1
+    scoring_profile: rdkit_qed_maximize_0p0_1p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -229,10 +201,10 @@ tasks:
     property: sa_score
     verifier_id: rdkit_sa_score_v1
     role: main
-    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v1
+    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -271,10 +243,10 @@ tasks:
     property: logp
     verifier_id: rdkit_logp_v1
     role: main
-    scoring_profile: rdkit_logp_window_1p0_3p0_0p5_v1
+    scoring_profile: rdkit_logp_window_1p0_3p0_2p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -313,10 +285,10 @@ tasks:
     property: tpsa
     verifier_id: rdkit_tpsa_v1
     role: main
-    scoring_profile: rdkit_tpsa_window_35p0_75p0_10p0_v1
+    scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -355,10 +327,10 @@ tasks:
     property: hba
     verifier_id: rdkit_hba_v1
     role: main
-    scoring_profile: rdkit_hba_window_2_4_1p0_v1
+    scoring_profile: rdkit_hba_window_2_4_2p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -397,10 +369,10 @@ tasks:
     property: hbd
     verifier_id: rdkit_hbd_v1
     role: main
-    scoring_profile: rdkit_hbd_window_1_2_1p0_v1
+    scoring_profile: rdkit_hbd_window_1_2_1p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -439,10 +411,10 @@ tasks:
     property: fraction_csp3
     verifier_id: rdkit_fraction_csp3_v1
     role: main
-    scoring_profile: rdkit_fraction_csp3_maximize_0p0_1p0_v1
+    scoring_profile: rdkit_fraction_csp3_maximize_0p0_1p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -483,15 +455,15 @@ tasks:
     property: qed
     verifier_id: rdkit_qed_v1
     role: main
-    scoring_profile: rdkit_qed_maximize_0p0_1p0_v1
+    scoring_profile: rdkit_qed_maximize_0p0_1p0_v2
   - type: minimize
     property: sa_score
     verifier_id: rdkit_sa_score_v1
     role: main
-    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v1
+    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -532,15 +504,15 @@ tasks:
     property: logp
     verifier_id: rdkit_logp_v1
     role: main
-    scoring_profile: rdkit_logp_window_1p0_3p0_0p5_v1
+    scoring_profile: rdkit_logp_window_1p0_3p0_2p0_v2
   - type: window
     property: tpsa
     verifier_id: rdkit_tpsa_v1
     role: main
-    scoring_profile: rdkit_tpsa_window_35p0_75p0_10p0_v1
+    scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -581,15 +553,15 @@ tasks:
     property: hba
     verifier_id: rdkit_hba_v1
     role: main
-    scoring_profile: rdkit_hba_window_2_4_1p0_v1
+    scoring_profile: rdkit_hba_window_2_4_2p0_v2
   - type: window
     property: hbd
     verifier_id: rdkit_hbd_v1
     role: main
-    scoring_profile: rdkit_hbd_window_1_2_1p0_v1
+    scoring_profile: rdkit_hbd_window_1_2_1p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error
@@ -629,10 +601,10 @@ tasks:
     property: logp
     verifier_id: rdkit_logp_expert_v1
     role: main
-    scoring_profile: rdkit_logp_target_3p0_0p5_v1
+    scoring_profile: rdkit_logp_target_3p0_3p0_v2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     invalid_json: parse_error
     invalid_smiles: parse_error

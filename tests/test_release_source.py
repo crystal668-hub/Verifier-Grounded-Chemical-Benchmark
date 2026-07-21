@@ -3,9 +3,10 @@ from __future__ import annotations
 import tomllib
 from pathlib import Path
 
+import pytest
 import verifier_grounded_benchmark as vgb
 
-from scripts.release.build_release import task_inventory
+from scripts.release.build_release import _require_formal_inventory, task_inventory
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +59,8 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     inventory = task_inventory(version)
     assert inventory["schema_version"] == 2
     assert inventory["result_schema_version"] == "2"
-    assert inventory["scoring_version"] == "linear_goal_v1"
+    assert inventory["scoring_version"] == "linear_goal_v2"
+    assert inventory["tracks"]["xtb"]["scoring_status"] == "shadow_pending_research"
     assert inventory["scoring_profiles"]
     for track_name, expected_ids in EXPECTED_TASK_IDS.items():
         track = vgb.load_track(track_name)
@@ -66,6 +68,13 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
         assert [task["task_id"] for task in track.tasks()] == expected_ids
         assert inventory["tracks"][track_name]["count"] == len(expected_ids)
         assert inventory["tracks"][track_name]["task_ids"] == expected_ids
+
+
+def test_release_inventory_rejects_shadow_scoring_tracks() -> None:
+    inventory = task_inventory("0.2.0")
+
+    with pytest.raises(RuntimeError, match="xtb"):
+        _require_formal_inventory(inventory)
 
 
 def test_package_readme_uses_current_release_version() -> None:

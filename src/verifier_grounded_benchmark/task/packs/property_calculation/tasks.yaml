@@ -2,55 +2,55 @@ schema_version: 2
 task_pack:
   id: property_calculation
   version: 0.2.0
-  scoring_version: linear_goal_v1
+  scoring_version: linear_goal_v2
 scoring_profiles:
-  property_calculation_free_energy_difference_numeric_gold_v1:
+  property_calculation_free_energy_difference_numeric_gold_v2:
     property: free_energy_difference
     type: numeric_gold
     unit: kJ/mol
-    lower_tolerance: 0.001
-    upper_tolerance: 0.001
+    lower_tolerance: 0.258031679
+    upper_tolerance: 0.258031679
     provenance:
-      target_source: frozen_legacy_gold_answer
-      decay_source: legacy_absolute_tolerance_as_linear_zero_score_width
-      legacy_parameters:
-        absolute_tolerance: 0.001
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_potential_energy_difference_numeric_gold_v1:
+  property_calculation_potential_energy_difference_numeric_gold_v2:
     property: potential_energy_difference
     type: numeric_gold
     unit: eV
-    lower_tolerance: 0.001
-    upper_tolerance: 0.001
+    lower_tolerance: 0.079
+    upper_tolerance: 0.079
     provenance:
-      target_source: frozen_legacy_gold_answer
-      decay_source: legacy_absolute_tolerance_as_linear_zero_score_width
-      legacy_parameters:
-        absolute_tolerance: 0.001
-      review_status: provisional
-      review_date: '2026-07-17'
+      target_source: task_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_ambient_pressure_phase_exact_string_v1:
+  property_calculation_ambient_pressure_phase_exact_string_v2:
     property: ambient_pressure_phase
     type: exact_string
     normalization: exact
     provenance:
-      target_source: frozen_legacy_gold_answer
+      target_source: task_gold_answer
       decay_source: not_applicable
-      review_status: provisional
-      review_date: '2026-07-17'
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_high_pressure_phase_exact_string_v1:
+  property_calculation_high_pressure_phase_exact_string_v2:
     property: high_pressure_phase
     type: exact_string
     normalization: exact
     provenance:
-      target_source: frozen_legacy_gold_answer
+      target_source: task_gold_answer
       decay_source: not_applicable
-      review_status: provisional
-      review_date: '2026-07-17'
+      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
 tasks:
 - task_id: property_calc_free_energy_001
@@ -272,7 +272,7 @@ tasks:
   - property: free_energy_difference
     value: 0.258031679
     unit: kJ/mol
-    scoring_profile: property_calculation_free_energy_difference_numeric_gold_v1
+    scoring_profile: property_calculation_free_energy_difference_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
   scoring:
@@ -280,7 +280,7 @@ tasks:
     comparison_groups:
     - id: free_energy_difference
       mode: all
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_json: parse_error
@@ -868,13 +868,13 @@ tasks:
   - property: potential_energy_difference
     value: 0.079
     unit: eV
-    scoring_profile: property_calculation_potential_energy_difference_numeric_gold_v1
+    scoring_profile: property_calculation_potential_energy_difference_numeric_gold_v2
   - property: ambient_pressure_phase
     value: alpha
-    scoring_profile: property_calculation_ambient_pressure_phase_exact_string_v1
+    scoring_profile: property_calculation_ambient_pressure_phase_exact_string_v2
   - property: high_pressure_phase
     value: beta
-    scoring_profile: property_calculation_high_pressure_phase_exact_string_v1
+    scoring_profile: property_calculation_high_pressure_phase_exact_string_v2
   gold_provenance:
     disclosure: withheld_initial_release
   scoring:
@@ -884,7 +884,7 @@ tasks:
       mode: all
     - id: pressure_phase_assignment
       mode: all
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_json: parse_error

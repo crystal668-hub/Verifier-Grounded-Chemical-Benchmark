@@ -2,9 +2,10 @@ schema_version: 2
 task_pack:
   id: xtb_calibration
   version: 0.2.0
-  scoring_version: linear_goal_v1
+  scoring_version: linear_goal_v2
+  scoring_status: shadow_pending_research
 scoring_profiles:
-  xtb_dipole_moment_minimize_0p0_20p0_v1:
+  xtb_dipole_moment_minimize_0p0_20p0_v2:
     property: dipole_moment
     type: minimize
     unit: debye
@@ -17,10 +18,10 @@ scoring_profiles:
         type: minimize_bounded
         lower: 0.0
         upper: 20.0
-      review_status: provisional
+      review_status: pending_research
       review_date: '2026-07-17'
       review_owner: benchmark_maintainers
-  xtb_homo_lumo_gap_minimize_0p0_10p0_v1:
+  xtb_homo_lumo_gap_minimize_0p0_10p0_v2:
     property: homo_lumo_gap
     type: minimize
     unit: eV
@@ -33,10 +34,10 @@ scoring_profiles:
         type: minimize_bounded
         lower: 0.0
         upper: 10.0
-      review_status: provisional
+      review_status: pending_research
       review_date: '2026-07-17'
       review_owner: benchmark_maintainers
-  xtb_total_energy_minimize_neg_50p3_neg_50p25_v1:
+  xtb_total_energy_minimize_neg_50p3_neg_50p25_v2:
     property: total_energy
     type: minimize
     unit: hartree
@@ -49,10 +50,10 @@ scoring_profiles:
         type: minimize_bounded
         lower: -50.3
         upper: -50.25
-      review_status: provisional
+      review_status: pending_research
       review_date: '2026-07-17'
       review_owner: benchmark_maintainers
-  xtb_total_energy_minimize_neg_148p2_neg_148p15_v1:
+  xtb_total_energy_minimize_neg_148p2_neg_148p15_v2:
     property: total_energy
     type: minimize
     unit: hartree
@@ -65,7 +66,7 @@ scoring_profiles:
         type: minimize_bounded
         lower: -148.2
         upper: -148.15
-      review_status: provisional
+      review_status: pending_research
       review_date: '2026-07-17'
       review_owner: benchmark_maintainers
 tasks:
@@ -105,12 +106,12 @@ tasks:
     property: dipole_moment
     verifier_id: xtb_dipole_doublet_gfn2_v1
     role: main
-    scoring_profile: xtb_dipole_moment_minimize_0p0_20p0_v1
+    scoring_profile: xtb_dipole_moment_minimize_0p0_20p0_v2
   structural_domain:
     formula: C12H16N3O8
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_xyz: parse_error
@@ -161,7 +162,7 @@ tasks:
     property: homo_lumo_gap
     verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
     role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v1
+    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
   structural_domain:
     allowed_elements:
     - H
@@ -180,7 +181,7 @@ tasks:
       C: 10
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_xyz: parse_error
@@ -231,7 +232,7 @@ tasks:
     property: homo_lumo_gap
     verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
     role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v1
+    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
   structural_domain:
     allowed_elements:
     - H
@@ -249,7 +250,7 @@ tasks:
       F: 2
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_xyz: parse_error
@@ -295,7 +296,7 @@ tasks:
     property: total_energy
     verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
     role: main
-    scoring_profile: xtb_total_energy_minimize_neg_50p3_neg_50p25_v1
+    scoring_profile: xtb_total_energy_minimize_neg_50p3_neg_50p25_v2
   structural_domain:
     formula: C12H9N3O2S
   structure_identity:
@@ -303,7 +304,7 @@ tasks:
     require_stereochemistry: false
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_xyz: parse_error
@@ -349,7 +350,7 @@ tasks:
     property: total_energy
     verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
     role: main
-    scoring_profile: xtb_total_energy_minimize_neg_148p2_neg_148p15_v1
+    scoring_profile: xtb_total_energy_minimize_neg_148p2_neg_148p15_v2
   structural_domain:
     formula: C37H48N6O5S2
   structure_identity:
@@ -358,7 +359,7 @@ tasks:
     recheck_after_optimization: true
   scoring:
     aggregation: geometric_mean
-    version: linear_goal_v1
+    version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
     invalid_xyz: parse_error

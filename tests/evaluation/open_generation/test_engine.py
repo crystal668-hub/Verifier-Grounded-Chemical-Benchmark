@@ -60,8 +60,8 @@ def test_open_generation_scores_evidence_with_configured_profile() -> None:
             "role": "main",
             "value": 0.5,
             "score": 0.5,
-            "scoring_profile": "rdkit_qed_maximize_0p0_1p0_v1",
-            "scoring_version": "linear_goal_v1",
+            "scoring_profile": "rdkit_qed_maximize_0p0_1p0_v2",
+            "scoring_version": "linear_goal_v2",
         }
     ]
 
@@ -84,9 +84,9 @@ def test_evidence_reuse_never_reuses_constraint_score() -> None:
 
     assert len(fake.calls) == 2
     assert result["scores"]["property_score"] == pytest.approx(0.5)
-    assert result["scores"]["geometry_quality_score"] == pytest.approx(0.5)
+    assert result["scores"]["geometry_quality_score"] == pytest.approx(7 / 12)
     assert result["scores"]["stability_gate_score"] == pytest.approx(0.5)
-    assert result["scores"]["score"] == pytest.approx(0.125)
+    assert result["scores"]["score"] == pytest.approx(7 / 48)
     assert [item["property"] for item in result["scores"]["constraint_scores"]] == [
         "imaginary_frequency_count",
         "entropy_298_per_heavy_atom",
@@ -169,7 +169,7 @@ def test_engine_dispatches_property_calculation_and_raw_json() -> None:
         }
     )
 
-    assert structured["scores"]["score"] == pytest.approx(0.5)
+    assert structured["scores"]["score"] == pytest.approx(1 - 0.0005 / 0.258031679)
     assert raw["scores"] == structured["scores"]
     assert raw["raw_answer"].startswith("FINAL ANSWER")
 

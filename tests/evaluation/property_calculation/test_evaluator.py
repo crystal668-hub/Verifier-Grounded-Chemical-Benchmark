@@ -40,12 +40,12 @@ def _evaluate(task_id: str, answer: dict):
 @pytest.mark.parametrize(
     ("answer", "expected"),
     [
-        (0.257031679, 0.0),
-        (0.257531679, 0.5),
+        (0.0, 0.0),
+        (0.1290158395, 0.5),
         (0.258031679, 1.0),
-        (0.258531679, 0.5),
-        (0.259031679, 0.0),
-        (0.260031679, 0.0),
+        (0.3870475185, 0.5),
+        (0.516063358, 0.0),
+        (0.6, 0.0),
     ],
 )
 def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: float) -> None:
@@ -63,7 +63,7 @@ def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
         "property_calc_crystal_phase_002",
         {
             "answers": [
-                {"property": "potential_energy_difference", "value": 0.0795, "unit": "eV"},
+                {"property": "potential_energy_difference", "value": 0.1185, "unit": "eV"},
                 {"property": "ambient_pressure_phase", "value": "wrong"},
                 {"property": "high_pressure_phase", "value": "beta"},
             ]
@@ -171,7 +171,7 @@ def test_result_has_v2_schema_and_constraint_provenance() -> None:
             "role": "main",
             "value": 0.258031679,
             "score": 1.0,
-            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v1",
-            "scoring_version": "linear_goal_v1",
+            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v2",
+            "scoring_version": "linear_goal_v2",
         }
     ]

@@ -11,6 +11,7 @@ from verifier_grounded_benchmark.task.models import LinearGoalSpec
 
 SCORING_VERSION = "linear_goal_v1"
 SUPPORTED_SCORING_VERSIONS = frozenset({"linear_goal_v1", "linear_goal_v2"})
+SUPPORTED_SCORING_STATUSES = frozenset({"formal", "shadow_pending_research"})
 PROFILE_TYPES = {"target", "window", "maximize", "minimize", "numeric_gold", "exact_string"}
 
 
@@ -43,7 +44,12 @@ def index_unique(items: list[Any], key: str, label: str) -> dict[str, dict[str, 
     return indexed
 
 
-def validate_profiles(profiles: Any) -> dict[str, dict[str, Any]]:
+def validate_profiles(
+    profiles: Any,
+    *,
+    scoring_version: str = SCORING_VERSION,
+    scoring_status: str = "formal",
+) -> dict[str, dict[str, Any]]:
     mappings = require_mapping(profiles, "scoring_profiles")
     if not mappings:
         raise ValueError("scoring_profiles must not be empty")
@@ -57,6 +63,21 @@ def validate_profiles(profiles: Any) -> dict[str, dict[str, Any]]:
         provenance = require_mapping(profile.get("provenance"), f"scoring profile {profile_id} provenance")
         require_string(provenance.get("target_source"), f"scoring profile {profile_id} target_source")
         require_string(provenance.get("decay_source"), f"scoring profile {profile_id} decay_source")
+        if scoring_version == "linear_goal_v2" and scoring_status == "formal":
+            if provenance.get("review_status") != "approved":
+                raise ValueError(
+                    f"formal v2 scoring profile {profile_id} must have approved review_status"
+                )
+            if (
+                str(provenance["target_source"]).startswith("legacy_")
+                or str(provenance["decay_source"]).startswith("legacy_")
+                or "legacy_parameters" in provenance
+            ):
+                raise ValueError(
+                    f"formal v2 scoring profile {profile_id} cannot use legacy provenance"
+                )
+            for field in ("decision_record", "review_date", "review_owner"):
+                require_string(provenance.get(field), f"scoring profile {profile_id} {field}")
         if profile_type == "exact_string":
             if profile.get("normalization") != "exact":
                 raise ValueError(f"exact string profile {profile_id} must use exact normalization")

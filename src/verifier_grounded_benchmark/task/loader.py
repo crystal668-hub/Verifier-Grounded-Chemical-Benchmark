@@ -20,6 +20,7 @@ from verifier_grounded_benchmark.task.models import (
 )
 from verifier_grounded_benchmark.task.schema.common import (
     SCORING_VERSION,
+    SUPPORTED_SCORING_STATUSES,
     SUPPORTED_SCORING_VERSIONS,
     index_unique,
     require_list,
@@ -219,7 +220,14 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     scoring_version = require_string(metadata.get("scoring_version"), "task_pack scoring_version")
     if scoring_version not in SUPPORTED_SCORING_VERSIONS:
         raise ValueError(f"unsupported scoring version: {scoring_version}")
-    profiles = validate_profiles(task_data.get("scoring_profiles"))
+    scoring_status = metadata.get("scoring_status", "formal")
+    if scoring_status not in SUPPORTED_SCORING_STATUSES:
+        raise ValueError(f"unsupported scoring status: {scoring_status}")
+    profiles = validate_profiles(
+        task_data.get("scoring_profiles"),
+        scoring_version=scoring_version,
+        scoring_status=scoring_status,
+    )
     verifier_items = verifier_data.get("verifiers")
     if not isinstance(verifier_items, list):
         raise ValueError("verifiers must be a list")
@@ -232,6 +240,15 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     tasks: list[TaskSpec] = []
     for task_id, raw in tasks_by_id.items():
         task_type = require_string(raw.get("task_type"), f"task {task_id} task_type")
+        scoring = require_mapping(raw.get("scoring"), f"task {task_id} scoring")
+        task_scoring_version = require_string(
+            scoring.get("version"), f"task {task_id} scoring version"
+        )
+        if task_scoring_version != scoring_version:
+            raise ValueError(
+                f"task {task_id} scoring version {task_scoring_version} "
+                f"does not match task_pack scoring_version {scoring_version}"
+            )
         frozen = freeze_mapping(raw)
         if task_type == "open_generation":
             constraints = validate_open_generation_task(raw, profiles, set(verifiers_by_id))

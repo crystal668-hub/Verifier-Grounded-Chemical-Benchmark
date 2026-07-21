@@ -32,6 +32,7 @@ def project_version() -> str:
 def task_inventory(version: str) -> dict[str, Any]:
     tracks: dict[str, Any] = {}
     scoring_profiles: dict[str, Any] = {}
+    scoring_versions: set[str] = set()
     for track, path in FORMAL_TRACK_PATHS.items():
         payload = yaml.safe_load(path.read_text(encoding="utf-8"))
         tasks = payload.get("tasks") if isinstance(payload, dict) else None
@@ -40,12 +41,18 @@ def task_inventory(version: str) -> dict[str, Any]:
         task_ids = [str(task["task_id"]) for task in tasks if isinstance(task, dict)]
         if len(task_ids) != len(tasks) or len(task_ids) != len(set(task_ids)):
             raise ValueError(f"Invalid or duplicate task IDs in {path}")
+        task_pack = payload.get("task_pack")
+        if not isinstance(task_pack, dict):
+            raise ValueError(f"Invalid task-pack metadata: {path}")
+        scoring_version = str(task_pack["scoring_version"])
+        scoring_versions.add(scoring_version)
         tracks[track] = {
             "count": len(task_ids),
             "task_ids": task_ids,
             "tasks_sha256": sha256_file(path),
             "task_pack_version": payload["task_pack"]["version"],
-            "scoring_version": payload["task_pack"]["scoring_version"],
+            "scoring_version": scoring_version,
+            "scoring_status": task_pack.get("scoring_status", "formal"),
         }
         for profile_id, profile in payload["scoring_profiles"].items():
             encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
@@ -57,11 +64,13 @@ def task_inventory(version: str) -> dict[str, Any]:
                 "definition": profile,
                 "sha256": profile_hash,
             }
+    if len(scoring_versions) != 1:
+        raise ValueError(f"Formal task packs must share one scoring version: {sorted(scoring_versions)}")
     return {
         "schema_version": 2,
         "package_version": version,
         "result_schema_version": "2",
-        "scoring_version": "linear_goal_v1",
+        "scoring_version": scoring_versions.pop(),
         "tracks": tracks,
         "scoring_profiles": scoring_profiles,
     }
@@ -130,6 +139,8 @@ def verify_archive_payloads(wheel_path: Path, sdist_path: Path) -> dict[str, Any
 def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
     version = project_version()
     _require_clean_worktree()
+    inventory = task_inventory(version)
+    _require_formal_inventory(inventory)
     source_commit = _git("rev-parse", "HEAD")
     source_tree = _git("rev-parse", "HEAD^{tree}")
     source_date_epoch = _git("show", "-s", "--format=%ct", "HEAD")
@@ -154,7 +165,6 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         raise FileNotFoundError("Expected wheel and sdist were not both created")
 
     payload = verify_archive_payloads(wheel_path, sdist_path)
-    inventory = task_inventory(version)
     artifacts = [
         {
             "filename": path.name,
@@ -168,7 +178,7 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         "package": PACKAGE_NAME,
         "version": version,
         "result_schema_version": "2",
-        "scoring_version": "linear_goal_v1",
+        "scoring_version": inventory["scoring_version"],
         "tag": f"v{version}",
         "canonical_source": {
             "commit": source_commit,
@@ -249,6 +259,19 @@ def _require_clean_worktree() -> None:
     status = _git("status", "--porcelain")
     if status:
         raise RuntimeError("Release builds require a clean Git worktree")
+
+
+def _require_formal_inventory(inventory: dict[str, Any]) -> None:
+    shadow_tracks = sorted(
+        track
+        for track, payload in inventory["tracks"].items()
+        if payload.get("scoring_status", "formal") != "formal"
+    )
+    if shadow_tracks:
+        raise RuntimeError(
+            "Release contains task packs with unresolved scoring parameters: "
+            + ", ".join(shadow_tracks)
+        )
 
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:

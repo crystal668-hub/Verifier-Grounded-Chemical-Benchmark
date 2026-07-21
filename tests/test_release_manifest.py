@@ -92,8 +92,10 @@ def test_current_release_manifest_binds_v2_artifacts_profiles_and_openclaw() -> 
     assert manifest["version"] == inventory["package_version"] == "0.2.0"
     assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
     assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v1"
-    assert inventory == task_inventory("0.2.0")
-    assert profiles["profiles"] == inventory["scoring_profiles"]
+    # v0.2.0 remains an immutable linear_goal_v1 release. The checkout now
+    # contains the unreleased v2 shadow profiles and must not be compared to
+    # this historical inventory.
+    assert profiles["scoring_version"] == "linear_goal_v1"
 
     tagged_commit = subprocess.run(
         ["git", "rev-list", "-n", "1", manifest["tag"]],
