@@ -66,8 +66,16 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
         "xtb_formula_dipole_min_014": (3.042, 9.328, 240),
         "xtb_two_fluorine_gap_min_015": (1.242666887976, 12.358052453139, 240),
         "xtb_c10_f2_gap_min_016": (1.242666887976, 12.358052453139, 240),
-        "xtb_roy_singlepoint_energy_min_017": (-50.30, -50.25, 300),
-        "xtb_ritonavir_optimized_energy_min_018": (-148.20, -148.15, 600),
+        "xtb_roy_singlepoint_energy_min_017": (
+            -50.289109041949,
+            -50.287905192962,
+            300,
+        ),
+        "xtb_ritonavir_optimized_energy_min_018": (
+            -148.192718517112,
+            -148.183476873812,
+            600,
+        ),
     }
 
     for task_id, (lower, upper, timeout) in expected.items():

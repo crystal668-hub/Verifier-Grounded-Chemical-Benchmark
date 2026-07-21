@@ -123,6 +123,18 @@ def test_xtb_advanced_property_profiles_have_approved_provenance() -> None:
         assert provenance["evidence_id"] == "xtb-advanced-property-dossier-2026-07-21"
 
 
+def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
+    pack = _load("xtb")
+    profile_ids = (
+        "xtb_total_energy_minimize_neg_50p3_neg_50p25_v2",
+        "xtb_total_energy_minimize_neg_148p2_neg_148p15_v2",
+    )
+    for profile_id in profile_ids:
+        provenance = pack.scoring_profiles[profile_id]["provenance"]
+        assert provenance["review_status"] == "approved"
+        assert provenance["evidence_id"] == "xtb-total-energy-dossier-2026-07-21"
+
+
 def test_forcefield_window_uses_one_target_window_decay_width() -> None:
     pack = _load("experimental/rdkit_forcefield")
     profile = pack.scoring_profiles[

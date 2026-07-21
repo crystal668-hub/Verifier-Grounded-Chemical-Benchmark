@@ -60,7 +60,7 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     assert inventory["schema_version"] == 2
     assert inventory["result_schema_version"] == "2"
     assert inventory["scoring_version"] == "linear_goal_v2"
-    assert inventory["tracks"]["xtb"]["scoring_status"] == "shadow_pending_research"
+    assert inventory["tracks"]["xtb"]["scoring_status"] == "formal"
     assert inventory["scoring_profiles"]
     for track_name, expected_ids in EXPECTED_TASK_IDS.items():
         track = vgb.load_track(track_name)
@@ -72,6 +72,7 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
 
 def test_release_inventory_rejects_shadow_scoring_tracks() -> None:
     inventory = task_inventory("0.2.0")
+    inventory["tracks"]["xtb"]["scoring_status"] = "shadow_pending_research"
 
     with pytest.raises(RuntimeError, match="xtb"):
         _require_formal_inventory(inventory)

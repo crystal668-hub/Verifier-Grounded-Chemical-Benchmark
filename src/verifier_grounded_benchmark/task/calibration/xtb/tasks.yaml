@@ -3,7 +3,7 @@ task_pack:
   id: xtb_calibration
   version: 0.2.0
   scoring_version: linear_goal_v2
-  scoring_status: shadow_pending_research
+  scoring_status: formal
 scoring_profiles:
   xtb_dipole_moment_minimize_0p0_20p0_v2:
     property: dipole_moment
@@ -37,33 +37,29 @@ scoring_profiles:
     property: total_energy
     type: minimize
     unit: hartree
-    full_score_target: -50.3
-    zero_score_anchor: -50.25
+    full_score_target: -50.289109041949
+    zero_score_anchor: -50.287905192962
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: -50.3
-        upper: -50.25
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_conformer_family_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
+      evidence_id: xtb-total-energy-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_total_energy_minimize_neg_148p2_neg_148p15_v2:
     property: total_energy
     type: minimize
     unit: hartree
-    full_score_target: -148.2
-    zero_score_anchor: -148.15
+    full_score_target: -148.192718517112
+    zero_score_anchor: -148.183476873812
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: -148.2
-        upper: -148.15
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_conformer_family_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
+      evidence_id: xtb-total-energy-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
 tasks:
 - task_id: xtb_formula_dipole_min_014

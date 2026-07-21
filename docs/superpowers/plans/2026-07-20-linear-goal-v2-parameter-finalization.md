@@ -2,7 +2,8 @@
 
 **Date:** 2026-07-20
 
-**Status:** Partially decided. The parameters in "Approved Decisions" are frozen inputs for the next implementation. Parameters in "Pending Decisions" must be resolved before formal task packs move to `linear_goal_v2`.
+**Status:** Parameter decisions complete. All scoring profiles have approved,
+auditable endpoints; release construction remains an implementation step.
 
 **Goal:** Replace provisional legacy-derived scoring parameters with reviewed, auditable `linear_goal_v2` profiles while preserving the canonical linear scoring formula and the immutable `linear_goal_v1` release.
 
@@ -219,39 +220,54 @@ supported by aminyl-radical literature; it is not calibrated from participant
 answers. The Fukui contrast zero anchor is the scientific carbon/non-carbon tie
 boundary.
 
-## 3. Pending Decisions
+### 2.10 xTB same-molecule total-energy profiles
 
-No value in this section may be copied from its v1 profile without independent approval.
+The third literature-reviewed batch is frozen in
+`docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md`.
 
-### 3.1 xTB unresolved profile inventory
+| Profile | Calculation mode | `T` | `B` | Unit |
+| --- | --- | ---: | ---: | --- |
+| `xtb_total_energy_minimize_neg_50p3_neg_50p25_v2` | ROY submitted-geometry single point | `-50.289109041949` | `-50.287905192962` | Hartree |
+| `xtb_total_energy_minimize_neg_148p2_neg_148p15_v2` | Ritonavir identity-preserving optimization | `-148.192718517112` | `-148.183476873812` | Hartree |
+
+These anchors are same-molecule and protocol-specific. They must never be
+reused across molecules, electronic states, methods, or calculation modes.
+
+## 3. Completed Decision Inventory
+
+No unresolved scoring profile remains. Legacy v1 values remain historical
+identifiers only and were not used as v2 approval evidence.
+
+### 3.1 xTB profile inventory
 
 The current xTB pack contains 21 scoring profiles after the dipole-max profile
 reuse above. The relaxation-quality, imaginary-frequency, five window profiles,
-and the profiles in sections 2.8 and 2.9 are approved, leaving only the two
-same-molecule total-energy profiles unresolved. Both require protocol-specific
-conformer evidence.
+and the profiles in sections 2.8, 2.9, and 2.10 are approved.
 
-#### T/B anchors: 2 profiles
+The former pending inventory contained 15 legacy-derived profiles. Four were
+resolved in the gap/dipole batch (including one duplicate dipole profile that
+was removed), nine in the advanced-property batch, and two in the
+same-molecule energy batch.
 
-- `xtb_total_energy_minimize_neg_50p3_neg_50p25_v1` (task 017): ROY same-molecule single-point energy.
-- `xtb_total_energy_minimize_neg_148p2_neg_148p15_v1` (task 018): Ritonavir same-molecule optimized energy.
+### 3.2 Applied xTB literature and protocol requirements
 
-The v1 suffixes above identify current profiles only; none of their legacy numbers are approved for v2.
-
-### 3.2 xTB literature and protocol requirements
-
-For each unresolved xTB profile requiring `T/B`, the literature investigation must produce two distinct anchors:
+For each formerly unresolved xTB profile requiring `T/B`, the literature
+investigation produced two distinct anchors:
 
 - `T`: an excellent literature-supported level in the task's optimization direction;
 - `B`: a literature-supported baseline, weak level, or failure-side reference.
 
-The research record must cite the literature source, identify the reference compounds or structures, explain why they represent excellent and baseline levels, and record their recomputed values under the frozen GFN2-xTB benchmark protocol. Window profiles are excluded from this T/B research requirement because their widths are fixed by the target-window rule above.
+Each research record cites the literature source, identifies the reference
+compounds or structures, explains why they represent excellent and baseline
+levels, and records their recomputed values under the frozen GFN2-xTB benchmark
+protocol. Window profiles were excluded from this T/B research requirement
+because their widths are fixed by the target-window rule above.
 
 For ROY and Ritonavir, literature may identify relevant conformers or structures, but only same-molecule GFN2-xTB energies from the frozen single-point or optimization protocol may become numeric anchors.
 
-## 4. Approval Gate for Remaining Profiles
+## 4. Approval Gate Applied to Resolved Profiles
 
-Each pending profile must have a parameter dossier containing:
+Each formerly pending profile has a parameter dossier containing:
 
 - property, units, verifier id and protocol hash;
 - hard-domain and electronic-state assumptions;
@@ -262,7 +278,7 @@ Each pending profile must have a parameter dossier containing:
 - expanded-distribution diagnostics used only as validation;
 - reviewer, review date, decision, and provenance hash.
 
-A profile is approved only when the dossier demonstrates:
+The profiles were approved only after their dossiers demonstrated:
 
 1. correct units and monotonic direction;
 2. full score for the declared success reference where such a reference is required;
@@ -271,18 +287,19 @@ A profile is approved only when the dossier demonstrates:
 5. no dependence on participant submissions or leaderboard outcomes;
 6. no accidental reuse across different verifier protocols.
 
-## 5. Planned Implementation Changes
+## 5. Implementation Status
 
-Implementation must not begin by editing v1 profile values. Once all formal-pack parameters are approved:
+The implementation preserved v1 profile values and applied the approved v2
+parameters as follows:
 
-- [ ] Add explicit support for `linear_goal_v2` while preserving the ability to identify historical v1 results.
-- [ ] Remove hard-coded `linear_goal_v1` result metadata and propagate the loaded pack scoring version.
-- [ ] Add v2 profile ids and approved provenance; do not overwrite v1 release artifacts.
-- [ ] Strengthen profile validation so formal v2 profiles require approved review metadata and evidence identifiers.
-- [ ] Prevent legacy constraint migration from being treated as v2 parameter approval.
-- [ ] Update task prompts and public scoring documentation wherever a newly approved full-score or zero-score boundary is user-visible.
-- [ ] Update the xTB calibration duplicate pack to reference the same v2 profiles as matching formal tasks.
-- [ ] Add boundary, midpoint, profile-reuse, provenance, release, and regression tests.
+- [x] Add explicit support for `linear_goal_v2` while preserving the ability to identify historical v1 results.
+- [x] Remove hard-coded `linear_goal_v1` result metadata and propagate the loaded pack scoring version.
+- [x] Add v2 profile ids and approved provenance; do not overwrite v1 release artifacts.
+- [x] Strengthen profile validation so formal v2 profiles require approved review metadata and evidence identifiers.
+- [x] Prevent legacy constraint migration from being treated as v2 parameter approval.
+- [x] Update task prompts and public scoring documentation wherever a newly approved full-score or zero-score boundary is user-visible.
+- [x] Update the xTB calibration duplicate pack to reference the same v2 profiles as matching formal tasks.
+- [x] Add boundary, midpoint, profile-reuse, provenance, release, and regression tests.
 - [ ] Build a new release with v2 scoring-profile hashes and verify that v0.2.0 remains unchanged.
 
 Likely implementation files include:
@@ -305,9 +322,10 @@ For every implementation change:
 4. Confirm historical v1 release checksums and artifacts are unchanged.
 5. Create a focused git commit only after the tests pass.
 
-## 7. Discussion Order
+## 7. Completed Discussion Order
 
-Resolve the pending values in this order so later choices can reuse earlier anchors consistently:
+The pending values were resolved in this order so later choices could reuse
+earlier anchors consistently:
 
 1. xTB gap and dipole literature references, targets, and anchors.
 2. Remaining xTB advanced-property literature references, targets, and anchors.

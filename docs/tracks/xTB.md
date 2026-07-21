@@ -68,8 +68,8 @@ FINAL ANSWER:
 | `xtb_formula_dipole_min_014` | minimize optimized dipole for exact `C12H16N3O8`, neutral doublet, `T=3.042`, `B=9.328` D | none |
 | `xtb_two_fluorine_gap_min_015` | minimize optimized gap with exactly 2 F and at most 10 C, `T=1.242666887976`, `B=12.358052453139` eV | none |
 | `xtb_c10_f2_gap_min_016` | same `C10F2` gap profile as task 015 | none |
-| `xtb_roy_singlepoint_energy_min_017` | minimize submitted-geometry single-point energy for graph-valid ROY; target/anchor dossier pending | none |
-| `xtb_ritonavir_optimized_energy_min_018` | minimize optimized energy while retaining Ritonavir graph and four stereocenters; target/anchor dossier pending | none |
+| `xtb_roy_singlepoint_energy_min_017` | minimize submitted-geometry single-point energy for graph-valid ROY, `T=-50.289109041949`, `B=-50.287905192962` Eh | none |
+| `xtb_ritonavir_optimized_energy_min_018` | minimize optimized energy while retaining Ritonavir graph and four stereocenters, `T=-148.192718517112`, `B=-148.183476873812` Eh | none |
 
 ## 4. 涉及的可验证化学性质
 
