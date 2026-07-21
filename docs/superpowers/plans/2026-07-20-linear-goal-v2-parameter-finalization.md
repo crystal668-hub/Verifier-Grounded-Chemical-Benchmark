@@ -2,8 +2,8 @@
 
 **Date:** 2026-07-20
 
-**Status:** Parameter decisions complete. All scoring profiles have approved,
-auditable endpoints; release construction remains an implementation step.
+**Status:** Parameter decisions, formal release, and OpenClaw runtime sync
+complete. All scoring profiles have approved, auditable endpoints.
 
 **Goal:** Replace provisional legacy-derived scoring parameters with reviewed, auditable `linear_goal_v2` profiles while preserving the canonical linear scoring formula and the immutable `linear_goal_v1` release.
 
