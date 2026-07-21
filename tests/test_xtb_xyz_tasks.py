@@ -144,11 +144,11 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     gap = next(item for item in task_006_constraints if item["property"] == "homo_lumo_gap")
     dipole = next(item for item in task_006_constraints if item["property"] == "dipole_moment")
     assert gap["type"] == "minimize"
-    assert pack.scoring_profiles[gap["scoring_profile"]]["zero_score_anchor"] == 5.0
+    assert pack.scoring_profiles[gap["scoring_profile"]]["zero_score_anchor"] == pytest.approx(9.749630028571)
     assert dipole["type"] == "maximize"
     dipole_profile = pack.scoring_profiles[dipole["scoring_profile"]]
-    assert dipole_profile["zero_score_anchor"] == 3.0
-    assert dipole_profile["full_score_target"] == 8.0
+    assert dipole_profile["zero_score_anchor"] == pytest.approx(3.32)
+    assert dipole_profile["full_score_target"] == pytest.approx(13.374)
 
     hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
     imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
@@ -161,7 +161,7 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert tasks["xtb_hessian_thermo_stability_013"]["structural_domain"]["heavy_atom_count"] == [4, 18]
 
 
-def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
+def test_xtb_gap_max_task_uses_literature_reviewed_thresholds() -> None:
     pack = load_xtb_pack()
     tasks = pack.tasks_by_id
     gap_max = tasks["xtb_gap_max_003"]
@@ -170,8 +170,8 @@ def test_xtb_gap_max_task_uses_calibrated_high_gap_thresholds() -> None:
 
     assert gap_constraint["type"] == "maximize"
     profile = pack.scoring_profiles[gap_constraint["scoring_profile"]]
-    assert profile["zero_score_anchor"] == 10.0
-    assert profile["full_score_target"] == 12.0
+    assert profile["zero_score_anchor"] == pytest.approx(1.389963462368)
+    assert profile["full_score_target"] == pytest.approx(9.749630028571)
     assert structural_domain["hetero_atom_count_min"] >= 2
     assert structural_domain["heavy_element_diversity_min"] >= 3
     assert "CF4" in structural_domain["formula_denylist"]

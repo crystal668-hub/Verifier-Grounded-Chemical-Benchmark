@@ -93,10 +93,15 @@ def test_calibration_duplicates_reuse_formal_profiles() -> None:
             assert calibration.scoring_profiles[profile_id] == formal.scoring_profiles[profile_id]
 
 
-def test_xtb_pack_marks_unresolved_targets_as_shadow_scoring() -> None:
+def test_xtb_gap_dipole_profiles_have_approved_provenance() -> None:
     pack = _load("xtb")
     assert pack.scoring_version == "linear_goal_v2"
-    assert pack.scoring_profiles["xtb_homo_lumo_gap_maximize_10p0_12p0_v2"]["provenance"]["review_status"] == "pending_research"
+    for profile_id in (
+        "xtb_homo_lumo_gap_maximize_10p0_12p0_v2",
+        "xtb_homo_lumo_gap_minimize_0p0_5p0_v2",
+        "xtb_dipole_moment_maximize_3p0_10p0_v2",
+    ):
+        assert pack.scoring_profiles[profile_id]["provenance"]["review_status"] == "approved"
 
 
 def test_forcefield_window_uses_one_target_window_decay_width() -> None:

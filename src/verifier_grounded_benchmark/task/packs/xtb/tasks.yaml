@@ -56,65 +56,43 @@ scoring_profiles:
     property: homo_lumo_gap
     type: maximize
     unit: eV
-    full_score_target: 12.0
-    zero_score_anchor: 10.0
+    full_score_target: 9.749630028571
+    zero_score_anchor: 1.389963462368
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: maximize_bounded
-        lower: 10.0
-        upper: 12.0
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_reference_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
+      evidence_id: xtb-gap-dipole-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_minimize_0p0_5p0_v2:
     property: homo_lumo_gap
     type: minimize
     unit: eV
-    full_score_target: 0.0
-    zero_score_anchor: 5.0
+    full_score_target: 1.389963462368
+    zero_score_anchor: 9.749630028571
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: minimize_bounded
-        lower: 0.0
-        upper: 5.0
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_reference_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
+      evidence_id: xtb-gap-dipole-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_dipole_moment_maximize_3p0_10p0_v2:
     property: dipole_moment
     type: maximize
     unit: debye
-    full_score_target: 10.0
-    zero_score_anchor: 3.0
+    full_score_target: 13.374
+    zero_score_anchor: 3.32
     provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: maximize_bounded
-        lower: 3.0
-        upper: 10.0
-      review_status: pending_research
-      review_date: '2026-07-17'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_maximize_3p0_8p0_v2:
-    property: dipole_moment
-    type: maximize
-    unit: debye
-    full_score_target: 8.0
-    zero_score_anchor: 3.0
-    provenance:
-      target_source: legacy_task_constraint
-      decay_source: exact_linear_mapping_from_legacy_bounds
-      legacy_parameters:
-        type: maximize_bounded
-        lower: 3.0
-        upper: 8.0
-      review_status: pending_research
-      review_date: '2026-07-17'
+      target_source: literature_reference_recomputed_with_frozen_verifier
+      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
+      evidence_id: xtb-gap-dipole-dossier-2026-07-21
+      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
+      review_status: approved
+      review_date: '2026-07-21'
       review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2:
     property: homo_lumo_gap
@@ -858,7 +836,7 @@ tasks:
     property: dipole_moment
     verifier_id: xtb_dipole_gfn2_v1
     role: main
-    scoring_profile: xtb_dipole_moment_maximize_3p0_8p0_v2
+    scoring_profile: xtb_dipole_moment_maximize_3p0_10p0_v2
   - type: minimize
     property: relaxation_energy
     verifier_id: xtb_relaxation_energy_gfn2_v1

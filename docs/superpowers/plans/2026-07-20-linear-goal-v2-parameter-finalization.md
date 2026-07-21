@@ -179,20 +179,37 @@ The score is one only at the gold answer, decays linearly to zero at zero and tw
 
 The `ambient_pressure_phase` gold remains exact string `alpha`, and the `high_pressure_phase` gold remains exact string `beta`.
 
+### 2.8 xTB gap and dipole literature profiles
+
+The first literature-reviewed xTB batch is frozen in
+`docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md`. Values are
+recomputed with the formal GFN2-xTB verifier protocol; literature values are
+used only to establish the scientific ordering and reference level.
+
+| Profile | Direction | `T` | `B` | Unit |
+| --- | --- | ---: | ---: | --- |
+| `xtb_homo_lumo_gap_maximize_10p0_12p0_v2` | maximize | `9.749630028571` | `1.389963462368` | eV |
+| `xtb_homo_lumo_gap_minimize_0p0_5p0_v2` | minimize | `1.389963462368` | `9.749630028571` | eV |
+| `xtb_dipole_moment_maximize_3p0_10p0_v2` | maximize | `13.374` | `3.320` | D |
+
+The dipole-max profile is shared by tasks 005 and 006 because they use the same
+verifier, property, direction, unit, and hard electronic-state policy. The
+ordered controls and literature citations are part of the dossier; no legacy
+bound remains in the approved provenance.
+
 ## 3. Pending Decisions
 
 No value in this section may be copied from its v1 profile without independent approval.
 
 ### 3.1 xTB unresolved profile inventory
 
-The current xTB pack contains 22 scoring profiles. The relaxation-quality, imaginary-frequency, and five window profiles are approved above, leaving these 15 profiles unresolved. All 15 require literature-supported `T/B` research.
+The current xTB pack contains 21 scoring profiles after the dipole-max profile
+reuse above. The relaxation-quality, imaginary-frequency, five window profiles,
+and the three profiles in section 2.8 are approved, leaving these 10 profiles
+unresolved. All 10 require literature-supported `T/B` research.
 
-#### T/B anchors: 15 profiles
+#### T/B anchors: 10 profiles
 
-- `xtb_homo_lumo_gap_maximize_10p0_12p0_v1` (task 003): gap maximize.
-- `xtb_homo_lumo_gap_minimize_0p0_5p0_v1` (tasks 004 and 006): gap minimize under the open-generation domain.
-- `xtb_dipole_moment_maximize_3p0_10p0_v1` (task 005): dipole maximize.
-- `xtb_dipole_moment_maximize_3p0_8p0_v1` (task 006): dipole maximize in the joint low-gap/high-dipole task.
 - `xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v1` (task 008): LUMO-energy minimize.
 - `xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v1` (task 009): polarizability per heavy atom maximize.
 - `xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v1` (task 010): ALPB selectivity maximize.
