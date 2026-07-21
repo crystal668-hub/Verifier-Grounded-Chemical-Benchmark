@@ -119,7 +119,7 @@ class OpenGenerationEvaluator:
                     "value": value,
                     "score": constraint_score,
                     "scoring_profile": constraint.scoring_profile,
-                    "scoring_version": "linear_goal_v1",
+                    "scoring_version": versions["scoring"],
                 }
             )
             properties.update(evidence.properties)

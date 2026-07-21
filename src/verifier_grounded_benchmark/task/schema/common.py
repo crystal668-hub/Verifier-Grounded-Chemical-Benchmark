@@ -10,6 +10,7 @@ from verifier_grounded_benchmark.task.models import LinearGoalSpec
 
 
 SCORING_VERSION = "linear_goal_v1"
+SUPPORTED_SCORING_VERSIONS = frozenset({"linear_goal_v1", "linear_goal_v2"})
 PROFILE_TYPES = {"target", "window", "maximize", "minimize", "numeric_gold", "exact_string"}
 
 

@@ -59,7 +59,7 @@ class PropertyCalculationEvaluator:
                     "value": None if submitted.get(name) is None else submitted[name].get("value"),
                     "score": field_score,
                     "scoring_profile": profile_id,
-                    "scoring_version": "linear_goal_v1",
+                    "scoring_version": versions["scoring"],
                 }
             )
 

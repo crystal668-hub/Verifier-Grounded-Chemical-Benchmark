@@ -20,6 +20,7 @@ from verifier_grounded_benchmark.task.models import (
 )
 from verifier_grounded_benchmark.task.schema.common import (
     SCORING_VERSION,
+    SUPPORTED_SCORING_VERSIONS,
     index_unique,
     require_list,
     require_mapping,
@@ -216,7 +217,7 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     pack_id = require_string(metadata.get("id"), "task_pack id")
     version = require_string(metadata.get("version"), "task_pack version")
     scoring_version = require_string(metadata.get("scoring_version"), "task_pack scoring_version")
-    if scoring_version != SCORING_VERSION:
+    if scoring_version not in SUPPORTED_SCORING_VERSIONS:
         raise ValueError(f"unsupported scoring version: {scoring_version}")
     profiles = validate_profiles(task_data.get("scoring_profiles"))
     verifier_items = verifier_data.get("verifiers")
