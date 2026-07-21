@@ -77,20 +77,20 @@ class Registry:
 def builtin_definitions() -> list[TrackDefinition]:
     return [
         TrackDefinition(
-            name="rdkit", version="0.2.0", display_name="RDKit baseline small-molecule tasks",
+            name="rdkit", version="0.3.0", display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
-            name="xtb", version="0.2.0", display_name="xTB direct-XYZ small-molecule tasks",
+            name="xtb", version="0.3.0", display_name="xTB direct-XYZ small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule_3d", "xtb", "xyz"),
             requirements=("xtb executable for real scoring",), resource_pack="xtb",
         ),
         TrackDefinition(
-            name="property_calculation", version="0.2.0", display_name="Fixed-input property calculation tasks",
+            name="property_calculation", version="0.3.0", display_name="Fixed-input property calculation tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("property_calculation", "fixed_input", "crystal"),
