@@ -205,10 +205,10 @@ No value in this section may be copied from its v1 profile without independent a
 
 The current xTB pack contains 21 scoring profiles after the dipole-max profile
 reuse above. The relaxation-quality, imaginary-frequency, five window profiles,
-and the three profiles in section 2.8 are approved, leaving these 10 profiles
-unresolved. All 10 require literature-supported `T/B` research.
+and the three profiles in section 2.8 are approved, leaving these 11 profiles
+unresolved. All 11 require literature-supported `T/B` research.
 
-#### T/B anchors: 10 profiles
+#### T/B anchors: 11 profiles
 
 - `xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v1` (task 008): LUMO-energy minimize.
 - `xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v1` (task 009): polarizability per heavy atom maximize.
