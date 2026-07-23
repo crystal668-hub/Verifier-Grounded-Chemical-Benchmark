@@ -251,8 +251,14 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
             )
         frozen = freeze_mapping(raw)
         if task_type == "open_generation":
-            constraints = validate_open_generation_task(raw, profiles, set(verifiers_by_id))
-            tasks.append(OpenGenerationTaskSpec(task_id, task_type, frozen, constraints))
+            constraints, hard_constraints = validate_open_generation_task(
+                raw, profiles, set(verifiers_by_id)
+            )
+            tasks.append(
+                OpenGenerationTaskSpec(
+                    task_id, task_type, frozen, constraints, hard_constraints
+                )
+            )
         elif task_type == "property_calculation":
             validate_property_calculation_task(raw, profiles)
             tasks.append(PropertyCalculationTaskSpec(task_id, task_type, frozen))

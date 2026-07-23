@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import sys
+from copy import deepcopy
 
 import pytest
 
@@ -21,6 +22,16 @@ def _pack(name: str):
         package_resource(name, "tasks.yaml"),
         package_resource(name, "verifier_specs.yaml"),
     )
+
+
+def _pack_with_hard_constraint(tmp_path, hard_constraint):
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    data = deepcopy(data)
+    data["tasks"][0]["hard_constraints"] = [hard_constraint]
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
+    return load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
 
 
 class FakeVerifier:
@@ -223,3 +234,93 @@ def test_subprocess_adapter_discards_legacy_scores(tmp_path) -> None:
     assert evidence.properties == {"qed": 0.5}
     assert "score" not in evidence.to_dict()
     assert "scores" not in evidence.to_dict()
+
+
+@pytest.mark.parametrize(
+    ("operator", "threshold", "value", "passed"),
+    [
+        ("lt", 0.5, 0.499999, True),
+        ("lt", 0.5, 0.5, False),
+        ("le", 0.5, 0.5, True),
+        ("le", 0.5, 0.500001, False),
+    ],
+)
+def test_hard_constraint_threshold_boundaries(
+    tmp_path, operator, threshold, value, passed
+) -> None:
+    pack = _pack_with_hard_constraint(
+        tmp_path,
+        {
+            "property": "qed",
+            "verifier_id": "rdkit_qed_v1",
+            "operator": operator,
+            "threshold": threshold,
+        },
+    )
+    fake = FakeVerifier({"rdkit_qed_v1": {"qed": value}})
+
+    result = EvaluationEngine(pack, verifier=fake).evaluate_one(
+        {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "CCO"}]}
+    )
+
+    assert result["properties"]["hard_constraint_passed"] is passed
+    assert result["failure_type"] is (None if passed else "hard_constraint_failed")
+    assert result["scores"]["score"] == pytest.approx(value if passed else 0.0)
+    assert len(fake.calls) == 1
+
+
+@pytest.mark.parametrize("value", [0.65, 0.75])
+def test_closed_window_hard_constraint_includes_both_boundaries(tmp_path, value) -> None:
+    pack = _pack_with_hard_constraint(
+        tmp_path,
+        {
+            "property": "qed",
+            "verifier_id": "rdkit_qed_v1",
+            "operator": "closed_window",
+            "lower": 0.65,
+            "upper": 0.75,
+        },
+    )
+    fake = FakeVerifier({"rdkit_qed_v1": {"qed": value}})
+
+    result = EvaluationEngine(pack, verifier=fake).evaluate_one(
+        {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "CCO"}]}
+    )
+
+    assert result["failure_type"] is None
+    assert result["properties"]["hard_constraint_passed"] is True
+
+
+def test_hard_constraint_failure_short_circuits_and_preserves_evidence(tmp_path) -> None:
+    pack = _pack_with_hard_constraint(
+        tmp_path,
+        {
+            "property": "qed",
+            "verifier_id": "rdkit_qed_v1",
+            "operator": "lt",
+            "threshold": 0.5,
+        },
+    )
+    fake = FakeVerifier({"rdkit_qed_v1": {"qed": 0.5, "atom_count": 12}})
+
+    result = EvaluationEngine(pack, verifier=fake).evaluate_one(
+        {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "CCO"}]}
+    )
+
+    assert fake.calls == [("rdkit_qed_v1", "qed")]
+    assert result["failure_scope"] == "candidate"
+    assert result["failure_type"] == "hard_constraint_failed"
+    assert result["properties"] == {
+        "qed": 0.5,
+        "atom_count": 12,
+        "hard_constraint_passed": False,
+    }
+    assert result["hard_constraint"] == {
+        "property": "qed",
+        "operator": "lt",
+        "threshold": 0.5,
+        "lower": None,
+        "upper": None,
+        "value": 0.5,
+    }
+    assert result["scores"]["score"] == 0.0

@@ -45,6 +45,16 @@ class ConstraintSpec:
 
 
 @dataclass(frozen=True)
+class HardConstraintSpec:
+    property: str
+    verifier_id: str
+    operator: str
+    threshold: float | None
+    lower: float | None
+    upper: float | None
+
+
+@dataclass(frozen=True)
 class VerifierSpec:
     verifier_id: str
     raw: Mapping[str, Any]
@@ -66,6 +76,7 @@ class TaskSpec:
 @dataclass(frozen=True)
 class OpenGenerationTaskSpec(TaskSpec):
     constraints: tuple[ConstraintSpec, ...]
+    hard_constraints: tuple[HardConstraintSpec, ...] = ()
 
 
 @dataclass(frozen=True)

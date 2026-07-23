@@ -11,6 +11,7 @@ CANDIDATE_FAILURES = {
     "domain_error",
     "identity_error",
     "structure_identity_error",
+    "hard_constraint_failed",
 }
 
 

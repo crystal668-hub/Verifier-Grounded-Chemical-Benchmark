@@ -41,6 +41,21 @@ def test_candidate_error_result_sets_candidate_rejected_outcome() -> None:
     assert result["message"] == "candidate is missing"
 
 
+def test_hard_constraint_failure_is_candidate_rejection() -> None:
+    result = base_result("task_1", "verifier_v1", {"backend": "fake"})
+
+    error_result(
+        result,
+        "hard_constraint_failed",
+        "sa_score lt 5.0 failed",
+        properties={"sa_score": 5.0},
+    )
+
+    assert result["outcome"] == "candidate_rejected"
+    assert result["failure_scope"] == "candidate"
+    assert result["properties"] == {"sa_score": 5.0}
+
+
 def test_infrastructure_error_preserves_diagnostic_properties() -> None:
     result = base_result("task_1", "verifier_v1")
 

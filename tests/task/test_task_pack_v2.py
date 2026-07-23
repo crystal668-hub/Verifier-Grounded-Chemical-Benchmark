@@ -207,3 +207,64 @@ def test_v2_loader_rejects_static_profile_errors(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="zero_score_anchor"):
         load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+
+@pytest.mark.parametrize("operator", ["lt", "le"])
+def test_v2_loader_accepts_threshold_hard_constraints(tmp_path, operator) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    data["tasks"][0]["hard_constraints"] = [
+        {
+            "property": "qed",
+            "verifier_id": "rdkit_qed_v1",
+            "operator": operator,
+            "threshold": 0.75,
+        }
+    ]
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
+
+    pack = load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+    hard = pack.tasks[0].hard_constraints[0]
+    assert (hard.property, hard.operator, hard.threshold) == ("qed", operator, 0.75)
+
+
+def test_v2_loader_accepts_closed_window_hard_constraint(tmp_path) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    data["tasks"][0]["hard_constraints"] = [
+        {
+            "property": "qed",
+            "verifier_id": "rdkit_qed_v1",
+            "operator": "closed_window",
+            "lower": 0.65,
+            "upper": 0.75,
+        }
+    ]
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
+
+    pack = load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+    hard = pack.tasks[0].hard_constraints[0]
+    assert (hard.lower, hard.upper) == (0.65, 0.75)
+
+
+@pytest.mark.parametrize(
+    ("hard_constraint", "message"),
+    [
+        ({"property": "qed", "verifier_id": "rdkit_qed_v1", "operator": "eq", "threshold": 1}, "unsupported hard constraint operator"),
+        ({"property": "qed", "verifier_id": "rdkit_qed_v1", "operator": "lt"}, "threshold must be a finite number"),
+        ({"property": "qed", "verifier_id": "rdkit_qed_v1", "operator": "closed_window", "lower": 1, "upper": 0}, "lower <= upper"),
+    ],
+)
+def test_v2_loader_rejects_invalid_hard_constraints(tmp_path, hard_constraint, message) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    data["tasks"][0]["hard_constraints"] = [hard_constraint]
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=message):
+        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
