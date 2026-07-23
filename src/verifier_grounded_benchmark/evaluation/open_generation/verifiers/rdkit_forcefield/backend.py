@@ -57,13 +57,37 @@ def evaluate_forcefield_constraint(
         return error_result(result, "parse_error", "RDKit returned no molecule")
 
     domain_properties = compute_domain_properties(mol)
-    domain_error = check_domain(domain_properties, spec.get("domain") or {})
+    domain = spec.get("domain") or {}
+    domain_error = check_domain(domain_properties, domain)
     if domain_error:
         return error_result(result, "domain_error", domain_error, properties=domain_properties)
+    if chain_smarts := domain.get("chain_smarts"):
+        chain_properties, chain_error = inspect_chain_domain(mol, str(chain_smarts))
+        domain_properties.update(chain_properties)
+        if chain_error:
+            return error_result(
+                result, "domain_error", chain_error, properties=domain_properties
+            )
+        if not AllChem.UFFHasAllMoleculeParams(Chem.AddHs(Chem.Mol(mol))):
+            return error_result(
+                result,
+                "domain_error",
+                "UFF parameters are not available for this molecule",
+                properties=domain_properties,
+            )
 
     canonical_smiles = Chem.MolToSmiles(mol, canonical=True)
     try:
-        forcefield_properties = compute_forcefield_properties(mol, spec.get("backend") or {})
+        if property_name == "chain_end_to_end_distance":
+            forcefield_properties = compute_chain_end_to_end_properties(
+                mol,
+                spec.get("backend") or {},
+                tuple(domain_properties["chain_endpoint_atom_indices"]),
+            )
+        else:
+            forcefield_properties = compute_forcefield_properties(
+                mol, spec.get("backend") or {}
+            )
     except ForceFieldError as exc:
         return error_result(result, "verifier_tool_error", str(exc), properties=domain_properties)
     except Exception as exc:
@@ -113,6 +137,48 @@ def compute_forcefield_properties(mol: Chem.Mol, backend: dict[str, Any]) -> dic
         "max_energy_kcal_mol": maximum_energy,
         "energy_range_kcal_mol": maximum_energy - minimum_energy,
         "min_nonbonded_distance_angstrom": min_nonbonded_distance(molecule, conformer_ids[0]),
+    }
+
+
+def compute_chain_end_to_end_properties(
+    mol: Chem.Mol,
+    backend: dict[str, Any],
+    endpoints: tuple[int, int],
+) -> dict[str, float | int | str]:
+    config = {**DEFAULT_BACKEND, **backend}
+    if config.get("forcefield") != "UFF":
+        raise ForceFieldError("chain endpoint protocol requires forcefield UFF")
+    molecule = Chem.AddHs(Chem.Mol(mol))
+    params = embedding_parameters(str(config["embedder"]))
+    params.randomSeed = int(config["random_seed"])
+    params.pruneRmsThresh = float(config["prune_rms_thresh"])
+    requested = int(config["num_conformers"])
+    conformer_ids = list(
+        AllChem.EmbedMultipleConfs(molecule, numConfs=requested, params=params)
+    )
+    if not conformer_ids:
+        raise ForceFieldError("RDKit ETKDG embedding produced no conformers")
+
+    converged: list[tuple[float, int]] = []
+    max_iters = int(config["max_iters"])
+    for conformer_id in conformer_ids:
+        if optimize_conformer(molecule, "UFF", conformer_id, max_iters) == 0:
+            converged.append(
+                (forcefield_energy(molecule, "UFF", conformer_id), conformer_id)
+            )
+    if not converged:
+        raise ForceFieldError("no UFF conformer optimization converged")
+    selected_energy, selected_id = min(converged, key=lambda item: (item[0], item[1]))
+    return {
+        "forcefield_name": "UFF",
+        "requested_conformer_count": requested,
+        "retained_conformer_count": len(conformer_ids),
+        "converged_conformer_count": len(converged),
+        "selected_conformer_id": selected_id,
+        "selected_uff_energy_kcal_mol": selected_energy,
+        "chain_end_to_end_distance": endpoint_distance(
+            molecule, selected_id, endpoints
+        ),
     }
 
 
@@ -179,6 +245,17 @@ def min_nonbonded_distance(mol: Chem.Mol, conformer_id: int) -> float:
     return min(distances, default=0.0)
 
 
+def endpoint_distance(
+    mol: Chem.Mol, conformer_id: int, endpoints: tuple[int, int]
+) -> float:
+    conformer = mol.GetConformer(conformer_id)
+    return float(
+        conformer.GetAtomPosition(endpoints[0]).Distance(
+            conformer.GetAtomPosition(endpoints[1])
+        )
+    )
+
+
 def median(values: list[float]) -> float:
     ordered = sorted(values)
     middle = len(ordered) // 2
@@ -188,12 +265,46 @@ def median(values: list[float]) -> float:
 
 
 def compute_domain_properties(mol: Chem.Mol) -> dict[str, Any]:
+    explicit_h_mol = Chem.AddHs(mol)
     return {
         "mw": Descriptors.MolWt(mol),
         "heavy_atom_count": mol.GetNumHeavyAtoms(),
         "formal_charge": Chem.GetFormalCharge(mol),
         "elements": sorted({atom.GetSymbol() for atom in mol.GetAtoms()}),
+        "atom_count_including_h": explicit_h_mol.GetNumAtoms(),
+        "carbon_count": sum(atom.GetSymbol() == "C" for atom in mol.GetAtoms()),
     }
+
+
+def inspect_chain_domain(
+    mol: Chem.Mol, chain_smarts: str
+) -> tuple[dict[str, Any], str | None]:
+    if sum(atom.GetSymbol() == "C" for atom in mol.GetAtoms()) != 6:
+        return {}, "carbon_count must be exactly 6"
+    query = Chem.MolFromSmarts(chain_smarts)
+    if query is None:
+        return {}, "chain SMARTS is invalid"
+    matches = [
+        match
+        for match in mol.GetSubstructMatches(query, uniquify=False)
+        if len(match) == 6 and len(set(match)) == 6
+    ]
+    if not matches:
+        return {}, "molecule does not contain the required six-carbon chain"
+    endpoint_pairs = {frozenset((match[0], match[-1])) for match in matches}
+    if len(endpoint_pairs) != 1:
+        return {}, "six-carbon chain endpoint mapping is ambiguous"
+    ranks = list(Chem.CanonicalRankAtoms(mol, breakTies=True))
+    endpoints = next(iter(endpoint_pairs))
+    ordered_endpoints = tuple(sorted(endpoints, key=lambda index: (ranks[index], index)))
+    selected_match = min(
+        matches,
+        key=lambda match: tuple(ranks[index] for index in match),
+    )
+    return {
+        "chain_match_atom_indices": list(selected_match),
+        "chain_endpoint_atom_indices": list(ordered_endpoints),
+    }, None
 
 
 def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | None:
@@ -203,7 +314,13 @@ def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | No
         if disallowed:
             return f"disallowed elements: {', '.join(disallowed)}"
 
-    for key in ("heavy_atom_count", "mw", "formal_charge"):
+    for key in (
+        "heavy_atom_count",
+        "mw",
+        "formal_charge",
+        "atom_count_including_h",
+        "carbon_count",
+    ):
         if key not in domain:
             continue
         lower, upper = domain[key]

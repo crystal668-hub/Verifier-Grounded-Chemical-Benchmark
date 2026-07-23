@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield import backend as forcefield_backend
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
 
 
@@ -102,3 +103,105 @@ def test_evaluate_forcefield_constraint_reports_parameterization_failure() -> No
     assert result["outcome"] != "verified"
     assert result["failure_type"] == "verifier_tool_error"
     assert "parameters" in result["message"]
+
+
+CHAIN_SPEC = {
+    "verifier_id": "rdkit_chain_end_to_end_uff_v1",
+    "verifier_image": "verifier-grounded:dev",
+    "property_name": "chain_end_to_end_distance",
+    "backend": {
+        "embedder": "ETKDGv3",
+        "random_seed": 61453,
+        "num_conformers": 20,
+        "prune_rms_thresh": 0.5,
+        "forcefield": "UFF",
+        "max_iters": 200,
+    },
+    "domain": {
+        "allowed_elements": ["H", "C", "N", "O", "S", "F", "Cl"],
+        "formal_charge": [0, 0],
+        "atom_count_including_h": [1, 40],
+        "carbon_count": [6, 6],
+        "chain_smarts": "[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]",
+    },
+}
+
+
+def test_chain_endpoint_protocol_scores_n_hexane_with_uff() -> None:
+    result = evaluate_forcefield_constraint(
+        {"smiles": "CCCCCC"},
+        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"property": "chain_end_to_end_distance"},
+        CHAIN_SPEC,
+    )
+
+    assert result["outcome"] == "verified"
+    assert result["properties"]["forcefield_name"] == "UFF"
+    assert result["properties"]["atom_count_including_h"] == 20
+    assert result["properties"]["carbon_count"] == 6
+    assert len(result["properties"]["chain_match_atom_indices"]) == 6
+    assert len(result["properties"]["chain_endpoint_atom_indices"]) == 2
+    assert result["properties"]["retained_conformer_count"] >= 1
+    assert result["properties"]["converged_conformer_count"] >= 1
+    assert result["properties"]["chain_end_to_end_distance"] > 0
+
+
+@pytest.mark.parametrize(
+    "smiles",
+    ["CCCCC", "CCCCCCC", "CC(C)CCC", "C1CCCCC1", "CC=CCCC"],
+)
+def test_chain_endpoint_domain_rejects_wrong_carbon_skeleton(smiles: str) -> None:
+    result = evaluate_forcefield_constraint(
+        {"smiles": smiles},
+        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"property": "chain_end_to_end_distance"},
+        CHAIN_SPEC,
+    )
+
+    assert result["outcome"] == "candidate_rejected"
+    assert result["failure_type"] == "domain_error"
+
+
+def test_chain_endpoint_domain_allows_noncarbon_substitution() -> None:
+    result = evaluate_forcefield_constraint(
+        {"smiles": "FCCCCCCCl"},
+        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"property": "chain_end_to_end_distance"},
+        CHAIN_SPEC,
+    )
+
+    assert result["outcome"] == "verified"
+
+
+def test_chain_endpoint_distance_uses_lowest_converged_energy(monkeypatch) -> None:
+    monkeypatch.setattr(
+        forcefield_backend.AllChem,
+        "EmbedMultipleConfs",
+        lambda molecule, numConfs, params: [4, 2, 7],
+    )
+    monkeypatch.setattr(
+        forcefield_backend,
+        "optimize_conformer",
+        lambda molecule, forcefield, conformer_id, max_iters: 1 if conformer_id == 2 else 0,
+    )
+    monkeypatch.setattr(
+        forcefield_backend,
+        "forcefield_energy",
+        lambda molecule, forcefield, conformer_id: {4: 8.0, 7: 3.0}[conformer_id],
+    )
+    monkeypatch.setattr(
+        forcefield_backend,
+        "endpoint_distance",
+        lambda molecule, conformer_id, endpoints: float(conformer_id),
+    )
+
+    properties = forcefield_backend.compute_chain_end_to_end_properties(
+        forcefield_backend.Chem.MolFromSmiles("CCCCCC"),
+        CHAIN_SPEC["backend"],
+        (0, 5),
+    )
+
+    assert properties["converged_conformer_count"] == 2
+    assert properties["selected_conformer_id"] == 7
+    assert properties["selected_uff_energy_kcal_mol"] == 3.0
+    assert properties["chain_end_to_end_distance"] == 7.0
