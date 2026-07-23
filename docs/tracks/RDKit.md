@@ -1,168 +1,65 @@
 # RDKit 题目设计与实现同步
 
-更新日期：2026-06-11
+更新日期：2026-07-23
 
-## 1. 设计来源
+## 1. Track 边界
 
-RDKit 题目来自以下本地设计与计划文档：
+RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始终重新 sanitize、canonicalize 并计算性质，不使用模型自报数值。正式任务资源位于 `src/verifier_grounded_benchmark/task/packs/rdkit/`。
 
-- `docs/design/INITIAL-DESIGN.md`：把 RDKit 小分子 descriptor 题定位为首批最稳定、成本最低、可本地确定性验证的 open-generation benchmark。
-- `docs/research/2026-05-26-verifier-grounded-chemical-benchmark-target-properties.md`：将 QED、logP、TPSA、MW、HBD/HBA、rotatable bonds、SA score 等列为 P0 小分子基础性质。
-- `docs/superpowers/plans/2026-06-02-task-level-verifier-script-migration.md`：废弃 task-level verifier script，明确采用 descriptor-level verifier 设计。
+基线题共享 drug-like domain：单组分；允许 H、B、C、N、O、F、P、S、Cl、Br、I；重原子 5 到 60；分子量不超过 600 Da；formal charge 在 `[-1, 1]`。专家题 011-014 只应用各自公开题面中的 domain，不继承未公开的基线限制。
 
-当前真实实现已按如下边界落地：
+任务 013 虽调用 RDKit ETKDGv3/UFF 生成和优化构象，仍属于 RDKit track。`rdkit_forcefield` 是实现 backend 名称，不是独立公开 track。
 
-```text
-task constraint/property -> verifier_id -> verification_script -> shared RDKit descriptor backend
-```
+## 2. 当前任务
 
-## 2. 题目类型
+- 正式题目：14。
+- verifier specs：14。
+- 所有题目均使用 `linear_goal_v2` scoring profile。
 
-当前 RDKit 题目是 `small_molecule` 的 open-generation property-satisfaction 任务。模型需要生成一个单组分小分子，并在最终答案中给出一条 SMILES：
-
-```text
-FINAL ANSWER: <SMILES>
-```
-
-基线题目的统一 domain gate：
-
-- 单组分 SMILES，不接受 dot-separated multi-component SMILES。
-- 允许元素：H、B、C、N、O、F、P、S、Cl、Br、I。
-- heavy atom count：5 到 60。
-- RDKit molecular weight：不超过 600 dalton。
-- formal charge：-1 到 1。
-
-这些 gate 使题目保持在典型小分子/药物样化学空间内，并避免多盐、多组分、过大分子或异常价态成为高分答案。
-
-`rdkit_logp_target_011` 是专家约束题，不继承上述 MW、heavy atom 或 formal charge gate。它只限制题面明确给出的元素、含氢总原子数和氧原子比例。
-
-## 3. 当前题目数量
-
-当前 task pack：`tasks/rdkit_baseline/`
-
-- 题目数量：11。
-- verifier specs：9。
-- 当前正式评分用到的性质：7 个。
-- 当前存在但只作为 spec/backend 能力保留、未被 task 直接评分的 verifier：`rdkit_mw_v1`。
-
-| task_id | 目标性质 | 约束类型 |
+| task_id | 主目标 | 关键约束 |
 |---|---|---|
-| `rdkit_qed_max_001` | QED | maximize bounded `[0.0, 1.0]` |
-| `rdkit_sa_min_002` | SA score | minimize bounded `[1.0, 10.0]` |
-| `rdkit_logp_window_003` | logP | window `[1.0, 3.0]`, `sigma=0.5` |
-| `rdkit_tpsa_window_004` | TPSA | window `[35.0, 75.0]`, `sigma=10.0` |
-| `rdkit_hba_window_005` | HBA | window `[2, 4]`, `sigma=1.0` |
-| `rdkit_hbd_window_006` | HBD | window `[1, 2]`, `sigma=1.0` |
-| `rdkit_fsp3_max_007` | fraction Csp3 | maximize bounded `[0.0, 1.0]` |
-| `rdkit_qed_sa_008` | QED + SA score | multi-objective |
-| `rdkit_logp_tpsa_009` | logP + TPSA | multi-objective |
+| `rdkit_qed_max_001` | maximize QED | 基线 domain |
+| `rdkit_sa_min_002` | minimize SA score | 基线 domain |
+| `rdkit_logp_window_003` | LogP window `[1, 3]` | 基线 domain |
+| `rdkit_tpsa_window_004` | TPSA window `[35, 75]` | 基线 domain |
+| `rdkit_hba_window_005` | HBA window `[2, 4]` | 基线 domain |
+| `rdkit_hbd_window_006` | HBD window `[1, 2]` | 基线 domain |
+| `rdkit_fsp3_max_007` | maximize fraction Csp3 | 基线 domain |
+| `rdkit_qed_sa_008` | QED + SA | multi-objective |
+| `rdkit_logp_tpsa_009` | LogP + TPSA | multi-objective |
 | `rdkit_hba_hbd_010` | HBA + HBD | multi-objective |
-| `rdkit_logp_target_011` | logP 接近 3.0 | target distance，`scale=0.5` |
+| `rdkit_logp_target_011` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
+| `rdkit_sa_logp_target_012` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
+| `rdkit_chain_end_to_end_max_013` | maximize 六碳链端距 | 精确六碳饱和链；固定 UFF workflow |
+| `rdkit_caffeine_similarity_max_014` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
 
-## 4. 涉及的可验证化学性质
+## 3. 性质与 verifier
 
-| 性质 | 当前用途 | 实现入口 | 化学含义 |
-|---|---|---|---|
-| QED | 评分目标 | `rdkit.Chem.QED.qed` | 综合 drug-likeness desirability 分数，范围 0 到 1。 |
-| SA score | 评分目标 | `rdkit.Contrib.SA_Score.sascorer.calculateScore` | 合成可及性 heuristic，当前按 1 易到 10 难处理。 |
-| logP | 评分目标 | `rdkit.Chem.Crippen.MolLogP` | 脂溶性/疏水性 proxy。 |
-| TPSA | 评分目标 | `rdkit.Chem.rdMolDescriptors.CalcTPSA` | 极性表面积 proxy，关联转运、渗透和 oral exposure。 |
-| HBA | 评分目标 | `rdkit.Chem.rdMolDescriptors.CalcNumHBA` | 氢键受体数量。 |
-| HBD | 评分目标 | `rdkit.Chem.rdMolDescriptors.CalcNumHBD` | 氢键供体数量。 |
-| fraction Csp3 | 评分目标 | `rdkit.Chem.rdMolDescriptors.CalcFractionCSP3` | 碳骨架饱和度/三维复杂度 proxy。 |
-| MW | domain gate；spec 保留 | `rdkit.Chem.Descriptors.MolWt` | 分子大小与 drug-like domain 控制。 |
-| heavy atom count / formal charge | domain gate | RDKit Mol API | 结构规模、离子态和适用域控制。 |
-| 含氢总原子数 / 氧原子比例 | `rdkit_logp_target_011` domain gate | `Chem.AddHs` 后计数 | 严格执行专家题面的全部原子口径。 |
+descriptor backend 计算 QED、SA score、LogP、TPSA、HBA、HBD、fraction Csp3 和 MW。新增专家协议包括：
 
-## 5. 对应 verifier
+- `rdkit_sa_logp_domain_sa_v1` 与 `rdkit_sa_logp_domain_logp_v1`：共享同一题目专用 domain，先执行 SA 严格硬门，再计算 LogP 主目标。
+- `rdkit_chain_end_to_end_uff_v1`：验证精确六碳非环饱和链，ETKDGv3 生成有限构象集，只使用 UFF，按 `(energy, conformer_id)` 选择最低收敛构象并测量两个端点碳核距离。
+- `rdkit_caffeine_properties_v1`：在同一 candidate evidence 中计算 LogP、SA 和 QED，并核对冻结 reference SA。
+- `rdkit_caffeine_similarity_v1`：Morgan bit fingerprint，radius 2、2048 bit、不含 chirality、使用 bond types，按 Tanimoto 与冻结 caffeine reference 比较。
 
-当前 RDKit verifier 都通过 `verifiers/rdkit_descriptors/cli.py` 进入共享后端 `verifiers/rdkit_descriptors/backend.py`。
+任务 013 的冻结参数为 seed `61453`、20 个请求构象、pruning `0.5 Angstrom`、UFF、最多 200 次迭代。只保留收敛构象，不回退到 MMFF；没有嵌入或没有收敛构象属于 verifier tool failure。该距离是固定有限采样 workflow 的结果，不是全局最低能构象、分子最大直径或轮廓长度。UFF 能量只用于同一候选内部选构象，不能跨分子解释。
 
-| verifier_id | property / descriptor | verification_script |
-|---|---|---|
-| `rdkit_qed_v1` | `qed` | `verifiers/rdkit_descriptors/rdkit_qed.py` |
-| `rdkit_logp_v1` | `logp` | `verifiers/rdkit_descriptors/rdkit_logp.py` |
-| `rdkit_logp_expert_v1` | `logp`，专家题专用 domain | `verifiers/rdkit_descriptors/rdkit_logp.py` |
-| `rdkit_tpsa_v1` | `tpsa` | `verifiers/rdkit_descriptors/rdkit_tpsa.py` |
-| `rdkit_mw_v1` | `mw` | `verifiers/rdkit_descriptors/rdkit_mw.py` |
-| `rdkit_hba_v1` | `hba` | `verifiers/rdkit_descriptors/rdkit_hba.py` |
-| `rdkit_hbd_v1` | `hbd` | `verifiers/rdkit_descriptors/rdkit_hbd.py` |
-| `rdkit_sa_score_v1` | `sa_score` | `verifiers/rdkit_descriptors/rdkit_sa_score.py` |
-| `rdkit_fraction_csp3_v1` | `fraction_csp3` | `verifiers/rdkit_descriptors/rdkit_fraction_csp3.py` |
+## 4. 硬门与评分
 
-真实执行流程：
+`hard_constraints` 在主评分前运行，支持严格小于、`<=` 和闭区间。硬门失败返回 `hard_constraint_failed` 和已计算 evidence；verifier 环境或工具故障不转成候选零分。同一 verifier 同时提供多个性质时复用 evidence。
 
-1. `benchmark/answer_extraction.py` 从 raw response 抽取 SMILES。
-2. `benchmark/evaluate.py` 按 task constraint 的 `verifier_id` 找到 spec。
-3. `benchmark/verifier_scripts.py` 构造 JSON payload 并子进程执行 `verification_script`。
-4. RDKit backend 重新解析 SMILES、canonicalize、做 domain gate、计算 descriptor、返回标准 result JSON。
+连续目标统一使用 `linear_goal_v2`：maximize/minimize 在满分目标 `T` 与零分锚点 `B` 间线性插值；target/window 在冻结目标或窗口与两侧 width 间线性衰减并裁剪到 `[0, 1]`。多主目标取 geometric mean，硬门不参与平均。
 
-模型自报的性质值不会被信任；评分只使用 verifier 重新计算的性质。
+任务 012 复用 LogP target 3、宽度 3 的 profile。任务 013 使用独立校准的 `B=6.36`、`T=6.49 Angstrom`。任务 014 的 Tanimoto 使用定义域锚点 `B=0`、`T=1`。校准证据见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`。
 
-## 6. 打分计算方式
+## 5. 化学解释边界
 
-RDKit 题目使用统一 scoring helper `score_constraint`。
+QED、SA、LogP、TPSA、HBA/HBD 和 fraction Csp3 是低成本、确定性的 molecular-design proxies，不证明候选真实可成药、可合成或具有目标 ADME。Morgan Tanimoto 只表示冻结 fingerprint 表示下的拓扑相似度，不等同 scaffold identity、药理相似性或生物活性。UFF/ETKDG workflow 是经典力场下的有限构象代理，不等同高精度量子能量或实验构象分布。
 
-### 6.1 Window constraint
+## 6. 资料
 
-性质落在 `[min, max]` 内得 1.0。落在窗口外时按距离指数衰减：
-
-```text
-score = exp(-distance_to_window / sigma)
-```
-
-结果裁剪到 `[0.0, 1.0]`。
-
-### 6.2 Maximize bounded
-
-```text
-score = clamp((value - lower) / (upper - lower), 0.0, 1.0)
-```
-
-### 6.3 Minimize bounded
-
-```text
-score = clamp((upper - value) / (upper - lower), 0.0, 1.0)
-```
-
-### 6.4 Target distance
-
-Expert target-value tasks use an exponential distance score:
-
-```text
-score = exp(-abs(value - target) / scale)
-```
-
-### 6.5 多目标聚合
-
-多目标任务由 runner 对多个 constraint score 做 geometric mean：
-
-```text
-property_score = geometric_mean(main_constraint_scores)
-final_score = property_score
-```
-
-任一 verifier 发生 parse、validity 或 domain error 时，最终 score 为 0。RDKit 题目当前没有额外 quality gate。
-
-## 7. 实际化学意义
-
-RDKit track 的实际目标不是证明某个分子真实可成药，而是构造一个低成本、确定性、可复现的小分子生成 sanity layer：
-
-- QED 将多种 oral drug-like 分布压缩为 0 到 1 的 desirability 分数，适合做基础药物样目标。
-- logP、TPSA、HBA、HBD 和 MW 是经典 early-stage medicinal chemistry 过滤指标，关联溶解性、渗透性、口服吸收和 ADME 风险。
-- SA score 防止模型只优化 QED/logP 而生成明显复杂或不易合成的结构。
-- fraction Csp3 鼓励更饱和、更立体的分子骨架，用于避免过度平面化的芳香结构偏置。
-- 多目标题目用于模拟真实 lead optimization 中“同时满足多个基础性质”的压力，而不是单一 descriptor maximization。
-
-这类题目的工程意义同样重要：它验证 answer schema、SMILES parsing、property-level verifier script、shared backend、multi-objective aggregation 和 failure taxonomy 是否稳定。
-
-## 8. 文献与资料支撑
-
-- RDKit QED 文档说明 QED 来源于 Bickerton 等人的 quantitative estimate of drug-likeness，并由 MW、logP、TPSA、HBD/HBA、aromatic rings、rotatable bonds 和 alerts 等性质构成：https://www.rdkit.org/docs/source/rdkit.Chem.QED.html
-- Bickerton et al., "Quantifying the chemical beauty of drugs", Nature Chemistry 2012；论文提出 QED 作为 drug-likeness desirability 度量：https://pubmed.ncbi.nlm.nih.gov/22270643/
-- Ertl and Schuffenhauer, "Estimation of synthetic accessibility score of drug-like molecules", Journal of Cheminformatics 2009；SA score 范围按 1 易合成到 10 难合成解释：https://pubmed.ncbi.nlm.nih.gov/20298526/
-- Ertl, Rohde and Selzer, "Fast calculation of molecular polar surface area as a sum of fragment-based contributions", Journal of Medicinal Chemistry 2000；支撑 TPSA 作为快速 fragment-based polar surface area 估计：https://pubmed.ncbi.nlm.nih.gov/11020286/
-- RDKit Crippen 文档说明 `MolLogP` 使用 Wildman-Crippen atom-based scheme：https://www.rdkit.org/docs/source/rdkit.Chem.Crippen.html
-- Wildman and Crippen, "Prediction of Physicochemical Parameters by Atomic Contributions", JCICS 1999；支撑 atom contribution logP/MR：https://www.semanticscholar.org/paper/Prediction-of-Physicochemical-Parameters-by-Atomic-Wildman-Crippen/1f8a30b17d363c04feab4adb02654c33c0ae1e5b
-- Lipinski Rule of Five 相关性质包括 MW、logP、HBD、HBA，用于 oral absorption/permeation 风险判断：https://pubmed.ncbi.nlm.nih.gov/11259830/
-- Lovering et al., "Escape from Flatland", Journal of Medicinal Chemistry 2009；提出 Fsp3/饱和度与临床阶段成功率相关的观察：https://pubmed.ncbi.nlm.nih.gov/19827778/
+- RDKit QED：https://www.rdkit.org/docs/source/rdkit.Chem.QED.html
+- RDKit Crippen LogP：https://www.rdkit.org/docs/source/rdkit.Chem.Crippen.html
+- RDKit fingerprint generator：https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html
+- Bickerton et al., QED, Nature Chemistry 2012：https://pubmed.ncbi.nlm.nih.gov/22270643/
+- Ertl and Schuffenhauer, SA score, Journal of Cheminformatics 2009：https://pubmed.ncbi.nlm.nih.gov/20298526/

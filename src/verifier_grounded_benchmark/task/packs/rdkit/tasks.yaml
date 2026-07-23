@@ -126,6 +126,34 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
+  rdkit_chain_end_to_end_maximize_6p36_6p49_v2:
+    property: chain_end_to_end_distance
+    type: maximize
+    unit: angstrom
+    full_score_target: 6.49
+    zero_score_anchor: 6.36
+    provenance:
+      target_source: frozen_calibration_set
+      decay_source: frozen_calibration_set
+      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
+      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
+      review_status: approved
+      review_date: '2026-07-23'
+      review_owner: benchmark_maintainers
+  rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2:
+    property: caffeine_morgan_tanimoto
+    type: maximize
+    unit: dimensionless
+    full_score_target: 1.0
+    zero_score_anchor: 0.0
+    provenance:
+      target_source: defined_metric_range
+      decay_source: defined_metric_range
+      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
+      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
+      review_status: approved
+      review_date: '2026-07-23'
+      review_owner: benchmark_maintainers
 tasks:
 - task_id: rdkit_qed_max_001
   version: 1
@@ -610,4 +638,151 @@ tasks:
     invalid_smiles: parse_error
     multi_component: validity_error
     outside_domain: domain_error
+  task_type: open_generation
+- task_id: rdkit_sa_logp_target_012
+  version: 1
+  object_type: small_molecule
+  difficulty: expert
+  formal_track: true
+  capability_tags:
+  - open_generation
+  - property_optimization
+  - rdkit_descriptor
+  - hard_property_constraint
+  prompt: |
+    Propose one valid single-component organic molecule and provide it as a SMILES string.
+
+    The molecule must satisfy these requirements:
+    - Allowed elements: H, C, O, N, S, F, Cl.
+    - It must contain at least one carbon atom.
+    - After adding all implicit hydrogens, the total atom count must be at most 40.
+    - Its synthetic accessibility score must be strictly below 5.0.
+    - Subject to those requirements, make logP as close as possible to 3.0.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: <SMILES>
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CCCC'
+  hard_constraints:
+  - property: sa_score
+    verifier_id: rdkit_sa_logp_domain_sa_v1
+    operator: lt
+    threshold: 5.0
+  constraints:
+  - type: target
+    property: logp
+    verifier_id: rdkit_sa_logp_domain_logp_v1
+    role: main
+    scoring_profile: rdkit_logp_target_3p0_3p0_v2
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+    hard_property_failure: hard_constraint_failed
+  task_type: open_generation
+- task_id: rdkit_chain_end_to_end_max_013
+  version: 1
+  object_type: small_molecule
+  difficulty: expert
+  formal_track: true
+  capability_tags:
+  - open_generation
+  - property_optimization
+  - rdkit_forcefield
+  - conformer_ensemble
+  prompt: |
+    Propose one valid single-component neutral molecule and provide it as a SMILES string.
+
+    The molecule must satisfy these requirements:
+    - Allowed elements: H, C, N, O, S, F, Cl.
+    - It must contain exactly six carbon atoms, all forming one continuous non-ring, saturated, single-bonded six-carbon chain.
+    - No other carbon atoms or carbon skeletons are allowed.
+    - After adding all implicit hydrogens, the total atom count must be at most 40.
+    - Maximize the distance between the two terminal carbon nuclei in the lowest-energy conformer found by the fixed conformer workflow.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: <SMILES>
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CCCCCC'
+  constraints:
+  - type: maximize
+    property: chain_end_to_end_distance
+    verifier_id: rdkit_chain_end_to_end_uff_v1
+    role: main
+    scoring_profile: rdkit_chain_end_to_end_maximize_6p36_6p49_v2
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+    backend_failure: verifier_tool_error
+  task_type: open_generation
+- task_id: rdkit_caffeine_similarity_max_014
+  version: 1
+  object_type: small_molecule
+  difficulty: expert
+  formal_track: true
+  capability_tags:
+  - open_generation
+  - molecular_similarity
+  - hard_property_constraint
+  - rdkit_fingerprint
+  prompt: |
+    Propose one valid single-component molecule and provide it as a SMILES string.
+
+    The molecule must satisfy these requirements:
+    - logP must be between -0.5 and 1.5 inclusive.
+    - Synthetic accessibility score must be no greater than 2.79798245679401.
+    - QED must be between 0.65 and 0.75 inclusive.
+    - Subject to those requirements, maximize molecular similarity to caffeine.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: <SMILES>
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: COc1ccc(C(=O)N)cc1'
+  hard_constraints:
+  - property: logp
+    verifier_id: rdkit_caffeine_properties_v1
+    operator: closed_window
+    lower: -0.5
+    upper: 1.5
+  - property: sa_score
+    verifier_id: rdkit_caffeine_properties_v1
+    operator: le
+    threshold: 2.79798245679401
+  - property: qed
+    verifier_id: rdkit_caffeine_properties_v1
+    operator: closed_window
+    lower: 0.65
+    upper: 0.75
+  constraints:
+  - type: maximize
+    property: caffeine_morgan_tanimoto
+    verifier_id: rdkit_caffeine_similarity_v1
+    role: main
+    scoring_profile: rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    hard_property_failure: hard_constraint_failed
   task_type: open_generation

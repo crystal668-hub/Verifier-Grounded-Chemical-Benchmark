@@ -78,7 +78,7 @@ print([track.name for track in suite.tracks()])
 | track | 内容 | 额外环境要求 |
 | --- | --- | --- |
 | `rdkit` | RDKit small-molecule descriptor tasks，输入通常是 SMILES | 无额外命令行工具 |
-| `xtb` | xTB direct-XYZ small-molecule 3D geometry tasks，输入是 XYZ block | 真实评分需要 `xtb` executable |
+| `xtb` | xTB molecular optimization tasks，按题目接受 explicit-H XYZ 或 SMILES | 真实评分需要 `xtb`；构象搜索题还需要 CREST 2.12 |
 | `property_calculation` | 给定完整结构并对照公开 gold 评分的性质计算题 | 无额外命令行工具 |
 
 查看当前可用正式 track：

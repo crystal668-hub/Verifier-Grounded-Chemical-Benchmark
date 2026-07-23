@@ -1,0 +1,6 @@
+name: vgb-crest
+channels:
+  - conda-forge
+dependencies:
+  - crest=2.12
+  - xtb=6.7.1

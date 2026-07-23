@@ -23,6 +23,8 @@ TASK_IDS = {
     "xtb_c10_f2_gap_min_016",
     "xtb_roy_singlepoint_energy_min_017",
     "xtb_ritonavir_optimized_energy_min_018",
+    "xtb_odd_element_counts_gap_max_019",
+    "xtb_pyrene_substituent_energy_min_020",
 }
 
 
@@ -41,13 +43,18 @@ def test_expert_candidate_pack_is_complete_but_not_formal() -> None:
     specs = pack.verifier_specs_by_id
 
     assert set(tasks) == TASK_IDS
-    assert len(specs) == 4
+    assert len(specs) == 6
     for task in tasks.values():
         assert task["formal_track"] is False
-        assert task["object_type"] == "small_molecule_3d"
-        assert task["answer_schema"]["format"] == "final_answer_block"
-        assert task["answer_schema"]["value_type"] == "xyz"
-        assert task["answer_schema"]["fence_language"] == "xyz"
+        if task["task_id"] == "xtb_pyrene_substituent_energy_min_020":
+            assert task["object_type"] == "small_molecule"
+            assert task["answer_schema"]["format"] == "final_answer_line"
+            assert task["answer_schema"]["value_type"] == "smiles"
+        else:
+            assert task["object_type"] == "small_molecule_3d"
+            assert task["answer_schema"]["format"] == "final_answer_block"
+            assert task["answer_schema"]["value_type"] == "xyz"
+            assert task["answer_schema"]["fence_language"] == "xyz"
         assert task["scoring"]["aggregation"] == "geometric_mean"
         assert len(task["constraints"]) == 1
         assert "calibration_pending" not in task["constraints"][0]
@@ -76,6 +83,8 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
             -148.183476873812,
             600,
         ),
+        "xtb_odd_element_counts_gap_max_019": (11.9, 3.6, 300),
+        "xtb_pyrene_substituent_energy_min_020": (-63.56975, -63.5669, 1250),
     }
 
     for task_id, (lower, upper, timeout) in expected.items():
@@ -168,14 +177,19 @@ def test_calibration_answers_and_manifest_cover_valid_conformers_and_controls() 
         task_answers = [answer for answer in answers if answer["task_id"] == task_id]
         roles = {answer["role"] for answer in task_answers}
         assert {"positive_candidate", "negative_baseline"}.issubset(roles)
-        assert sum(answer["role"] == "positive_candidate" for answer in task_answers) >= 2
+        minimum_positives = 1 if task_id.endswith(("_019", "_020")) else 2
+        assert sum(answer["role"] == "positive_candidate" for answer in task_answers) >= minimum_positives
 
     for answer in answers:
         normalized = normalize_answer_record(answer, tasks[answer["task_id"]])
         assert normalized.ok, answer["candidate_id"]
-        xyz = normalized.answer["candidates"][0]["xyz"]
-        properties = inspect_xyz(parse_xyz(xyz))
-        assert properties["atom_count"] == len(xyz.splitlines()) - 2
+        candidate = normalized.answer["candidates"][0]
+        if "xyz" in candidate:
+            xyz = candidate["xyz"]
+            properties = inspect_xyz(parse_xyz(xyz))
+            assert properties["atom_count"] == len(xyz.splitlines()) - 2
+        else:
+            assert candidate.get("smiles")
 
 
 def test_positive_candidate_formulas_and_charge_comments() -> None:
@@ -189,7 +203,11 @@ def test_positive_candidate_formulas_and_charge_comments() -> None:
         if answer["role"] != "positive_candidate":
             continue
         normalized = normalize_answer_record(answer, tasks[answer["task_id"]])
-        molecule = parse_xyz(normalized.answer["candidates"][0]["xyz"])
+        candidate = normalized.answer["candidates"][0]
+        if "xyz" not in candidate:
+            assert candidate.get("smiles")
+            continue
+        molecule = parse_xyz(candidate["xyz"])
         properties = inspect_xyz(molecule)
         expected_formula = expected_formulas.get(answer["task_id"])
         if expected_formula:

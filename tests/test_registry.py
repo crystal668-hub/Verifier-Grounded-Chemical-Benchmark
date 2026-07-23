@@ -64,13 +64,13 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     assert tracks[1] == TrackDefinition(
         name="xtb",
             version="0.3.0",
-        display_name="xTB direct-XYZ small-molecule tasks",
+        display_name="xTB molecular optimization tasks",
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         sample_answers_path="sample_answers.jsonl",
         status="formal",
-        tags=("small_molecule_3d", "xtb", "xyz"),
-        requirements=("xtb executable for real scoring",),
+        tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
+        requirements=("xTB executable; CREST 2.12 for conformer-search tasks",),
         resource_pack="xtb",
     )
     assert tracks[2] == TrackDefinition(

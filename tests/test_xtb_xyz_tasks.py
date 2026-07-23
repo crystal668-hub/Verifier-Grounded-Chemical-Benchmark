@@ -44,8 +44,25 @@ EXPERT_TASK_IDS = {
     "xtb_c10_f2_gap_min_016",
     "xtb_roy_singlepoint_energy_min_017",
     "xtb_ritonavir_optimized_energy_min_018",
+    "xtb_odd_element_counts_gap_max_019",
+    "xtb_pyrene_substituent_energy_min_020",
+}
+CALIBRATED_EXPERT_TASK_IDS = {
+    "xtb_formula_dipole_min_014",
+    "xtb_two_fluorine_gap_min_015",
+    "xtb_c10_f2_gap_min_016",
+    "xtb_roy_singlepoint_energy_min_017",
+    "xtb_ritonavir_optimized_energy_min_018",
 }
 EXPERT_VERIFIER_IDS = {
+    "xtb_dipole_doublet_gfn2_v1",
+    "xtb_gap_charged_closed_shell_gfn2_v1",
+    "xtb_total_energy_roy_singlepoint_gfn2_v1",
+    "xtb_total_energy_ritonavir_optimized_gfn2_v1",
+    "xtb_odd_element_gap_dipole_gfn2_v1",
+    "xtb_pyrene_crest_energy_v1",
+}
+CALIBRATED_EXPERT_VERIFIER_IDS = {
     "xtb_dipole_doublet_gfn2_v1",
     "xtb_gap_charged_closed_shell_gfn2_v1",
     "xtb_total_energy_roy_singlepoint_gfn2_v1",
@@ -96,12 +113,17 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert specs["xtb_hessian_thermo_gfn2_v1"]["additional_property_names"] == ["imaginary_frequency_count"]
 
     for task_id, task in tasks.items():
-        assert task["answer_schema"]["format"] == "final_answer_block"
-        assert task["answer_schema"]["value_type"] == "xyz"
-        assert task["answer_schema"]["fence_language"] == "xyz"
         assert task["formal_track"] is True
-        assert "small_molecule_3d" == task["object_type"]
         assert task["scoring"]["aggregation"] == "geometric_mean"
+        if task_id == "xtb_pyrene_substituent_energy_min_020":
+            assert task["answer_schema"]["format"] == "final_answer_line"
+            assert task["answer_schema"]["value_type"] == "smiles"
+            assert task["object_type"] == "small_molecule"
+        else:
+            assert task["answer_schema"]["format"] == "final_answer_block"
+            assert task["answer_schema"]["value_type"] == "xyz"
+            assert task["answer_schema"]["fence_language"] == "xyz"
+            assert task["object_type"] == "small_molecule_3d"
         quality_constraints = [constraint for constraint in task["constraints"] if constraint.get("role") == "quality_gate"]
         if task_id in LEGACY_TASK_IDS:
             assert len(quality_constraints) == 1
@@ -261,7 +283,7 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
     calibration_tasks = calibration_pack.tasks_by_id
     calibration_specs = calibration_pack.verifier_specs_by_id
 
-    for task_id in EXPERT_TASK_IDS:
+    for task_id in CALIBRATED_EXPERT_TASK_IDS:
         formal = tasks[task_id]
         calibrated = calibration_tasks[task_id]
         assert formal["formal_track"] is True
@@ -285,7 +307,7 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
             for key in ("format", "final_answer_prefix", "value_type", "fence_language", "cardinality")
         } == calibrated["answer_schema"]
 
-    for verifier_id in EXPERT_VERIFIER_IDS:
+    for verifier_id in CALIBRATED_EXPERT_VERIFIER_IDS:
         formal = specs[verifier_id]
         calibrated = calibration_specs[verifier_id]
         assert formal["formal_track"] is True
@@ -346,7 +368,7 @@ def test_formal_expert_tasks_keep_only_source_constraints() -> None:
     assert specs[ritonavir["constraints"][0]["verifier_id"]]["backend"]["calculation_mode"] == "optimized"
 
 
-def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
+def test_xtb_prompts_expose_domain_without_verifier_internals() -> None:
     tasks = load_xtb_pack().tasks_by_id
 
     required = [
@@ -380,12 +402,15 @@ def test_xtb_xyz_prompts_expose_domain_without_verifier_internals() -> None:
                 assert phrase in prompt
         else:
             assert "FINAL ANSWER:" in prompt
-            assert "```xyz" in prompt
+            if task["answer_schema"]["value_type"] == "xyz":
+                assert "```xyz" in prompt
+            else:
+                assert "<SMILES>" in prompt
         for phrase in forbidden:
             assert phrase not in prompt
 
 
-def test_xtb_xyz_sample_answers_use_fenced_xyz() -> None:
+def test_xtb_sample_answers_follow_each_task_schema() -> None:
     tasks = load_xtb_pack().tasks_by_id
     answers = load_answers_jsonl(ANSWERS_RESOURCE)
 
@@ -396,15 +421,18 @@ def test_xtb_xyz_sample_answers_use_fenced_xyz() -> None:
         assert normalized.ok
         assert normalized.answer is not None
         candidate = normalized.answer["candidates"][0]
-        assert "xyz" in candidate
-        lines = candidate["xyz"].splitlines()
-        assert int(lines[0]) == len(lines) - 2
+        if tasks[answer["task_id"]]["answer_schema"]["value_type"] == "xyz":
+            assert "xyz" in candidate
+            lines = candidate["xyz"].splitlines()
+            assert int(lines[0]) == len(lines) - 2
+        else:
+            assert candidate.get("smiles")
 
 
 def test_xtb_verifier_specs_are_yaml_loadable() -> None:
     payload = yaml.safe_load(SPECS_RESOURCE.read_text(encoding="utf-8"))
 
-    assert len(payload["verifiers"]) == 13
+    assert len(payload["verifiers"]) == 15
     assert payload["verifiers"][0]["domain"]["allowed_elements"] == ["H", "C", "N", "O", "F", "P", "S", "Cl", "Br"]
     relaxation = next(item for item in payload["verifiers"] if item["verifier_id"] == "xtb_relaxation_energy_gfn2_v1")
     assert relaxation["property"]["role"] == "geometry_quality_gate"

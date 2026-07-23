@@ -23,6 +23,9 @@ EXPECTED_TASK_IDS = {
         "rdkit_logp_tpsa_009",
         "rdkit_hba_hbd_010",
         "rdkit_logp_target_011",
+        "rdkit_sa_logp_target_012",
+        "rdkit_chain_end_to_end_max_013",
+        "rdkit_caffeine_similarity_max_014",
     ],
     "xtb": [
         "xtb_gap_window_001",
@@ -43,6 +46,8 @@ EXPECTED_TASK_IDS = {
         "xtb_c10_f2_gap_min_016",
         "xtb_roy_singlepoint_energy_min_017",
         "xtb_ritonavir_optimized_energy_min_018",
+        "xtb_odd_element_counts_gap_max_019",
+        "xtb_pyrene_substituent_energy_min_020",
     ],
     "property_calculation": [
         "property_calc_free_energy_001",

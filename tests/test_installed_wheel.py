@@ -146,12 +146,14 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         env=env,
     )
     xtb_payload = json.loads(xtb_completed.stdout)
-    assert len(xtb_payload["task_ids"]) == 18
-    assert xtb_payload["num_specs"] == 13
+    assert len(xtb_payload["task_ids"]) == 20
+    assert xtb_payload["num_specs"] == 15
     assert {
         "xtb_formula_dipole_min_014",
         "xtb_two_fluorine_gap_min_015",
         "xtb_c10_f2_gap_min_016",
         "xtb_roy_singlepoint_energy_min_017",
         "xtb_ritonavir_optimized_energy_min_018",
+        "xtb_odd_element_counts_gap_max_019",
+        "xtb_pyrene_substituent_energy_min_020",
     }.issubset(xtb_payload["task_ids"])

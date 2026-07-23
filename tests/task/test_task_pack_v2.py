@@ -18,23 +18,22 @@ def _load(pack: str):
     )
 
 
-def test_four_top_level_packs_cover_exactly_33_unique_tasks() -> None:
+def test_formal_packs_cover_exactly_36_unique_tasks() -> None:
     packs = [
         _load("rdkit"),
         _load("xtb"),
         _load("property_calculation"),
-        _load("experimental/rdkit_forcefield"),
     ]
     task_ids = [task.task_id for pack in packs for task in pack.tasks]
 
-    assert len(task_ids) == 33
-    assert len(set(task_ids)) == 33
+    assert len(task_ids) == 36
+    assert len(set(task_ids)) == 36
     assert all(pack.schema_version == 2 for pack in packs)
     assert all(pack.scoring_version == "linear_goal_v2" for pack in packs)
 
 
 def test_all_numeric_constraints_normalize_to_linear_goal() -> None:
-    for pack_name in ("rdkit", "xtb", "experimental/rdkit_forcefield"):
+    for pack_name in ("rdkit", "xtb"):
         pack = _load(pack_name)
         for task in pack.tasks:
             for constraint in task.raw["constraints"]:
@@ -135,14 +134,6 @@ def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
         assert provenance["evidence_id"] == "xtb-total-energy-dossier-2026-07-21"
 
 
-def test_forcefield_window_uses_one_target_window_decay_width() -> None:
-    pack = _load("experimental/rdkit_forcefield")
-    profile = pack.scoring_profiles[
-        "rdkit_forcefield_energy_range_kcal_mol_window_0p0_20p0_20p0_v2"
-    ]
-    assert profile["decay"] == {"lower_width": None, "upper_width": 20.0}
-
-
 def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> None:
     task_resource = package_resource("rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
@@ -182,7 +173,7 @@ def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
 
 
 def test_public_tracks_use_validated_v2_package_resources() -> None:
-    assert len(vgb.load_track("rdkit").tasks()) == 11
+    assert len(vgb.load_track("rdkit").tasks()) == 14
     assert vgb.load_track("rdkit")._task_pack.schema_version == 2
 
 

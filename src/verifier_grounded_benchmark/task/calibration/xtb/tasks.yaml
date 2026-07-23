@@ -61,6 +61,34 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
+  xtb_odd_element_gap_maximize_3p6_11p9_v2:
+    property: homo_lumo_gap
+    type: maximize
+    unit: eV
+    full_score_target: 11.9
+    zero_score_anchor: 3.6
+    provenance:
+      target_source: frozen_calibration_set
+      decay_source: frozen_calibration_set
+      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
+      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
+      review_status: approved
+      review_date: '2026-07-23'
+      review_owner: benchmark_maintainers
+  xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2:
+    property: total_energy
+    type: minimize
+    unit: hartree
+    full_score_target: -63.56975
+    zero_score_anchor: -63.5669
+    provenance:
+      target_source: frozen_calibration_set
+      decay_source: frozen_calibration_set
+      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
+      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
+      review_status: approved
+      review_date: '2026-07-23'
+      review_owner: benchmark_maintainers
 tasks:
 - task_id: xtb_formula_dipole_min_014
   version: 1
@@ -360,6 +388,114 @@ tasks:
     atom_overlap: validity_error
     outside_domain: domain_error
     missing_xtb: verifier_environment_error
+    backend_failure: verifier_tool_error
+    timeout: verifier_timeout
+  task_type: open_generation
+- task_id: xtb_odd_element_counts_gap_max_019
+  version: 1
+  object_type: small_molecule_3d
+  difficulty: expert
+  formal_track: false
+  capability_tags:
+  - open_generation
+  - property_optimization
+  - three_dimensional_geometry
+  - hard_property_constraint
+  prompt: |
+    Propose one neutral closed-shell singlet organic molecule as an XYZ geometry with all hydrogens explicit.
+
+    The molecule must satisfy these requirements:
+    - It must be exactly one connected molecule with at most 40 total atoms.
+    - Allowed elements: H, C, O, N, S, F, Cl.
+    - It must contain at least one carbon atom and at least seven heavy atoms.
+    - At least three different non-hydrogen elements must occur.
+    - Every non-hydrogen element that occurs must have an odd atom count.
+    - Its optimized dipole magnitude must be strictly below 2.0 debye.
+    - Subject to those requirements, maximize its optimized orbital-energy HOMO-LUMO gap.
+
+    Your final answer must appear exactly in this format:
+    FINAL ANSWER:
+    ```xyz
+    <XYZ content>
+    ```
+  answer_schema:
+    format: final_answer_block
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: xyz
+    fence_language: xyz
+    cardinality: one
+  hard_constraints:
+  - property: dipole_moment
+    verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
+    operator: lt
+    threshold: 2.0
+  constraints:
+  - type: maximize
+    property: homo_lumo_gap
+    verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
+    role: main
+    scoring_profile: xtb_odd_element_gap_maximize_3p6_11p9_v2
+  structural_domain:
+    allowed_elements: [H, C, O, N, S, F, Cl]
+    atom_count: [1, 40]
+    heavy_atom_count: [7, 40]
+    carbon_count_min: 1
+    heavy_element_diversity_min: 3
+    element_count_parity:
+      parity: odd
+      exclude_elements: [H]
+    inferred_components: 1
+    all_hydrogens_explicit: true
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_xyz: parse_error
+    disconnected_geometry: validity_error
+    outside_domain: domain_error
+    hard_property_failure: hard_constraint_failed
+    missing_xtb: verifier_environment_error
+    backend_failure: verifier_tool_error
+    timeout: verifier_timeout
+  task_type: open_generation
+- task_id: xtb_pyrene_substituent_energy_min_020
+  version: 1
+  object_type: small_molecule
+  difficulty: expert
+  formal_track: false
+  capability_tags:
+  - open_generation
+  - conformer_search
+  - molecular_identity
+  - total_energy
+  prompt: |
+    Starting from the pyrene framework c1cc2ccc3cccc4ccc(c1)c2c34, propose one neutral molecule with exactly three substitutions at distinct original carbon-hydrogen sites: one nitro group, one amino group, and one carboxyl group.
+
+    The 16-carbon pyrene framework, its bond pattern, and its ring system must remain unchanged, and no other substituents are allowed. Minimize the total electronic energy of the lowest conformer found by the fixed search protocol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: <SMILES>
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+  constraints:
+  - type: minimize
+    property: total_energy
+    verifier_id: xtb_pyrene_crest_energy_v1
+    role: main
+    scoring_profile: xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    identity_mismatch: identity_error
+    structure_change: structure_identity_error
+    missing_crest_or_xtb: verifier_environment_error
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation

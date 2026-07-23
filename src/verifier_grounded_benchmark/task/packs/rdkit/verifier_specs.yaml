@@ -198,3 +198,113 @@ verifiers:
     type: python_module
     module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_fraction_csp3
     timeout_seconds: 60
+- verifier_id: rdkit_sa_logp_domain_sa_v1
+  name: RDKit Expert SA Hard-Gate Verifier
+  version: 1
+  formal_track: true
+  verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
+  descriptor: sa_score
+  resources: *id001
+  backend: *id002
+  package_versions: *id003
+  report_domain_properties: true
+  domain: &expert_sa_logp_domain
+    allowed_elements: [H, C, O, N, S, F, Cl]
+    atom_count: [1, 40]
+    element_count_min: {C: 1}
+  property:
+    source: rdkit.Contrib.SA_Score.sascorer.calculateScore
+  executor:
+    type: python_module
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_sa_score
+    timeout_seconds: 60
+- verifier_id: rdkit_sa_logp_domain_logp_v1
+  name: RDKit Expert logP Target Verifier
+  version: 1
+  formal_track: true
+  verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
+  descriptor: logp
+  resources: *id001
+  backend: *id002
+  package_versions: *id003
+  report_domain_properties: true
+  domain: *expert_sa_logp_domain
+  property:
+    source: rdkit.Chem.Crippen.MolLogP
+  executor:
+    type: python_module
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_logp
+    timeout_seconds: 60
+- verifier_id: rdkit_chain_end_to_end_uff_v1
+  name: RDKit ETKDGv3 UFF Six-Carbon Chain Distance Verifier
+  version: 1
+  formal_track: true
+  verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
+  property_name: chain_end_to_end_distance
+  resources: *id001
+  backend:
+    type: rdkit_forcefield
+    embedder: ETKDGv3
+    random_seed: 61453
+    num_conformers: 20
+    prune_rms_thresh: 0.5
+    forcefield: UFF
+    max_iters: 200
+  package_versions: *id003
+  domain:
+    allowed_elements: [H, C, N, O, S, F, Cl]
+    formal_charge: [0, 0]
+    atom_count_including_h: [1, 40]
+    carbon_count: [6, 6]
+    chain_smarts: '[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]'
+  property:
+    source: lowest converged UFF conformer terminal-carbon Euclidean distance
+    units: angstrom
+  executor:
+    type: python_module
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.rdkit_chain_distance
+    timeout_seconds: 120
+- verifier_id: rdkit_caffeine_properties_v1
+  name: RDKit Caffeine Task Hard-Property Verifier
+  version: 1
+  formal_track: true
+  verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
+  descriptor: logp
+  descriptors: [logp, sa_score, qed]
+  resources: *id001
+  backend: *id002
+  package_versions: *id003
+  domain: {}
+  reference: &caffeine_reference
+    input_smiles: Cn1c(=O)c2c(ncn2C)n(C)c1=O
+    canonical_smiles: Cn1c(=O)c2c(ncn2C)n(C)c1=O
+    formula: C8H10N4O2
+    sa_score: 2.29798245679401
+    sa_tolerance: 1.0e-12
+  executor:
+    type: python_module
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_caffeine_properties
+    timeout_seconds: 60
+- verifier_id: rdkit_caffeine_similarity_v1
+  name: RDKit Caffeine Morgan Tanimoto Verifier
+  version: 1
+  formal_track: true
+  verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
+  descriptor: caffeine_morgan_tanimoto
+  resources: *id001
+  backend: *id002
+  package_versions: *id003
+  domain: {}
+  reference: *caffeine_reference
+  fingerprint:
+    generator: Morgan
+    radius: 2
+    fp_size: 2048
+    include_chirality: false
+    use_bond_types: true
+    fingerprint_type: bit_vector
+    similarity: Tanimoto
+  executor:
+    type: python_module
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_caffeine_similarity
+    timeout_seconds: 60

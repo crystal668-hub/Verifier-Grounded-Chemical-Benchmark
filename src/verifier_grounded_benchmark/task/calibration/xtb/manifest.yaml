@@ -92,3 +92,23 @@ candidates:
     task_id: xtb_ritonavir_optimized_energy_min_018
     role: negative_baseline
     source: wrong identity
+  task019_methoxy_fluoropentane:
+    task_id: xtb_odd_element_counts_gap_max_019
+    role: positive_candidate
+    source: frozen ETKDGv3/xTB calibration candidate COC(F)CCC
+    formula: C5H11FO
+  task019_negative_methane:
+    task_id: xtb_odd_element_counts_gap_max_019
+    role: negative_baseline
+    source: insufficient heavy atoms and heavy-element diversity
+    formula: CH4
+  task020_adjacent_pyrene_substituents:
+    task_id: xtb_pyrene_substituent_energy_min_020
+    role: positive_candidate
+    source: frozen adjacent-site CREST 2.12 calibration candidate
+    formula: C17H10N2O4
+  task020_negative_unsubstituted_pyrene:
+    task_id: xtb_pyrene_substituent_energy_min_020
+    role: negative_baseline
+    source: missing nitro, amino, and carboxyl substitutions
+    formula: C16H10

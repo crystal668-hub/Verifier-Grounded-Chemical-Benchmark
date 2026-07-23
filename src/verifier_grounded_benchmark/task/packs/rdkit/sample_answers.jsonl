@@ -9,3 +9,6 @@
 {"task_id":"rdkit_logp_tpsa_009","candidates":[{"smiles":"CC(C)Cc1ccc(cc1)[C@@H](C)C(=O)O"}]}
 {"task_id":"rdkit_hba_hbd_010","candidates":[{"smiles":"CC(=O)Oc1ccccc1C(=O)O"}]}
 {"task_id":"rdkit_logp_target_011","candidates":[{"smiles":"Cc1cc(Cl)c(Cl)cc1C(=O)O"}]}
+{"task_id":"rdkit_sa_logp_target_012","candidates":[{"smiles":"CCCC"}]}
+{"task_id":"rdkit_chain_end_to_end_max_013","candidates":[{"smiles":"CCCCCC"}]}
+{"task_id":"rdkit_caffeine_similarity_max_014","candidates":[{"smiles":"COc1ccc(C(=O)N)cc1"}]}

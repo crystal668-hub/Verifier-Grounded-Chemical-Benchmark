@@ -1,2 +1,0 @@
-{"task_id": "rdkit_forcefield_energy_range_window_001", "candidates": [{"smiles": "CCOc1ccc(NC(=O)C)cc1"}]}
-{"task_id": "rdkit_forcefield_convergence_max_002", "candidates": [{"smiles": "CC(=O)Oc1ccccc1C(=O)O"}]}

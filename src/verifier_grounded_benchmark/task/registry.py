@@ -83,11 +83,11 @@ def builtin_definitions() -> list[TrackDefinition]:
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
-            name="xtb", version="0.3.0", display_name="xTB direct-XYZ small-molecule tasks",
+            name="xtb", version="0.3.0", display_name="xTB molecular optimization tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             sample_answers_path="sample_answers.jsonl",
-            tags=("small_molecule_3d", "xtb", "xyz"),
-            requirements=("xtb executable for real scoring",), resource_pack="xtb",
+            tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
+            requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="xtb",
         ),
         TrackDefinition(
             name="property_calculation", version="0.3.0", display_name="Fixed-input property calculation tasks",
