@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 from rdkit import Chem
+from rdkit.Chem import rdDetermineBonds
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
@@ -213,6 +214,15 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
         return f"hetero_atom_count below minimum {domain['hetero_atom_count_min']}"
     if "heavy_element_diversity_min" in domain and properties["heavy_element_diversity"] < int(domain["heavy_element_diversity_min"]):
         return f"heavy_element_diversity below minimum {domain['heavy_element_diversity_min']}"
+    parity = domain.get("element_count_parity")
+    if parity is not None:
+        if not isinstance(parity, dict) or parity.get("parity") not in {"odd", "even"}:
+            return "element_count_parity must specify odd or even parity"
+        excluded = set(parity.get("exclude_elements", []))
+        remainder = 1 if parity["parity"] == "odd" else 0
+        for element, count in properties["element_counts"].items():
+            if element not in excluded and count % 2 != remainder:
+                return f"{element} count must be {parity['parity']}"
     if properties["formula"] in set(domain.get("formula_denylist", [])):
         return f"formula is denied: {properties['formula']}"
     max_coordinate = domain.get("max_absolute_coordinate")
@@ -233,6 +243,30 @@ def check_domain(molecule: XYZMolecule, properties: dict[str, Any], domain: dict
 
     if int(domain.get("inferred_components", 1)) == 1 and component_count(molecule) != 1:
         return "disconnected geometry is not accepted"
+    if domain.get("all_hydrogens_explicit"):
+        explicit_error = check_all_hydrogens_explicit(molecule)
+        if explicit_error:
+            return explicit_error
+    return None
+
+
+def check_all_hydrogens_explicit(molecule: XYZMolecule) -> str | None:
+    xyz_lines = [str(len(molecule.atoms)), "explicit hydrogen check"]
+    xyz_lines.extend(
+        f"{atom.symbol} {atom.x:.12f} {atom.y:.12f} {atom.z:.12f}"
+        for atom in molecule.atoms
+    )
+    mol = Chem.MolFromXYZBlock("\n".join(xyz_lines) + "\n")
+    if mol is None:
+        return "could not reconstruct XYZ for explicit hydrogen check"
+    try:
+        rdDetermineBonds.DetermineBonds(mol, charge=0)
+        Chem.SanitizeMol(mol)
+        with_hydrogens = Chem.AddHs(mol)
+    except Exception as exc:
+        return f"could not validate explicit hydrogens: {exc}"
+    if with_hydrogens.GetNumAtoms() != mol.GetNumAtoms():
+        return "all hydrogens must be explicit"
     return None
 
 
@@ -517,6 +551,26 @@ def run_property_calculation(
     timeout_seconds: float,
     spec: dict[str, Any],
 ) -> dict[str, float | str]:
+    joint_properties = list((spec.get("backend") or {}).get("joint_properties") or [])
+    if joint_properties:
+        if set(joint_properties) != {"dipole_moment", "homo_lumo_gap"}:
+            raise XTBSpecError("unsupported joint xTB property set")
+        optimized = parse_xtb_output(
+            runner.run("optimize", xyz_path, timeout_seconds, spec=spec).stdout,
+            require_converged=True,
+        )
+        missing = [name for name in joint_properties if name not in optimized]
+        if missing:
+            raise XTBToolError(
+                f"xTB output missing joint properties: {', '.join(missing)}"
+            )
+        return {
+            "dipole_moment": optimized["dipole_moment"],
+            "dipole_moment_unit": "debye",
+            "homo_lumo_gap": optimized["homo_lumo_gap"],
+            "homo_lumo_gap_unit": "eV",
+            "optimization_converged": 1,
+        }
     if property_name == "total_energy":
         calculation_mode = (spec.get("backend") or {}).get("calculation_mode")
         if calculation_mode == "submitted_singlepoint":

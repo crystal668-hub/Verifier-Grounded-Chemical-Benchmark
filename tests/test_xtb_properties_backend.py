@@ -949,3 +949,66 @@ def test_xtb_runner_builds_property_and_solvation_commands(monkeypatch: pytest.M
         ["/usr/bin/xtb", str(xyz_path), "--gfn", "2", "--chrg", "0", "--uhf", "0", "--alpb", "water"],
         ["/usr/bin/xtb", str(xyz_path), "--gfn", "2", "--chrg", "0", "--uhf", "0", "--ohess"],
     ]
+
+
+@pytest.mark.parametrize(
+    ("xyz", "expected"),
+    [
+        (METHANE_XYZ, None),
+        ("1\noxygen only\nO 0 0 0\n", "all hydrogens must be explicit"),
+    ],
+)
+def test_all_hydrogens_explicit_domain(xyz: str, expected: str | None) -> None:
+    molecule = xtb_properties.parse_xyz(xyz)
+    properties = xtb_properties.inspect_xyz(molecule)
+
+    error = xtb_properties.check_domain(
+        molecule, properties, {"all_hydrogens_explicit": True}
+    )
+
+    assert error == expected
+
+
+def test_element_count_parity_checks_present_non_hydrogen_elements_only() -> None:
+    molecule = xtb_properties.parse_xyz(
+        "10\nodd heavy elements\n"
+        "C 0 0 0\nC 1 0 0\nC 2 0 0\n"
+        "N 3 0 0\nO 4 0 0\n"
+        "H 0 1 0\nH 1 1 0\nH 2 1 0\nH 3 1 0\nH 4 1 0\n"
+    )
+    properties = xtb_properties.inspect_xyz(molecule)
+    domain = {
+        "element_count_parity": {
+            "parity": "odd",
+            "exclude_elements": ["H"],
+        }
+    }
+
+    assert xtb_properties.check_domain(molecule, properties, domain) is None
+
+    properties["element_counts"]["O"] = 2
+    assert xtb_properties.check_domain(molecule, properties, domain) == "O count must be odd"
+
+
+def test_joint_dipole_gap_calculation_runs_one_optimization(tmp_path: Path) -> None:
+    xyz_path = tmp_path / "candidate.xyz"
+    xyz_path.write_text(METHANE_XYZ)
+    runner = FakeRunner()
+    spec = {
+        "backend": {
+            "joint_properties": ["dipole_moment", "homo_lumo_gap"]
+        }
+    }
+
+    properties = xtb_properties.run_property_calculation(
+        "dipole_moment", runner, xyz_path, 30.0, spec
+    )
+
+    assert [call[0] for call in runner.calls] == ["optimize"]
+    assert properties == {
+        "dipole_moment": 1.85,
+        "dipole_moment_unit": "debye",
+        "homo_lumo_gap": 6.5,
+        "homo_lumo_gap_unit": "eV",
+        "optimization_converged": 1,
+    }
