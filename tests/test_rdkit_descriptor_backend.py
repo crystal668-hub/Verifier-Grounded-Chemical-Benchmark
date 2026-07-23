@@ -171,3 +171,156 @@ def test_sa_score_import_failure_only_affects_sa_score(monkeypatch: pytest.Monke
     assert sa_result["outcome"] != "verified"
     assert sa_result["failure_type"] == "verifier_environment_error"
     assert "RDKit SA_Score scorer unavailable" in sa_result["message"]
+
+
+def test_expert_sa_logp_domain_requires_carbon_but_not_oxygen() -> None:
+    domain = {
+        "allowed_elements": ["H", "C", "O", "N", "S", "F", "Cl"],
+        "atom_count": [1, 40],
+        "element_count_min": {"C": 1},
+    }
+    sa_result = evaluate_descriptor_constraint(
+        {"smiles": "CCCC"},
+        {"task_id": "rdkit_sa_logp_target_012"},
+        {"property": "sa_score"},
+        {
+            **SPEC,
+            "descriptor": "sa_score",
+            "domain": domain,
+            "report_domain_properties": True,
+        },
+    )
+    no_carbon_result = evaluate_descriptor_constraint(
+        {"smiles": "O"},
+        {"task_id": "rdkit_sa_logp_target_012"},
+        {"property": "sa_score"},
+        {**SPEC, "descriptor": "sa_score", "domain": domain},
+    )
+
+    assert sa_result["outcome"] == "verified"
+    assert sa_result["properties"]["atom_count"] == 14
+    assert sa_result["properties"]["element_counts"] == {"C": 4, "H": 10}
+    assert no_carbon_result["failure_type"] == "domain_error"
+
+
+def test_caffeine_hard_property_verifier_reports_frozen_reference_sa() -> None:
+    spec = {
+        **SPEC,
+        "verifier_id": "rdkit_caffeine_properties_v1",
+        "descriptor": "logp",
+        "descriptors": ["logp", "sa_score", "qed"],
+        "domain": {},
+        "reference": {
+            "canonical_smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+            "sa_score": 2.29798245679401,
+            "sa_tolerance": 1e-12,
+        },
+    }
+
+    result = evaluate_descriptor_constraint(
+        {"smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O"},
+        {"task_id": "rdkit_caffeine_similarity_max_014"},
+        {"property": "logp"},
+        spec,
+    )
+
+    assert result["outcome"] == "verified"
+    assert result["properties"] == {
+        "logp": pytest.approx(-1.0293),
+        "sa_score": pytest.approx(2.29798245679401),
+        "qed": pytest.approx(0.5384628262372215),
+        "reference_sa_score": pytest.approx(2.29798245679401),
+    }
+
+
+def test_caffeine_reference_sa_mismatch_is_task_failure() -> None:
+    spec = {
+        **SPEC,
+        "descriptor": "logp",
+        "descriptors": ["logp", "sa_score", "qed"],
+        "domain": {},
+        "reference": {
+            "canonical_smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O",
+            "sa_score": 2.0,
+            "sa_tolerance": 1e-12,
+        },
+    }
+
+    result = evaluate_descriptor_constraint(
+        {"smiles": "CCO"},
+        {"task_id": "rdkit_caffeine_similarity_max_014"},
+        {"property": "logp"},
+        spec,
+    )
+
+    assert result["outcome"] == "evaluation_failed"
+    assert result["failure_scope"] == "task"
+    assert result["failure_type"] == "verifier_spec_error"
+
+
+def test_caffeine_morgan_similarity_uses_frozen_fingerprint() -> None:
+    reference = "Cn1c(=O)c2c(ncn2C)n(C)c1=O"
+    spec = {
+        **SPEC,
+        "descriptor": "caffeine_morgan_tanimoto",
+        "domain": {},
+        "reference": {"canonical_smiles": reference},
+        "fingerprint": {
+            "generator": "Morgan",
+            "radius": 2,
+            "fp_size": 2048,
+            "include_chirality": False,
+            "use_bond_types": True,
+            "fingerprint_type": "bit_vector",
+            "similarity": "Tanimoto",
+        },
+    }
+
+    first = evaluate_descriptor_constraint(
+        {"smiles": reference},
+        {"task_id": "rdkit_caffeine_similarity_max_014"},
+        {"property": "caffeine_morgan_tanimoto"},
+        spec,
+    )
+    equivalent = evaluate_descriptor_constraint(
+        {"smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O"},
+        {"task_id": "rdkit_caffeine_similarity_max_014"},
+        {"property": "caffeine_morgan_tanimoto"},
+        spec,
+    )
+
+    assert first["properties"] == {
+        "caffeine_morgan_tanimoto": 1.0,
+        "fingerprint_radius": 2,
+        "fingerprint_size": 2048,
+    }
+    assert equivalent["properties"] == first["properties"]
+
+
+def test_caffeine_fingerprint_parameter_change_is_task_failure() -> None:
+    spec = {
+        **SPEC,
+        "descriptor": "caffeine_morgan_tanimoto",
+        "domain": {},
+        "reference": {
+            "canonical_smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O"
+        },
+        "fingerprint": {
+            "generator": "Morgan",
+            "radius": 3,
+            "fp_size": 2048,
+            "include_chirality": False,
+            "use_bond_types": True,
+            "fingerprint_type": "bit_vector",
+            "similarity": "Tanimoto",
+        },
+    }
+
+    result = evaluate_descriptor_constraint(
+        {"smiles": "CCO"},
+        {"task_id": "rdkit_caffeine_similarity_max_014"},
+        {"property": "caffeine_morgan_tanimoto"},
+        spec,
+    )
+
+    assert result["failure_type"] == "verifier_spec_error"

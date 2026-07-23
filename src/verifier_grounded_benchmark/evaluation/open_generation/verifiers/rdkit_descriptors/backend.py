@@ -6,8 +6,8 @@ import importlib
 import importlib.metadata as metadata
 from typing import Any
 
-from rdkit import Chem
-from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
+from rdkit import Chem, DataStructs
+from rdkit.Chem import Crippen, Descriptors, QED, rdFingerprintGenerator, rdMolDescriptors
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
@@ -31,6 +31,10 @@ class SAScorerUnavailable(RuntimeError):
     """Raised when the optional RDKit Contrib SA_Score scorer is unavailable."""
 
 
+class VerifierSpecMismatch(RuntimeError):
+    """Raised when a frozen RDKit protocol does not match its audit values."""
+
+
 def evaluate_descriptor_constraint(
     candidate: dict[str, Any],
     task: dict[str, Any],
@@ -39,12 +43,13 @@ def evaluate_descriptor_constraint(
 ) -> dict[str, Any]:
     task_id = task["task_id"]
     result = base_result(task_id, spec.get("verifier_id"), rdkit_versions(spec))
-    descriptor = spec.get("descriptor")
-    if descriptor != constraint.get("property"):
+    descriptors = spec.get("descriptors") or [spec.get("descriptor")]
+    descriptor = constraint.get("property")
+    if descriptor not in descriptors:
         return error_result(
             result,
             "verifier_spec_error",
-            f"verifier descriptor {descriptor!r} does not match constraint property {constraint.get('property')!r}",
+            f"verifier descriptors {descriptors!r} do not include constraint property {descriptor!r}",
         )
 
     smiles = candidate.get("smiles")
@@ -74,12 +79,18 @@ def evaluate_descriptor_constraint(
         return error_result(result, "domain_error", domain_error, properties=properties)
 
     try:
-        descriptor_properties = {descriptor: compute_descriptor(mol, descriptor)}
+        descriptor_properties = {
+            name: compute_descriptor(mol, name, spec) for name in descriptors
+        }
+        descriptor_properties.update(reference_properties(spec))
+        descriptor_properties.update(protocol_properties(spec))
     except SAScorerUnavailable as exc:
         return error_result(result, "verifier_environment_error", str(exc), properties=properties)
+    except VerifierSpecMismatch as exc:
+        return error_result(result, "verifier_spec_error", str(exc), properties=properties)
 
     reported_properties: dict[str, Any] = dict(descriptor_properties)
-    if "atom_count" in domain or "element_fraction_min" in domain:
+    if spec.get("report_domain_properties") or "atom_count" in domain or "element_fraction_min" in domain:
         reported_properties.update(
             {
                 "atom_count": properties["atom_count"],
@@ -95,14 +106,78 @@ def evaluate_descriptor_constraint(
     )
 
 
-def compute_descriptor(mol: Chem.Mol, descriptor: str) -> float | int:
+def compute_descriptor(
+    mol: Chem.Mol, descriptor: str, spec: dict[str, Any] | None = None
+) -> float | int:
     if descriptor == "sa_score":
         return compute_sa_score(mol)
+    if descriptor == "caffeine_morgan_tanimoto":
+        return compute_reference_similarity(mol, spec or {})
     try:
         function = DESCRIPTOR_FUNCTIONS[descriptor]
     except KeyError as exc:
         raise ValueError(f"unsupported descriptor: {descriptor}") from exc
     return function(mol)
+
+
+def reference_properties(spec: dict[str, Any]) -> dict[str, float]:
+    reference = spec.get("reference")
+    if not isinstance(reference, dict) or "sa_score" not in reference:
+        return {}
+    mol = Chem.MolFromSmiles(str(reference.get("canonical_smiles")), sanitize=True)
+    if mol is None:
+        raise VerifierSpecMismatch("reference canonical_smiles is invalid")
+    actual = float(compute_sa_score(mol))
+    expected = float(reference["sa_score"])
+    if abs(actual - expected) > float(reference.get("sa_tolerance", 1e-12)):
+        raise VerifierSpecMismatch(
+            f"reference SA score mismatch: expected {expected}, observed {actual}"
+        )
+    return {"reference_sa_score": actual}
+
+
+def protocol_properties(spec: dict[str, Any]) -> dict[str, int]:
+    fingerprint = spec.get("fingerprint")
+    if not isinstance(fingerprint, dict):
+        return {}
+    return {
+        "fingerprint_radius": int(fingerprint["radius"]),
+        "fingerprint_size": int(fingerprint["fp_size"]),
+    }
+
+
+def compute_reference_similarity(mol: Chem.Mol, spec: dict[str, Any]) -> float:
+    reference = spec.get("reference") or {}
+    fingerprint = spec.get("fingerprint") or {}
+    reference_mol = Chem.MolFromSmiles(
+        str(reference.get("canonical_smiles")), sanitize=True
+    )
+    if reference_mol is None:
+        raise VerifierSpecMismatch("reference canonical_smiles is invalid")
+    required = {
+        "generator": "Morgan",
+        "radius": 2,
+        "fp_size": 2048,
+        "include_chirality": False,
+        "use_bond_types": True,
+        "fingerprint_type": "bit_vector",
+        "similarity": "Tanimoto",
+    }
+    if fingerprint != required:
+        raise VerifierSpecMismatch(
+            "caffeine fingerprint configuration does not match frozen protocol"
+        )
+    generator = rdFingerprintGenerator.GetMorganGenerator(
+        radius=2,
+        fpSize=2048,
+        includeChirality=False,
+        useBondTypes=True,
+    )
+    return float(
+        DataStructs.TanimotoSimilarity(
+            generator.GetFingerprint(mol), generator.GetFingerprint(reference_mol)
+        )
+    )
 
 
 def compute_sa_score(mol: Chem.Mol) -> float:
@@ -153,6 +228,9 @@ def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | No
         fraction = properties["element_fractions"].get(element, 0.0)
         if fraction < float(minimum):
             return f"{element} atom fraction below minimum {minimum}"
+    for element, minimum in domain.get("element_count_min", {}).items():
+        if properties["element_counts"].get(element, 0) < int(minimum):
+            return f"{element} count below minimum {minimum}"
     return None
 
 
