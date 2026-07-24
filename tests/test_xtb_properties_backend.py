@@ -736,14 +736,19 @@ def test_xtb_fukui_allows_secondary_constraint_property_from_same_spec() -> None
     assert runner.calls[1][3]["backend"]["property_command"] == "--vfukui"
 
 
-def test_xtb_hessian_thermo_allows_imaginary_frequency_gate_from_same_spec() -> None:
+def test_xtb_hessian_thermo_allows_imaginary_frequency_hard_constraint_from_same_spec() -> None:
     runner = AdvancedFakeRunner()
-    current_task = task("imaginary_frequency_count", "window")
-    current_task["constraints"][0].update({"min": 0, "max": 0, "role": "stability_gate"})
+    current_task = task("entropy_298_per_heavy_atom", "maximize_bounded")
+    hard_constraint = {
+        "property": "imaginary_frequency_count",
+        "operator": "closed_window",
+        "lower": 0,
+        "upper": 0,
+    }
     result = xtb_properties.evaluate_xtb_property_constraint(
         {"xyz": ACETONITRILE_XYZ},
         current_task,
-        current_task["constraints"][0],
+        hard_constraint,
         advanced_spec(
             "xtb_hessian_thermo_gfn2_v1",
             "entropy_298_per_heavy_atom",

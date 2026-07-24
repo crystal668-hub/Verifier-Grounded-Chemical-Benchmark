@@ -133,7 +133,6 @@ def _property_parse_failure(
             "comparison_group_scores": [],
             "property_score": 0.0,
             "geometry_quality_score": 0.0,
-            "stability_gate_score": 0.0,
             "score": 0.0,
         },
         versions=versions,

@@ -229,23 +229,6 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  xtb_imaginary_frequency_count_window_0_0_2p0_v2:
-    property: imaginary_frequency_count
-    type: window
-    unit: count
-    full_score:
-      min: 0
-      max: 0
-    decay:
-      lower_width: null
-      upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: discrete_stability_count_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2:
     property: entropy_298_per_heavy_atom
     type: maximize
@@ -1409,7 +1392,7 @@ tasks:
     timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_hessian_thermo_stability_013
-  version: 1
+  version: 2
   object_type: small_molecule_3d
   difficulty: expert
   formal_track: true
@@ -1460,11 +1443,6 @@ tasks:
       H 1.400000 1.000000 0.000000
       ```
   constraints:
-  - type: window
-    property: imaginary_frequency_count
-    verifier_id: xtb_hessian_thermo_gfn2_v1
-    role: stability_gate
-    scoring_profile: xtb_imaginary_frequency_count_window_0_0_2p0_v2
   - type: maximize
     property: entropy_298_per_heavy_atom
     verifier_id: xtb_hessian_thermo_gfn2_v1
@@ -1475,6 +1453,12 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
+  hard_constraints:
+  - property: imaginary_frequency_count
+    verifier_id: xtb_hessian_thermo_gfn2_v1
+    operator: closed_window
+    lower: 0
+    upper: 0
   structural_domain:
     atom_count:
     - 6

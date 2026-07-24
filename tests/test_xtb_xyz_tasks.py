@@ -172,13 +172,17 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert dipole_profile["zero_score_anchor"] == pytest.approx(3.32)
     assert dipole_profile["full_score_target"] == pytest.approx(13.374)
 
-    hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
-    imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
+    hessian_task = tasks["xtb_hessian_thermo_stability_013"]
+    hessian_constraints = hessian_task["constraints"]
+    imaginary = hessian_task["hard_constraints"][0]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
-    assert imaginary["role"] == "stability_gate"
-    assert imaginary["type"] == "window"
-    imaginary_profile = pack.scoring_profiles[imaginary["scoring_profile"]]
-    assert imaginary_profile["full_score"] == {"min": 0, "max": 0}
+    assert imaginary == {
+        "property": "imaginary_frequency_count",
+        "verifier_id": "xtb_hessian_thermo_gfn2_v1",
+        "operator": "closed_window",
+        "lower": 0,
+        "upper": 0,
+    }
     assert entropy["type"] == "maximize"
     assert tasks["xtb_hessian_thermo_stability_013"]["structural_domain"]["heavy_atom_count"] == [4, 18]
 
@@ -213,12 +217,13 @@ def test_xtb_advanced_tasks_use_literature_reviewed_thresholds() -> None:
     assert score_constraint_value(-8.0285, lumo_profile) == pytest.approx(0.695964, rel=1e-4)
     assert score_constraint_value(-1.0, lumo_profile) == 0.0
 
-    hessian_constraints = tasks["xtb_hessian_thermo_stability_013"]["constraints"]
+    hessian_task = tasks["xtb_hessian_thermo_stability_013"]
+    hessian_constraints = hessian_task["constraints"]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
-    imaginary = next(item for item in hessian_constraints if item["property"] == "imaginary_frequency_count")
-    assert imaginary["role"] == "stability_gate"
-    imaginary_profile = pack.scoring_profiles[imaginary["scoring_profile"]]
-    assert imaginary_profile["full_score"] == {"min": 0, "max": 0}
+    imaginary = hessian_task["hard_constraints"][0]
+    assert imaginary["property"] == "imaginary_frequency_count"
+    assert imaginary["operator"] == "closed_window"
+    assert imaginary["lower"] == imaginary["upper"] == 0
     assert entropy["type"] == "maximize"
     entropy_profile = pack.scoring_profiles[entropy["scoring_profile"]]
     assert entropy_profile["zero_score_anchor"] == pytest.approx(40.59789)

@@ -1,6 +1,6 @@
 # xTB 题目设计与实现同步
 
-更新日期：2026-07-23
+更新日期：2026-07-24
 
 ## 1. Track 边界与答案格式
 
@@ -33,7 +33,7 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 | `xtb_solvation_selectivity_alpb_010` | ALPB selectivity | XYZ |
 | `xtb_electrophilicity_max_011` | electrophilicity | XYZ |
 | `xtb_fukui_carbon_site_012` | carbon Fukui response | XYZ |
-| `xtb_hessian_thermo_stability_013` | entropy with stability gate | XYZ |
+| `xtb_hessian_thermo_stability_013` | maximize entropy, zero-imaginary-frequency hard constraint | XYZ |
 | `xtb_formula_dipole_min_014` | exact-formula dipole | XYZ, neutral doublet |
 | `xtb_two_fluorine_gap_min_015` | minimize gap | XYZ, exact F count |
 | `xtb_c10_f2_gap_min_016` | minimize gap | XYZ, `C10F2` domain |
@@ -62,7 +62,7 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 
 direct-XYZ 路径解析坐标、推断连通性并应用 task-level structural domain，再运行对应 xTB property workflow。任务 020 按 SMILES 路由到 CREST backend。模型自报数值不参与评分。
 
-001-013 的 relaxation quality score 与主性质分开聚合：主性质取 geometric mean，quality gates 取最小值，最终相乘。014-020 没有该通用 gate。任务 019 的 dipole 是严格硬门，不是连续 multiplier。
+001-013 的 relaxation quality score 与主性质分开聚合：主性质取 geometric mean，quality gates 取最小值，最终相乘。014-020 没有该通用 gate。任务 013 要求 `imaginary_frequency_count` 严格等于 0，任务 019 要求 dipole `<2 D`；两者都是先于主评分执行的硬约束，不是连续 multiplier。
 
 所有连续 profile 使用 `linear_goal_v2`。缺失 `xtb`/`crest`、超时、未产生 ensemble 或 backend 未收敛映射为环境/工具 failure；候选结构域不满足、硬性质失败和搜索后分子图改变分别保留候选级 failure 类型。
 

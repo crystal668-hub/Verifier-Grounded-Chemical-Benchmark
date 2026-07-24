@@ -33,15 +33,12 @@ def score_open_generation_task(
 ) -> dict[str, float]:
     main = [float(item["score"]) for item in constraint_scores if item["role"] == "main"]
     quality = [float(item["score"]) for item in constraint_scores if item["role"] == "quality_gate"]
-    stability = [float(item["score"]) for item in constraint_scores if item["role"] == "stability_gate"]
     if not main:
         raise ValueError("open-generation task requires at least one main constraint")
     property_score = geometric_mean(main)
     quality_score = gate_score(quality)
-    stability_score = gate_score(stability)
     return {
         "property_score": property_score,
         "geometry_quality_score": quality_score,
-        "stability_gate_score": stability_score,
-        "score": hard_gate * property_score * quality_score * stability_score,
+        "score": hard_gate * property_score * quality_score,
     }

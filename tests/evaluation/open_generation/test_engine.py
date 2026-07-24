@@ -81,7 +81,7 @@ def test_evidence_reuse_never_reuses_constraint_score() -> None:
     fake = FakeVerifier(
         {
             "xtb_hessian_thermo_gfn2_v1": {
-                "imaginary_frequency_count": 1,
+                "imaginary_frequency_count": 0,
                 "entropy_298_per_heavy_atom": 65.0,
             },
             "xtb_relaxation_energy_gfn2_v1": {"relaxation_energy": 0.175},
@@ -94,15 +94,44 @@ def test_evidence_reuse_never_reuses_constraint_score() -> None:
     )
 
     assert len(fake.calls) == 2
+    assert result["properties"]["hard_constraint_passed"] is True
     assert result["scores"]["property_score"] == pytest.approx(0.687443701)
     assert result["scores"]["geometry_quality_score"] == pytest.approx(7 / 12)
-    assert result["scores"]["stability_gate_score"] == pytest.approx(0.5)
-    assert result["scores"]["score"] == pytest.approx(0.200504413)
+    assert result["scores"]["score"] == pytest.approx(0.401008826)
     assert [item["property"] for item in result["scores"]["constraint_scores"]] == [
-        "imaginary_frequency_count",
         "entropy_298_per_heavy_atom",
         "relaxation_energy",
     ]
+
+
+def test_hessian_task_rejects_nonzero_imaginary_frequency_before_scoring() -> None:
+    fake = FakeVerifier(
+        {
+            "xtb_hessian_thermo_gfn2_v1": {
+                "imaginary_frequency_count": 1,
+                "entropy_298_per_heavy_atom": 65.0,
+            },
+            "xtb_relaxation_energy_gfn2_v1": {"relaxation_energy": 0.175},
+        }
+    )
+    engine = EvaluationEngine(_pack("xtb"), verifier=fake)
+
+    result = engine.evaluate_one(
+        {"task_id": "xtb_hessian_thermo_stability_013", "candidates": [{"xyz": "fake"}]}
+    )
+
+    assert fake.calls == [("xtb_hessian_thermo_gfn2_v1", "imaginary_frequency_count")]
+    assert result["failure_type"] == "hard_constraint_failed"
+    assert result["properties"]["hard_constraint_passed"] is False
+    assert result["scores"]["score"] == 0.0
+    assert result["hard_constraint"] == {
+        "property": "imaginary_frequency_count",
+        "operator": "closed_window",
+        "threshold": None,
+        "lower": 0.0,
+        "upper": 0.0,
+        "value": 1.0,
+    }
 
 
 def test_candidate_rejection_is_scored_zero() -> None:

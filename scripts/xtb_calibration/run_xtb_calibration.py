@@ -94,7 +94,6 @@ def build_calibration_row(
         "score": scores.get("score", 0.0),
         "property_score": scores.get("property_score", 0.0),
         "geometry_quality_score": scores.get("geometry_quality_score"),
-        "stability_gate_score": scores.get("stability_gate_score"),
         "property_name": property_name,
         "calculation_mode": mode,
         "resolved_charge": properties.get("charge"),

@@ -150,7 +150,7 @@ OpenClaw 映射规则：
 - `failure_type`：优先 `evaluation.details.failure_type`，否则 `evaluation.details.verifier_result.failure_type`。
 - `properties`：`evaluation.details.properties`。
 - `constraint_scores`：`evaluation.details.constraint_scores`。
-- `property_score`、`geometry_quality_score`、`stability_gate_score`：从 `evaluation.details.verifier_result.scores` 读取。
+- `property_score`、`geometry_quality_score`：从 `evaluation.details.verifier_result.scores` 读取。
 - `panel_member_id`：`group_id`。
 - `raw_group_id`：`group_id`。
 - `run_id`：OpenClaw run 目录名，或 `results.json` 父目录名。
@@ -211,7 +211,6 @@ OpenClaw 映射规则：
     "score": 0.9999999158779223,
     "property_score": 1.0,
     "geometry_quality_score": 0.9999999158779223,
-    "stability_gate_score": None,
     "properties": {
         "homo_lumo_gap": 4.647621712273,
         "relaxation_energy": 2.944272718797379e-08
@@ -263,7 +262,6 @@ OpenClaw 映射规则：
     "score": 0.82,
     "property_score": 0.91,
     "geometry_quality_score": 0.90,
-    "stability_gate_score": 1.0,
     "constraint_scores": [
         {"property": "homo_lumo_gap", "score": 1.0},
         {"property": "dipole_moment", "score": 0.84},
@@ -329,7 +327,7 @@ OpenClaw 映射规则：
 - `fraction_score_gte_0_8`；
 - `fraction_score_gte_0_95`；
 - `fraction_failing_quality_gate`；
-- `fraction_failing_stability_gate`；
+- `fraction_failing_zero_imaginary_constraint`；
 - per-dataset versions of the same metrics。
 
 阈值判断：
@@ -584,7 +582,7 @@ Markdown 报告应先给总览，再给每题明细。
 - repo-native scored JSON adapter；
 - OpenClaw run adapter，使用最小 fixture 覆盖 `evaluation.details.verifier_result`；
 - distribution tier join；
-- task scoring，覆盖 window、maximize_bounded、minimize_bounded、quality_gate 和 stability_gate；
+- task scoring，覆盖 window、maximize_bounded、minimize_bounded、quality_gate 和 hard constraints；
 - missing property 与 conflicting property diagnostics；
 - calibration flag rules；
 - model-panel difficulty alignment 和 discrimination。

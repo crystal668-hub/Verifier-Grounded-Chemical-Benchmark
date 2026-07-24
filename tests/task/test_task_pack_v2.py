@@ -172,6 +172,17 @@ def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
         load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
 
 
+def test_v2_loader_rejects_removed_stability_gate_role(tmp_path) -> None:
+    task_resource = package_resource("rdkit", "tasks.yaml")
+    data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
+    data["tasks"][0]["constraints"][0]["role"] = "stability_gate"
+    tasks_path = tmp_path / "tasks.yaml"
+    tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="unsupported constraint role: stability_gate"):
+        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+
+
 def test_public_tracks_use_validated_v2_package_resources() -> None:
     assert len(vgb.load_track("rdkit").tasks()) == 14
     assert vgb.load_track("rdkit")._task_pack.schema_version == 2

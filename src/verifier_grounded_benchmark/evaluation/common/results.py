@@ -61,7 +61,6 @@ def error_result(
             "constraint_scores": [],
             "property_score": None,
             "geometry_quality_score": None,
-            "stability_gate_score": None,
             "score": None,
         },
         "versions": {**versions, "result_schema": RESULT_SCHEMA_VERSION},

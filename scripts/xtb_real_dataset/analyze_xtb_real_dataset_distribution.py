@@ -129,7 +129,9 @@ def summarize_slice(all_rows: list[dict[str, Any]], value_rows: list[dict[str, A
         "mean": statistics.fmean(values) if values else None,
         "standard_deviation": statistics.pstdev(values) if len(values) > 1 else 0.0 if values else None,
         "fraction_failing_relaxation_energy_gate": fraction_failing_relaxation_gate(all_rows),
-        "fraction_failing_hessian_stability_gate": fraction_failing_hessian_gate(all_rows),
+        "fraction_failing_zero_imaginary_constraint": fraction_failing_zero_imaginary_constraint(
+            all_rows
+        ),
     }
     for label, fraction in PERCENTILES.items():
         summary[label] = percentile(values, fraction)
@@ -155,7 +157,9 @@ def fraction_failing_relaxation_gate(rows: list[dict[str, Any]]) -> float | None
     return sum(value > 0.35 for value in values) / len(values)
 
 
-def fraction_failing_hessian_gate(rows: list[dict[str, Any]]) -> float | None:
+def fraction_failing_zero_imaginary_constraint(
+    rows: list[dict[str, Any]],
+) -> float | None:
     values = property_values(rows, "imaginary_frequency_count")
     if not values:
         return None
@@ -206,7 +210,7 @@ def write_summary_csv(path: Path, summary: dict[str, Any], *, per_dataset: bool)
         "mean",
         "standard_deviation",
         "fraction_failing_relaxation_energy_gate",
-        "fraction_failing_hessian_stability_gate",
+        "fraction_failing_zero_imaginary_constraint",
     ]
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)

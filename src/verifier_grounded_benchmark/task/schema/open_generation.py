@@ -15,7 +15,7 @@ from verifier_grounded_benchmark.task.schema.common import (
 
 
 OPEN_GENERATION_TYPES = {"target", "window", "maximize", "minimize"}
-ROLES = {"main", "quality_gate", "stability_gate"}
+ROLES = {"main", "quality_gate"}
 HARD_CONSTRAINT_OPERATORS = {"lt", "le", "closed_window"}
 
 

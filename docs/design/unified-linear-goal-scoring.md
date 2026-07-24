@@ -275,26 +275,20 @@ q = score_minimize(relaxation_energy; T_quality, B_quality)
 quality_gate_score = min(q_1, ..., q_n)
 ```
 
-### 5.3 Stability gate
+### 5.3 Hard constraints
 
-`xtb_hessian_thermo_stability_013` 的 `imaginary_frequency_count` 使用 `role: stability_gate`。它是定义域为非负整数的 Window 约束：
+硬性质约束在连续评分前执行，不产生连续门控分数。任一硬约束失败时，候选以
+`hard_constraint_failed` 结束并记 0 分；全部通过后才计算主性质和 quality gate。
 
-```text
-L = 0
-U = 0
-right decay width = rU_stability
-```
+`xtb_hessian_thermo_stability_013` 的 `imaginary_frequency_count` 使用严格闭区间：
 
-由于计数不可能小于 0，左侧不激活。其分数为：
-
-```text
-s_stability(n) = clip(1 - n / rU_stability, 0, 1)
-```
-
-同一道题有多个 stability gate 时：
-
-```text
-stability_gate_score = min(s_1, ..., s_n)
+```yaml
+hard_constraints:
+- property: imaginary_frequency_count
+  verifier_id: xtb_hessian_thermo_gfn2_v1
+  operator: closed_window
+  lower: 0
+  upper: 0
 ```
 
 ## 6. 多约束与 benchmark 聚合
@@ -307,16 +301,13 @@ stability_gate_score = min(s_1, ..., s_n)
 property_score = geometric_mean(main_constraint_scores)
 ```
 
-若任一主约束为 0，则 `property_score = 0`。quality gate 和 stability gate 不进入几何平均，而是分别取最小值后作为乘法 gate：
+若任一主约束为 0，则 `property_score = 0`。quality gate 不进入几何平均，而是取最小值后作为乘法 gate：
 
 ```text
-task_score = hard_gate
-           * property_score
-           * quality_gate_score
-           * stability_gate_score
+task_score = property_score * quality_gate_score
 ```
 
-没有某类 gate 时，该 gate 分数默认为 1。
+没有 quality gate 时，其分数默认为 1。硬约束失败会在进入上述聚合前直接返回 0 分。
 
 本规格不引入约束权重。未来如需加权，必须升级 scoring version 并在 task metadata 中显式公布。
 
@@ -1130,7 +1121,6 @@ scores:
   constraint_scores: list
   property_score: number | null
   geometry_quality_score: number | null
-  stability_gate_score: number | null
   score: number | null
 versions:
   package: string
@@ -1156,7 +1146,7 @@ versions:
 ```yaml
 property: string
 type: target | window | maximize | minimize | numeric_gold | exact_string
-role: main | quality_gate | stability_gate
+role: main | quality_gate
 value: number | string
 score: number
 scoring_profile: string

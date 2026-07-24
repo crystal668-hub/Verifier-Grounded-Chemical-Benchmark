@@ -192,7 +192,6 @@ def _candidate_zero(
             "constraint_scores": [],
             "property_score": 0.0,
             "geometry_quality_score": 0.0,
-            "stability_gate_score": 0.0,
             "score": 0.0,
         },
         versions=versions,
