@@ -208,3 +208,12 @@ def test_v4_release_manifest_binds_expert_tasks_and_artifacts() -> None:
         assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
         assert len(content) == artifacts[path.name]["size"]
     assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+
+    openclaw = manifest["integrations"]["openclaw"]
+    assert openclaw["commit"] == "741903305f158a7b9e4ca3f5118afbc2546d21fe"
+    assert {name: value["count"] for name, value in openclaw["datasets"].items()} == {
+        "verifier_grounded_property_calculation": 2,
+        "verifier_grounded_rdkit": 14,
+        "verifier_grounded_xtb_xyz": 20,
+    }
+    assert len(openclaw["release_config_sha256"]) == 64
