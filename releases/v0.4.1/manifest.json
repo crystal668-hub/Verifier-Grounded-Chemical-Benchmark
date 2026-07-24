@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    {
+      "filename": "verifier_grounded_benchmark-0.4.1-py3-none-any.whl",
+      "sha256": "7be727f549e99d1c463e84c5c4694c00caf17a35caa729b0a15c26676e0f2691",
+      "size": 157566
+    },
+    {
+      "filename": "verifier_grounded_benchmark-0.4.1.tar.gz",
+      "sha256": "9bdc23ffd1b3ae25a0b2c9e25b122f622e263cdc7873d0adc2dfd948cd2a6785",
+      "size": 672214
+    }
+  ],
+  "canonical_source": {
+    "commit": "c31e7c8a9f36d97a13aa6eb8c07235d6b05f78cc",
+    "source_date_epoch": 1784879972,
+    "tree": "ff62a4aa6c3e01da2ddc5cc0e87ac90d87004dc8"
+  },
+  "package": "verifier-grounded-benchmark",
+  "result_schema_version": "2",
+  "schema_version": 1,
+  "scoring_profiles": "scoring-profiles.json",
+  "scoring_version": "linear_goal_v2",
+  "tag": "v0.4.1",
+  "task_inventory": "task-inventory.json",
+  "verified_payload": {
+    "file_count": 156,
+    "sha256": "e48e6ba95ce0fb6569d6a4442b90e7fcbd38b3059bdc0cf347c12a377915257b"
+  },
+  "version": "0.4.1"
+}
