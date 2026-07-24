@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: rdkit
-  version: 0.4.0
+  version: 0.4.1
   scoring_version: linear_goal_v2
 scoring_profiles:
   rdkit_qed_maximize_0p0_1p0_v2:
@@ -702,10 +702,10 @@ tasks:
 
     The molecule must satisfy these requirements:
     - Allowed elements: H, C, N, O, S, F, Cl.
-    - It must contain exactly six carbon atoms, all forming one continuous non-ring, saturated, single-bonded six-carbon chain.
-    - No other carbon atoms or carbon skeletons are allowed.
+    - It must match the SMARTS pattern `[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]`, representing one continuous non-ring, saturated, single-bonded six-carbon chain.
+    - It must contain exactly six carbon atoms; no other carbon atoms or carbon skeletons are allowed.
     - After adding all implicit hydrogens, the total atom count must be at most 40.
-    - Maximize the distance between the two terminal carbon nuclei in the lowest-energy conformer found by the fixed conformer workflow.
+    - The fixed conformer workflow generates conformers with RDKit, optimizes them with the Universal Force Field (UFF), and ranks the converged conformers by UFF energy. Maximize the distance between the two terminal carbon nuclei in the lowest-energy converged UFF conformer.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: <SMILES>

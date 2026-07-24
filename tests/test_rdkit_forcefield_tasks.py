@@ -17,9 +17,13 @@ def test_formal_chain_distance_task_binds_to_uff_spec() -> None:
     task = PACK.tasks_by_id["rdkit_chain_end_to_end_max_013"]
     constraint = task["constraints"][0]
     spec = PACK.verifier_specs_by_id[constraint["verifier_id"]]
+    chain_smarts = spec["domain"]["chain_smarts"]
 
     assert task["formal_track"] is True
     assert task["answer_schema"]["value_type"] == "smiles"
+    assert chain_smarts in task["prompt"]
+    assert "Universal Force Field (UFF)" in task["prompt"]
+    assert "lowest-energy converged UFF conformer" in task["prompt"]
     assert spec["backend"]["forcefield"] == "UFF"
     assert "forcefield_priority" not in spec["backend"]
     assert spec["backend"]["num_conformers"] == 20
