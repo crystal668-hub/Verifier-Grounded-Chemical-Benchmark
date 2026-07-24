@@ -15,7 +15,7 @@ PACK = load_task_pack(
     package_resource("property_calculation", "verifier_specs.yaml"),
 )
 VERSIONS = {
-    "package": "0.3.0",
+    "package": "0.4.0",
     "task_pack": PACK.version,
     "scoring": PACK.scoring_version,
     "verifiers": {},

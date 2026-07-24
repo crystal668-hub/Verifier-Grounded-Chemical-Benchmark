@@ -54,7 +54,7 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 
 `xtb_pyrene_crest_energy_v1` 接收 SMILES，并验证候选相对冻结 pyrene reference 的精确 graph delta：16 个 scaffold carbon 与 bond graph 不变，三个不同原 C-H 位点分别连接一个 nitro、amino、carboxyl，且无额外原子或键。初始 ETKDGv3 几何和 CREST ensemble 最低成员都必须通过 identity check。
 
-冻结环境为 RDKit 2026.3.2、CREST 2.12、xTB 6.7.1、GFN2-xTB、`charge=0`、`uhf=0`、单线程、`-mquick`，seed `61453`。最低 ensemble member 再运行 xTB single-point；冻结锚点为 `T=-63.56975 Eh`、`B=-63.5669 Eh`。该能量只在相同 formula、charge、电子态和冻结协议内比较，不代表实验生成自由能、溶液平衡或合成产率。
+冻结环境为 RDKit 2026.3.2、CREST 2.12、xTB 6.7.1、GFN2-xTB、`charge=0`、`uhf=0`、单线程、`-mquick`，seed `61453`。最低 ensemble member 再运行 xTB single-point；冻结锚点为 `T=-63.56975 Eh`、`B=-63.5669 Eh`，同一候选重复运行的绝对能量容差为 `1.0e-5 Eh`。该容差只用于可复现性审计，不参与评分。该能量只在相同 formula、charge、电子态和冻结协议内比较，不代表实验生成自由能、溶液平衡或合成产率。
 
 校准明细和配置哈希见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`，可复现环境见 `envs/crest-xtb.yml`。
 

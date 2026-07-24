@@ -96,6 +96,18 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
         assert spec["executor"]["timeout_seconds"] == timeout
 
 
+def test_pyrene_energy_repeatability_tolerance_is_frozen() -> None:
+    pack = load_calibration_pack()
+    task = pack.tasks_by_id["xtb_pyrene_substituent_energy_min_020"]
+    spec = pack.verifier_specs_by_id[task["constraints"][0]["verifier_id"]]
+
+    assert spec["repeatability"] == {
+        "property": "total_energy",
+        "absolute_tolerance": 1.0e-5,
+        "unit": "hartree",
+    }
+
+
 def test_task_2_uses_exact_formula_and_neutral_doublet() -> None:
     pack = load_calibration_pack()
     tasks = pack.tasks_by_id

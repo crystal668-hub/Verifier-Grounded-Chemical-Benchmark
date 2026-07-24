@@ -25,7 +25,7 @@ uv pip install .
 
 ```bash
 uv build --wheel
-pip install dist/verifier_grounded_benchmark-0.3.0-py3-none-any.whl
+pip install dist/verifier_grounded_benchmark-0.4.0-py3-none-any.whl
 ```
 
 如果后续发布到 PyPI 或私有包索引，才使用下面这种包名安装方式：

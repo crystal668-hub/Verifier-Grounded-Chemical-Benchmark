@@ -441,6 +441,10 @@ verifiers:
   property:
     source: lowest CREST ensemble member followed by GFN2-xTB single-point
     units: hartree
+  repeatability:
+    property: total_energy
+    absolute_tolerance: 1.0e-5
+    unit: hartree
   executor:
     type: python_module
     module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.xtb_pyrene_crest_energy

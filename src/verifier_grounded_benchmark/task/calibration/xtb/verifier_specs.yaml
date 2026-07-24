@@ -127,6 +127,10 @@ verifiers:
   identity:
     reference_smiles: c1cc2ccc3cccc4ccc(c1)c2c34
     formula: C17H10N2O4
+  repeatability:
+    property: total_energy
+    absolute_tolerance: 1.0e-5
+    unit: hartree
   executor:
     type: python_module
     module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.xtb_pyrene_crest_energy

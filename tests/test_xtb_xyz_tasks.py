@@ -111,6 +111,11 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert specs["xtb_fukui_gfn1_v1"]["additional_property_names"] == ["f_plus_contrast"]
     assert specs["xtb_hessian_thermo_gfn2_v1"]["backend"]["property_command"] == "--ohess"
     assert specs["xtb_hessian_thermo_gfn2_v1"]["additional_property_names"] == ["imaginary_frequency_count"]
+    assert specs["xtb_pyrene_crest_energy_v1"]["repeatability"] == {
+        "property": "total_energy",
+        "absolute_tolerance": 1.0e-5,
+        "unit": "hartree",
+    }
 
     for task_id, task in tasks.items():
         assert task["formal_track"] is True

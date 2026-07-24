@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: xtb_calibration
-  version: 0.3.0
+  version: 0.4.0
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:
