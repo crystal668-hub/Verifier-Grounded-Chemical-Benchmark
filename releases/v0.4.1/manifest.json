@@ -16,6 +16,27 @@
     "source_date_epoch": 1784879972,
     "tree": "ff62a4aa6c3e01da2ddc5cc0e87ac90d87004dc8"
   },
+  "integrations": {
+    "openclaw": {
+      "commit": "ae24a6079f50e2d4a0fd81dbada8fa64d20e78c3",
+      "datasets": {
+        "verifier_grounded_property_calculation": {
+          "count": 2,
+          "sha256": "c69ad6489c12bbc3b8f8aeabceac4df9c1cd85ef17666bfdd267718f99cac855"
+        },
+        "verifier_grounded_rdkit": {
+          "count": 14,
+          "sha256": "951ea414764b74171d30c0ca148f6543f072cd7233cd884a30bcab3bd18b359b"
+        },
+        "verifier_grounded_xtb_xyz": {
+          "count": 20,
+          "sha256": "c73ef72a7c9eb4cbaa9e7c183fe1281ed48c1e93f9cb5748b1001a4de254d03e"
+        }
+      },
+      "release_config": "benchmarking/resources/verifier_grounded/release.json",
+      "release_config_sha256": "7f4d90673f79abe3a124cbb9ea1d137d3dca50f01f6c5ece7b1b0506edc043d8"
+    }
+  },
   "package": "verifier-grounded-benchmark",
   "result_schema_version": "2",
   "schema_version": 1,
