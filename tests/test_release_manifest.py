@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RELEASE_DIR = ROOT / "releases" / "v0.1.1"
 CURRENT_RELEASE_DIR = ROOT / "releases" / "v0.2.0"
 V2_RELEASE_DIR = ROOT / "releases" / "v0.3.0"
+V4_RELEASE_DIR = ROOT / "releases" / "v0.4.0"
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
@@ -163,3 +164,47 @@ def test_v2_release_manifest_binds_formal_profiles_and_openclaw_sync() -> None:
         "verifier_grounded_xtb_xyz": 18,
     }
     assert len(openclaw["release_config_sha256"]) == 64
+
+
+def test_v4_release_manifest_binds_expert_tasks_and_artifacts() -> None:
+    manifest = json.loads((V4_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    inventory = json.loads(
+        (V4_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8")
+    )
+    profiles = json.loads(
+        (V4_RELEASE_DIR / "scoring-profiles.json").read_text(encoding="utf-8")
+    )
+
+    assert manifest["version"] == inventory["package_version"] == "0.4.0"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert profiles["package_version"] == "0.4.0"
+    assert {name: value["count"] for name, value in inventory["tracks"].items()} == {
+        "property_calculation": 2,
+        "rdkit": 14,
+        "xtb": 20,
+    }
+    assert {
+        "rdkit_chain_end_to_end_maximize_6p36_6p49_v2",
+        "rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2",
+        "xtb_odd_element_gap_maximize_3p6_11p9_v2",
+        "xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2",
+    }.issubset(profiles["profiles"])
+
+    tagged_commit = subprocess.run(
+        ["git", "rev-list", "-n", "1", manifest["tag"]],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert tagged_commit == manifest["canonical_source"]["commit"]
+
+    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
+    wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.0-py3-none-any.whl"
+    sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.0.tar.gz"
+    for path in (wheel_path, sdist_path):
+        content = path.read_bytes()
+        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
+        assert len(content) == artifacts[path.name]["size"]
+    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
