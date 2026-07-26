@@ -3,7 +3,10 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import zipfile
 from pathlib import Path
+
+import yaml
 
 from scripts.release.build_release import (
     normalized_release_payloads,
@@ -19,6 +22,7 @@ CURRENT_RELEASE_DIR = ROOT / "releases" / "v0.2.0"
 V2_RELEASE_DIR = ROOT / "releases" / "v0.3.0"
 V4_RELEASE_DIR = ROOT / "releases" / "v0.4.0"
 V41_RELEASE_DIR = ROOT / "releases" / "v0.4.1"
+V42_RELEASE_DIR = ROOT / "releases" / "v0.4.2"
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
@@ -261,3 +265,55 @@ def test_v41_release_manifest_binds_clarified_prompt_and_artifacts() -> None:
         "verifier_grounded_xtb_xyz": 20,
     }
     assert len(openclaw["release_config_sha256"]) == 64
+
+
+def test_v42_release_manifest_binds_dependency_preflight_artifacts() -> None:
+    manifest = json.loads((V42_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    inventory = json.loads(
+        (V42_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8")
+    )
+
+    assert manifest["version"] == inventory["package_version"] == "0.4.2"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert {name: value["count"] for name, value in inventory["tracks"].items()} == {
+        "property_calculation": 2,
+        "rdkit": 14,
+        "xtb": 20,
+    }
+
+    tagged_commit = subprocess.run(
+        ["git", "rev-list", "-n", "1", manifest["tag"]],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert tagged_commit == manifest["canonical_source"]["commit"]
+
+    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
+    wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.2-py3-none-any.whl"
+    sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.2.tar.gz"
+    for path in (wheel_path, sdist_path):
+        content = path.read_bytes()
+        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
+        assert len(content) == artifacts[path.name]["size"]
+    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+
+    with zipfile.ZipFile(wheel_path) as wheel:
+        assert (
+            "verifier_grounded_benchmark/evaluation/external_dependencies.py"
+            in wheel.namelist()
+        )
+        specs = yaml.safe_load(
+            wheel.read(
+                "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml"
+            )
+        )["verifiers"]
+    pyrene = next(
+        spec for spec in specs if spec["verifier_id"] == "xtb_pyrene_crest_energy_v1"
+    )
+    assert {
+        dependency["executable"]: dependency["version"]
+        for dependency in pyrene["external_dependencies"]
+    } == {"crest": "2.12", "xtb": "6.7.1"}
