@@ -94,7 +94,7 @@ class EvaluationEngine:
 
     def _versions(self) -> dict[str, Any]:
         return {
-            "package": "0.4.1",
+            "package": "0.4.2",
             "task_pack": self.task_pack.version,
             "scoring": self.task_pack.scoring_version,
             "verifiers": {},
