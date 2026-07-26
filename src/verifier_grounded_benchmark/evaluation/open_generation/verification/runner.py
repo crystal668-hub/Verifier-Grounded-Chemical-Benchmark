@@ -13,6 +13,10 @@ from typing import Any
 from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
     VerificationEvidence,
 )
+from verifier_grounded_benchmark.evaluation.external_dependencies import (
+    ExternalDependencyError,
+    preflight_external_dependencies,
+)
 from verifier_grounded_benchmark.task.resources import resolve_script_path, source_root
 
 
@@ -53,6 +57,10 @@ class SubprocessPropertyVerifier:
         env = os.environ.copy()
         pythonpath = env.get("PYTHONPATH")
         env["PYTHONPATH"] = str(source_root()) if not pythonpath else f"{source_root()}{os.pathsep}{pythonpath}"
+        try:
+            preflight_external_dependencies([spec], environ=env)
+        except ExternalDependencyError as exc:
+            return self._failed(payload, "verifier_environment_error", str(exc))
         try:
             completed = subprocess.run(
                 command,

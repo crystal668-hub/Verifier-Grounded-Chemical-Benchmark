@@ -58,6 +58,8 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 
 校准明细和配置哈希见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`，可复现环境见 `envs/crest-xtb.yml`。
 
+`vgb-score` 在启动本次答案涉及的 verifier 前读取其 `external_dependencies`。xTB verifier 要求 xTB 6.7.1，任务 020 额外要求 CREST 2.12；当前 `PATH` 缺失或版本不符时，运行时会通过 Conda 环境列表发现 `vgb-crest` 并把该环境的工具目录加入 verifier 子进程 `PATH`。环境不存在、命令缺失或版本不匹配时，评分在启动 verifier 前以 `verifier_environment_error` 终止，不会把基础设施故障计为候选零分。
+
 ## 4. 执行与 failure 语义
 
 direct-XYZ 路径解析坐标、推断连通性并应用 task-level structural domain，再运行对应 xTB property workflow。任务 020 按 SMILES 路由到 CREST backend。模型自报数值不参与评分。

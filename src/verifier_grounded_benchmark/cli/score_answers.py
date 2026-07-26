@@ -10,6 +10,11 @@ from typing import Any
 
 from verifier_grounded_benchmark import load_track
 from verifier_grounded_benchmark.evaluation import EvaluationEngine
+from verifier_grounded_benchmark.evaluation.external_dependencies import (
+    ExternalDependencyError,
+    preflight_external_dependencies,
+    verifier_specs_for_answers,
+)
 from verifier_grounded_benchmark.evaluation.io import load_answers_jsonl_file
 from verifier_grounded_benchmark.task.loader import (
     load_tasks_file,
@@ -67,10 +72,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     answers = load_answers_jsonl_file(args.answers)
+    pack: TaskPack | None = None
     if args.track:
-        report = load_track(args.track).evaluate_answers(answers)
+        track = load_track(args.track)
+        tasks_by_id = track.tasks_by_id
+        specs_by_id = track.verifier_specs_by_id
     elif args.tasks is None:
-        report = load_track("rdkit").evaluate_answers(answers)
+        track = load_track("rdkit")
+        tasks_by_id = track.tasks_by_id
+        specs_by_id = track.verifier_specs_by_id
     else:
         assert args.specs is not None
         pack = load_development_task_pack(
@@ -78,6 +88,29 @@ def main(argv: list[str] | None = None) -> int:
             args.specs,
             script_root=args.specs.resolve().parent,
         )
+        tasks_by_id = pack.tasks_by_id
+        specs_by_id = pack.verifier_specs_by_id
+
+    required_specs = verifier_specs_for_answers(tasks_by_id, specs_by_id, answers)
+    try:
+        preflight_external_dependencies(required_specs)
+    except ExternalDependencyError as exc:
+        print(
+            json.dumps(
+                {
+                    "error": "verifier_environment_error",
+                    "message": "verifier dependency preflight failed",
+                    "dependencies": exc.checks,
+                },
+                indent=2,
+                sort_keys=True,
+            ),
+            file=sys.stderr,
+        )
+        return 2
+    if pack is None:
+        report = track.evaluate_answers(answers)
+    else:
         report = EvaluationEngine(pack).evaluate_many(answers).to_dict()
 
     if args.require_complete:

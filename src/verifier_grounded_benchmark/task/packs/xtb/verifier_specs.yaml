@@ -3,6 +3,11 @@ verifiers:
   name: xTB GFN2 HOMO-LUMO Gap Verifier
   version: 1
   formal_track: true
+  external_dependencies: &xtb_external_dependencies
+  - &xtb_external_dependency
+    executable: xtb
+    version: '6.7.1'
+    conda_environment: vgb-crest
   verifier_image: verifier-grounded:dev
   property_name: homo_lumo_gap
   resources: &id001
@@ -62,6 +67,7 @@ verifiers:
   name: xTB GFN2 Dipole Moment Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: dipole_moment
   resources: *id001
@@ -81,6 +87,7 @@ verifiers:
   name: xTB GFN2 Relaxation Energy Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: relaxation_energy
   resources: *id001
@@ -108,6 +115,7 @@ verifiers:
   name: xTB GFN2 LUMO Energy Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: lumo_energy
   resources: *id001
@@ -127,6 +135,7 @@ verifiers:
   name: xTB GFN2 Polarizability Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: polarizability_per_heavy_atom
   resources: *id001
@@ -146,6 +155,7 @@ verifiers:
   name: xTB GFN2 ALPB Water-Hexane Selectivity Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: alpb_water_hexane_selectivity
   resources: *id001
@@ -176,6 +186,7 @@ verifiers:
   name: xTB GFN1-IPEA Global Electrophilicity Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: global_electrophilicity
   resources: *id001
@@ -202,6 +213,7 @@ verifiers:
   name: xTB GFN1 Fukui Carbon-Site Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: max_f_plus_on_carbon
   additional_property_names:
@@ -230,6 +242,7 @@ verifiers:
   name: xTB GFN2 Hessian Thermochemistry Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: entropy_298_per_heavy_atom
   additional_property_names:
@@ -273,6 +286,7 @@ verifiers:
   name: xTB GFN2 Neutral Doublet Dipole Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: dipole_moment
   resources: &id007
@@ -303,6 +317,7 @@ verifiers:
   name: xTB GFN2 Candidate-Charge Closed-Shell Gap Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: homo_lumo_gap
   resources: *id007
@@ -328,6 +343,7 @@ verifiers:
   name: xTB GFN2 ROY Submitted-Geometry Energy Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: total_energy
   resources: *id007
@@ -354,6 +370,7 @@ verifiers:
   name: xTB GFN2 Ritonavir Optimized Energy Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:dev
   property_name: total_energy
   resources:
@@ -382,6 +399,7 @@ verifiers:
   name: xTB GFN2 Joint Dipole and Gap Verifier
   version: 1
   formal_track: true
+  external_dependencies: *xtb_external_dependencies
   verifier_image: verifier-grounded:0.3.x-xtb-6.7.1
   property_name: dipole_moment
   additional_property_names: [homo_lumo_gap]
@@ -412,6 +430,11 @@ verifiers:
   name: CREST/xTB Pyrene Trisubstituent Energy Verifier
   version: 1
   formal_track: true
+  external_dependencies:
+  - executable: crest
+    version: '2.12'
+    conda_environment: vgb-crest
+  - *xtb_external_dependency
   verifier_image: verifier-grounded:0.3.x-crest-2.12-xtb-6.7.1
   property_name: total_energy
   resources:
