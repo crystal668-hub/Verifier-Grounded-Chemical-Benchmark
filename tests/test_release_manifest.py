@@ -317,3 +317,12 @@ def test_v42_release_manifest_binds_dependency_preflight_artifacts() -> None:
         dependency["executable"]: dependency["version"]
         for dependency in pyrene["external_dependencies"]
     } == {"crest": "2.12", "xtb": "6.7.1"}
+
+    openclaw = manifest["integrations"]["openclaw"]
+    assert openclaw["commit"] == "d65536873e4d83b904a03abf19374c3ea4c7a6d4"
+    assert {name: value["count"] for name, value in openclaw["datasets"].items()} == {
+        "verifier_grounded_property_calculation": 2,
+        "verifier_grounded_rdkit": 14,
+        "verifier_grounded_xtb_xyz": 20,
+    }
+    assert len(openclaw["release_config_sha256"]) == 64
