@@ -106,6 +106,8 @@
 
 track: RDKit
 
+主要任务：在元素和原子数约束内生成单组分分子，使 LogP 尽量接近 3.0。
+
 #### gpt-5.5 / skills-on
 
 score: `0.9948000000000002`
@@ -156,6 +158,8 @@ score: `0.999993333333333`
 
 track: RDKit
 
+主要任务：在 SA score 严格小于 5.0 的硬约束下，使分子 LogP 尽量接近 3.0。
+
 #### gpt-5.5 / skills-on
 
 score: `0.9999666666666673`
@@ -201,6 +205,8 @@ score: `0.9999999999999994`
 ### 3. `rdkit_chain_end_to_end_max_013`
 
 track: RDKit
+
+主要任务：生成固定六碳非环饱和链，并用 ETKDGv3 + UFF 流程最大化两端碳距离。
 
 #### gpt-5.5 / skills-on
 
@@ -250,6 +256,8 @@ score: `1`
 
 track: RDKit
 
+主要任务：满足 LogP、SA、QED 硬约束，同时最大化与 caffeine 的 Morgan/Tanimoto 相似度。
+
 #### gpt-5.5 / skills-on
 
 score: `0.6470588235294118`
@@ -297,6 +305,8 @@ score: `0.6875`
 ### 5. `xtb_formula_dipole_min_014`
 
 track: xTB
+
+主要任务：生成分子式为 C12H16N3O8 的中性 doublet 分子，优化后最小化偶极矩。
 
 #### gpt-5.5 / skills-on
 
@@ -610,6 +620,8 @@ score: `1`
 
 track: xTB
 
+主要任务：生成含恰好两个氟原子的闭壳层分子，优化后最小化 HOMO-LUMO gap。
+
 #### gpt-5.5 / skills-on
 
 score: `1`
@@ -808,6 +820,8 @@ score: `1`
 ### 7. `xtb_c10_f2_gap_min_016`
 
 track: xTB
+
+主要任务：生成恰好含 10 个碳和 2 个氟的闭壳层分子，优化后最小化 HOMO-LUMO gap。
 
 #### gpt-5.5 / skills-on
 
@@ -1023,6 +1037,8 @@ score: `1`
 ### 8. `xtb_roy_singlepoint_energy_min_017`
 
 track: xTB
+
+主要任务：保持 ROY 分子身份，直接最小化提交三维几何的 GFN2-xTB single-point energy。
 
 #### gpt-5.5 / skills-on
 
@@ -1259,6 +1275,8 @@ score: `1`
 ### 9. `xtb_ritonavir_optimized_energy_min_018`
 
 track: xTB
+
+主要任务：保持 Ritonavir 的分子结构和指定立体化学，优化后最小化 total energy。
 
 #### gpt-5.5 / skills-on
 
@@ -1918,6 +1936,8 @@ score: `1`
 
 track: xTB
 
+主要任务：在非氢元素计数均为奇数且偶极小于 2 D 的硬约束下，最大化 HOMO-LUMO gap。
+
 #### gpt-5.5 / skills-on
 
 score: `0.1580170170279519`
@@ -2069,6 +2089,8 @@ score: `1`
 
 track: xTB
 
+主要任务：保持 pyrene 骨架及硝基、氨基、羧基三取代身份，经 CREST 搜索后最小化 total energy。
+
 #### gpt-5.5 / skills-on
 
 score: `1`
@@ -2114,6 +2136,8 @@ score: `1`
 ### 12. `property_calc_free_energy_001`
 
 track: property calculation
+
+主要任务：根据两套分子晶体 CIF，计算 300 K 的 free-energy absolute difference。
 
 #### gpt-5.5 / skills-on
 
@@ -2168,6 +2192,8 @@ score: `0`
 ### 13. `property_calc_crystal_phase_002`
 
 track: property calculation
+
+主要任务：根据 alpha/beta 晶体 CIF，计算势能差并判断 ambient-pressure 与 high-pressure phase。
 
 #### gpt-5.5 / skills-on
 
