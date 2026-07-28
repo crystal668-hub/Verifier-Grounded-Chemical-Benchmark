@@ -26,12 +26,13 @@
 发行版共有 **36 道题**。这里按 task ID 计数；例如
 `property_calc_crystal_phase_002` 虽然要求回答三个属性，仍计为一道题。
 
-| track | 题目数 | 输入/题型 | 主要考察方向 |
-| --- | ---: | --- | --- |
-| `rdkit` | 14 | 单组分分子 SMILES；open-generation | 2D 分子描述符约束、多目标性质优化、简单构象代理和分子相似性 |
-| `xtb` | 20 | 19 道显式氢 XYZ，1 道 SMILES-to-conformer；open-generation | 3D 几何生成、GFN-xTB 电子结构/反应性/热化学性质、构象和分子身份约束 |
-| `property_calculation` | 2 | 题面内嵌完整 CIF；fixed-input property calculation | 分子晶体自由能差、势能差和压力相判定 |
-| **合计** | **36** |  |  |
+```text
+track                    题目数  输入/题型                                      主要考察方向
+rdkit                    14      单组分 SMILES；open-generation                  2D 描述符、多目标优化、构象代理、分子相似性
+xtb                      20      显式氢 XYZ（19 道）或 SMILES-to-conformer（1 道）  3D 几何、GFN-xTB 电子结构/反应性/热化学、构象和身份约束
+property_calculation     2       完整 CIF；fixed-input property calculation     分子晶体自由能差、势能差和压力相判定
+合计                     36
+```
 
 三个 track 都是正式 track，task pack 版本均为 `0.4.2`。发行 manifest 中的
 OpenClaw 数据集计数也分别是 `14`、`20` 和 `2`。
@@ -148,15 +149,34 @@ profile。`mw` 虽可由 backend 和 script 计算，也不是当前 14 道题�
 以下后端有共享 backend、property script 或环境检查脚本，但没有进入
 `builtin registry`，也不在 `v0.4.2/task-inventory.json` 的正式三条 track 中。
 
-| backend | 工具/模型与运行方式 | 输入 | 当前可以计算的性质 |
-| --- | --- | --- | --- |
-| `admet_ai` | `admet-ai==2.0.1` 的 native `ADMETModel`；backend 同时记录 Chemprop 和 RDKit 版本 | 单组分 SMILES | `AMES`、`BBB_Martins`、`Caco2_Wang`、`hERG`、`Solubility_AqSolDB` 五个 ADMET endpoint |
-| `soltrannet` | Ersilia Docker image `ersiliaos/eos6oli:v1.0.0`，也可连接外部 HTTP service | 单组分 SMILES | `soltrannet_log_s`，由服务返回的 `solubility` 映射而来，作为 logS-style aqueous solubility 标量 |
-| `molgpka` | Docker image `ghcr.io/quanted/cts-molgpka:dev-acafcb3fb93dbf8dcf6c952cbf3b12161e7f468d`，默认 linux/amd64 | 单组分 SMILES | 原始 `molgpka_pka_values`、预测 pKa 数量 `molgpka_pka_count`、最小 pKa 和最大 pKa |
-| `matgl` | native MatGL；默认模型 `MEGNet-Eform-MP-2018.6.1`，可配置 band-gap fidelity/state attribute | CIF | formation energy（`eV/atom`）、band gap（`eV`） |
-| `mace_mp` | native MACE-MP ASE calculator；默认 `small`、CPU、`float32` | CIF，经 pymatgen 转 ASE Atoms | total potential energy（eV）、energy per atom（eV/atom）、max force（eV/Angstrom）、stress norm（eV/Angstrom^3） |
-| `torchani` | native TorchANI `ANI2x`，默认 CPU | XYZ，经 ASE 读取 | total energy（Hartree）、energy per atom（Hartree/atom）、max force（Hartree/Angstrom） |
-| `openmm` | OpenMM core；OpenFF/SMIRNOFF 默认 `openff-2.2.1.offxml` + AM1-BCC；GAFF 走显式配置和环境 probe | 固定 fixture，或单组分 SMILES ligand | fixed-system initial/minimized potential energy、energy drop、final max force；OpenFF ligand path 还计算参数化后的 minimization energy/force。当前 GAFF 路径主要是 GAFF template-generator 可用性 smoke，不是完整的正式 ligand 性质 task |
+- `admet_ai`
+  - 工具/模型：`admet-ai==2.0.1` native `ADMETModel`，同时记录 Chemprop 和 RDKit 版本。
+  - 输入：单组分 SMILES。
+  - 性质：`AMES`、`BBB_Martins`、`Caco2_Wang`、`hERG`、`Solubility_AqSolDB`。
+- `soltrannet`
+  - 工具/模型：Ersilia Docker image `ersiliaos/eos6oli:v1.0.0`，也可连接外部 HTTP service。
+  - 输入：单组分 SMILES。
+  - 性质：`soltrannet_log_s`，即服务返回的 logS-style aqueous solubility 标量。
+- `molgpka`
+  - 工具/模型：Docker image `ghcr.io/quanted/cts-molgpka:dev-acafcb3fb93dbf8dcf6c952cbf3b12161e7f468d`，默认 linux/amd64。
+  - 输入：单组分 SMILES。
+  - 性质：原始 `molgpka_pka_values`、pKa 数量 `molgpka_pka_count`、最小 pKa 和最大 pKa。
+- `matgl`
+  - 工具/模型：native MatGL，默认模型 `MEGNet-Eform-MP-2018.6.1`，可配置 band-gap fidelity/state attribute。
+  - 输入：CIF。
+  - 性质：formation energy（`eV/atom`）、band gap（`eV`）。
+- `mace_mp`
+  - 工具/模型：native MACE-MP ASE calculator，默认 `small`、CPU、`float32`。
+  - 输入：CIF，经 pymatgen 转为 ASE Atoms。
+  - 性质：total potential energy（eV）、energy per atom（eV/atom）、max force（eV/Angstrom）、stress norm（eV/Angstrom^3）。
+- `torchani`
+  - 工具/模型：native TorchANI `ANI2x`，默认 CPU。
+  - 输入：XYZ，经 ASE 读取。
+  - 性质：total energy（Hartree）、energy per atom（Hartree/atom）、max force（Hartree/Angstrom）。
+- `openmm`
+  - 工具/模型：OpenMM core；OpenFF/SMIRNOFF 默认 `openff-2.2.1.offxml` + AM1-BCC；GAFF 使用显式配置和环境 probe。
+  - 输入：固定 fixture 或单组分 SMILES ligand。
+  - 性质：fixed-system initial/minimized potential energy、energy drop、final max force；OpenFF ligand path 还计算参数化后的 minimization energy/force。GAFF 当前主要是 template-generator 可用性 smoke，不是完整正式 ligand 性质 task。
 
 这些后端的运行条件不同：ADMET-AI 是 package 依赖，MatGL/MACE-MP/TorchANI
 通过 optional dependency group 安装，SolTranNet/MolGpKa 依赖外部 Docker，
@@ -206,11 +226,12 @@ pack、冻结阈值/校准、公开发布边界或统一运行环境，因此不
 任务 013、xTB 任务 020 为 `0.4.2`），因此这里按共同 task ID 和统一评分字段
 进行横向比较，不把它表述为同一 release 的严格重放。
 
-| 模型 | 结果来源 | 生成时间 | 主比较组 | 题数 | 版本口径 |
-| --- | --- | --- | --- | ---: | --- |
-| `gpt-5.5` | `verifier-grounded-rdkit-gpt-5-5-20260726-164725` + `verifier-grounded-xtb-xyz-gpt-5-5-20260726-123119` + `verifier-grounded-property-calculation-gpt-5-5-20260727-163207` | 2026-07-26 至 2026-07-27 | `single_llm_skills_on` | 13 | RDKit/xTB 记录含 0.4.1/0.4.2；property 为 0.4.2 |
-| `gpt-5.6-terra` | `mixed-datasets-gpt-5-6-terra-20260727-191610` | 2026-07-27 | `single_llm_skills_on` | 13 | 0.4.2 |
-| `gpt-5.6-sol` | `mixed-datasets-gpt-5-6-sol-20260727-231050` | 2026-07-28 | `single_llm_skills_on` | 13 | 0.4.2 |
+```text
+模型          结果来源                                      生成时间                 组别                  题数  版本口径
+gpt-5.5       三个正式 track 的最新 gpt-5.5 run               2026-07-26 至 2026-07-27  single_llm_skills_on  13   RDKit/xTB 含 0.4.1/0.4.2；property 为 0.4.2
+gpt-5.6-terra mixed-datasets-gpt-5-6-terra-20260727-191610  2026-07-27               single_llm_skills_on  13   0.4.2
+gpt-5.6-sol   mixed-datasets-gpt-5-6-sol-20260727-231050    2026-07-28               single_llm_skills_on  13   0.4.2
+```
 
 对应的完整结果路径为：
 
@@ -224,11 +245,12 @@ pack、冻结阈值/校准、公开发布边界或统一运行环境，因此不
 
 ### 6.2 三模型总览
 
-| 模型 | 13-task 总均分 | RDKit（4） | xTB（7） | property calculation（2） | 13/13 scored |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `gpt-5.5` | **0.7870** | 0.8970 | 0.8708 | 0.2735 | 是 |
-| `gpt-5.6-terra` | **0.8756** | 0.9108 | 0.9900 | 0.4047 | 是 |
-| `gpt-5.6-sol` | **0.8854** | 0.9216 | 1.0000 | 0.4121 | 是 |
+```text
+模型          13-task 总均分  RDKit（4）  xTB（7）  property calculation（2）  13/13 scored
+gpt-5.5       0.7870          0.8970      0.8708    0.2735                    是
+gpt-5.6-terra 0.8756          0.9108      0.9900    0.4047                    是
+gpt-5.6-sol   0.8854          0.9216      1.0000    0.4121                    是
+```
 
 按 13 道题的简单算术平均汇总，`gpt-5.6-sol` 最高，较 `gpt-5.5` 高
 0.0984；`gpt-5.6-terra` 较 `gpt-5.5` 高 0.0886。三模型的差异主要来自
@@ -236,21 +258,38 @@ xTB 和 property calculation，RDKit 的差距相对较小。
 
 ### 6.3 13-task 横向对比
 
-| task | track | 任务简述 | `gpt-5.5` | `gpt-5.6-terra` | `gpt-5.6-sol` |
-| --- | --- | --- | ---: | ---: | ---: |
-| `rdkit_logp_target_011` | RDKit | 单组分分子，在元素和原子数域内让 LogP 尽量接近 3.0。 | 0.99480 | 0.98433 | 0.99887 |
-| `rdkit_sa_logp_target_012` | RDKit | 在 SA score 严格小于 5.0 的硬约束下优化 LogP 至 3.0。 | 0.99997 | 0.99223 | 0.99997 |
-| `rdkit_chain_end_to_end_max_013` | RDKit | 固定六碳非环饱和链，用 ETKDGv3 + UFF 流程最大化两端碳距离。 | 0.94617 | 1.00000 | 1.00000 |
-| `rdkit_caffeine_similarity_max_014` | RDKit | 满足 LogP、SA、QED 硬约束，最大化与 caffeine 的 Morgan/Tanimoto 相似度。 | 0.64706 | 0.66667 | 0.68750 |
-| `xtb_formula_dipole_min_014` | xTB | 固定分子式 `C12H16N3O8`、中性 doublet，优化后最小化偶极矩。 | 1.00000 | 1.00000 | 1.00000 |
-| `xtb_two_fluorine_gap_min_015` | xTB | 闭壳层分子含恰好两个 F，在组成域内最小化 HOMO-LUMO gap。 | 1.00000 | 1.00000 | 1.00000 |
-| `xtb_c10_f2_gap_min_016` | xTB | 固定恰好 10 个 C 和 2 个 F 的组成，最小化优化后 HOMO-LUMO gap。 | 0.93778 | 0.98655 | 1.00000 |
-| `xtb_roy_singlepoint_energy_min_017` | xTB | 保持 ROY 分子身份，直接以提交几何的 GFN2-xTB single-point energy 为目标。 | 1.00000 | 1.00000 | 1.00000 |
-| `xtb_ritonavir_optimized_energy_min_018` | xTB | 保持 Ritonavir 图结构和立体化学，优化后最小化 total energy。 | 1.00000 | 1.00000 | 1.00000 |
-| `xtb_odd_element_counts_gap_max_019` | xTB | 要求所有非氢元素计数为奇数、偶极小于 2 D，再最大化 HOMO-LUMO gap。 | 0.15802 | 0.94360 | 1.00000 |
-| `xtb_pyrene_substituent_energy_min_020` | xTB | 保持 pyrene 三取代身份（硝基、氨基、羧基），经 CREST 搜索后最小化 total energy。 | 1.00000 | 1.00000 | 1.00000 |
-| `property_calc_free_energy_001` | property calculation | 从两套分子晶体 CIF 计算 300 K free-energy absolute difference，单位 kJ/mol。 | 0.04706 | 0.30945 | 0.32424 |
-| `property_calc_crystal_phase_002` | property calculation | 计算 alpha/beta 晶体势能差，并判断 ambient-pressure 与 high-pressure phase。 | 0.50000 | 0.50000 | 0.50000 |
+```text
+task                                      track                 gpt-5.5  terra    sol
+rdkit_logp_target_011                    RDKit                 0.99480  0.98433  0.99887
+rdkit_sa_logp_target_012                 RDKit                 0.99997  0.99223  0.99997
+rdkit_chain_end_to_end_max_013           RDKit                 0.94617  1.00000  1.00000
+rdkit_caffeine_similarity_max_014        RDKit                 0.64706  0.66667  0.68750
+xtb_formula_dipole_min_014               xTB                   1.00000  1.00000  1.00000
+xtb_two_fluorine_gap_min_015             xTB                   1.00000  1.00000  1.00000
+xtb_c10_f2_gap_min_016                   xTB                   0.93778  0.98655  1.00000
+xtb_roy_singlepoint_energy_min_017       xTB                   1.00000  1.00000  1.00000
+xtb_ritonavir_optimized_energy_min_018   xTB                   1.00000  1.00000  1.00000
+xtb_odd_element_counts_gap_max_019       xTB                   0.15802  0.94360  1.00000
+xtb_pyrene_substituent_energy_min_020    xTB                   1.00000  1.00000  1.00000
+property_calc_free_energy_001             property calculation   0.04706  0.30945  0.32424
+property_calc_crystal_phase_002           property calculation   0.50000  0.50000  0.50000
+```
+
+13 个 task 的简要概括如下：
+
+1. `rdkit_logp_target_011`：在元素和原子数约束内，让单组分分子的 LogP 接近 3.0。
+2. `rdkit_sa_logp_target_012`：在 SA score 严格小于 5.0 的硬约束下优化 LogP 至 3.0。
+3. `rdkit_chain_end_to_end_max_013`：固定六碳非环饱和链，用 ETKDGv3 + UFF 最大化两端碳距离。
+4. `rdkit_caffeine_similarity_max_014`：满足 LogP、SA、QED 硬约束，最大化与 caffeine 的 Morgan/Tanimoto 相似度。
+5. `xtb_formula_dipole_min_014`：固定 `C12H16N3O8`、中性 doublet，优化后最小化偶极矩。
+6. `xtb_two_fluorine_gap_min_015`：闭壳层分子含恰好两个 F，最小化 HOMO-LUMO gap。
+7. `xtb_c10_f2_gap_min_016`：固定恰好 10 个 C 和 2 个 F，最小化优化后 HOMO-LUMO gap。
+8. `xtb_roy_singlepoint_energy_min_017`：保持 ROY 分子身份，最小化提交几何的 GFN2-xTB single-point energy。
+9. `xtb_ritonavir_optimized_energy_min_018`：保持 Ritonavir 图结构和立体化学，优化后最小化 total energy。
+10. `xtb_odd_element_counts_gap_max_019`：要求非氢元素计数均为奇数、偶极小于 2 D，再最大化 HOMO-LUMO gap。
+11. `xtb_pyrene_substituent_energy_min_020`：保持 pyrene 的硝基、氨基、羧基三取代身份，经 CREST 搜索后最小化 total energy。
+12. `property_calc_free_energy_001`：从两套分子晶体 CIF 计算 300 K free-energy absolute difference。
+13. `property_calc_crystal_phase_002`：计算 alpha/beta 晶体势能差，并判断 ambient-pressure 和 high-pressure phase。
 
 三模型在 13 个 task 上都成功完成了 verifier 评分，没有出现不可评估记录。xTB
 的 014、015、017、018、020 五道题三者均得满分；`gpt-5.5` 的主要短板是
@@ -263,14 +302,15 @@ xTB 和 property calculation，RDKit 的差距相对较小。
 两次 mixed run 还提供了 skills allowlist 的消融组。以下分数同样是 13 个共同
 task 的算术平均；`delta` 为 on 减 off。
 
-| run | skills 状态 | 13-task 总均分 | RDKit（4） | xTB（7） | property calculation（2） |
-| --- | --- | ---: | ---: | ---: | ---: |
-| `gpt-5.6-terra` | on | 0.8756 | 0.9108 | 0.9900 | 0.4047 |
-| `gpt-5.6-terra` | off | 0.8605 | 0.9217 | 1.0000 | 0.2500 |
-| `gpt-5.6-terra` | on - off | **+0.0151** | -0.0109 | -0.0100 | **+0.1547** |
-| `gpt-5.6-sol` | on | 0.8854 | 0.9216 | 1.0000 | 0.4121 |
-| `gpt-5.6-sol` | off | 0.8606 | 0.9219 | 1.0000 | 0.2500 |
-| `gpt-5.6-sol` | on - off | **+0.0249** | -0.0003 | +0.0000 | **+0.1621** |
+```text
+run           skills 状态  13-task 总均分  RDKit（4）  xTB（7）  property calculation（2）
+gpt-5.6-terra on          0.8756          0.9108      0.9900    0.4047
+gpt-5.6-terra off         0.8605          0.9217      1.0000    0.2500
+gpt-5.6-terra on - off   +0.0151         -0.0109     -0.0100   +0.1547
+gpt-5.6-sol   on          0.8854          0.9216      1.0000    0.4121
+gpt-5.6-sol   off         0.8606          0.9219      1.0000    0.2500
+gpt-5.6-sol   on - off   +0.0249         -0.0003     +0.0000   +0.1621
+```
 
 在这两次 run 中，skills 的正向差异主要体现在 property calculation；RDKit
 和 xTB 没有表现出一致的提升，terra 的两项反而略低，sol 基本持平。因此不能
