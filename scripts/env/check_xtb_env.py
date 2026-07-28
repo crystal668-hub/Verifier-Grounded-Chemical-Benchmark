@@ -12,8 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import XTBRunner, parse_xtb_output  # noqa: E402
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import (  # noqa: E402
+    XTBRunner,
+    parse_xtb_output,
+)
 
 WATER_XYZ = """3
 water

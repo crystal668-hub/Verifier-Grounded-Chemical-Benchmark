@@ -10,11 +10,14 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime as runtime
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import (
+    docker_model_runtime as runtime,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 DEFAULT_SOLTRANNET_IMAGE = "ersiliaos/eos6oli:v1.0.0"
 DEFAULT_CONTAINER_NAME = "vgb-soltrannet-eos6oli"

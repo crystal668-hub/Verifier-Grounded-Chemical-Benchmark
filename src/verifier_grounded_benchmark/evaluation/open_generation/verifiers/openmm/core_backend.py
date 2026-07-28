@@ -5,6 +5,11 @@ from __future__ import annotations
 from importlib import metadata
 from typing import Any
 
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import (
     ENV_FAILURE,
     TOOL_FAILURE,
@@ -12,7 +17,6 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.run
     OpenMMToolError,
     run_core_smoke,
 )
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result, error_result, verified_result
 
 
 def evaluate_openmm_core_constraint(

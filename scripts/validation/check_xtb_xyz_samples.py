@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from verifier_grounded_benchmark import load_track  # noqa: E402
+
 MIN_SAMPLE_SCORE = 0.6
 
 

@@ -1,16 +1,19 @@
 from __future__ import annotations
 
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 
 import pytest
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import backend as xtb_backend
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import StructureIdentityError
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import validate_structure_identity
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import (
+    backend as xtb_backend,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import (
+    StructureIdentityError,
+    validate_structure_identity,
+)
 
 ROY_SMILES = "Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N"
 RITONAVIR_SMILES = (
@@ -20,7 +23,7 @@ RITONAVIR_SMILES = (
 LACTIC_ACID_SMILES = "C[C@H](O)C(=O)O"
 
 
-@lru_cache(maxsize=None)
+@cache
 def xyz_for_smiles(smiles: str, seed: int = 7) -> str:
     molecule = Chem.AddHs(Chem.MolFromSmiles(smiles))
     assert AllChem.EmbedMolecule(molecule, randomSeed=seed, useRandomCoords=True) == 0

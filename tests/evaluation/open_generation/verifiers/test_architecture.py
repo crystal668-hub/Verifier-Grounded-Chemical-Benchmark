@@ -15,7 +15,6 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backen
 from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.resources import package_resource
 
-
 VERIFIER_ROOT = (
     Path(__file__).resolve().parents[4]
     / "src"

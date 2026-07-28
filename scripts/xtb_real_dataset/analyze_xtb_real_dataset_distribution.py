@@ -12,7 +12,6 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-
 PERCENTILES = {
     "p1": 0.01,
     "p5": 0.05,

@@ -8,7 +8,6 @@ from pathlib import Path
 
 from scripts.xtb_calibration.run_xtb_calibration import build_calibration_row
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "xtb_calibration" / "run_xtb_calibration.py"
 

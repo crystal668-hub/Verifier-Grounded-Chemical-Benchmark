@@ -87,7 +87,7 @@ def test_property_calculation_track_scores_public_samples() -> None:
 
 
 def test_load_track_rejects_unknown_track() -> None:
-    with pytest.raises(KeyError, match="Unknown benchmark track|unknown track"):
+    with pytest.raises(KeyError, match=r"Unknown benchmark track|unknown track"):
         vgb.load_track("missing")
 
 

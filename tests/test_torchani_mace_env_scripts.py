@@ -7,8 +7,7 @@ from typing import Any
 
 import pytest
 
-from scripts.env import check_mace_mp_env
-from scripts.env import check_torchani_env
+from scripts.env import check_mace_mp_env, check_torchani_env
 
 
 def test_check_torchani_env_reports_success_json(

@@ -5,10 +5,11 @@ from importlib.resources import files
 
 import yaml
 
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    normalize_answer_record,
+)
 from verifier_grounded_benchmark.task.loader import load_tasks_file as load_tasks
 from verifier_grounded_benchmark.task.resources import package_resource
-
 
 CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
 ANSWERS_PATH = CALIBRATION_DIR.joinpath("legacy_answers.jsonl")

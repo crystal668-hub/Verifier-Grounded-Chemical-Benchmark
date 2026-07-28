@@ -7,7 +7,10 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result, error_result
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+)
 
 Evaluator = Callable[[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]], dict[str, Any]]
 

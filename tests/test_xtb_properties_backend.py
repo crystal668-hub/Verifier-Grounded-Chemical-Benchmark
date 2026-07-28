@@ -5,8 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import backend as xtb_properties
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import (
+    backend as xtb_properties,
+)
 
 WATER_XYZ = """3
 water

@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from verifier_grounded_benchmark.evaluation.common.failures import SUBMISSION_FAILURE
 from verifier_grounded_benchmark.evaluation.common.results import scored_result
-from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatcher import parse_answer
+from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatcher import (
+    parse_answer,
+)
 from verifier_grounded_benchmark.evaluation.property_calculation.parsing.multi_property import (
     PropertyAnswerParseError,
 )
@@ -19,7 +22,9 @@ from verifier_grounded_benchmark.evaluation.property_calculation.scoring.exact_s
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.numeric_gold import (
     score_numeric_gold,
 )
-from verifier_grounded_benchmark.evaluation.property_calculation.scoring.task_score import score_task
+from verifier_grounded_benchmark.evaluation.property_calculation.scoring.task_score import (
+    score_task,
+)
 from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
 
 

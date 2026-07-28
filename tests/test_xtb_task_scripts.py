@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import run_verification_script
-
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import (
+    run_verification_script,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -47,7 +48,7 @@ def test_xtb_property_script_rejects_property_mismatch() -> None:
     assert result["task_id"] == "xtb_gap_window_001"
     assert result["verifier_id"] == "xtb_gap_gfn2_v1"
     assert result["failure_type"] == "verifier_spec_error"
-    assert "script property 'homo_lumo_gap' does not match verifier_spec property 'dipole_moment'" == result["message"]
+    assert result["message"] == "script property 'homo_lumo_gap' does not match verifier_spec property 'dipole_moment'"
     assert result["failure_scope"] == "task"
     assert "scores" not in result
 

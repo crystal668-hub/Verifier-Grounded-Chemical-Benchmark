@@ -28,7 +28,9 @@ from verifier_grounded_benchmark.task.schema.common import (
     require_string,
     validate_profiles,
 )
-from verifier_grounded_benchmark.task.schema.open_generation import validate_open_generation_task
+from verifier_grounded_benchmark.task.schema.open_generation import (
+    validate_open_generation_task,
+)
 from verifier_grounded_benchmark.task.schema.property_calculation import (
     validate_property_calculation_task,
 )

@@ -7,12 +7,19 @@ import importlib.metadata as metadata
 from typing import Any
 
 from rdkit import Chem, DataStructs
-from rdkit.Chem import Crippen, Descriptors, QED, rdFingerprintGenerator, rdMolDescriptors
+from rdkit.Chem import (
+    QED,
+    Crippen,
+    Descriptors,
+    rdFingerprintGenerator,
+    rdMolDescriptors,
+)
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 DESCRIPTOR_FUNCTIONS = {
     "qed": QED.qed,

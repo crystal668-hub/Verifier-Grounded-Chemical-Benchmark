@@ -5,14 +5,12 @@ from __future__ import annotations
 import json
 import os
 import shutil
-import socket
 import subprocess
 import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from typing import Any
-
 
 VGB_DOCKER_LABEL_KEY = "verifier-grounded-benchmark.managed"
 VGB_DOCKER_LABEL_VALUE = "true"
@@ -40,10 +38,7 @@ class DockerCommandResult:
 
 def resolve_docker_executable(docker_executable: str | None = None) -> str:
     configured = docker_executable or os.environ.get("VGB_DOCKER_EXECUTABLE") or "docker"
-    if os.sep in configured:
-        resolved = configured
-    else:
-        resolved = shutil.which(configured)
+    resolved = configured if os.sep in configured else shutil.which(configured)
     if not resolved:
         raise DockerRuntimeEnvironmentError(f"Docker executable not found: {configured}")
     return resolved
@@ -140,7 +135,7 @@ def http_json(
     try:
         with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
             text = response.read().decode()
-    except (TimeoutError, socket.timeout) as exc:
+    except TimeoutError as exc:
         raise DockerRuntimeTimeout(f"HTTP request timed out after {timeout_seconds:g} seconds: {url}") from exc
     except urllib.error.URLError as exc:
         raise DockerRuntimeToolError(f"HTTP request failed for {url}: {exc}") from exc

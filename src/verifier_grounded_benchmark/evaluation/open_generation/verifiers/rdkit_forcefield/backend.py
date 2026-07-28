@@ -9,8 +9,11 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result, error_result, verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 DEFAULT_BACKEND = {
     "embedder": "ETKDGv3",

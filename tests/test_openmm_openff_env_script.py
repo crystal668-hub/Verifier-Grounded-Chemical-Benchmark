@@ -9,7 +9,9 @@ from typing import Any
 import pytest
 
 from scripts.env import check_openmm_openff_env
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import runtime as openmm_runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import (
+    runtime as openmm_runtime,
+)
 
 
 def test_check_openmm_openff_env_reports_missing_dependency_json(

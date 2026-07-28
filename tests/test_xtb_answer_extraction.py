@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
-
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    normalize_answer_record,
+)
 
 XYZ_TASK = {
     "task_id": "xtb_gap_window_001",

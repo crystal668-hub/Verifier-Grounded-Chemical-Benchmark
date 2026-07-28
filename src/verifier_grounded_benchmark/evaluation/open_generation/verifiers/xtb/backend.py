@@ -17,12 +17,15 @@ from typing import Any, Protocol
 from rdkit import Chem
 from rdkit.Chem import rdDetermineBonds
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import StructureIdentityError
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import validate_structure_identity
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.structure_identity import (
+    StructureIdentityError,
+    validate_structure_identity,
+)
 
 HARTREE_TO_EV = 27.211386245988
 GAP_PATTERN = re.compile(r"HOMO-LUMO\s+GAP\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+eV", re.IGNORECASE)
@@ -33,7 +36,7 @@ LUMO_PATTERN = re.compile(
     re.IGNORECASE | re.MULTILINE,
 )
 POLARIZABILITY_PATTERN = re.compile(
-    r"Mol\.\s+(?:alpha|α)\(0\)\s*/au\s*:\s*([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
+    r"Mol\.\s+(?:alpha|\N{GREEK SMALL LETTER ALPHA})\(0\)\s*/au\s*:\s*([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)",
     re.IGNORECASE,
 )
 GSOLV_PATTERN = re.compile(r"->\s*Gsolv\s+([-+]?\d+(?:\.\d+)?(?:[Ee][-+]?\d+)?)\s+Eh", re.IGNORECASE)
@@ -778,10 +781,10 @@ def count_heavy_atoms_from_xyz(xyz_path: Path) -> int:
 
 
 def last_match(pattern: re.Pattern[str], text: str) -> re.Match[str] | None:
-    match: re.Match[str] | None = None
-    for match in pattern.finditer(text):
-        pass
-    return match
+    last: re.Match[str] | None = None
+    for candidate in pattern.finditer(text):
+        last = candidate
+    return last
 
 
 def xtb_versions(spec: dict[str, Any]) -> dict[str, Any]:

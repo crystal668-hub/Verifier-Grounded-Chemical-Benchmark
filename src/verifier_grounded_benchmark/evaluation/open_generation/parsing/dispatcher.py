@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any
 
 from verifier_grounded_benchmark.evaluation.open_generation.parsing.final_answer_block import (
     parse_final_answer_block,

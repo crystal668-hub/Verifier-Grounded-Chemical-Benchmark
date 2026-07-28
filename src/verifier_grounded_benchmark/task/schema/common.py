@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 from numbers import Real
-from typing import Any, Mapping
+from typing import Any
 
 from verifier_grounded_benchmark.task.models import LinearGoalSpec
-
 
 SCORING_VERSION = "linear_goal_v1"
 SUPPORTED_SCORING_VERSIONS = frozenset({"linear_goal_v1", "linear_goal_v2"})

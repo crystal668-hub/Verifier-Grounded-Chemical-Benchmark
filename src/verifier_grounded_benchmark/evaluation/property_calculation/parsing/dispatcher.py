@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Any
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
+from typing import Any
 
 from verifier_grounded_benchmark.evaluation.property_calculation.parsing.multi_property import (
     PropertyAnswerParseError,

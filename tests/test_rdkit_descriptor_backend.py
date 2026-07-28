@@ -4,9 +4,12 @@ import importlib
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors import backend as rdkit_descriptors
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.backend import evaluate_descriptor_constraint
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors import (
+    backend as rdkit_descriptors,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.backend import (
+    evaluate_descriptor_constraint,
+)
 
 SPEC = {
     "verifier_id": "rdkit_logp_v1",

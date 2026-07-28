@@ -9,8 +9,9 @@ import sys
 import tarfile
 import tempfile
 from collections import Counter
+from collections.abc import Iterable
+from functools import partial
 from pathlib import Path
-from typing import Iterable
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -77,7 +78,7 @@ def iter_sdf_paths(
                     continue
                 with tempfile.NamedTemporaryFile(suffix=".sdf", delete=False) as handle:
                     try:
-                        for chunk in iter(lambda: extracted.read(1024 * 1024), b""):
+                        for chunk in iter(partial(extracted.read, 1024 * 1024), b""):
                             handle.write(chunk)
                     except (EOFError, tarfile.ReadError):
                         if summary is not None:

@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 from numbers import Real
-from typing import Any, Mapping
+from typing import Any
 
 from verifier_grounded_benchmark.evaluation.common.scoring.linear_goal import score
 from verifier_grounded_benchmark.task.schema.common import linear_goal_from_profile

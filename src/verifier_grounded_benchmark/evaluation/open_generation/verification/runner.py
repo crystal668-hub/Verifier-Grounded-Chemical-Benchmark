@@ -10,15 +10,14 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
-    VerificationEvidence,
-)
 from verifier_grounded_benchmark.evaluation.external_dependencies import (
     ExternalDependencyError,
     preflight_external_dependencies,
 )
+from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
+    VerificationEvidence,
+)
 from verifier_grounded_benchmark.task.resources import resolve_script_path, source_root
-
 
 CANDIDATE_FAILURES = {
     "parse_error",

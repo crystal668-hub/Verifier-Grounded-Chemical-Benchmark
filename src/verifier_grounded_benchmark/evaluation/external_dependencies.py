@@ -65,11 +65,11 @@ def preflight_external_dependencies(
         version_output = _version_output(resolved, target_environ) if resolved else None
 
         if not resolved or not _matches_version(version_output, expected_version):
+            if isinstance(conda_environment, str) and conda_environment not in conda_prefixes:
+                conda_prefixes[conda_environment] = _find_conda_environment(
+                    conda_environment, target_environ
+                )
             if isinstance(conda_environment, str):
-                if conda_environment not in conda_prefixes:
-                    conda_prefixes[conda_environment] = _find_conda_environment(
-                        conda_environment, target_environ
-                    )
                 prefix = conda_prefixes[conda_environment]
                 if prefix is not None:
                     _prepend_environment_path(prefix, target_environ)

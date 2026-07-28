@@ -4,8 +4,12 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import backend as molgpka_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import (
+    docker_model_runtime,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import (
+    backend as molgpka_properties,
+)
 
 
 def payload(property_name: str) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:

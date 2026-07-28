@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.matgl.backend import evaluate_matgl_constraint
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.property_cli import run_property_script
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.property_cli import (
+    run_property_script,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.matgl.backend import (
+    evaluate_matgl_constraint,
+)
 
 
 def main(property_name: str) -> None:

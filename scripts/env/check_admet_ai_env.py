@@ -12,7 +12,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 DEFAULT_ENDPOINTS = ["Solubility_AqSolDB", "hERG", "AMES", "BBB_Martins", "Caco2_Wang"]
 
 

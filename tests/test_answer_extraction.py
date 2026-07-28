@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
-
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    normalize_answer_record,
+)
 
 TASK = {
     "task_id": "rdkit_qed_max_001",

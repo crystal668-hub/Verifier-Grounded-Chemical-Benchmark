@@ -10,7 +10,6 @@ import yaml
 
 from scripts.release.build_release import verify_archive_payloads
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_XTB_CALIBRATION_FILES = {
     "verifier_grounded_benchmark/task/calibration/xtb/tasks.yaml",

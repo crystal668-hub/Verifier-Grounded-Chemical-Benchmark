@@ -6,12 +6,11 @@ from __future__ import annotations
 import argparse
 import json
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import yaml
-
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "data" / "xtb_real_dataset_sources.yaml"
@@ -63,7 +62,7 @@ def remote_head(url: str, timeout: float) -> dict[str, Any]:
                 "http_status": response.status,
                 "content_length": response.headers.get("Content-Length"),
             }
-    except Exception as exc:  # noqa: BLE001 - diagnostics must preserve access failures.
+    except Exception as exc:
         return {"status": "error", "message": str(exc)}
 
 
@@ -92,7 +91,7 @@ def inspect_manifest(manifest_path: Path, *, check_remote: bool, remote_timeout:
 
     return {
         "status": "ok",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "source_manifest": str(manifest_path),
         "remote_checked": check_remote,
         "sources": sources,

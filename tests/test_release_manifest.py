@@ -14,7 +14,6 @@ from scripts.release.build_release import (
     verify_archive_payloads,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 RELEASE_DIR = ROOT / "releases" / "v0.1.1"
 CURRENT_RELEASE_DIR = ROOT / "releases" / "v0.2.0"

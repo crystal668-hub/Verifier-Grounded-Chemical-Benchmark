@@ -7,7 +7,6 @@ from pathlib import Path
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_MANIFEST = ROOT / "data" / "xtb_real_dataset_sources.yaml"
 
@@ -615,7 +614,9 @@ def test_prepare_xtb_real_dataset_sample_expanded_writes_target_tier_files(tmp_p
 
 
 def test_prepare_xtb_real_dataset_sample_fills_underfilled_quota_to_target() -> None:
-    from scripts.xtb_real_dataset.prepare_xtb_real_dataset_sample import fit_sample_to_target
+    from scripts.xtb_real_dataset.prepare_xtb_real_dataset_sample import (
+        fit_sample_to_target,
+    )
 
     def enriched(dataset_name: str, record_id: str) -> dict[str, object]:
         return {

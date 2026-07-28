@@ -8,6 +8,11 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import (
     DEFAULT_OPENFF_FORCEFIELD,
     ENV_FAILURE,
@@ -17,8 +22,6 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.run
     run_gaff_smoke,
     run_openff_smoke,
 )
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result, error_result, verified_result
-
 
 DEFAULT_BACKEND = {
     "forcefield_family": "openff",

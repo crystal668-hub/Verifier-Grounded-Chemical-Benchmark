@@ -11,7 +11,6 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backen
     XTBRunResult,
 )
 
-
 PYRENE = "c1cc2ccc3cccc4ccc(c1)c2c34"
 VALID = "Nc1cc2ccc3cccc4cc(C(=O)O)c(c1[N+](=O)[O-])c2c34"
 SPEC = {

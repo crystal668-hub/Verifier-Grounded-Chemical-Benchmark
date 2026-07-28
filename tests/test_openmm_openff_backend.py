@@ -2,9 +2,13 @@ from __future__ import annotations
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import openff_backend as openmm_openff_properties
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import OpenMMEnvironmentError, OpenMMToolError
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm import (
+    openff_backend as openmm_openff_properties,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.openmm.runtime import (
+    OpenMMEnvironmentError,
+    OpenMMToolError,
+)
 
 SPEC = {
     "verifier_id": "openmm_openff_ligand_energy_drop_v1",

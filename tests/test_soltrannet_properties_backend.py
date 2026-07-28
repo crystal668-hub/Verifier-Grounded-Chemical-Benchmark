@@ -4,8 +4,12 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import backend as soltrannet_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import (
+    docker_model_runtime,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import (
+    backend as soltrannet_properties,
+)
 
 
 def payload() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:

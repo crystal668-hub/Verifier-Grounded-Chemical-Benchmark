@@ -4,8 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.matgl import backend as matgl_properties
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.matgl import (
+    backend as matgl_properties,
+)
 
 SI_CIF = (Path(__file__).resolve().parent / "fixtures" / "Si.cif").read_text()
 

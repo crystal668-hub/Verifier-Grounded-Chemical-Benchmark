@@ -13,7 +13,6 @@ from typing import Any
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_NAME = "verifier-grounded-benchmark"
 ARCHIVE_PACKAGES = ("verifier_grounded_benchmark", "vgb")

@@ -8,7 +8,9 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime as runtime
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import (
+    docker_model_runtime as runtime,
+)
 
 
 def test_run_docker_command_maps_missing_executable(monkeypatch: pytest.MonkeyPatch) -> None:

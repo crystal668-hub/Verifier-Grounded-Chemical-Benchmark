@@ -5,14 +5,19 @@ from importlib.resources import files
 import pytest
 import yaml
 
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
-from verifier_grounded_benchmark.evaluation.open_generation.scoring import score_constraint_value
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    normalize_answer_record,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring import (
+    score_constraint_value,
+)
 from verifier_grounded_benchmark.task.loader import (
     load_answers_jsonl_file as load_answers_jsonl,
+)
+from verifier_grounded_benchmark.task.loader import (
     load_task_pack,
 )
 from verifier_grounded_benchmark.task.resources import package_resource
-
 
 TASKS_RESOURCE = package_resource("xtb", "tasks.yaml")
 SPECS_RESOURCE = package_resource("xtb", "verifier_specs.yaml")

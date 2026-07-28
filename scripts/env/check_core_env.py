@@ -14,8 +14,7 @@ def package_version(distribution: str) -> str:
 
 def check_rdkit() -> dict[str, Any]:
     from rdkit import Chem
-    from rdkit.Chem import Crippen, Descriptors, QED, rdMolDescriptors
-    from rdkit.Chem import AllChem
+    from rdkit.Chem import QED, AllChem, Crippen, Descriptors, rdMolDescriptors
 
     sascorer = importlib.import_module("rdkit.Contrib.SA_Score.sascorer")
 

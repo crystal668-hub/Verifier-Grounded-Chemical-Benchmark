@@ -4,10 +4,9 @@ import tomllib
 from pathlib import Path
 
 import pytest
+
 import verifier_grounded_benchmark as vgb
-
 from scripts.release.build_release import _require_formal_inventory, task_inventory
-
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_TASK_IDS = {

@@ -7,8 +7,12 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import cli as molgpka_property_script
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import cli as soltrannet_property_script
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka import (
+    cli as molgpka_property_script,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet import (
+    cli as soltrannet_property_script,
+)
 
 
 def run_in_process(

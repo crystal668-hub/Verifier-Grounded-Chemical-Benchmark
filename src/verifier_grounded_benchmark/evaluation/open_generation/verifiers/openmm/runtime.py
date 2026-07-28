@@ -8,7 +8,6 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-
 ENV_FAILURE = "verifier_env_error"
 TOOL_FAILURE = "verifier_tool_error"
 DEFAULT_OPENFF_SMILES = "CCO"

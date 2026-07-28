@@ -6,7 +6,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -94,7 +93,10 @@ def test_run_xtb_real_dataset_distribution_rows_expose_property_statuses() -> No
 
 
 def test_run_xtb_real_dataset_distribution_resume_skips_existing_rows(tmp_path) -> None:
-    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import (
+        load_existing_rows,
+        pending_records,
+    )
 
     output = tmp_path / "results.json"
     output.write_text(
@@ -126,7 +128,10 @@ def test_run_xtb_real_dataset_distribution_resume_skips_existing_rows(tmp_path) 
 
 
 def test_run_xtb_real_dataset_distribution_resume_does_not_skip_other_tiers(tmp_path) -> None:
-    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import load_existing_rows, pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import (
+        load_existing_rows,
+        pending_records,
+    )
 
     output = tmp_path / "results.json"
     output.write_text(
@@ -155,7 +160,9 @@ def test_run_xtb_real_dataset_distribution_resume_does_not_skip_other_tiers(tmp_
 
 
 def test_run_xtb_real_dataset_distribution_resume_keeps_dataset_names_distinct(tmp_path) -> None:
-    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import pending_records
+    from scripts.xtb_real_dataset.run_xtb_real_dataset_distribution import (
+        pending_records,
+    )
 
     existing = [{"dataset_name": "qmugs", "record_id": "same-record", "tier": "light"}]
     records = [

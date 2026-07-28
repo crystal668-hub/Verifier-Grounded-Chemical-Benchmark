@@ -5,7 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from verifier_grounded_benchmark.task.resources import package_resource, repository_root, resolve_path
+from verifier_grounded_benchmark.task.resources import (
+    package_resource,
+    repository_root,
+    resolve_path,
+)
 
 
 @dataclass(frozen=True)

@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from verifier_grounded_benchmark.evaluator import (
     EvaluationConfig,
     EvaluationReport,
     Evaluator,
 )
-from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file, load_task_pack
+from verifier_grounded_benchmark.task.loader import (
+    load_answers_jsonl_file,
+    load_task_pack,
+)
 from verifier_grounded_benchmark.task.models import merge_task_packs
 from verifier_grounded_benchmark.task.registry import TrackDefinition
 from verifier_grounded_benchmark.task.resources import materialize_verifier_specs

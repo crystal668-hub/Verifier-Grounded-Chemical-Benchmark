@@ -4,15 +4,16 @@ from __future__ import annotations
 
 import math
 from collections import Counter
-from functools import lru_cache
+from functools import cache
 from importlib import metadata
 from io import StringIO
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 SUPPORTED_TORCHANI_PROPERTIES = {
     "torchani_total_energy_hartree",
@@ -160,7 +161,7 @@ def predict_torchani_properties(atoms: Any, spec: dict[str, Any]) -> dict[str, f
     }
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_torchani_model(model_name: str, device: str) -> Any:
     if model_name != DEFAULT_TORCHANI_MODEL:
         raise ValueError(f"unsupported TorchANI model_name: {model_name}")

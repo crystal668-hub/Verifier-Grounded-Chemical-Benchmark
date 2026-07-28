@@ -2,15 +2,27 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
-from verifier_grounded_benchmark.evaluation.common.scoring.aggregation import geometric_mean
-from verifier_grounded_benchmark.evaluation.open_generation.scoring.gates import gate_score
-from verifier_grounded_benchmark.evaluation.open_generation.scoring.maximize import score_maximize
-from verifier_grounded_benchmark.evaluation.open_generation.scoring.minimize import score_minimize
-from verifier_grounded_benchmark.evaluation.open_generation.scoring.target import score_target
-from verifier_grounded_benchmark.evaluation.open_generation.scoring.window import score_window
-
+from verifier_grounded_benchmark.evaluation.common.scoring.aggregation import (
+    geometric_mean,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring.gates import (
+    gate_score,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring.maximize import (
+    score_maximize,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring.minimize import (
+    score_minimize,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring.target import (
+    score_target,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.scoring.window import (
+    score_window,
+)
 
 SCORERS = {
     "target": score_target,

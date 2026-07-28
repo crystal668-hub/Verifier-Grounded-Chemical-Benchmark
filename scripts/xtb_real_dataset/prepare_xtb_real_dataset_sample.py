@@ -8,9 +8,10 @@ import hashlib
 import json
 import sys
 from collections import Counter
-from datetime import datetime, timezone
+from collections.abc import Iterable
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
@@ -18,8 +19,12 @@ if str(ROOT) not in sys.path:
 
 import yaml
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import (
+    XTBParseError,
+    check_domain,
+    inspect_xyz,
+    parse_xyz,
+)
 
 DEFAULT_SEED = 20260615
 XTB_DOMAIN: dict[str, Any] = {
@@ -369,7 +374,7 @@ def main() -> int:
     write_jsonl(output_dir / "sampled_records.jsonl", sampled_records)
     manifest = {
         "status": "ok",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "seed": args.seed,
         "mode": mode,
         "source_manifest": str(args.source_manifest),

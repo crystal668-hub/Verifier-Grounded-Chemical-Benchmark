@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Mapping
+from collections.abc import Mapping
+from typing import Any
 
 
 def parse_final_answer_block(raw_answer: str, schema: Mapping[str, Any]) -> tuple[dict[str, Any], str]:

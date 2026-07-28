@@ -8,7 +8,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT_SITE_PACKAGE_PREFIXES = (
     "_editable_impl_verifier_grounded_benchmark",

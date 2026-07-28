@@ -7,8 +7,12 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.property_cli import run_property_script
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import cli as xtb_cli
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.property_cli import (
+    run_property_script,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb import (
+    cli as xtb_cli,
+)
 
 
 def run_cli_with_payload(

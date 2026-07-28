@@ -3,11 +3,17 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Mapping
 from numbers import Real
-from typing import Any, Mapping
+from typing import Any
 
-from verifier_grounded_benchmark.evaluation.common.results import error_result, scored_result
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import parse_answer
+from verifier_grounded_benchmark.evaluation.common.results import (
+    error_result,
+    scored_result,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    parse_answer,
+)
 from verifier_grounded_benchmark.evaluation.open_generation.scoring.task_score import (
     score_constraint_value,
     score_open_generation_task,
@@ -15,8 +21,12 @@ from verifier_grounded_benchmark.evaluation.open_generation.scoring.task_score i
 from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
     VerificationEvidence,
 )
-from verifier_grounded_benchmark.evaluation.open_generation.verification.protocol import PropertyVerifier
-from verifier_grounded_benchmark.evaluation.open_generation.verification.reuse import evidence_reuse_key
+from verifier_grounded_benchmark.evaluation.open_generation.verification.protocol import (
+    PropertyVerifier,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verification.reuse import (
+    evidence_reuse_key,
+)
 from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import (
     SubprocessPropertyVerifier,
 )

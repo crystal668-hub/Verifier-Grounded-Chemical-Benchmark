@@ -4,8 +4,9 @@ from pathlib import Path
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import run_verification_script
-
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import (
+    run_verification_script,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 

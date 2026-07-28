@@ -3,18 +3,20 @@
 from __future__ import annotations
 
 import contextlib
-from dataclasses import dataclass
 import io
-from functools import lru_cache
+from dataclasses import dataclass
+from functools import cache
 from importlib import metadata
 from numbers import Number
 from typing import Any
 
 from pymatgen.core import Structure
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 DEFAULT_MATGL_MODEL = "MEGNet-Eform-MP-2018.6.1"
 OUTPUT_SNIPPET_LIMIT = 500
@@ -87,7 +89,7 @@ def load_matgl_model(spec: dict[str, Any]) -> Any:
     return _load_matgl_model_by_name(str(model_name))
 
 
-@lru_cache(maxsize=None)
+@cache
 def _load_matgl_model_by_name(model_name: str) -> Any:
     import matgl
 

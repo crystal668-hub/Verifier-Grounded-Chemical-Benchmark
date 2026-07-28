@@ -4,15 +4,27 @@ from __future__ import annotations
 
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.common.results import error_result, scored_result
+from verifier_grounded_benchmark.evaluation.common.results import (
+    error_result,
+    scored_result,
+)
 from verifier_grounded_benchmark.evaluation.config import EvaluationConfig
-from verifier_grounded_benchmark.evaluation.open_generation import OpenGenerationEvaluator
+from verifier_grounded_benchmark.evaluation.open_generation import (
+    OpenGenerationEvaluator,
+)
 from verifier_grounded_benchmark.evaluation.open_generation.parsing.final_answer_line import (
     parse_final_answer_line,
 )
-from verifier_grounded_benchmark.evaluation.open_generation.verification.protocol import PropertyVerifier
-from verifier_grounded_benchmark.evaluation.property_calculation import PropertyCalculationEvaluator
-from verifier_grounded_benchmark.evaluation.reporting.summary import EvaluationReport, build_report
+from verifier_grounded_benchmark.evaluation.open_generation.verification.protocol import (
+    PropertyVerifier,
+)
+from verifier_grounded_benchmark.evaluation.property_calculation import (
+    PropertyCalculationEvaluator,
+)
+from verifier_grounded_benchmark.evaluation.reporting.summary import (
+    EvaluationReport,
+    build_report,
+)
 from verifier_grounded_benchmark.task.models import (
     OpenGenerationTaskSpec,
     PropertyCalculationTaskSpec,

@@ -11,7 +11,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SI_CIF_TEXT = """# generated using pymatgen
 data_Si

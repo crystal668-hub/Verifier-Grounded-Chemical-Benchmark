@@ -10,11 +10,14 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import docker_model_runtime as runtime
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common import (
+    docker_model_runtime as runtime,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 DEFAULT_MOLGPKA_IMAGE = "ghcr.io/quanted/cts-molgpka:dev-acafcb3fb93dbf8dcf6c952cbf3b12161e7f468d"
 MOLGPKA_SCALAR_PROPERTIES = {"molgpka_min_pka", "molgpka_max_pka", "molgpka_pka_count"}

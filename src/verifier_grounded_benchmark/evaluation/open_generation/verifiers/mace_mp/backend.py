@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import math
-from functools import lru_cache
+from functools import cache
 from importlib import metadata
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import error_result
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import verified_result
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 SUPPORTED_MACE_MP_PROPERTIES = {
     "mace_mp_energy_ev",
@@ -143,7 +144,7 @@ def predict_mace_mp_properties(atoms: Any, spec: dict[str, Any]) -> dict[str, fl
     }
 
 
-@lru_cache(maxsize=None)
+@cache
 def load_mace_mp_calculator(model: str, device: str, default_dtype: str) -> Any:
     from mace.calculators import mace_mp
 

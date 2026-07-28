@@ -6,7 +6,6 @@ from verifier_grounded_benchmark.evaluation import EvaluationEngine
 from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.resources import package_resource
 
-
 PACK = load_task_pack(
     package_resource("rdkit", "tasks.yaml"),
     package_resource("rdkit", "verifier_specs.yaml"),

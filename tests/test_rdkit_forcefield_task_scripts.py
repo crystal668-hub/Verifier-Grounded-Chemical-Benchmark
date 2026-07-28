@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import SubprocessPropertyVerifier
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import (
+    SubprocessPropertyVerifier,
+)
 from verifier_grounded_benchmark.task import load_task_pack
 from verifier_grounded_benchmark.task.resources import package_resource
 

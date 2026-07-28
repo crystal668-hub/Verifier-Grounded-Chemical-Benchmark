@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+
 import pytest
 
 from verifier_grounded_benchmark.task import load_task_pack

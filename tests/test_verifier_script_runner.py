@@ -4,8 +4,10 @@ import sys
 import textwrap
 from pathlib import Path
 
-from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import build_script_payload, run_verification_script
-
+from verifier_grounded_benchmark.evaluation.open_generation.verification.runner import (
+    build_script_payload,
+    run_verification_script,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 

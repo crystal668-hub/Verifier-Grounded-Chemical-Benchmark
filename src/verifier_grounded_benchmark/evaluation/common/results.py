@@ -6,7 +6,6 @@ from typing import Any
 
 from verifier_grounded_benchmark.evaluation.common.failures import FailureScope
 
-
 RESULT_SCHEMA_VERSION = "2"
 
 

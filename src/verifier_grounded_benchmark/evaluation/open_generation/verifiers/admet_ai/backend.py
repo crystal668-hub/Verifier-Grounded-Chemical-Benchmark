@@ -11,7 +11,11 @@ from typing import Any
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import base_result, error_result, verified_result
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.result import (
+    base_result,
+    error_result,
+    verified_result,
+)
 
 
 @lru_cache(maxsize=4)

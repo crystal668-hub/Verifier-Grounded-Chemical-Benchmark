@@ -8,8 +8,9 @@ import importlib.metadata as metadata
 import json
 from typing import Any
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.mace_mp import backend as mace_mp_properties
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.mace_mp import (
+    backend as mace_mp_properties,
+)
 
 SI_CIF_TEXT = """# generated using pymatgen
 data_Si

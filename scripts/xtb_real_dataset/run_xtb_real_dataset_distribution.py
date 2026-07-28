@@ -9,7 +9,7 @@ import shutil
 import sys
 import time
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -17,11 +17,15 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import (
+    XTBParseError,
+    check_domain,
+    inspect_xyz,
+    parse_xyz,
+)
 from verifier_grounded_benchmark.evaluator import Evaluator
 from verifier_grounded_benchmark.task.loader import load_verifier_specs_file
 from verifier_grounded_benchmark.task.resources import package_resource
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import XTBParseError, check_domain, inspect_xyz, parse_xyz
-
 
 TIER_PROPERTIES = {
     "light": [
@@ -279,7 +283,7 @@ def write_results(
 ) -> None:
     payload = {
         "status": "ok" if complete else "running",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "tier": tier,
         "properties": TIER_PROPERTIES[tier],
         "sampled_records": str(sampled_records),

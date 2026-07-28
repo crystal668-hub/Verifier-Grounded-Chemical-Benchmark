@@ -7,7 +7,6 @@ from pathlib import Path
 
 import yaml
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -129,7 +128,9 @@ def test_inspect_xtb_real_dataset_availability_reports_existing_cache(tmp_path) 
 
 
 def test_inspect_xtb_real_dataset_availability_does_not_check_remote_by_default(tmp_path, monkeypatch) -> None:
-    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import (
+        inspect_xtb_real_dataset_availability as inspector,
+    )
 
     manifest = tmp_path / "sources.yaml"
     manifest.write_text(
@@ -165,7 +166,9 @@ def test_inspect_xtb_real_dataset_availability_does_not_check_remote_by_default(
 
 
 def test_inspect_xtb_real_dataset_availability_check_remote_uses_declared_urls(tmp_path, monkeypatch) -> None:
-    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import (
+        inspect_xtb_real_dataset_availability as inspector,
+    )
 
     manifest = tmp_path / "sources.yaml"
     manifest.write_text(
@@ -214,7 +217,9 @@ def test_inspect_xtb_real_dataset_availability_check_remote_uses_declared_urls(t
 
 
 def test_inspect_xtb_real_dataset_availability_reports_small_validation_files(tmp_path) -> None:
-    from scripts.xtb_real_dataset import inspect_xtb_real_dataset_availability as inspector
+    from scripts.xtb_real_dataset import (
+        inspect_xtb_real_dataset_availability as inspector,
+    )
 
     cache = tmp_path / "geom_drugs"
     cache.mkdir()

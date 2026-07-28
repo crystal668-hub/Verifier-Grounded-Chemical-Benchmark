@@ -7,7 +7,6 @@ from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
-
 PACK_RESOURCE_PACKAGE = "verifier_grounded_benchmark.task.packs"
 
 

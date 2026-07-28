@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.torchani import backend as torchani_properties
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.torchani import (
+    backend as torchani_properties,
+)
 
 WATER_XYZ = """3
 water

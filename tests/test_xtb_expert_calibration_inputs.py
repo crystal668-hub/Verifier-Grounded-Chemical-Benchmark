@@ -5,12 +5,16 @@ from importlib.resources import files
 
 import yaml
 
-from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import normalize_answer_record
+from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
+    normalize_answer_record,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import (
+    inspect_xyz,
+    parse_xyz,
+)
 from verifier_grounded_benchmark.task.loader import (
     load_task_pack,
 )
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.backend import inspect_xyz, parse_xyz
-
 
 CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
 TASKS_PATH = CALIBRATION_DIR.joinpath("tasks.yaml")

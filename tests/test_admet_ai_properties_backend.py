@@ -6,7 +6,9 @@ from typing import Any
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.admet_ai import backend as admet_ai_properties
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.admet_ai import (
+    backend as admet_ai_properties,
+)
 
 
 class FakeADMETModel:

@@ -8,7 +8,7 @@ import json
 import shutil
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
@@ -18,8 +18,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from verifier_grounded_benchmark.evaluation import EvaluationEngine
-from verifier_grounded_benchmark.task.loader import load_answers_jsonl_file, load_task_pack
-
+from verifier_grounded_benchmark.task.loader import (
+    load_answers_jsonl_file,
+    load_task_pack,
+)
 
 CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
 
@@ -165,7 +167,7 @@ def main() -> int:
 
     payload = {
         "status": "ok",
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "xtb_executable": executable,
         "answers_path": str(args.answers),
         "tasks_path": str(args.tasks),

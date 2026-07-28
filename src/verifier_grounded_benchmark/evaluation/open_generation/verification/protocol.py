@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Protocol
+from collections.abc import Mapping
+from typing import Any, Protocol
 
 from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
     VerificationEvidence,

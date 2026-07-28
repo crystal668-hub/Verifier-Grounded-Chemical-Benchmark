@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield import backend as forcefield_backend
-from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.backend import evaluate_forcefield_constraint
-
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield import (
+    backend as forcefield_backend,
+)
+from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.backend import (
+    evaluate_forcefield_constraint,
+)
 
 SPEC = {
     "verifier_id": "rdkit_forcefield_energy_range_v1",

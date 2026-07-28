@@ -6,7 +6,6 @@ import sys
 
 import pytest
 
-
 pytestmark = pytest.mark.skipif(
     os.environ.get("VGB_RUN_MLIP_SMOKE") != "1",
     reason="set VGB_RUN_MLIP_SMOKE=1 to run TorchANI/MACE live model smoke tests",
