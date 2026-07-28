@@ -2,7 +2,7 @@
 
 生成日期：2026-07-28
 
-本表直接提取各 run 的 `.results[].full_response_text`，并在每个单元格的摘要中标注对应的 `.evaluation.normalized_score`（若无则使用 `.evaluation.score`）。点击 score 可展开完整模型输出。
+本表直接提取各 run 的 `.results[].full_response_text`，并为每条记录标注对应的 `.evaluation.normalized_score`（若无则使用 `.evaluation.score`）。为避免长文本在宽表中拥挤，下面先给出分数总览，再按 task 展开完整原始输出。
 
 比较口径：
 
@@ -10,68 +10,257 @@
 - `gpt-5.5` 按 RDKit、xTB、property calculation 三个正式 track 的最新 run 合并为同一批 13 个 task；
 - gpt-5.5 的每个 skills-on/off 列分别从对应 track run 提取，完整来源路径见本文末尾。
 
-为保证多行 XYZ 和 Markdown 内容不破坏表格，正文使用 HTML table 嵌入 Markdown；单元格中的 `<pre>` 内容是 HTML 转义后的原文，浏览器渲染后与 `full_response_text` 一致。
+本文不使用 HTML table、HTML 折叠组件或 Markdown 管道表格。每个原始输出使用独立代码块展示；内容先做 HTML entity 还原，保持与 `full_response_text` 一致。
 
-<table>
-  <thead>
-    <tr>
-      <th>task_id</th>
-      <th>gpt-5.5 / skills-on</th>
-      <th>gpt-5.5 / skills-off</th>
-      <th>gpt-5.6-terra / skills-on</th>
-      <th>gpt-5.6-terra / skills-off</th>
-      <th>gpt-5.6-sol / skills-on</th>
-      <th>gpt-5.6-sol / skills-off</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row"><code>rdkit_logp_target_011</code></th>
-      <td><details><summary>score = <strong>0.9948000000000002</strong></summary><pre>FINAL ANSWER: CC(Oc1cc(F)c(Cl)cc1Cl)C(=O)O
+## 分数总览
 
-⚠️ 🧰 Process: `quick-cove` failed</pre></details></td>
-      <td><details><summary>score = <strong>0.9998666666666672</strong></summary><pre>FINAL ANSWER: CCc1cc(C(=O)OCOC)c(SC)c(O)c1CC
+```text
+task                                      track                 gpt-5.5/on  gpt-5.5/off  terra/on  terra/off  sol/on  sol/off
+rdkit_logp_target_011                     RDKit                 0.9948000000000002 0.9998666666666672 0.9843333333333328 0.9991666666666661 0.9988666666666663 0.999993333333333
+rdkit_sa_logp_target_012                  RDKit                 0.9999666666666673 0.9999666666666673 0.992233333333334 0.9999999999999994 0.9999666666666661 0.9999999999999994
+rdkit_chain_end_to_end_max_013            RDKit                 0.9461658674237836 1            1         1          1       1
+rdkit_caffeine_similarity_max_014         RDKit                 0.6470588235294118 0.6666666666666666 0.6666666666666666 0.6875     0.6875  0.6875
+xtb_formula_dipole_min_014                xTB                   1           0.5900413617562839 1         1          1       1
+xtb_two_fluorine_gap_min_015              xTB                   1           0.9395985651078803 1         1          1       1
+xtb_c10_f2_gap_min_016                    xTB                   0.9377768082919526 0            0.9865540614482672 1          1       1
+xtb_roy_singlepoint_energy_min_017        xTB                   1           1            1         1          1       1
+xtb_ritonavir_optimized_energy_min_018    xTB                   1           1            1         1          1       1
+xtb_odd_element_counts_gap_max_019        xTB                   0.1580170170279519 1            0.9436001269450602 1          1       1
+xtb_pyrene_substituent_energy_min_020     xTB                   1           1            1         1          1       1
+property_calc_free_energy_001             property calculation  0.047057760362867795 0            0.3094542511580526 0          0.3242367693929551 0
+property_calc_crystal_phase_002           property calculation  0.5         0.5          0.5       0.5        0.5     0.5
+```
 
-⚠️ 🧰 Process: `cool-sage` failed</pre></details></td>
-      <td><details><summary>score = <strong>0.9843333333333328</strong></summary><pre>FINAL ANSWER: O=C(Oc1ccccc1)c1nc2ccccc2o1</pre></details></td>
-      <td><details><summary>score = <strong>0.9991666666666661</strong></summary><pre>FINAL ANSWER: CCCCOC(=O)c1cc(Cl)ccc1O</pre></details></td>
-      <td><details><summary>score = <strong>0.9988666666666663</strong></summary><pre>FINAL ANSWER: O=Cc1ccc(-c2ccc(C(=O)O)cc2)cc1F</pre></details></td>
-      <td><details><summary>score = <strong>0.999993333333333</strong></summary><pre>FINAL ANSWER: Cc1c(C(=O)O)ccc(Cl)c1Cl</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>rdkit_sa_logp_target_012</code></th>
-      <td><details><summary>score = <strong>0.9999666666666673</strong></summary><pre>FINAL ANSWER: CCCCN=CC=C(C)Cl</pre></details></td>
-      <td><details><summary>score = <strong>0.9999666666666673</strong></summary><pre>FINAL ANSWER: CCC(=O)c1ccc(C(=O)N(C)C)c(C(F)(F)F)c1</pre></details></td>
-      <td><details><summary>score = <strong>0.992233333333334</strong></summary><pre>FINAL ANSWER: CCCCCCC</pre></details></td>
-      <td><details><summary>score = <strong>0.9999999999999994</strong></summary><pre>FINAL ANSWER: CCNc1c(C#N)cc(C)c(CC)c1F</pre></details></td>
-      <td><details><summary>score = <strong>0.9999666666666661</strong></summary><pre>FINAL ANSWER: CCCCCC(F)SOO</pre></details></td>
-      <td><details><summary>score = <strong>0.9999999999999994</strong></summary><pre>FINAL ANSWER: CCCc1cc2cc(S(C)(=O)=O)oc2c(C(C)=O)c1OC</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>rdkit_chain_end_to_end_max_013</code></th>
-      <td><details><summary>score = <strong>0.9461658674237836</strong></summary><pre>FINAL ANSWER: FC(CC(Cl)C(Cl)(Cl)C(F)(F)Cl)C(Cl)Cl</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: ClC(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)Cl
+说明：分数均为 normalized score，范围为 `[0, 1]`，越高越好。`on` 表示启用 benchmark skills allowlist，`off` 表示禁用 skills。
 
-⚠️ 🧰 Process: `quiet-fjord` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: ClN(Cl)C(N(Cl)Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(N(Cl)Cl)(N(Cl)Cl)N(Cl)Cl</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: ClC(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)Cl</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: C([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)C(SCl)(SCl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: FSSC(SF)(SSF)C(SF)(SF)C(SF)(SF)C(SSF)(SSF)C(SF)(SSF)C(SF)(SF)SSF</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>rdkit_caffeine_similarity_max_014</code></th>
-      <td><details><summary>score = <strong>0.6470588235294118</strong></summary><pre>FINAL ANSWER: CCCn1c(=O)n(C)c(=O)c2c1ncn2C
+## 逐 task 原始输出
 
-⚠️ 🛠️ `create folder outputs/caffeine_search → run python scratch/tmp/caffeine_search.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0.6666666666666666</strong></summary><pre>FINAL ANSWER: Cn1cnc2c1c(=O)n(C(C)(C)C)c(=O)n2C</pre></details></td>
-      <td><details><summary>score = <strong>0.6666666666666666</strong></summary><pre>FINAL ANSWER: CC(C)n1c(=O)n(C)c(=O)c2c1ncn2C</pre></details></td>
-      <td><details><summary>score = <strong>0.6875</strong></summary><pre>FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O</pre></details></td>
-      <td><details><summary>score = <strong>0.6875</strong></summary><pre>FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O</pre></details></td>
-      <td><details><summary>score = <strong>0.6875</strong></summary><pre>FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_formula_dipole_min_014</code></th>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+### 1. `rdkit_logp_target_011`
+
+track: RDKit
+
+#### gpt-5.5 / skills-on
+
+score: `0.9948000000000002`
+
+````text
+FINAL ANSWER: CC(Oc1cc(F)c(Cl)cc1Cl)C(=O)O
+
+⚠️ 🧰 Process: `quick-cove` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.9998666666666672`
+
+````text
+FINAL ANSWER: CCc1cc(C(=O)OCOC)c(SC)c(O)c1CC
+
+⚠️ 🧰 Process: `cool-sage` failed
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.9843333333333328`
+
+````text
+FINAL ANSWER: O=C(Oc1ccccc1)c1nc2ccccc2o1
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `0.9991666666666661`
+
+````text
+FINAL ANSWER: CCCCOC(=O)c1cc(Cl)ccc1O
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `0.9988666666666663`
+
+````text
+FINAL ANSWER: O=Cc1ccc(-c2ccc(C(=O)O)cc2)cc1F
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `0.999993333333333`
+
+````text
+FINAL ANSWER: Cc1c(C(=O)O)ccc(Cl)c1Cl
+````
+
+### 2. `rdkit_sa_logp_target_012`
+
+track: RDKit
+
+#### gpt-5.5 / skills-on
+
+score: `0.9999666666666673`
+
+````text
+FINAL ANSWER: CCCCN=CC=C(C)Cl
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.9999666666666673`
+
+````text
+FINAL ANSWER: CCC(=O)c1ccc(C(=O)N(C)C)c(C(F)(F)F)c1
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.992233333333334`
+
+````text
+FINAL ANSWER: CCCCCCC
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `0.9999999999999994`
+
+````text
+FINAL ANSWER: CCNc1c(C#N)cc(C)c(CC)c1F
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `0.9999666666666661`
+
+````text
+FINAL ANSWER: CCCCCC(F)SOO
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `0.9999999999999994`
+
+````text
+FINAL ANSWER: CCCc1cc2cc(S(C)(=O)=O)oc2c(C(C)=O)c1OC
+````
+
+### 3. `rdkit_chain_end_to_end_max_013`
+
+track: RDKit
+
+#### gpt-5.5 / skills-on
+
+score: `0.9461658674237836`
+
+````text
+FINAL ANSWER: FC(CC(Cl)C(Cl)(Cl)C(F)(F)Cl)C(Cl)Cl
+````
+
+#### gpt-5.5 / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: ClC(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)Cl
+
+⚠️ 🧰 Process: `quiet-fjord` failed
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER: ClN(Cl)C(N(Cl)Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(Cl)(N(Cl)Cl)C(N(Cl)Cl)(N(Cl)Cl)N(Cl)Cl
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: ClC(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)Cl
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER: C([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)C(SCl)(SCl)C(Cl)(Cl)C(Cl)(Cl)C(Cl)(Cl)C([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)([N+]([S-])(Cl)Cl)
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: FSSC(SF)(SSF)C(SF)(SF)C(SF)(SF)C(SSF)(SSF)C(SF)(SSF)C(SF)(SF)SSF
+````
+
+### 4. `rdkit_caffeine_similarity_max_014`
+
+track: RDKit
+
+#### gpt-5.5 / skills-on
+
+score: `0.6470588235294118`
+
+````text
+FINAL ANSWER: CCCn1c(=O)n(C)c(=O)c2c1ncn2C
+
+⚠️ 🛠️ `create folder outputs/caffeine_search → run python scratch/tmp/caffeine_search.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.6666666666666666`
+
+````text
+FINAL ANSWER: Cn1cnc2c1c(=O)n(C(C)(C)C)c(=O)n2C
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.6666666666666666`
+
+````text
+FINAL ANSWER: CC(C)n1c(=O)n(C)c(=O)c2c1ncn2C
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `0.6875`
+
+````text
+FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `0.6875`
+
+````text
+FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `0.6875`
+
+````text
+FINAL ANSWER: CC(C)n1c(=O)c2c(ncn2C)n(C)c1=O
+````
+
+### 5. `xtb_formula_dipole_min_014`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 seed 4 optimized GFN2-xTB; dipole 2.516 D
@@ -114,8 +303,15 @@ H            0.38204777732164       -3.18851846264419       -3.22630052325838
 H           -2.54897384177506       -3.62813709080755       -2.48066918202271
 H           -1.22074416276640       -4.88865863468386       -2.55879111087687
 H            2.22925461154941        1.12758183343773       -2.13516312050944
-```</pre></details></td>
-      <td><details><summary>score = <strong>0.5900413617562839</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.5900413617562839`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 C12H16N3O8
@@ -160,8 +356,15 @@ H   0.318079 -2.850263 -0.075339
 H  -0.269362  2.086818 -3.839151
 ```
 
-⚠️ 🩹 Apply Patch failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🩹 Apply Patch failed
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 energy: -75.147301403298 gnorm: 0.000921879552 xtb: 6.7.1
@@ -206,8 +409,15 @@ H            0.20509281691549        1.67463739973092        1.81253221322866
 H           -2.05299949555929        3.73145741337383        1.18456969087408
 ```
 
-⚠️ 🛠️ `cd "$BENCHMARK_SKILL_SCRATCH_DIR" &amp;&amp; env | rg '^BENCHMARK' (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `cd "$BENCHMARK_SKILL_SCRATCH_DIR" && env | rg '^BENCHMARK' (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 C12H16N3O8 neutral doublet; optimized (charge 0, UHF 1)
@@ -250,8 +460,15 @@ H            3.98005109020789        2.47380221325239       -2.35468760808978
 H            1.84826264900998        3.65261932092403       -1.94732708414730
 H            2.49475018873839        3.20194315504965       -0.35990376358264
 H           -0.69730862179918        1.40532660330901       -2.04890285683534
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 C12H16N3O8 neutral doublet, GFN2-xTB optimized
@@ -296,8 +513,15 @@ H   -1.4061616312    4.5127679411   -3.7634981025
 H    0.2713158719    4.5799789950   -3.1395564719
 ```
 
-⚠️ 🛠️ `search "GEOMETRY OPTIMIZATION CONVERGED|TOTAL ENERGY|molecular dipole|full:|normal termination|abnormal termination" in outputs/candidate_1/xtb.log (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `search "GEOMETRY OPTIMIZATION CONVERGED|TOTAL ENERGY|molecular dipole|full:|normal termination|abnormal termination" in outputs/candidate_1/xtb.log (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 39
 C12H16N3O8 neutral doublet; GFN2-xTB optimized; dipole 0.302 D
@@ -342,11 +566,19 @@ H   0.749521815725 -0.726320810505 -2.906912840334
 H  -0.767812133011 -0.230021843791 -2.074159478247
 ```
 
-⚠️ 🛠️ `cd "$BENCHMARK_SKILL_SCRATCH_DIR" &amp;&amp; xtb --help | grep -i -A3 -B2 sym (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_two_fluorine_gap_min_015</code></th>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `cd "$BENCHMARK_SKILL_SCRATCH_DIR" && xtb --help | grep -i -A3 -B2 sym (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+### 6. `xtb_two_fluorine_gap_min_015`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 14
 charge=-1
@@ -364,8 +596,15 @@ H           -2.54080556411524       -0.95263497468838        0.14240403488164
 H           -2.36213038467511        1.38073779451745        0.14606396060700
 H           -0.42129372691696        2.68408627446901        0.04075790565494
 H            1.83197227514473        1.98925970933635       -0.09482043099429
-```</pre></details></td>
-      <td><details><summary>score = <strong>0.9395985651078803</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.9395985651078803`
+
+````text
+FINAL ANSWER:
 ```xyz
 22
 charge=0
@@ -393,8 +632,15 @@ H   8.095000  2.849224  0.000000
 H   7.735000  6.001556  0.000000
 ```
 
-⚠️ 🛠️ `run python scratch/tmp/generate_polyene.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run python scratch/tmp/generate_polyene.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 19
 charge=-1
@@ -417,8 +663,15 @@ N   8.38951910780819  -1.68827061932307  -0.00004751026314
 F   1.73503025941484   2.08320967474263   0.00000136959395
 F  -1.07326289103232   2.40320641118386   0.00000104706778
 S  -2.86728302259034  -0.18903313880722  -0.00000258957165
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 31
 charge=1
@@ -455,8 +708,15 @@ H   4.23412798971126  0.42921029744346 -0.70707245956551
 H   3.11121023245366 -0.43220560055245  0.40907905771716
 ```
 
-⚠️ 🛠️ `run sed on xtbopt.xyz → show first 40 lines of final.xyz → run awk (in candidate2)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run sed on xtbopt.xyz → show first 40 lines of final.xyz → run awk (in candidate2)` failed
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 charge=0
@@ -487,8 +747,15 @@ H           -2.74458799193316        2.06428689534025       -3.29198623259368
 H           -0.31327752952627        2.39144088951320       -3.52240507697438
 H           -0.37995487647958        3.40854885311999       -2.06887381519102
 H            0.47333071631724        0.59353603817116       -1.95387181313106
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 10
 charge=0
@@ -504,11 +771,19 @@ C  0.6433448291  0.7899761195  0.0524377019
 F  1.2777164944  1.9552738438  0.1421548755
 ```
 
-⚠️ 🛠️ `create folder screening → run python3 inline script (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_c10_f2_gap_min_016</code></th>
-      <td><details><summary>score = <strong>0.9377768082919526</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `create folder screening → run python3 inline script (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+### 7. `xtb_c10_f2_gap_min_016`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `0.9377768082919526`
+
+````text
+FINAL ANSWER:
 ```xyz
 22
 charge=0
@@ -534,8 +809,15 @@ H           -0.21626992519795       -1.78688296774656        2.05743986378563
 H           -1.58436498216686        0.95377071281843        2.02519274336538
 H           -1.62720421638332       -1.39666234845599        4.03773252791383
 H           -3.03909086347642        1.34703654214698        4.07444599414808
-```</pre></details></td>
-      <td><details><summary>score = <strong>0</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0`
+
+````text
+FINAL ANSWER:
 ```xyz
 22
 charge=0
@@ -561,8 +843,15 @@ H   2.421  1.785  0.000
 H   3.624 -1.090  0.000
 H   4.827  2.045  0.000
 H   5.771  0.150  0.000
-```</pre></details></td>
-      <td><details><summary>score = <strong>0.9865540614482672</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.9865540614482672`
+
+````text
+FINAL ANSWER:
 ```xyz
 26
 charge=0
@@ -594,8 +883,15 @@ O   7.33235251987714  1.39140780286762 -0.00019596108229
 O   8.34485340193672 -0.51297318021491 -0.00009909171541
 ```
 
-⚠️ 🛠️ `create folder outputs/candidate_a_direct → run cd outputs/candidate_a_direct → run xtb ../../tmp/candidate_a.xyz → copy xtbopt.xyz to optimized.xyz → search "HOMO-LUMO GAP|TOTAL ENERGY|normal termination" in xtb.out (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `create folder outputs/candidate_a_direct → run cd outputs/candidate_a_direct → run xtb ../../tmp/candidate_a.xyz → copy xtbopt.xyz to optimized.xyz → search "HOMO-LUMO GAP|TOTAL ENERGY|normal termination" in xtb.out (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 29
 charge=0
@@ -628,8 +924,15 @@ H  -1.750000  -3.167000  -0.890000
 H   0.979000  -4.502000   0.000000
 H   1.750000  -3.167000   0.890000
 H   1.750000  -3.167000  -0.890000
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 19
 charge=0
@@ -654,8 +957,15 @@ H    -1.8743505998  -2.1970575772  -0.2107802095
 H     1.9850735054  -2.6700028212   0.6133863550
 ```
 
-⚠️ 🛠️ `create folder outputs/screen → run python ../tmp/make_candidates.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `create folder outputs/screen → run python ../tmp/make_candidates.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 23
 charge=1
@@ -682,11 +992,19 @@ H   0.28793052  -0.75574224   1.02377212
 H  -1.86035466  -1.44647129   1.61074144
 H  -4.17523199  -1.65753460   1.45024383
 H  -6.31402507  -1.30321378   0.48467365
-```</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_roy_singlepoint_energy_min_017</code></th>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+### 8. `xtb_roy_singlepoint_energy_min_017`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 conformer 0
@@ -719,8 +1037,15 @@ H  -4.42482913  2.44160146 -0.64816761
 H  -4.82857424  0.13251759  0.13515547
 ```
 
-⚠️ 🛠️ `run python scratch/tmp/score_roy_conformers.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run python scratch/tmp/score_roy_conformers.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 ROY low-energy conformer, MMFF94s=78.369279 kcal/mol, conf=10, status=0
@@ -751,8 +1076,15 @@ H   1.022932  1.332551 -0.243746
 H   0.407214  3.336649 -1.504676
 H  -1.971193  3.981059 -1.779997
 H  -3.750324  2.589072 -0.777228
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 ROY GFN2-xTB minimized conformer
@@ -783,8 +1115,15 @@ H   -0.3122677079    1.8119328568   -0.0287293663
 H   -2.2913856664    3.1084342960    0.5599032699
 H   -4.5405736739    2.0728684504    0.4807798964
 H   -4.7615255321   -0.2791388479   -0.2700447446
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 energy: -50.302551918953 Eh
@@ -817,8 +1156,15 @@ H           -4.66233398530014       -1.86027063993554        0.04028472053960
 H           -4.73415324358682        0.61576305960186       -0.05297387328657
 ```
 
-⚠️ 🛠️ `run for xyz → run do → create folder xtb_runs/$name → run (cd → run xtb → run done → search "TOTAL ENERGY" in xtb_runs/*/xtb.log (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run for xyz → run do → create folder xtb_runs/$name → run (cd → run xtb → run done → search "TOTAL ENERGY" in xtb_runs/*/xtb.log (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 energy: -50.302552185979 Eh; GFN2-xTB minimum
@@ -849,8 +1195,15 @@ H    -0.5401983714  -1.7352521167  -0.2759862504
 H    -2.6821615227  -2.6830222146  -0.9525945230
 H    -4.7790853841  -1.4038684939  -0.6320725240
 H    -4.6806501556   0.8266971959   0.4447157665
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 27
 GFN2-xTB minimum, E=-50.302552312631 Eh
@@ -881,11 +1234,19 @@ H   0.837562758107  2.026292361336 -1.120548300893
 H   1.882759958603  3.673584376616  0.341639931430
 H   2.203454260389  3.191241392099  2.750129245613
 H   1.507267727691  0.986288459856  3.643483613543
-```</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_ritonavir_optimized_energy_min_018</code></th>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+### 9. `xtb_ritonavir_optimized_energy_min_018`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
  energy: -148.195251205612 gnorm: 0.000272520979 xtb: 6.7.1 (edcfbbe)
@@ -987,8 +1348,15 @@ H           -6.10358036639406        1.19621108743516        5.43459234871862
 H           -4.90482977477106       -0.65210917476700        6.90127360813469
 H           -3.50808378498264       -3.60207413750231        4.37008279913900
 H           -0.30912381904588        2.65715038512256        1.33357327722107
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.5 / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
 Ritonavir low-energy conformer from conf_03; GFN2-xTB tight total_energy_Eh=-148.205533111627; formula=C37H48N6O5S2
@@ -1090,8 +1458,15 @@ H           -4.65102569612075        3.38793271546820        2.00639355894358
 H           -7.34289719416099        3.65291965548717       -0.71899080667249
 H           -7.85812409111126       -0.33660178462985        0.21470143505645
 H            0.37494146211259        3.36938268990883       -1.04357929002459
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
  energy: -148.199583213348 gnorm: 0.000354681518 xtb: 6.7.1 (edcfbbe)
@@ -1193,8 +1568,15 @@ H           -6.03499605953356        1.39904517204506        1.93790744219411
 H           -5.18729324583258        1.11452339715094       -1.47793223762693
 H           -7.90445626495918        4.13613153378989       -2.24314791964666
 H           -2.09290042815877       -2.26902312997841       -1.62484083697846
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
 energy: -148.202624787932 gnorm: 0.000263200048 xtb: 6.7.1 (edcfbbe)
@@ -1296,8 +1678,15 @@ H           -5.57733361912708        1.06661233473395        1.58897088293812
 H           -7.19438363831200        1.09700807926487        3.90101182772291
 H           -5.67441707924408       -1.98339823221056        6.19913162315524
 H           -3.79699597699291        1.03473732347394       -2.25556922003448
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
 Ritonavir; GFN2-xTB tight optimization; E = -148.210476869579 Eh; 0 imaginary frequencies
@@ -1399,8 +1788,15 @@ H           -3.79103676082222       -0.12280191523217       -2.10237715121934
 H           -5.71740612090559       -1.04290662337396        0.74687209282829
 H           -6.73550672527227        2.94429989851452        1.13493528152457
 H            1.55627500101606        2.27129037644258       -0.45238591210404
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 98
 Ritonavir low-energy conformer; GFN2-xTB extreme optimization; E=-148.205916723569 Eh
@@ -1502,11 +1898,19 @@ H           -2.84985849906588        5.15417355614887        0.73046149397306
 H           -4.09106937468930        4.88928788473534        3.20989856264184
 H           -7.89707842885645        3.51846290960196        2.36404056226950
 H           -4.03258593257570        0.41370577465760       -1.73691243698506
-```</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_odd_element_counts_gap_max_019</code></th>
-      <td><details><summary>score = <strong>0.1580170170279519</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+### 10. `xtb_odd_element_counts_gap_max_019`
+
+track: xTB
+
+#### gpt-5.5 / skills-on
+
+score: `0.1580170170279519`
+
+````text
+FINAL ANSWER:
 ```xyz
 12
  energy: -29.008725143486 gnorm: 0.000407819289 xtb: 6.7.1 (edcfbbe)
@@ -1524,8 +1928,15 @@ H           -1.61561481551093       -0.71641674914102       -3.52823763035143
 H           -3.30865149010748        1.40737473186390       -0.50657995471017
 ```
 
-⚠️ 🛠️ `run python tmp/scan_xtb_one.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run python tmp/scan_xtb_one.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 12
 2,4,6-trifluoro-1,3,5-trioxane
@@ -1541,8 +1952,15 @@ O            0.63316057369496       -1.12490021080476       -0.58570654281556
 H            2.20991585700874        0.07848134130243       -0.91740126202084
 H           -0.59645309610941        1.17258558345628        1.19925182081985
 H           -1.17031876096006       -2.01409498363713       -0.55252918214892
-```</pre></details></td>
-      <td><details><summary>score = <strong>0.9436001269450602</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.9436001269450602`
+
+````text
+FINAL ANSWER:
 ```xyz
 13
 tris(trifluoromethyl)amine
@@ -1561,8 +1979,15 @@ F -1.92221516353035 -1.20454104839669 -0.51924517928293
 F -0.08173774505981 -2.26716310219981 -0.51812293325686
 ```
 
-⚠️ 🛠️ `run python tmp/build_ncf3_3.py → create folder outputs/ncf3_3 → run cd outputs/ncf3_3 → run xtb ../../tmp/ncf3_3.xyz → copy xtbopt.xyz to optimized.xyz → search "HOMO-LUMO GAP|molecular dipole|TOTAL ENERGY|normal termination" in xtb.out (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `run python tmp/build_ncf3_3.py → create folder outputs/ncf3_3 → run cd outputs/ncf3_3 → run xtb ../../tmp/ncf3_3.xyz → copy xtbopt.xyz to optimized.xyz → search "HOMO-LUMO GAP|molecular dipole|TOTAL ENERGY|normal termination" in xtb.out (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 12
 2,4,6-trifluoro-1,3,5-trioxane
@@ -1580,8 +2005,15 @@ H   -0.458414  -1.928820   1.040641
 H   -0.443881   1.200734  -0.898110
 ```
 
-⚠️ 🛠️ `create folder inputs → run python3 tmp/generate_candidates.py → run for f → run do → create folder $d → run (cd → run xtb → run done → search "HOMO-LUMO GAP|tot (Debye)" in trial/*/result.txt (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+⚠️ 🛠️ `create folder inputs → run python3 tmp/generate_candidates.py → run for f → run do → create folder $d → run (cd → run xtb → run done → search "HOMO-LUMO GAP|tot (Debye)" in trial/*/result.txt (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 12
 GFN2-xTB optimized geometry
@@ -1597,8 +2029,15 @@ O   0.7689451666   1.1334660931   0.2774335240
 C  -0.5554754123   1.1993895539  -0.1595948729
 F  -1.0491448521   2.3498632665   0.2708557210
 H  -0.6192400348   1.1766117454  -1.2641794157
-```</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER:
+```
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER:
 ```xyz
 12
 C3HF5O3
@@ -1616,57 +2055,183 @@ F  -1.7831378243  -1.2027581072  -0.0339453283
 H  -0.1061915011  -0.4296172496  -0.7465283167
 ```
 
-⚠️ 🛠️ `create folder scratch/screen-results → run cd scratch/screen-results → run python3 ../tmp/screen.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>xtb_pyrene_substituent_energy_min_020</code></th>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-      <td><details><summary>score = <strong>1</strong></summary><pre>FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>property_calc_free_energy_001</code></th>
-      <td><details><summary>score = <strong>0.047057760362867795</strong></summary><pre>FINAL ANSWER: {"answer":0.012142392916410418,"unit":"kJ/mol"}
+⚠️ 🛠️ `create folder scratch/screen-results → run cd scratch/screen-results → run python3 ../tmp/screen.py (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
 
-⚠️ 🛠️ `search "error|warning|failed" in outputs/xtb_ohess/ETDIAM18/xtb.err (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0</strong></summary><pre>FINAL ANSWER: {"answer":4.4,"unit":"kJ/mol"}
+### 11. `xtb_pyrene_substituent_energy_min_020`
 
-⚠️ 🛠️ `run python inline script (heredoc) → run adj[j].append(i) → run trans[0]=(0,0,0) → run while → run command → run command → run for v → run for tx → run trans[v]=bestt → run q.append(v) (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0.3094542511580526</strong></summary><pre>FINAL ANSWER: {"answer":0.079849,"unit":"kJ/mol"}
+track: xTB
 
-⚠️ 🛠️ `create folder outputs/ETDIAM01 → run cd outputs/ETDIAM01 → run xtb POSCAR (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0</strong></summary><pre>FINAL ANSWER: {"answer":2.59,"unit":"kJ/mol"}</pre></details></td>
-      <td><details><summary>score = <strong>0.3242367693929551</strong></summary><pre>FINAL ANSWER: {"answer":0.4324,"unit":"kJ/mol"}
+#### gpt-5.5 / skills-on
 
-⚠️ 🛠️ `find files in outputs/etdiam01-gfn1 → show first 12 lines of outputs/etdiam01-gfn1/gradient (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0</strong></summary><pre>FINAL ANSWER: {"answer":4.22,"unit":"kJ/mol"}</pre></details></td>
-    </tr>
-    <tr>
-      <th scope="row"><code>property_calc_crystal_phase_002</code></th>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":1.75,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+score: `1`
 
-⚠️ 🛠️ `run pwd → search "." (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":0.6834376329433025,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}</pre></details></td>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":3.5,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}</pre></details></td>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":618.55147,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}</pre></details></td>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":7.2992,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}</pre></details></td>
-      <td><details><summary>score = <strong>0.5</strong></summary><pre>FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":5.50872802734375,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
 
-⚠️ 🛠️ `run python list -&gt; search "ase|pymatgen|torch|mace|chg|matgl|matter|orb|seven|crystal|potential|dft|vasp|foundation|fairchem|emmet|mp-api|scipy" (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed</pre></details></td>
-    </tr>
-  </tbody>
-</table>
+#### gpt-5.5 / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `1`
+
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `1`
+
+````text
+FINAL ANSWER: Nc1c(C(=O)O)cc2ccc3cc([N+](=O)[O-])cc4ccc1c2c34
+````
+
+### 12. `property_calc_free_energy_001`
+
+track: property calculation
+
+#### gpt-5.5 / skills-on
+
+score: `0.047057760362867795`
+
+````text
+FINAL ANSWER: {"answer":0.012142392916410418,"unit":"kJ/mol"}
+
+⚠️ 🛠️ `search "error|warning|failed" in outputs/xtb_ohess/ETDIAM18/xtb.err (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0`
+
+````text
+FINAL ANSWER: {"answer":4.4,"unit":"kJ/mol"}
+
+⚠️ 🛠️ `run python inline script (heredoc) → run adj[j].append(i) → run trans[0]=(0,0,0) → run while → run command → run command → run for v → run for tx → run trans[v]=bestt → run q.append(v) (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.3094542511580526`
+
+````text
+FINAL ANSWER: {"answer":0.079849,"unit":"kJ/mol"}
+
+⚠️ 🛠️ `create folder outputs/ETDIAM01 → run cd outputs/ETDIAM01 → run xtb POSCAR (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `0`
+
+````text
+FINAL ANSWER: {"answer":2.59,"unit":"kJ/mol"}
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `0.3242367693929551`
+
+````text
+FINAL ANSWER: {"answer":0.4324,"unit":"kJ/mol"}
+
+⚠️ 🛠️ `find files in outputs/etdiam01-gfn1 → show first 12 lines of outputs/etdiam01-gfn1/gradient (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `0`
+
+````text
+FINAL ANSWER: {"answer":4.22,"unit":"kJ/mol"}
+````
+
+### 13. `property_calc_crystal_phase_002`
+
+track: property calculation
+
+#### gpt-5.5 / skills-on
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":1.75,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+
+⚠️ 🛠️ `run pwd → search "." (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
+
+#### gpt-5.5 / skills-off
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":0.6834376329433025,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+````
+
+#### gpt-5.6-terra / skills-on
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":3.5,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+````
+
+#### gpt-5.6-terra / skills-off
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":618.55147,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+````
+
+#### gpt-5.6-sol / skills-on
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":7.2992,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+````
+
+#### gpt-5.6-sol / skills-off
+
+score: `0.5`
+
+````text
+FINAL ANSWER: {"answers":[{"property":"potential_energy_difference","value":5.50872802734375,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+
+⚠️ 🛠️ `run python list -> search "ase|pymatgen|torch|mace|chg|matgl|matter|orb|seven|crystal|potential|dft|vasp|foundation|fairchem|emmet|mp-api|scipy" (in $BENCHMARK_SKILL_SCRATCH_DIR)` failed
+````
 
 ## 原始结果来源
 
-| 模型/组 | results.json |
-| --- | --- |
-| gpt-5.6-terra | `/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/mixed-datasets/gpt-5-6-terra/mixed-datasets-gpt-5-6-terra-20260727-191610/results.json` |
-| gpt-5.6-sol | `/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/mixed-datasets/gpt-5-6-sol/mixed-datasets-gpt-5-6-sol-20260727-231050/results.json` |
-| gpt-5.5 RDKit | `/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-rdkit/gpt-5-5/verifier-grounded-rdkit-gpt-5-5-20260726-164725/results.json` |
-| gpt-5.5 xTB | `/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-xtb-xyz/gpt-5-5/verifier-grounded-xtb-xyz-gpt-5-5-20260726-123119/results.json` |
-| gpt-5.5 property calculation | `/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-property-calculation/gpt-5-5/verifier-grounded-property-calculation-gpt-5-5-20260727-163207/results.json` |
+结果文件：
 
+- gpt-5.6-terra：`/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/mixed-datasets/gpt-5-6-terra/mixed-datasets-gpt-5-6-terra-20260727-191610/results.json`
+- gpt-5.6-sol：`/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/mixed-datasets/gpt-5-6-sol/mixed-datasets-gpt-5-6-sol-20260727-231050/results.json`
+- gpt-5.5 RDKit：`/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-rdkit/gpt-5-5/verifier-grounded-rdkit-gpt-5-5-20260726-164725/results.json`
+- gpt-5.5 xTB：`/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-xtb-xyz/gpt-5-5/verifier-grounded-xtb-xyz-gpt-5-5-20260726-123119/results.json`
+- gpt-5.5 property calculation：`/Users/xutao/.openclaw/workspace/state/benchmark-runs/formal/verifier-grounded-property-calculation/gpt-5-5/verifier-grounded-property-calculation-gpt-5-5-20260727-163207/results.json`
