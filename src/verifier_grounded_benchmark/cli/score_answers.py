@@ -6,7 +6,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any
 
 from verifier_grounded_benchmark import load_track
 from verifier_grounded_benchmark.evaluation import EvaluationEngine

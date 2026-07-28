@@ -11,7 +11,6 @@ import yaml
 from scripts.release.build_release import (
     normalized_release_payloads,
     payload_digest,
-    task_inventory,
     verify_archive_payloads,
 )
 

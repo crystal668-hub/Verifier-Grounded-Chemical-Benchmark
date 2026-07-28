@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import random
 import sys
 from collections import Counter
 from datetime import datetime, timezone

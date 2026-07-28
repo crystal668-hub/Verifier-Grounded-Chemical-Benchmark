@@ -82,3 +82,19 @@ packages = [
 
 [tool.pytest.ini_options]
 pythonpath = ["src", "."]
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/env/check_molgpka_env.py" = ["E402"]
+"scripts/env/check_openmm_openff_env.py" = ["E402"]
+"scripts/env/check_soltrannet_env.py" = ["E402"]
+"scripts/xtb_calibration/run_xtb_calibration.py" = ["E402"]
+"scripts/xtb_real_dataset/convert_xtb_real_dataset_geom_pickle.py" = ["E402"]
+"scripts/xtb_real_dataset/convert_xtb_real_dataset_sdf.py" = ["E402"]
+"scripts/xtb_real_dataset/prepare_xtb_real_dataset_sample.py" = ["E402"]
+"scripts/xtb_real_dataset/run_xtb_real_dataset_distribution.py" = ["E402"]
