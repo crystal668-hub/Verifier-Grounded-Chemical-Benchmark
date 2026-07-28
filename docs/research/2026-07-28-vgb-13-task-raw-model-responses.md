@@ -10,6 +10,8 @@
 - `gpt-5.5` 按 RDKit、xTB、property calculation 三个正式 track 的最新 run 合并为同一批 13 个 task；
 - gpt-5.5 的每个 skills-on/off 列分别从对应 track run 提取，完整来源路径见本文末尾。
 
+13 道题的任务提示词、结构/身份门、评分锚点和计算公式另见《[VGB 13 道题任务提示词与得分规则](./2026-07-28-vgb-13-task-prompts-and-scoring.md)》。
+
 本文不使用 HTML table、HTML 折叠组件或 Markdown 管道表格。每个原始输出使用独立代码块展示；内容先做 HTML entity 还原，保持与 `full_response_text` 一致。
 
 ## 分数总览
