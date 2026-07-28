@@ -41,6 +41,7 @@ vgb-score = "verifier_grounded_benchmark.cli.score_answers:main"
 [dependency-groups]
 dev = [
     "pytest==8.4.2",
+    "ruff==0.16.0",
 ]
 future-backends = [
     "ase==3.28.0",
