@@ -51,10 +51,10 @@ scoring_profiles:
     property: total_energy
     type: minimize
     unit: hartree
-    full_score_target: -148.210476869589
+    full_score_target: -148.213721794168
     zero_score_anchor: -148.183476873812
     provenance:
-      target_source: frozen_run_candidate_recomputed_with_frozen_verifier
+      target_source: independent_crest_candidate_recomputed_with_frozen_verifier
       decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
       evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
       decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md

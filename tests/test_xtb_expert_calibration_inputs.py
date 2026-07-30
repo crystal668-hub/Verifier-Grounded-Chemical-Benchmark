@@ -83,7 +83,7 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
             300,
         ),
         "xtb_ritonavir_optimized_energy_min_018": (
-            -148.210476869589,
+            -148.213721794168,
             -148.183476873812,
             600,
         ),

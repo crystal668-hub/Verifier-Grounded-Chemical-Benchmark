@@ -63,7 +63,7 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 任务 017 的 verifier 对提交坐标直接运行 neutral closed-shell GFN2-xTB
 single-point；任务 018 优化提交坐标后读取 total energy，并在优化前后检查身份和
 立体化学。两项满分锚点已按同一冻结 verifier 复核到当前 run 中可达的最低值：
-`xtb_017 = -50.302552312418 Eh`、`xtb_018 = -148.210476869589 Eh`。零分锚点
+`xtb_017 = -50.302552312418 Eh`、`xtb_018 = -148.213721794168 Eh`。零分锚点
 保持 `-50.287905192962 Eh` 与 `-148.183476873812 Eh` 不变。该结果是同一
 分子、方法、电子态和计算模式下的已复核最低可达候选，不作跨分子或跨方法的绝对能量比较；
 证据见 `docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md`。
