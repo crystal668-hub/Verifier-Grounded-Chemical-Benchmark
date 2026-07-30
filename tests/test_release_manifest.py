@@ -361,7 +361,7 @@ def test_v43_release_manifest_binds_recalibrated_artifacts_and_openclaw_runtime(
     assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
 
     openclaw = manifest["integrations"]["openclaw"]
-    assert openclaw["commit"] == "375a2b92377e9a667a16901b0e1056e6ada78d2b"
+    assert openclaw["commit"] == "820b15ae97706cfb76710b02873a85335b9d8607"
     assert openclaw["release_config_sha256"] == (
         "a8e666e1cea057511d7d8779f3ed38e3a4bf0b344684c8355c6326f75ca66ad6"
     )
