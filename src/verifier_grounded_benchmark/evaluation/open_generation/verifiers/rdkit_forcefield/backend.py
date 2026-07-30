@@ -81,11 +81,20 @@ def evaluate_forcefield_constraint(
 
     canonical_smiles = Chem.MolToSmiles(mol, canonical=True)
     try:
-        if property_name == "chain_end_to_end_distance":
-            forcefield_properties = compute_chain_end_to_end_properties(
+        if property_name == "terminal_atom_distance":
+            terminal_atom_indices = terminal_heavy_atom_indices(mol)
+            if len(terminal_atom_indices) < 2:
+                return error_result(
+                    result,
+                    "domain_error",
+                    "molecule must contain at least two terminal heavy atoms",
+                    properties=domain_properties,
+                )
+            domain_properties["terminal_atom_indices"] = terminal_atom_indices
+            forcefield_properties = compute_terminal_atom_distance_properties(
                 mol,
                 spec.get("backend") or {},
-                tuple(domain_properties["chain_endpoint_atom_indices"]),
+                tuple(terminal_atom_indices),
             )
         else:
             forcefield_properties = compute_forcefield_properties(
@@ -143,14 +152,14 @@ def compute_forcefield_properties(mol: Chem.Mol, backend: dict[str, Any]) -> dic
     }
 
 
-def compute_chain_end_to_end_properties(
+def compute_terminal_atom_distance_properties(
     mol: Chem.Mol,
     backend: dict[str, Any],
-    endpoints: tuple[int, int],
+    terminal_atom_indices: tuple[int, ...],
 ) -> dict[str, float | int | str]:
     config = {**DEFAULT_BACKEND, **backend}
     if config.get("forcefield") != "UFF":
-        raise ForceFieldError("chain endpoint protocol requires forcefield UFF")
+        raise ForceFieldError("terminal atom distance protocol requires forcefield UFF")
     molecule = Chem.AddHs(Chem.Mol(mol))
     params = embedding_parameters(str(config["embedder"]))
     params.randomSeed = int(config["random_seed"])
@@ -172,6 +181,9 @@ def compute_chain_end_to_end_properties(
     if not converged:
         raise ForceFieldError("no UFF conformer optimization converged")
     selected_energy, selected_id = min(converged, key=lambda item: (item[0], item[1]))
+    distance, terminal_pair = maximum_terminal_atom_distance(
+        molecule, selected_id, terminal_atom_indices
+    )
     return {
         "forcefield_name": "UFF",
         "requested_conformer_count": requested,
@@ -179,9 +191,8 @@ def compute_chain_end_to_end_properties(
         "converged_conformer_count": len(converged),
         "selected_conformer_id": selected_id,
         "selected_uff_energy_kcal_mol": selected_energy,
-        "chain_end_to_end_distance": endpoint_distance(
-            molecule, selected_id, endpoints
-        ),
+        "terminal_atom_pair_indices": list(terminal_pair),
+        "terminal_atom_distance": distance,
     }
 
 
@@ -248,15 +259,25 @@ def min_nonbonded_distance(mol: Chem.Mol, conformer_id: int) -> float:
     return min(distances, default=0.0)
 
 
-def endpoint_distance(
-    mol: Chem.Mol, conformer_id: int, endpoints: tuple[int, int]
-) -> float:
+def maximum_terminal_atom_distance(
+    mol: Chem.Mol,
+    conformer_id: int,
+    terminal_atom_indices: tuple[int, ...],
+) -> tuple[float, tuple[int, int]]:
     conformer = mol.GetConformer(conformer_id)
-    return float(
-        conformer.GetAtomPosition(endpoints[0]).Distance(
-            conformer.GetAtomPosition(endpoints[1])
+    distances = (
+        (
+            float(
+                conformer.GetAtomPosition(first).Distance(
+                    conformer.GetAtomPosition(second)
+                )
+            ),
+            (first, second),
         )
+        for offset, first in enumerate(terminal_atom_indices)
+        for second in terminal_atom_indices[offset + 1 :]
     )
+    return max(distances, key=lambda item: (item[0], item[1]))
 
 
 def median(values: list[float]) -> float:
@@ -308,6 +329,15 @@ def inspect_chain_domain(
         "chain_match_atom_indices": list(selected_match),
         "chain_endpoint_atom_indices": list(ordered_endpoints),
     }, None
+
+
+def terminal_heavy_atom_indices(mol: Chem.Mol) -> list[int]:
+    return [
+        atom.GetIdx()
+        for atom in mol.GetAtoms()
+        if atom.GetAtomicNum() > 1
+        and sum(neighbor.GetAtomicNum() > 1 for neighbor in atom.GetNeighbors()) == 1
+    ]
 
 
 def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | None:

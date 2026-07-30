@@ -5,4 +5,4 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forc
 )
 
 if __name__ == "__main__":
-    main("chain_end_to_end_distance")
+    main("terminal_atom_distance")

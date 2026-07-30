@@ -235,12 +235,12 @@ verifiers:
     type: python_module
     module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_logp
     timeout_seconds: 60
-- verifier_id: rdkit_chain_end_to_end_uff_v1
-  name: RDKit ETKDGv3 UFF Six-Carbon Chain Distance Verifier
-  version: 1
+- verifier_id: rdkit_terminal_atom_distance_uff_v2
+  name: RDKit ETKDGv3 UFF Terminal Atom Distance Verifier
+  version: 2
   formal_track: true
   verifier_image: verifier-grounded:0.3.x-rdkit-2026.3.2
-  property_name: chain_end_to_end_distance
+  property_name: terminal_atom_distance
   resources: *id001
   backend:
     type: rdkit_forcefield
@@ -258,11 +258,11 @@ verifiers:
     carbon_count: [6, 6]
     chain_smarts: '[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]'
   property:
-    source: lowest converged UFF conformer terminal-carbon Euclidean distance
+    source: lowest converged UFF conformer maximum terminal-heavy-atom Euclidean distance
     units: angstrom
   executor:
     type: python_module
-    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.rdkit_chain_distance
+    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.rdkit_terminal_atom_distance
     timeout_seconds: 120
 - verifier_id: rdkit_caffeine_properties_v1
   name: RDKit Caffeine Task Hard-Property Verifier

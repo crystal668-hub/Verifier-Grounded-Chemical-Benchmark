@@ -126,19 +126,19 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  rdkit_chain_end_to_end_maximize_6p36_6p49_v2:
-    property: chain_end_to_end_distance
+  rdkit_terminal_atom_distance_maximize_6p36_21p68_v2:
+    property: terminal_atom_distance
     type: maximize
     unit: angstrom
-    full_score_target: 6.49
+    full_score_target: 21.68
     zero_score_anchor: 6.36
     provenance:
       target_source: frozen_calibration_set
       decay_source: frozen_calibration_set
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
+      evidence_id: rdkit-013-terminal-atom-distance-calibration-2026-07-30
+      decision_record: docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md
       review_status: approved
-      review_date: '2026-07-23'
+      review_date: '2026-07-30'
       review_owner: benchmark_maintainers
   rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2:
     property: caffeine_morgan_tanimoto
@@ -688,7 +688,7 @@ tasks:
     hard_property_failure: hard_constraint_failed
   task_type: open_generation
 - task_id: rdkit_chain_end_to_end_max_013
-  version: 1
+  version: 2
   object_type: small_molecule
   difficulty: expert
   formal_track: true
@@ -705,7 +705,7 @@ tasks:
     - It must match the SMARTS pattern `[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]`, representing one continuous non-ring, saturated, single-bonded six-carbon chain.
     - It must contain exactly six carbon atoms; no other carbon atoms or carbon skeletons are allowed.
     - After adding all implicit hydrogens, the total atom count must be at most 40.
-    - The fixed conformer workflow generates conformers with RDKit, optimizes them with the Universal Force Field (UFF), and ranks the converged conformers by UFF energy. Maximize the distance between the two terminal carbon nuclei in the lowest-energy converged UFF conformer.
+    - A terminal atom means a non-hydrogen atom with exactly one non-hydrogen neighbor. The fixed conformer workflow generates conformers with RDKit, optimizes them with the Universal Force Field (UFF), and ranks the converged conformers by UFF energy. In the lowest-energy converged UFF conformer, maximize the largest Euclidean distance between any pair of terminal atom nuclei. Hydrogens are not terminal-atom candidates for this distance.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: <SMILES>
@@ -717,10 +717,10 @@ tasks:
     example: 'FINAL ANSWER: CCCCCC'
   constraints:
   - type: maximize
-    property: chain_end_to_end_distance
-    verifier_id: rdkit_chain_end_to_end_uff_v1
+    property: terminal_atom_distance
+    verifier_id: rdkit_terminal_atom_distance_uff_v2
     role: main
-    scoring_profile: rdkit_chain_end_to_end_maximize_6p36_6p49_v2
+    scoring_profile: rdkit_terminal_atom_distance_maximize_6p36_21p68_v2
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2

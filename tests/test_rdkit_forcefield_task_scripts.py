@@ -22,8 +22,8 @@ def test_rdkit_forcefield_script_outputs_single_constraint_result_json() -> None
 
     assert result["outcome"] == "verified"
     assert result["task_id"] == "rdkit_chain_end_to_end_max_013"
-    assert result["verifier_id"] == "rdkit_chain_end_to_end_uff_v1"
+    assert result["verifier_id"] == "rdkit_terminal_atom_distance_uff_v2"
     assert result["canonical_candidate"]["smiles"] == "CCCCCC"
     assert result["properties"]["forcefield_name"] == "UFF"
-    assert result["properties"]["chain_end_to_end_distance"] > 0.0
+    assert result["properties"]["terminal_atom_distance"] > 0.0
     assert "scores" not in result

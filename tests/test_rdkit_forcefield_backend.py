@@ -109,9 +109,9 @@ def test_evaluate_forcefield_constraint_reports_parameterization_failure() -> No
 
 
 CHAIN_SPEC = {
-    "verifier_id": "rdkit_chain_end_to_end_uff_v1",
+    "verifier_id": "rdkit_terminal_atom_distance_uff_v2",
     "verifier_image": "verifier-grounded:dev",
-    "property_name": "chain_end_to_end_distance",
+    "property_name": "terminal_atom_distance",
     "backend": {
         "embedder": "ETKDGv3",
         "random_seed": 61453,
@@ -130,11 +130,11 @@ CHAIN_SPEC = {
 }
 
 
-def test_chain_endpoint_protocol_scores_n_hexane_with_uff() -> None:
+def test_terminal_atom_protocol_scores_n_hexane_with_uff() -> None:
     result = evaluate_forcefield_constraint(
         {"smiles": "CCCCCC"},
         {"task_id": "rdkit_chain_end_to_end_max_013"},
-        {"property": "chain_end_to_end_distance"},
+        {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )
 
@@ -144,9 +144,13 @@ def test_chain_endpoint_protocol_scores_n_hexane_with_uff() -> None:
     assert result["properties"]["carbon_count"] == 6
     assert len(result["properties"]["chain_match_atom_indices"]) == 6
     assert len(result["properties"]["chain_endpoint_atom_indices"]) == 2
+    assert len(result["properties"]["terminal_atom_indices"]) == 2
+    assert len(result["properties"]["terminal_atom_pair_indices"]) == 2
     assert result["properties"]["retained_conformer_count"] >= 1
     assert result["properties"]["converged_conformer_count"] >= 1
-    assert result["properties"]["chain_end_to_end_distance"] > 0
+    assert result["properties"]["terminal_atom_distance"] == pytest.approx(
+        6.368444271088
+    )
 
 
 @pytest.mark.parametrize(
@@ -157,7 +161,7 @@ def test_chain_endpoint_domain_rejects_wrong_carbon_skeleton(smiles: str) -> Non
     result = evaluate_forcefield_constraint(
         {"smiles": smiles},
         {"task_id": "rdkit_chain_end_to_end_max_013"},
-        {"property": "chain_end_to_end_distance"},
+        {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )
 
@@ -165,18 +169,28 @@ def test_chain_endpoint_domain_rejects_wrong_carbon_skeleton(smiles: str) -> Non
     assert result["failure_type"] == "domain_error"
 
 
-def test_chain_endpoint_domain_allows_noncarbon_substitution() -> None:
+def test_terminal_atom_distance_uses_noncarbon_substituents() -> None:
+    smiles = "FCCCCCCCl"
     result = evaluate_forcefield_constraint(
-        {"smiles": "FCCCCCCCl"},
+        {"smiles": smiles},
         {"task_id": "rdkit_chain_end_to_end_max_013"},
-        {"property": "chain_end_to_end_distance"},
+        {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )
 
     assert result["outcome"] == "verified"
+    mol = forcefield_backend.Chem.MolFromSmiles(smiles)
+    pair_symbols = {
+        mol.GetAtomWithIdx(index).GetSymbol()
+        for index in result["properties"]["terminal_atom_pair_indices"]
+    }
+    assert pair_symbols == {"F", "Cl"}
+    assert result["properties"]["terminal_atom_distance"] == pytest.approx(
+        7.893839307597
+    )
 
 
-def test_chain_endpoint_distance_uses_lowest_converged_energy(monkeypatch) -> None:
+def test_terminal_atom_distance_uses_lowest_converged_energy(monkeypatch) -> None:
     monkeypatch.setattr(
         forcefield_backend.AllChem,
         "EmbedMultipleConfs",
@@ -194,11 +208,14 @@ def test_chain_endpoint_distance_uses_lowest_converged_energy(monkeypatch) -> No
     )
     monkeypatch.setattr(
         forcefield_backend,
-        "endpoint_distance",
-        lambda molecule, conformer_id, endpoints: float(conformer_id),
+        "maximum_terminal_atom_distance",
+        lambda molecule, conformer_id, terminal_atoms: (
+            float(conformer_id),
+            (terminal_atoms[0], terminal_atoms[1]),
+        ),
     )
 
-    properties = forcefield_backend.compute_chain_end_to_end_properties(
+    properties = forcefield_backend.compute_terminal_atom_distance_properties(
         forcefield_backend.Chem.MolFromSmiles("CCCCCC"),
         CHAIN_SPEC["backend"],
         (0, 5),
@@ -207,4 +224,5 @@ def test_chain_endpoint_distance_uses_lowest_converged_energy(monkeypatch) -> No
     assert properties["converged_conformer_count"] == 2
     assert properties["selected_conformer_id"] == 7
     assert properties["selected_uff_energy_kcal_mol"] == 3.0
-    assert properties["chain_end_to_end_distance"] == 7.0
+    assert properties["terminal_atom_pair_indices"] == [0, 5]
+    assert properties["terminal_atom_distance"] == 7.0
