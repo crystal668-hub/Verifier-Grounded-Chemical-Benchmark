@@ -1,6 +1,6 @@
 # xTB 题目设计与实现同步
 
-更新日期：2026-07-24
+更新日期：2026-07-30
 
 ## 1. Track 边界与答案格式
 
@@ -57,6 +57,16 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 冻结环境为 RDKit 2026.3.2、CREST 2.12、xTB 6.7.1、GFN2-xTB、`charge=0`、`uhf=0`、单线程、`-mquick`，seed `61453`。最低 ensemble member 再运行 xTB single-point；冻结锚点为 `T=-63.56975 Eh`、`B=-63.5669 Eh`，同一候选重复运行的绝对能量容差为 `1.0e-5 Eh`。该容差只用于可复现性审计，不参与评分。该能量只在相同 formula、charge、电子态和冻结协议内比较，不代表实验生成自由能、溶液平衡或合成产率。
 
 校准明细和配置哈希见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`，可复现环境见 `envs/crest-xtb.yml`。
+
+### 3.3 ROY 与 Ritonavir total energy
+
+任务 017 的 verifier 对提交坐标直接运行 neutral closed-shell GFN2-xTB
+single-point；任务 018 优化提交坐标后读取 total energy，并在优化前后检查身份和
+立体化学。两项满分锚点已按同一冻结 verifier 复核到当前 run 中可达的最低值：
+`xtb_017 = -50.302552312418 Eh`、`xtb_018 = -148.210476869589 Eh`。零分锚点
+保持 `-50.287905192962 Eh` 与 `-148.183476873812 Eh` 不变。该结果是同一
+分子、方法、电子态和计算模式下的已复核最低可达候选，不作跨分子或跨方法的绝对能量比较；
+证据见 `docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md`。
 
 `vgb-score` 在启动本次答案涉及的 verifier 前读取其 `external_dependencies`。xTB verifier 要求 xTB 6.7.1，任务 020 额外要求 CREST 2.12；当前 `PATH` 缺失或版本不符时，运行时会通过 Conda 环境列表发现 `vgb-crest` 并把该环境的工具目录加入 verifier 子进程 `PATH`。环境不存在、命令缺失或版本不匹配时，评分在启动 verifier 前以 `verifier_environment_error` 终止，不会把基础设施故障计为候选零分。
 

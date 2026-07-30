@@ -37,29 +37,29 @@ scoring_profiles:
     property: total_energy
     type: minimize
     unit: hartree
-    full_score_target: -50.289109041949
+    full_score_target: -50.302552312418
     zero_score_anchor: -50.287905192962
     provenance:
-      target_source: literature_conformer_family_recomputed_with_frozen_verifier
+      target_source: frozen_run_candidate_recomputed_with_frozen_verifier
       decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md
+      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
+      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
       review_status: approved
-      review_date: '2026-07-21'
+      review_date: '2026-07-30'
       review_owner: benchmark_maintainers
   xtb_total_energy_minimize_neg_148p2_neg_148p15_v2:
     property: total_energy
     type: minimize
     unit: hartree
-    full_score_target: -148.192718517112
+    full_score_target: -148.210476869589
     zero_score_anchor: -148.183476873812
     provenance:
-      target_source: literature_conformer_family_recomputed_with_frozen_verifier
+      target_source: frozen_run_candidate_recomputed_with_frozen_verifier
       decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-total-energy-linear-goal-dossier.md
+      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
+      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
       review_status: approved
-      review_date: '2026-07-21'
+      review_date: '2026-07-30'
       review_owner: benchmark_maintainers
   xtb_odd_element_gap_maximize_3p6_11p9_v2:
     property: homo_lumo_gap

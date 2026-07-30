@@ -131,7 +131,7 @@ def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
     for profile_id in profile_ids:
         provenance = pack.scoring_profiles[profile_id]["provenance"]
         assert provenance["review_status"] == "approved"
-        assert provenance["evidence_id"] == "xtb-total-energy-dossier-2026-07-21"
+        assert provenance["evidence_id"] == "xtb-total-energy-anchor-recalibration-2026-07-30"
 
 
 def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> None:

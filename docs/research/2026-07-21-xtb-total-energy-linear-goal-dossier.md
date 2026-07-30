@@ -4,6 +4,11 @@
 **Decision:** Approved for the third parameter batch  
 **Scoring version:** `linear_goal_v2`
 
+> Superseded for the formal 017/018 full-score targets by
+> `docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md`.
+> The conformer panels below are retained as the original 2026-07-21 evidence;
+> historical release artifacts are not rewritten.
+
 ## Protocol
 
 Both profiles use xTB 6.7.1, GFN2-xTB, neutral closed-shell charge/spin, and
