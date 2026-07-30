@@ -69,3 +69,13 @@ score = clip((distance - 6.36) / 15.32, 0, 1)
 `B=6.36 Angstrom` 由正己烷低端对照继续支撑。`T=21.68 Angstrom` 取高端正例的可复现值 `21.686562287507 Angstrom` 向下保留两位小数，使该批准正例达到满分。锚点来自预先列出的合法校准候选和冻结 verifier，不使用正式模型提交反向定标。
 
 当前 profile ID 为 `rdkit_terminal_atom_distance_maximize_6p36_21p68_v2`，verifier ID 为 `rdkit_terminal_atom_distance_uff_v2`。历史 release 工件保留旧 profile 和 verifier，不做回写。
+
+## 6. 配置哈希
+
+对 YAML 解析后的对象执行 sorted-key、compact-separator canonical JSON，再取 SHA-256：
+
+| object | SHA-256 |
+|---|---|
+| profile `rdkit_terminal_atom_distance_maximize_6p36_21p68_v2` | `47f165a21382256bd2cdd20792b07d719ec868d0bc91a2c19beff1be6f13b50b` |
+| verifier `rdkit_terminal_atom_distance_uff_v2` | `1531ce0674ee8df15ab5be8f9e1d8a97482652142af70e23f0d700e242b5a39b` |
+| task `rdkit_chain_end_to_end_max_013` version 2 | `44d6e51d8716c6de1b4a772748cacdcc8d29d4a91341589e0d3991b50bde33b2` |
