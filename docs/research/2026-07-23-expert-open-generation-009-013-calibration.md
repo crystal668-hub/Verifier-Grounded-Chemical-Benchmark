@@ -4,6 +4,11 @@
 状态：批准用于正式 task pack  
 规格：`docs/design/expert-open-generation-tasks-009-013.md`
 
+> 2026-07-30 更新：本报告中 `rdkit_chain_end_to_end_max_013` 的旧“端点碳”
+> 性质和 `6.36/6.49 Angstrom` 锚点已被
+> `docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md`
+> 取代。下文保留为历史校准记录，不再约束当前 task pack。
+
 ## 1. 范围与冻结原则
 
 本报告只冻结规格中尚待独立计算决定的三组连续评分锚点和 CREST 部署版本。候选在写入正式 task pack 前固定，未使用正式模型提交反向定标。题 009 复用已批准的 LogP profile；题 013 使用 Tanimoto 定义域 `[0, 1]`，二者不需要额外经验锚点。

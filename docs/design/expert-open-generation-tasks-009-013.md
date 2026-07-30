@@ -26,7 +26,7 @@
 | 009 | `rdkit_sa_logp_target_012` | `rdkit` | SMILES | LogP 接近 3 |
 | 010 | `xtb_odd_element_counts_gap_max_019` | `xtb` | explicit-H XYZ | 最大化 HOMO-LUMO gap |
 | 011 | `xtb_pyrene_substituent_energy_min_020` | `xtb` | SMILES | 最小化最低构象能量 |
-| 012 | `rdkit_chain_end_to_end_max_013` | `rdkit` | SMILES | 最大化最低能构象的六碳链端到端距离 |
+| 012 | `rdkit_chain_end_to_end_max_013` | `rdkit` | SMILES | 最大化最低能构象的末端重原子距离 |
 | 013 | `rdkit_caffeine_similarity_max_014` | `rdkit` | SMILES | 最大化与咖啡因的 Morgan Tanimoto 相似度 |
 
 task ID 按各 track 当前正式任务的末尾顺延。专家题号保留在设计、测试名称和
@@ -423,7 +423,7 @@ post_crest_identity_match
 - CREST/xTB 过程中发生分子图变化时为 candidate identity failure；
 - 同一候选在冻结环境中重复运行应落入预先批准的能量重复性容差。
 
-## 7. 题 012：六碳链最低能构象的端到端距离
+## 7. 题 012：六碳链最低能构象的末端原子距离
 
 ### 7.1 标识与 track 决策
 
@@ -466,11 +466,13 @@ src/verifier_grounded_benchmark/task/packs/experimental/rdkit_forcefield/
 - 全部 6 个碳都属于上述非环、四配位、单键相连的连续骨架；
 - 不允许任何额外碳原子或额外碳骨架；
 - 加入全部隐式氢后的总原子数不超过 40；
-- 在固定 RDKit/UFF workflow 找到的最低能构象中，使六碳链端点距离尽可能大。
+- 至少包含两个末端重原子；
+- 在固定 RDKit/UFF workflow 找到的最低能构象中，使任意末端重原子对的最大距离尽可能大。
 
 “最低能构象”只表示固定有限构象采样和 UFF 优化 workflow 找到的最低者，不宣称真实
-全局最低能构象。“长度”只指两个端点碳原子核的欧氏距离，不指全分子最大直径、轮廓
-长度、回转半径或包含取代基的尺寸。
+全局最低能构象。“末端重原子”指重原子图中恰好只有一个重原子邻居的非氢原子；显式
+或隐式氢均不参与末端原子候选。主性质是在选中构象中枚举所有末端重原子对后得到的
+最大原子核欧氏距离，不再限定为六碳链的两个端点碳。
 
 ### 7.3 骨架和 domain 硬门
 
@@ -480,7 +482,8 @@ src/verifier_grounded_benchmark/task/packs/experimental/rdkit_forcefield/
 4. 确认候选碳原子总数恰好为 6。
 5. 用上述 SMARTS 获取匹配，并确认一个匹配覆盖全部 6 个碳。
 6. 去除反向重复后，所有有效匹配必须给出同一无序端点对；否则以 domain ambiguity 拒绝。
-7. 记录按 canonical atom ranking 确定的端点 atom indices，后续所有构象都使用该映射。
+7. 枚举重原子图中只有一个重原子邻居的原子；少于两个时以 domain error 拒绝。
+8. 记录全部末端重原子 atom indices，后续所有构象都使用该映射。
 
 “包含六碳子结构”而碳总数大于 6 的候选必须被拒绝，不能通过增加长碳取代基提高分数。
 
@@ -508,20 +511,20 @@ max_iters: 200
 7. 若无收敛构象，返回 verifier tool failure，不产生候选性质分数；
 8. 对每个收敛构象计算 UFF energy；
 9. 按 `(energy, conformer_id)` 升序选择唯一最低者；
-10. 在该构象中测量两个映射端点碳原子的欧氏距离，单位 Angstrom。
+10. 在该构象中枚举所有末端重原子对，取最大欧氏距离，单位 Angstrom，并记录获胜原子对。
 
 UFF energy 只用于同一候选内部选择构象，不作为跨候选评分性质。
 
 ### 7.5 评分
 
 ```text
-property: chain_end_to_end_distance
+property: terminal_atom_distance
 type: maximize
 unit: angstrom
 ```
 
-正式发布前必须在完全相同的 ETKDGv3/UFF 协议和合法 domain 上冻结
-`T_length/B_length`。校准至少包含：
+冻结评分锚点为 `T=21.68 Angstrom`、`B=6.36 Angstrom`，证据见
+`docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md`。校准包含：
 
 - n-hexane reference；
 - 容易折叠的合法取代候选；
@@ -536,13 +539,14 @@ canonical_smiles
 atom_count_including_h
 carbon_count
 chain_match_atom_indices
-chain_endpoint_atom_indices
+terminal_atom_indices
 requested_conformer_count
 retained_conformer_count
 converged_conformer_count
 selected_conformer_id
 selected_uff_energy_kcal_mol
-chain_end_to_end_distance
+terminal_atom_pair_indices
+terminal_atom_distance
 ```
 
 ### 7.7 验收用例
@@ -552,7 +556,8 @@ chain_end_to_end_distance
 - 含氢总原子数恰为 40 可接受，41 被拒绝；
 - backend 不能回退到 MMFF；
 - 被测距离必须来自最低 UFF 能量的收敛构象，而不是第一个嵌入构象；
-- 端点索引反向匹配不改变距离；
+- `FCCCCCCCl` 的获胜原子对必须为 F 和 Cl，不能仍使用两个端点碳；
+- 末端原子枚举次序不改变最大距离；
 - 固定 seed 和环境下重复结果一致。
 
 ## 8. 题 013：硬性质窗口下的咖啡因相似度
@@ -740,7 +745,7 @@ hard_constraint_passed
 - 题 009：SA `<5` 是硬门；LogP 越接近 3 分数越高；评分同 RDKit 011，但不继承氧占比。
 - 题 010：每一种非氢元素的原子个数必须为奇数；dipole `<2 D` 是硬门；gap 是唯一主目标。
 - 题 011：安装 CREST；答案使用 SMILES；仍属于 `xtb` track；允许 track 内多种答案表示。
-- 题 012：长度是六碳链端点碳距离；禁止其他碳骨架；总原子数包含隐式氢；固定 UFF；并入 `rdkit` track；删除旧 experimental pack。
+- 题 012：长度是最低能收敛构象中任意末端重原子对的最大距离；禁止其他碳骨架；总原子数包含隐式氢；固定 UFF；并入 `rdkit` track；删除旧 experimental pack。
 - 题 013：新增固定 Morgan/Tanimoto；不要求保留黄嘌呤 scaffold；三个 RDKit 性质均为硬门。
 
 本文未冻结的只有必须由独立计算证据决定的连续评分锚点和 CREST 部署版本。它们不是题面

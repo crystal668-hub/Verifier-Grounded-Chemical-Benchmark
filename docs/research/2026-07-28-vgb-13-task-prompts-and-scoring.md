@@ -73,7 +73,7 @@ track: RDKit
     - It must match the SMARTS pattern `[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]-[C;X4;!R]`, representing one continuous non-ring, saturated, single-bonded six-carbon chain.
     - It must contain exactly six carbon atoms; no other carbon atoms or carbon skeletons are allowed.
     - After adding all implicit hydrogens, the total atom count must be at most 40.
-    - The fixed conformer workflow generates conformers with RDKit, optimizes them with the Universal Force Field (UFF), and ranks the converged conformers by UFF energy. Maximize the distance between the two terminal carbon nuclei in the lowest-energy converged UFF conformer.
+    - A terminal atom means a non-hydrogen atom with exactly one non-hydrogen neighbor. The fixed conformer workflow generates conformers with RDKit, optimizes them with the Universal Force Field (UFF), and ranks the converged conformers by UFF energy. In the lowest-energy converged UFF conformer, maximize the largest Euclidean distance between any pair of terminal atom nuclei. Hydrogens are not terminal-atom candidates for this distance.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: <SMILES>
@@ -81,9 +81,9 @@ track: RDKit
 ### 得分规则
 
 - 结构门：单组分、中性、允许元素范围内；恰好含 6 个碳并匹配指定六碳非环饱和链 SMARTS；含氢总原子数不超过 40。
-- 协议：ETKDGv3，随机种子 `61453`，20 个 conformer，`pruneRmsThresh = 0.5`；UFF 最多优化 200 次；取最低能量的已收敛 conformer，测量两个末端碳核距离。
-- 满分锚点 `6.49 A`，零分锚点 `6.36 A`。
-- 公式：`d <= 6.36` 为 0，`d >= 6.49` 为 1，中间为 `(d - 6.36) / 0.13`。
+- 协议：ETKDGv3，随机种子 `61453`，20 个 conformer，`pruneRmsThresh = 0.5`；UFF 最多优化 200 次；取最低能量的已收敛 conformer，枚举重原子图中只有一个重原子邻居的全部末端重原子，并测量其中最大的原子对距离。氢不参与。
+- 满分锚点 `21.68 A`，零分锚点 `6.36 A`。
+- 公式：`d <= 6.36` 为 0，`d >= 21.68` 为 1，中间为 `(d - 6.36) / 15.32`。
 
 ## 4. `rdkit_caffeine_similarity_max_014`
 

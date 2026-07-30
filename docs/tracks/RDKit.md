@@ -1,6 +1,6 @@
 # RDKit 题目设计与实现同步
 
-更新日期：2026-07-23
+更新日期：2026-07-30
 
 ## 1. Track 边界
 
@@ -30,7 +30,7 @@ RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始�
 | `rdkit_hba_hbd_010` | HBA + HBD | multi-objective |
 | `rdkit_logp_target_011` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
 | `rdkit_sa_logp_target_012` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
-| `rdkit_chain_end_to_end_max_013` | maximize 六碳链端距 | 精确六碳饱和链；固定 UFF workflow |
+| `rdkit_chain_end_to_end_max_013` | maximize 末端重原子距离 | 精确六碳饱和链；固定 UFF workflow |
 | `rdkit_caffeine_similarity_max_014` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
 
 ## 3. 性质与 verifier
@@ -38,11 +38,11 @@ RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始�
 descriptor backend 计算 QED、SA score、LogP、TPSA、HBA、HBD、fraction Csp3 和 MW。新增专家协议包括：
 
 - `rdkit_sa_logp_domain_sa_v1` 与 `rdkit_sa_logp_domain_logp_v1`：共享同一题目专用 domain，先执行 SA 严格硬门，再计算 LogP 主目标。
-- `rdkit_chain_end_to_end_uff_v1`：验证精确六碳非环饱和链，ETKDGv3 生成有限构象集，只使用 UFF，按 `(energy, conformer_id)` 选择最低收敛构象并测量两个端点碳核距离。
+- `rdkit_terminal_atom_distance_uff_v2`：验证精确六碳非环饱和链，ETKDGv3 生成有限构象集，只使用 UFF，按 `(energy, conformer_id)` 选择最低收敛构象，再取任意末端重原子对的最大核间距离。末端重原子在重原子图中恰有一个重原子邻居；氢不参与。
 - `rdkit_caffeine_properties_v1`：在同一 candidate evidence 中计算 LogP、SA 和 QED，并核对冻结 reference SA。
 - `rdkit_caffeine_similarity_v1`：Morgan bit fingerprint，radius 2、2048 bit、不含 chirality、使用 bond types，按 Tanimoto 与冻结 caffeine reference 比较。
 
-任务 013 的冻结参数为 seed `61453`、20 个请求构象、pruning `0.5 Angstrom`、UFF、最多 200 次迭代。只保留收敛构象，不回退到 MMFF；没有嵌入或没有收敛构象属于 verifier tool failure。该距离是固定有限采样 workflow 的结果，不是全局最低能构象、分子最大直径或轮廓长度。UFF 能量只用于同一候选内部选构象，不能跨分子解释。
+任务 013 的冻结参数为 seed `61453`、20 个请求构象、pruning `0.5 Angstrom`、UFF、最多 200 次迭代。只保留收敛构象，不回退到 MMFF；没有嵌入或没有收敛构象属于 verifier tool failure。该距离是固定有限采样 workflow 的结果，不是全局最低能构象或轮廓长度。UFF 能量只用于同一候选内部选构象，不能跨分子解释。
 
 ## 4. 硬门与评分
 
@@ -50,7 +50,7 @@ descriptor backend 计算 QED、SA score、LogP、TPSA、HBA、HBD、fraction Cs
 
 连续目标统一使用 `linear_goal_v2`：maximize/minimize 在满分目标 `T` 与零分锚点 `B` 间线性插值；target/window 在冻结目标或窗口与两侧 width 间线性衰减并裁剪到 `[0, 1]`。多主目标取 geometric mean，硬门不参与平均。
 
-任务 012 复用 LogP target 3、宽度 3 的 profile。任务 013 使用独立校准的 `B=6.36`、`T=6.49 Angstrom`。任务 014 的 Tanimoto 使用定义域锚点 `B=0`、`T=1`。校准证据见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`。
+任务 012 复用 LogP target 3、宽度 3 的 profile。任务 013 使用末端重原子距离独立校准的 `B=6.36`、`T=21.68 Angstrom`。任务 014 的 Tanimoto 使用定义域锚点 `B=0`、`T=1`。任务 013 的新锚点证据见 `docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md`；其余锚点见 `docs/research/2026-07-23-expert-open-generation-009-013-calibration.md`。
 
 ## 5. 化学解释边界
 
