@@ -1,2 +1,14 @@
 {"task_id":"property_calc_free_energy_001","answer":0.258031679,"unit":"kJ/mol"}
 {"task_id":"property_calc_crystal_phase_002","answers":[{"property":"potential_energy_difference","value":0.079,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+{"task_id":"property_calc_014_hbond_count","answer":12,"unit":"count"}
+{"task_id":"property_calc_015_ir_top3_frequencies","answers":[{"property":"frequency_1","value":1685.5562,"unit":"cm^-1"},{"property":"frequency_2","value":1208.1036,"unit":"cm^-1"},{"property":"frequency_3","value":1674.0688,"unit":"cm^-1"}]}
+{"task_id":"property_calc_016_crystal_density","answer":1.44728,"unit":"g/cm^3"}
+{"task_id":"property_calc_017_cocrystal_ratio","answer":"1:1"}
+{"task_id":"property_calc_018_polymorph_free_energy_crossover","answers":[{"property":"lower_free_energy_at_0k","value":"FormC"},{"property":"crossover_temperature","value":343.15,"unit":"K"}]}
+{"task_id":"property_calc_019_interaction_binding_energy","answers":[{"property":"interaction_energy","value":-69.04,"unit":"kcal/mol"},{"property":"binding_energy","value":-58.15,"unit":"kcal/mol"}]}
+{"task_id":"property_calc_020_homo_lumo_gap","answer":7.26,"unit":"eV"}
+{"task_id":"property_calc_021_hbond_distances","answers":[{"property":"oh_bond_distance","value":1.029,"unit":"angstrom"},{"property":"h_o_contact_distance","value":1.485,"unit":"angstrom"}]}
+{"task_id":"property_calc_022_accessible_pore_volume_ratio","answer":1.713,"unit":"ratio"}
+{"task_id":"property_calc_023_carboxyl_hydrogen_distance","answer":2.521,"unit":"angstrom"}
+{"task_id":"property_calc_024_halogen_bond_energy","answer":-17.11,"unit":"kcal/mol"}
+{"task_id":"property_calc_025_bay069_pka","answer":5.7,"unit":"pKa"}

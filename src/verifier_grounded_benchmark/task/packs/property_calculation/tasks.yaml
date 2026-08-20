@@ -52,6 +52,223 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
+  property_calculation_hydrogen_bond_count_numeric_gold_v2:
+    property: hydrogen_bond_count
+    type: numeric_gold
+    unit: count
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_ir_frequency_1_numeric_gold_v2:
+    property: frequency_1
+    type: numeric_gold
+    unit: cm^-1
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_ir_frequency_2_numeric_gold_v2:
+    property: frequency_2
+    type: numeric_gold
+    unit: cm^-1
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_ir_frequency_3_numeric_gold_v2:
+    property: frequency_3
+    type: numeric_gold
+    unit: cm^-1
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_crystal_density_numeric_gold_v2:
+    property: crystal_density
+    type: numeric_gold
+    unit: g/cm^3
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_cocrystal_molar_ratio_exact_string_v2:
+    property: cocrystal_molar_ratio
+    type: exact_string
+    normalization: exact
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: not_applicable
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_lower_free_energy_form_exact_string_v2:
+    property: lower_free_energy_at_0k
+    type: exact_string
+    normalization: exact
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: not_applicable
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_crossover_temperature_numeric_gold_v2:
+    property: crossover_temperature
+    type: numeric_gold
+    unit: K
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_interaction_energy_numeric_gold_v2:
+    property: interaction_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_binding_energy_numeric_gold_v2:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_homo_lumo_gap_numeric_gold_v2:
+    property: homo_lumo_gap
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 0.05
+    upper_tolerance: 0.05
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_oh_bond_distance_numeric_gold_v2:
+    property: oh_bond_distance
+    type: numeric_gold
+    unit: angstrom
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_h_o_contact_distance_numeric_gold_v2:
+    property: h_o_contact_distance
+    type: numeric_gold
+    unit: angstrom
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_pore_volume_ratio_numeric_gold_v2:
+    property: accessible_to_inaccessible_volume_ratio
+    type: numeric_gold
+    unit: ratio
+    lower_tolerance: 0.05
+    upper_tolerance: 0.05
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2:
+    property: carboxyl_hydrogen_distance
+    type: numeric_gold
+    unit: angstrom
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_halogen_bond_energy_numeric_gold_v2:
+    property: halogen_bond_interaction_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
+  property_calculation_pka_numeric_gold_v2:
+    property: pka
+    type: numeric_gold
+    unit: pKa
+    lower_tolerance: 0.1
+    upper_tolerance: 0.1
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: gold_to_zero_rule
+      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      review_status: approved
+      review_date: '2026-08-20'
+      review_owner: benchmark_maintainers
 tasks:
 - task_id: property_calc_free_energy_001
   version: 1
@@ -883,6 +1100,1896 @@ tasks:
     - id: potential_energy_difference
       mode: all
     - id: pressure_phase_assignment
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_014_hbond_count
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_crystal
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - hydrogen_bonding
+  prompt: |
+    Using the DEBXIT06 crystal structure below, report the total number of hydrogen bonds formed by one molecule with all other molecules in the crystal. Count hydrogen bonds for which the molecule acts as either donor or acceptor. Use the source-defined hydrogen-bond counting convention and report the integer count.
+
+    ```cif
+    data_DEBXIT06
+    _symmetry_cell_setting           triclinic
+    _symmetry_space_group_name_H-M   'P -1'
+    _symmetry_Int_Tables_number      2
+    _space_group_name_Hall           '-P 1'
+    loop_
+    _symmetry_equiv_pos_site_id
+    _symmetry_equiv_pos_as_xyz
+    1 x,y,z
+    2 -x,-y,-z
+    _cell_length_a                   7.2523(17)
+    _cell_length_b                   13.033(3)
+    _cell_length_c                   20.693(5)
+    _cell_angle_alpha                72.701(9)
+    _cell_angle_beta                 86.552(6)
+    _cell_angle_gamma                73.915(6)
+    _cell_volume                     1793.78
+    loop_
+    _atom_site_label
+    _atom_site_type_symbol
+    _atom_site_fract_x
+    _atom_site_fract_y
+    _atom_site_fract_z
+    _atom_site_U_iso_or_equiv
+    _atom_site_thermal_displace_type
+    O1 O 1.0432(7) -0.2634(4) 0.4658(3) 0.0467 Uani
+    O2 O 0.7496(9) 0.5112(7) -0.0220(3) 0.0945 Uani
+    O3 O 0.5128(7) 0.8018(4) 0.4693(3) 0.0473 Uani
+    N1 N 0.8096(8) -0.0914(5) 0.4387(3) 0.0414 Uani
+    H1 H 0.7074 -0.1139 0.4442 0.0500 Uiso
+    N2 N 1.1141(8) -0.0919(5) 0.4387(3) 0.0394 Uani
+    H2 H 1.2368 -0.1151 0.4443 0.0470 Uiso
+    N3 N 0.6052(10) 0.4581(7) 0.0818(3) 0.0730 Uani
+    H3 H 0.4925 0.4639 0.0678 0.0870 Uiso
+    N4 N 0.9081(9) 0.4603(7) 0.0823(3) 0.0722 Uani
+    H4 H 1.0195 0.4672 0.0686 0.0870 Uiso
+    N5 N 0.4343(8) 0.6594(4) 0.4398(3) 0.0408 Uani
+    H5 H 0.3117 0.6792 0.4436 0.0490 Uiso
+    N6 N 0.7395(8) 0.6540(5) 0.4446(3) 0.0404 Uani
+    H6 H 0.8425 0.6692 0.4524 0.0490 Uiso
+    C1 C 0.9495(9) 0.3320(5) 0.3410(3) 0.0328 Uani
+    H7 H 1.0847 0.3318 0.3414 0.0390 Uiso
+    C2 C 0.9173(9) 0.2165(5) 0.3746(3) 0.0326 Uani
+    C3 C 0.7255(9) 0.2155(5) 0.3739(3) 0.0309 Uani
+    C4 C 0.5919(10) 0.3329(5) 0.3399(4) 0.0360 Uani
+    H8 H 0.4566 0.3335 0.3394 0.0430 Uiso
+    C5 C 1.0632(10) 0.1183(6) 0.3965(3) 0.0363 Uani
+    H9 H 1.1914 0.1182 0.3971 0.0430 Uiso
+    C6 C 1.0067(9) 0.0196(6) 0.4175(4) 0.0348 Uani
+    C7 C 0.8169(9) 0.0193(5) 0.4173(3) 0.0323 Uani
+    C8 C 0.6702(10) 0.1179(6) 0.3962(4) 0.0379 Uani
+    H10 H 0.5419 0.1180 0.3970 0.0450 Uiso
+    C9 C 0.9928(10) -0.1573(6) 0.4491(4) 0.0383 Uani
+    C10 C 0.8628(9) 0.3678(6) 0.2698(4) 0.0355 Uani
+    C11 C 0.9601(9) 0.3968(6) 0.2100(3) 0.0396 Uani
+    H11 H 1.0888 0.3959 0.2102 0.0480 Uiso
+    C12 C 0.8564(11) 0.4271(8) 0.1504(4) 0.0556 Uani
+    C13 C 0.6651(11) 0.4251(8) 0.1496(4) 0.0542 Uani
+    C14 C 0.5676(10) 0.3974(6) 0.2085(4) 0.0455 Uani
+    H12 H 0.4386 0.3993 0.2078 0.0540 Uiso
+    C15 C 0.6706(9) 0.3664(6) 0.2694(3) 0.0343 Uani
+    C16 C 0.7538(12) 0.4800(10) 0.0414(5) 0.0762 Uani
+    C17 C 0.8194(9) 0.4130(5) 0.3761(3) 0.0319 Uani
+    C18 C 0.8767(9) 0.4878(5) 0.3992(4) 0.0362 Uani
+    H13 H 1.0050 0.4874 0.4000 0.0440 Uiso
+    C19 C 0.7313(10) 0.5653(6) 0.4216(4) 0.0389 Uani
+    C20 C 0.5412(10) 0.5662(6) 0.4190(3) 0.0361 Uani
+    C21 C 0.4831(10) 0.4904(5) 0.3966(4) 0.0365 Uani
+    H14 H 0.3548 0.4907 0.3962 0.0440 Uiso
+    C22 C 0.6265(9) 0.4133(5) 0.3744(3) 0.0300 Uani
+    C23 C 0.5595(10) 0.7118(6) 0.4526(4) 0.0382 Uani
+    loop_
+    _atom_site_aniso_label
+    _atom_site_aniso_U_11
+    _atom_site_aniso_U_22
+    _atom_site_aniso_U_33
+    _atom_site_aniso_U_23
+    _atom_site_aniso_U_13
+    _atom_site_aniso_U_12
+    O1 0.038(3) 0.028(3) 0.074(4) -0.017(3) -0.001(3) -0.006(2)
+    O2 0.049(4) 0.193(8) 0.042(4) -0.013(4) 0.007(3) -0.058(5)
+    O3 0.037(3) 0.040(3) 0.073(4) -0.030(3) 0.007(3) -0.010(2)
+    N1 0.028(3) 0.034(3) 0.065(4) -0.018(3) 0.005(3) -0.010(3)
+    N2 0.022(3) 0.032(3) 0.065(4) -0.019(3) 0.004(3) -0.004(3)
+    N3 0.036(4) 0.139(8) 0.041(4) -0.015(4) 0.009(3) -0.033(4)
+    N4 0.035(4) 0.140(8) 0.043(4) -0.011(4) 0.005(3) -0.044(4)
+    N5 0.029(3) 0.030(3) 0.065(4) -0.022(3) 0.011(3) -0.004(3)
+    N6 0.030(3) 0.029(3) 0.068(4) -0.026(3) 0.003(3) -0.005(3)
+    C1 0.025(4) 0.032(4) 0.043(4) -0.013(3) 0.004(3) -0.009(3)
+    C2 0.029(4) 0.031(4) 0.040(4) -0.014(3) 0.007(3) -0.009(3)
+    C3 0.025(4) 0.027(4) 0.043(4) -0.015(3) 0.008(3) -0.007(3)
+    C4 0.026(4) 0.028(4) 0.055(5) -0.016(3) 0.008(3) -0.006(3)
+    C5 0.027(4) 0.038(4) 0.049(4) -0.019(3) 0.004(3) -0.011(3)
+    C6 0.027(4) 0.035(4) 0.048(4) -0.021(3) 0.003(3) -0.008(3)
+    C7 0.031(4) 0.028(4) 0.040(4) -0.014(3) 0.006(3) -0.008(3)
+    C8 0.028(4) 0.038(4) 0.051(5) -0.018(3) 0.011(3) -0.011(3)
+    C9 0.032(4) 0.035(4) 0.051(5) -0.018(3) 0.004(3) -0.009(3)
+    C10 0.024(4) 0.035(4) 0.051(5) -0.017(3) 0.002(3) -0.009(3)
+    C11 0.019(4) 0.062(5) 0.040(4) -0.014(4) 0.003(3) -0.016(3)
+    C12 0.032(4) 0.087(7) 0.049(5) -0.013(5) 0.009(4) -0.027(4)
+    C13 0.037(5) 0.087(6) 0.041(5) -0.015(4) 0.002(4) -0.025(4)
+    C14 0.030(4) 0.056(5) 0.047(5) -0.012(4) 0.003(4) -0.010(4)
+    C15 0.029(4) 0.033(4) 0.043(4) -0.013(3) 0.006(3) -0.011(3)
+    C16 0.033(5) 0.142(10) 0.050(6) -0.015(6) 0.009(4) -0.034(5)
+    C17 0.025(4) 0.034(4) 0.038(4) -0.009(3) 0.006(3) -0.013(3)
+    C18 0.025(4) 0.028(4) 0.054(5) -0.013(3) 0.003(3) -0.004(3)
+    C19 0.031(4) 0.035(4) 0.052(5) -0.015(3) 0.007(3) -0.010(3)
+    C20 0.033(4) 0.031(4) 0.041(4) -0.013(3) 0.001(3) -0.001(3)
+    C21 0.027(4) 0.032(4) 0.053(5) -0.015(3) 0.004(3) -0.010(3)
+    C22 0.025(4) 0.033(4) 0.036(4) -0.013(3) 0.005(3) -0.012(3)
+    C23 0.030(4) 0.032(4) 0.056(5) -0.018(4) 0.005(3) -0.009(3)
+
+    #END
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<integer>,"unit":"count"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: DEBXIT06
+    type: cif
+    presentation: prompt_inline
+    value: |
+      data_DEBXIT06
+      _symmetry_cell_setting           triclinic
+      _symmetry_space_group_name_H-M   'P -1'
+      _symmetry_Int_Tables_number      2
+      _space_group_name_Hall           '-P 1'
+      loop_
+      _symmetry_equiv_pos_site_id
+      _symmetry_equiv_pos_as_xyz
+      1 x,y,z
+      2 -x,-y,-z
+      _cell_length_a                   7.2523(17)
+      _cell_length_b                   13.033(3)
+      _cell_length_c                   20.693(5)
+      _cell_angle_alpha                72.701(9)
+      _cell_angle_beta                 86.552(6)
+      _cell_angle_gamma                73.915(6)
+      _cell_volume                     1793.78
+      loop_
+      _atom_site_label
+      _atom_site_type_symbol
+      _atom_site_fract_x
+      _atom_site_fract_y
+      _atom_site_fract_z
+      _atom_site_U_iso_or_equiv
+      _atom_site_thermal_displace_type
+      O1 O 1.0432(7) -0.2634(4) 0.4658(3) 0.0467 Uani
+      O2 O 0.7496(9) 0.5112(7) -0.0220(3) 0.0945 Uani
+      O3 O 0.5128(7) 0.8018(4) 0.4693(3) 0.0473 Uani
+      N1 N 0.8096(8) -0.0914(5) 0.4387(3) 0.0414 Uani
+      H1 H 0.7074 -0.1139 0.4442 0.0500 Uiso
+      N2 N 1.1141(8) -0.0919(5) 0.4387(3) 0.0394 Uani
+      H2 H 1.2368 -0.1151 0.4443 0.0470 Uiso
+      N3 N 0.6052(10) 0.4581(7) 0.0818(3) 0.0730 Uani
+      H3 H 0.4925 0.4639 0.0678 0.0870 Uiso
+      N4 N 0.9081(9) 0.4603(7) 0.0823(3) 0.0722 Uani
+      H4 H 1.0195 0.4672 0.0686 0.0870 Uiso
+      N5 N 0.4343(8) 0.6594(4) 0.4398(3) 0.0408 Uani
+      H5 H 0.3117 0.6792 0.4436 0.0490 Uiso
+      N6 N 0.7395(8) 0.6540(5) 0.4446(3) 0.0404 Uani
+      H6 H 0.8425 0.6692 0.4524 0.0490 Uiso
+      C1 C 0.9495(9) 0.3320(5) 0.3410(3) 0.0328 Uani
+      H7 H 1.0847 0.3318 0.3414 0.0390 Uiso
+      C2 C 0.9173(9) 0.2165(5) 0.3746(3) 0.0326 Uani
+      C3 C 0.7255(9) 0.2155(5) 0.3739(3) 0.0309 Uani
+      C4 C 0.5919(10) 0.3329(5) 0.3399(4) 0.0360 Uani
+      H8 H 0.4566 0.3335 0.3394 0.0430 Uiso
+      C5 C 1.0632(10) 0.1183(6) 0.3965(3) 0.0363 Uani
+      H9 H 1.1914 0.1182 0.3971 0.0430 Uiso
+      C6 C 1.0067(9) 0.0196(6) 0.4175(4) 0.0348 Uani
+      C7 C 0.8169(9) 0.0193(5) 0.4173(3) 0.0323 Uani
+      C8 C 0.6702(10) 0.1179(6) 0.3962(4) 0.0379 Uani
+      H10 H 0.5419 0.1180 0.3970 0.0450 Uiso
+      C9 C 0.9928(10) -0.1573(6) 0.4491(4) 0.0383 Uani
+      C10 C 0.8628(9) 0.3678(6) 0.2698(4) 0.0355 Uani
+      C11 C 0.9601(9) 0.3968(6) 0.2100(3) 0.0396 Uani
+      H11 H 1.0888 0.3959 0.2102 0.0480 Uiso
+      C12 C 0.8564(11) 0.4271(8) 0.1504(4) 0.0556 Uani
+      C13 C 0.6651(11) 0.4251(8) 0.1496(4) 0.0542 Uani
+      C14 C 0.5676(10) 0.3974(6) 0.2085(4) 0.0455 Uani
+      H12 H 0.4386 0.3993 0.2078 0.0540 Uiso
+      C15 C 0.6706(9) 0.3664(6) 0.2694(3) 0.0343 Uani
+      C16 C 0.7538(12) 0.4800(10) 0.0414(5) 0.0762 Uani
+      C17 C 0.8194(9) 0.4130(5) 0.3761(3) 0.0319 Uani
+      C18 C 0.8767(9) 0.4878(5) 0.3992(4) 0.0362 Uani
+      H13 H 1.0050 0.4874 0.4000 0.0440 Uiso
+      C19 C 0.7313(10) 0.5653(6) 0.4216(4) 0.0389 Uani
+      C20 C 0.5412(10) 0.5662(6) 0.4190(3) 0.0361 Uani
+      C21 C 0.4831(10) 0.4904(5) 0.3966(4) 0.0365 Uani
+      H14 H 0.3548 0.4907 0.3962 0.0440 Uiso
+      C22 C 0.6265(9) 0.4133(5) 0.3744(3) 0.0300 Uani
+      C23 C 0.5595(10) 0.7118(6) 0.4526(4) 0.0382 Uani
+      loop_
+      _atom_site_aniso_label
+      _atom_site_aniso_U_11
+      _atom_site_aniso_U_22
+      _atom_site_aniso_U_33
+      _atom_site_aniso_U_23
+      _atom_site_aniso_U_13
+      _atom_site_aniso_U_12
+      O1 0.038(3) 0.028(3) 0.074(4) -0.017(3) -0.001(3) -0.006(2)
+      O2 0.049(4) 0.193(8) 0.042(4) -0.013(4) 0.007(3) -0.058(5)
+      O3 0.037(3) 0.040(3) 0.073(4) -0.030(3) 0.007(3) -0.010(2)
+      N1 0.028(3) 0.034(3) 0.065(4) -0.018(3) 0.005(3) -0.010(3)
+      N2 0.022(3) 0.032(3) 0.065(4) -0.019(3) 0.004(3) -0.004(3)
+      N3 0.036(4) 0.139(8) 0.041(4) -0.015(4) 0.009(3) -0.033(4)
+      N4 0.035(4) 0.140(8) 0.043(4) -0.011(4) 0.005(3) -0.044(4)
+      N5 0.029(3) 0.030(3) 0.065(4) -0.022(3) 0.011(3) -0.004(3)
+      N6 0.030(3) 0.029(3) 0.068(4) -0.026(3) 0.003(3) -0.005(3)
+      C1 0.025(4) 0.032(4) 0.043(4) -0.013(3) 0.004(3) -0.009(3)
+      C2 0.029(4) 0.031(4) 0.040(4) -0.014(3) 0.007(3) -0.009(3)
+      C3 0.025(4) 0.027(4) 0.043(4) -0.015(3) 0.008(3) -0.007(3)
+      C4 0.026(4) 0.028(4) 0.055(5) -0.016(3) 0.008(3) -0.006(3)
+      C5 0.027(4) 0.038(4) 0.049(4) -0.019(3) 0.004(3) -0.011(3)
+      C6 0.027(4) 0.035(4) 0.048(4) -0.021(3) 0.003(3) -0.008(3)
+      C7 0.031(4) 0.028(4) 0.040(4) -0.014(3) 0.006(3) -0.008(3)
+      C8 0.028(4) 0.038(4) 0.051(5) -0.018(3) 0.011(3) -0.011(3)
+      C9 0.032(4) 0.035(4) 0.051(5) -0.018(3) 0.004(3) -0.009(3)
+      C10 0.024(4) 0.035(4) 0.051(5) -0.017(3) 0.002(3) -0.009(3)
+      C11 0.019(4) 0.062(5) 0.040(4) -0.014(4) 0.003(3) -0.016(3)
+      C12 0.032(4) 0.087(7) 0.049(5) -0.013(5) 0.009(4) -0.027(4)
+      C13 0.037(5) 0.087(6) 0.041(5) -0.015(4) 0.002(4) -0.025(4)
+      C14 0.030(4) 0.056(5) 0.047(5) -0.012(4) 0.003(4) -0.010(4)
+      C15 0.029(4) 0.033(4) 0.043(4) -0.013(3) 0.006(3) -0.011(3)
+      C16 0.033(5) 0.142(10) 0.050(6) -0.015(6) 0.009(4) -0.034(5)
+      C17 0.025(4) 0.034(4) 0.038(4) -0.009(3) 0.006(3) -0.013(3)
+      C18 0.025(4) 0.028(4) 0.054(5) -0.013(3) 0.003(3) -0.004(3)
+      C19 0.031(4) 0.035(4) 0.052(5) -0.015(3) 0.007(3) -0.010(3)
+      C20 0.033(4) 0.031(4) 0.041(4) -0.013(3) 0.001(3) -0.001(3)
+      C21 0.027(4) 0.032(4) 0.053(5) -0.015(3) 0.004(3) -0.010(3)
+      C22 0.025(4) 0.033(4) 0.036(4) -0.013(3) 0.005(3) -0.012(3)
+      C23 0.030(4) 0.032(4) 0.056(5) -0.018(4) 0.005(3) -0.009(3)
+
+      #END
+  requested_properties:
+  - name: hydrogen_bond_count
+    value_type: number
+    unit: count
+    comparison_group: hydrogen_bond_count
+  gold_answers:
+  - property: hydrogen_bond_count
+    value: 12
+    unit: count
+    scoring_profile: property_calculation_hydrogen_bond_count_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: T2_paper_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: hydrogen_bond_count
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_015_ir_top3_frequencies
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_vibration_calculation
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - infrared_spectroscopy
+  prompt: |
+    The following excerpt is from a M06-2X/cc-pVTZ frequency calculation for the lowest-energy resveratrol conformer. Identify the three vibrational modes with the largest IR intensities and report their harmonic frequencies in cm^-1. The three reported frequencies are compared as an unordered set, so their output order does not matter.
+
+    ```text
+    Frequencies --   1198.1242 1208.1036 1228.7040
+    IR Inten    --     67.2559  279.8915  60.4574
+    Frequencies --   1569.3830 1659.2062 1674.0688
+    IR Inten    --    184.6367  39.9875 258.8216
+    Frequencies --   1685.5562 1694.0655 1734.4131
+    IR Inten    --    271.6760  41.9270   7.1432
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"},{"property":"frequency_3","value":<number>,"unit":"cm^-1"}]}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: resveratrol_gaussian_frequency_excerpt
+    type: gaussian_output_excerpt
+    presentation: prompt_inline
+    value: |
+      Frequencies --   1198.1242 1208.1036 1228.7040
+      IR Inten    --     67.2559  279.8915  60.4574
+      Frequencies --   1569.3830 1659.2062 1674.0688
+      IR Inten    --    184.6367  39.9875 258.8216
+      Frequencies --   1685.5562 1694.0655 1734.4131
+      IR Inten    --    271.6760  41.9270   7.1432
+  requested_properties:
+  - name: frequency_1
+    value_type: number
+    unit: cm^-1
+    comparison_group: top_three_frequencies
+  - name: frequency_2
+    value_type: number
+    unit: cm^-1
+    comparison_group: top_three_frequencies
+  - name: frequency_3
+    value_type: number
+    unit: cm^-1
+    comparison_group: top_three_frequencies
+  gold_answers:
+  - property: frequency_1
+    value: 1208.1036
+    unit: cm^-1
+    scoring_profile: property_calculation_ir_frequency_1_numeric_gold_v2
+  - property: frequency_2
+    value: 1674.0688
+    unit: cm^-1
+    scoring_profile: property_calculation_ir_frequency_2_numeric_gold_v2
+  - property: frequency_3
+    value: 1685.5562
+    unit: cm^-1
+    scoring_profile: property_calculation_ir_frequency_3_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: resveratrol_gaussian_output_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: top_three_frequencies
+      mode: unordered_numeric
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_016_crystal_density
+  version: 1
+  task_type: property_calculation
+  object_type: hydrate_crystal
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - density
+  prompt: |
+    A caffeine monohydrate crystal has a 1:1 caffeine:water composition. Using the expert-validated reference for this crystal form, report its approximate crystal density in g/cm^3. The caffeine molecular SMILES is Cn1cnc2c1c(=O)n(C)c(=O)n2C.
+
+    Reference input:
+    ```text
+    composition: caffeine:water = 1:1
+    caffeine_smiles: Cn1cnc2c1c(=O)n(C)c(=O)n2C
+    source: CCDC caffeine monohydrate data
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: caffeine_mono_hydrate_reference
+    type: molecular_crystal_reference
+    presentation: prompt_inline
+    value: |
+      composition: caffeine:water = 1:1
+      caffeine_smiles: Cn1cnc2c1c(=O)n(C)c(=O)n2C
+      source: CCDC caffeine monohydrate data
+  requested_properties:
+  - name: crystal_density
+    value_type: number
+    unit: g/cm^3
+    comparison_group: crystal_density
+  gold_answers:
+  - property: crystal_density
+    value: 1.44728
+    unit: g/cm^3
+    scoring_profile: property_calculation_crystal_density_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: CCDC_caffeine_monohydrate_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: crystal_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_017_cocrystal_ratio
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_cocrystal
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - cocrystal
+  prompt: |
+    Cannabinol (162.1 mg) and tetramethylpyrazine (142.6 mg) were stirred in 750 uL isooctane for 20 h at room temperature and produced a molecular cocrystal. Report the molar ratio of cannabinol to tetramethylpyrazine in the final cocrystal, not the ratio in the starting solution.
+
+    Experimental reference:
+    ```text
+    cannabinol: 162.1 mg
+    tetramethylpyrazine: 142.6 mg
+    isooctane: 750 uL
+    temperature: room temperature
+    time: 20 h
+    source: seventh blind test of crystal structure prediction
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":"<cannabinol:tetramethylpyrazine ratio>"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: cannabinol_tetramethylpyrazine_crystallization
+    type: experimental_cocrystal_reference
+    presentation: prompt_inline
+    value: |
+      cannabinol: 162.1 mg
+      tetramethylpyrazine: 142.6 mg
+      isooctane: 750 uL
+      temperature: room temperature
+      time: 20 h
+      source: seventh blind test of crystal structure prediction
+  requested_properties:
+  - name: cocrystal_molar_ratio
+    value_type: string
+    comparison_group: cocrystal_ratio
+  gold_answers:
+  - property: cocrystal_molar_ratio
+    value: '1:1'
+    scoring_profile: property_calculation_cocrystal_molar_ratio_exact_string_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: crystal_structure_prediction_blind_test_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: cocrystal_ratio
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_018_polymorph_free_energy_crossover
+  version: 1
+  task_type: property_calculation
+  object_type: polymorph_pair
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - polymorph
+  prompt: |
+    For the supplied Radiprodil FormA and FormC polymorph structures, report which form has the lower free energy at 0 K and the temperature in K at which the free energies cross. Use the expert-validated free-energy reference associated with these structures.
+
+    FormA and FormC are provided as CIF structures below.
+
+    FormA:
+    ```cif
+    data_FormA_clean
+    _symmetry_cell_setting monoclinic
+    _symmetry_space_group_name_H-M 'P 2_1/c'
+    _symmetry_Int_Tables_number 14
+    loop_
+    _symmetry_equiv_pos_site_id
+    _symmetry_equiv_pos_as_xyz
+    1 x,y,z
+    2 -x,y+1/2,-z+1/2
+    3 -x,-y,-z
+    4 x,-y+1/2,z+1/2
+    _cell_length_a 11.584601830610847
+    _cell_length_b 17.734448252278938
+    _cell_length_c 9.160769707696145
+    _cell_angle_alpha 90.000000000000000
+    _cell_angle_beta 100.914939837538213
+    _cell_angle_gamma 90.000000000000000
+    loop_
+    _atom_site_label
+    _atom_site_type_symbol
+    _atom_site_fract_x
+    _atom_site_fract_y
+    _atom_site_fract_z
+    O2 O 0.928657756131811 0.273118154501742 0.375625154297057
+    O4 O 0.828223268298954 0.687021150895695 0.445387778331158
+    N2 N 0.859058778385340 0.547372772319557 0.364961863355435
+    N1 N 1.042959867620969 0.278715756846470 0.205088447873494
+    O3 O 0.723356813512596 0.504238149176372 0.500029753078775
+    F1 F 0.306582583313163 1.085511044995446 0.589836307369620
+    N3 N 0.663407815449447 0.662206245654173 0.539534541545140
+    O1 O 1.011434463591641 0.162450948546194 0.312587709438191
+    C2 C 1.007022623370317 0.351824336914208 0.225254351001810
+    C7 C 0.936411979060091 0.347654324770551 0.333003005061017
+    C6 C 0.884769690631143 0.409316124653592 0.386025167287003
+    C5 C 0.906520280688677 0.479450494926548 0.323608551830159
+    C9 C 0.753997321067371 0.640949883215037 0.475613944354306
+    C8 C 0.774543382658897 0.556392663243116 0.447587012062123
+    C4 C 0.978380789097733 0.484415593937781 0.215858931867335
+    C3 C 1.029276526956164 0.420832035119171 0.164785657946292
+    C1 C 0.998087933308196 0.230662512000024 0.296081040341283
+    C16 C 0.316358789374346 0.859091011647768 0.475480621893946
+    C14 C 0.658997778645795 0.740348572205830 0.591403876169347
+    C17 C 0.273431896428125 0.881512455641953 0.601885076123308
+    C21 C 0.355877398004976 0.915096545085716 0.388631279084961
+    C20 C 0.353766755058029 0.991220256016048 0.426250001020699
+    C12 C 0.436505303823342 0.737987330429634 0.524952951001147
+    C10 C 0.559328304656123 0.617640474366524 0.555079542069846
+    C13 C 0.548730518263738 0.780990095606702 0.512599694395836
+    C11 C 0.447019944946783 0.656352326764116 0.474380463403951
+    C15 C 0.324950583826137 0.776728563891953 0.437756369418092
+    C19 C 0.311024827236492 1.010364503821179 0.552890682455558
+    C18 C 0.271146344252269 0.957249204096438 0.642843917692122
+    H6 H 0.830873943646701 0.404898420754420 0.470349345219463
+    H1 H 1.095053361698666 0.258506270025911 0.134836257169074
+    H3 H 1.083739674207116 0.425184748942647 0.080744147243808
+    H4 H 0.994590738108716 0.539686537609394 0.172275936910621
+    H13A H 0.547604372686473 0.837880895022313 0.559571638640949
+    H21 H 0.388063450550706 0.899302613842446 0.288438700287051
+    H10A H 0.568063619697824 0.560884478297990 0.512648094731742
+    H17 H 0.239460743020756 0.839218524319840 0.669084299290104
+    H2 H 0.892785051723388 0.596255359355990 0.329775305153766
+    H14A H 0.738622493784714 0.769470943781493 0.574431654408974
+    H10B H 0.558628214962199 0.612680932028956 0.674844355355038
+    H11A H 0.446080606212531 0.655376239809512 0.353775601047418
+    H15A H 0.324719889291571 0.771056158193647 0.317957236855203
+    H18 H 0.239789718826189 0.974773202407619 0.742444498702594
+    H13B H 0.553741552736971 0.788652874246901 0.394536501111886
+    H11B H 0.371654465396932 0.622182937567444 0.492193556676728
+    H12 H 0.429466765386761 0.737235528262205 0.643700116293852
+    H15B H 0.247113067525108 0.746328816967304 0.459694959996115
+    H20 H 0.384324519786488 1.034656216722494 0.358641547475565
+    H14B H 0.660170737136324 0.737777388018509 0.712025024127606
+    #END
+    ```
+    FormC:
+    ```cif
+    data_FormC_clean
+    _symmetry_cell_setting monoclinic
+    _symmetry_space_group_name_H-M 'P 2_1/c'
+    _symmetry_Int_Tables_number 14
+    loop_
+    _symmetry_equiv_pos_site_id
+    _symmetry_equiv_pos_as_xyz
+    1 x,y,z
+    2 -x,y+1/2,-z+1/2
+    3 -x,-y,-z
+    4 x,-y+1/2,z+1/2
+    _cell_length_a 13.744388439270166
+    _cell_length_b 18.317086557364796
+    _cell_length_c 7.399315129107617
+    _cell_angle_alpha 90.000000000000000
+    _cell_angle_beta 97.764712082998585
+    _cell_angle_gamma 90.000000000000000
+    loop_
+    _atom_site_label
+    _atom_site_type_symbol
+    _atom_site_fract_x
+    _atom_site_fract_y
+    _atom_site_fract_z
+    F1 F 0.064052921025956 0.829953563558597 0.129047710023469
+    O1 O 0.464252676248686 -0.071216460485068 0.773326224322135
+    O2 O 0.408023898147242 0.043434629058501 0.833475642355461
+    O3 O 0.239745155069856 0.280834168005607 0.866744347314121
+    O4 O 0.329335566392208 0.447817688319038 0.935133713453808
+    N1 N 0.546392896850526 0.036052030134716 0.708069923391974
+    H1 H 0.601185167434325 0.010865799600646 0.646206544462934
+    N2 N 0.394906881043232 0.311151378183889 0.797099803481985
+    H2 H 0.438162084352257 0.355390280650703 0.774908500185187
+    N3 N 0.205856742738401 0.431756946227291 0.696667485780331
+    C1 C 0.474481693536851 -0.004549092672671 0.769233484918348
+    C2 C 0.526832500944052 0.109794382998568 0.725002533572398
+    C3 C 0.573608980829396 0.173375136234712 0.680864590013549
+    H3 H 0.641304520527899 0.171972806468970 0.619535397717992
+    C4 C 0.528328403477943 0.239734440522606 0.711257388698696
+    H4 H 0.561377668625131 0.290756948660058 0.674330996682626
+    C5 C 0.438256618447994 0.242292537002387 0.782007332748966
+    C6 C 0.392470365294206 0.177895990263344 0.831467559019247
+    H6 H 0.323497598509474 0.180447333035857 0.886596098759546
+    C7 C 0.439374481536538 0.113483437306928 0.801403934430518
+    C8 C 0.301599348581000 0.325612673087911 0.828613309267038
+    C9 C 0.279000745969278 0.407463676645900 0.820733505851531
+    C10 C 0.149542542426078 0.386850104399765 0.554660065276014
+    H10B H 0.072592225465046 0.386384684790749 0.580948432581586
+    H10A H 0.175976543699461 0.330437995993188 0.566885021121906
+    C11 C 0.155657877765688 0.417044112480269 0.363532699592900
+    H11B H 0.103987485477295 0.385894513127654 0.266268481544029
+    H11A H 0.229353821475228 0.407577555014711 0.326525137857945
+    C12 C 0.133887786731529 0.498990529508436 0.347795522681978
+    H12 H 0.056447015230312 0.508042563911496 0.367957263374108
+    C13 C 0.198228888711432 0.540037707721867 0.499968732402116
+    H13B H 0.276132635886677 0.534574893939601 0.481756123084207
+    H13A H 0.180325827379510 0.598385668139746 0.495442901805944
+    C14 C 0.182421235968634 0.509920433270553 0.685766154406364
+    H14A H 0.227459077874685 0.537694282964261 0.798347855642531
+    H14B H 0.104927046334880 0.516728998226849 0.706353810058007
+    C15 C 0.147282918246004 0.527579010042608 0.156945251831051
+    H15A H 0.222864714936474 0.516036184413893 0.131900601505982
+    H15B H 0.098393795058262 0.496120307409728 0.055166134847786
+    C16 C 0.125443335626666 0.607905404342358 0.134581604497827
+    C17 C 0.028357142782691 0.633333158386110 0.115731220634401
+    H17 H -0.032115843912906 0.594251669432562 0.105679327890067
+    C18 C 0.006160293858412 0.707680919629361 0.112265702301551
+    H18 H -0.069669981523204 0.726460556801183 0.101722140446811
+    C19 C 0.084025785383464 0.756488529204204 0.126541345413704
+    C20 C 0.181286405096568 0.734318237991479 0.139680582666127
+    H20 H 0.239899770561366 0.774690677503288 0.147754092886779
+    C21 C 0.201372042123120 0.659509888854836 0.144544266107860
+    H21 H 0.277554687693294 0.640790718381225 0.160461788387923
+    #END
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answers":[{"property":"lower_free_energy_at_0k","value":"<FormA or FormC>"},{"property":"crossover_temperature","value":<number>,"unit":"K"}]}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: Radiprodil_FormA
+    type: cif
+    presentation: prompt_inline
+    value: |
+      data_FormA_clean
+      _symmetry_cell_setting monoclinic
+      _symmetry_space_group_name_H-M 'P 2_1/c'
+      _symmetry_Int_Tables_number 14
+      loop_
+      _symmetry_equiv_pos_site_id
+      _symmetry_equiv_pos_as_xyz
+      1 x,y,z
+      2 -x,y+1/2,-z+1/2
+      3 -x,-y,-z
+      4 x,-y+1/2,z+1/2
+      _cell_length_a 11.584601830610847
+      _cell_length_b 17.734448252278938
+      _cell_length_c 9.160769707696145
+      _cell_angle_alpha 90.000000000000000
+      _cell_angle_beta 100.914939837538213
+      _cell_angle_gamma 90.000000000000000
+      loop_
+      _atom_site_label
+      _atom_site_type_symbol
+      _atom_site_fract_x
+      _atom_site_fract_y
+      _atom_site_fract_z
+      O2 O 0.928657756131811 0.273118154501742 0.375625154297057
+      O4 O 0.828223268298954 0.687021150895695 0.445387778331158
+      N2 N 0.859058778385340 0.547372772319557 0.364961863355435
+      N1 N 1.042959867620969 0.278715756846470 0.205088447873494
+      O3 O 0.723356813512596 0.504238149176372 0.500029753078775
+      F1 F 0.306582583313163 1.085511044995446 0.589836307369620
+      N3 N 0.663407815449447 0.662206245654173 0.539534541545140
+      O1 O 1.011434463591641 0.162450948546194 0.312587709438191
+      C2 C 1.007022623370317 0.351824336914208 0.225254351001810
+      C7 C 0.936411979060091 0.347654324770551 0.333003005061017
+      C6 C 0.884769690631143 0.409316124653592 0.386025167287003
+      C5 C 0.906520280688677 0.479450494926548 0.323608551830159
+      C9 C 0.753997321067371 0.640949883215037 0.475613944354306
+      C8 C 0.774543382658897 0.556392663243116 0.447587012062123
+      C4 C 0.978380789097733 0.484415593937781 0.215858931867335
+      C3 C 1.029276526956164 0.420832035119171 0.164785657946292
+      C1 C 0.998087933308196 0.230662512000024 0.296081040341283
+      C16 C 0.316358789374346 0.859091011647768 0.475480621893946
+      C14 C 0.658997778645795 0.740348572205830 0.591403876169347
+      C17 C 0.273431896428125 0.881512455641953 0.601885076123308
+      C21 C 0.355877398004976 0.915096545085716 0.388631279084961
+      C20 C 0.353766755058029 0.991220256016048 0.426250001020699
+      C12 C 0.436505303823342 0.737987330429634 0.524952951001147
+      C10 C 0.559328304656123 0.617640474366524 0.555079542069846
+      C13 C 0.548730518263738 0.780990095606702 0.512599694395836
+      C11 C 0.447019944946783 0.656352326764116 0.474380463403951
+      C15 C 0.324950583826137 0.776728563891953 0.437756369418092
+      C19 C 0.311024827236492 1.010364503821179 0.552890682455558
+      C18 C 0.271146344252269 0.957249204096438 0.642843917692122
+      H6 H 0.830873943646701 0.404898420754420 0.470349345219463
+      H1 H 1.095053361698666 0.258506270025911 0.134836257169074
+      H3 H 1.083739674207116 0.425184748942647 0.080744147243808
+      H4 H 0.994590738108716 0.539686537609394 0.172275936910621
+      H13A H 0.547604372686473 0.837880895022313 0.559571638640949
+      H21 H 0.388063450550706 0.899302613842446 0.288438700287051
+      H10A H 0.568063619697824 0.560884478297990 0.512648094731742
+      H17 H 0.239460743020756 0.839218524319840 0.669084299290104
+      H2 H 0.892785051723388 0.596255359355990 0.329775305153766
+      H14A H 0.738622493784714 0.769470943781493 0.574431654408974
+      H10B H 0.558628214962199 0.612680932028956 0.674844355355038
+      H11A H 0.446080606212531 0.655376239809512 0.353775601047418
+      H15A H 0.324719889291571 0.771056158193647 0.317957236855203
+      H18 H 0.239789718826189 0.974773202407619 0.742444498702594
+      H13B H 0.553741552736971 0.788652874246901 0.394536501111886
+      H11B H 0.371654465396932 0.622182937567444 0.492193556676728
+      H12 H 0.429466765386761 0.737235528262205 0.643700116293852
+      H15B H 0.247113067525108 0.746328816967304 0.459694959996115
+      H20 H 0.384324519786488 1.034656216722494 0.358641547475565
+      H14B H 0.660170737136324 0.737777388018509 0.712025024127606
+      #END
+  - object_id: Radiprodil_FormC
+    type: cif
+    presentation: prompt_inline
+    value: |
+      data_FormC_clean
+      _symmetry_cell_setting monoclinic
+      _symmetry_space_group_name_H-M 'P 2_1/c'
+      _symmetry_Int_Tables_number 14
+      loop_
+      _symmetry_equiv_pos_site_id
+      _symmetry_equiv_pos_as_xyz
+      1 x,y,z
+      2 -x,y+1/2,-z+1/2
+      3 -x,-y,-z
+      4 x,-y+1/2,z+1/2
+      _cell_length_a 13.744388439270166
+      _cell_length_b 18.317086557364796
+      _cell_length_c 7.399315129107617
+      _cell_angle_alpha 90.000000000000000
+      _cell_angle_beta 97.764712082998585
+      _cell_angle_gamma 90.000000000000000
+      loop_
+      _atom_site_label
+      _atom_site_type_symbol
+      _atom_site_fract_x
+      _atom_site_fract_y
+      _atom_site_fract_z
+      F1 F 0.064052921025956 0.829953563558597 0.129047710023469
+      O1 O 0.464252676248686 -0.071216460485068 0.773326224322135
+      O2 O 0.408023898147242 0.043434629058501 0.833475642355461
+      O3 O 0.239745155069856 0.280834168005607 0.866744347314121
+      O4 O 0.329335566392208 0.447817688319038 0.935133713453808
+      N1 N 0.546392896850526 0.036052030134716 0.708069923391974
+      H1 H 0.601185167434325 0.010865799600646 0.646206544462934
+      N2 N 0.394906881043232 0.311151378183889 0.797099803481985
+      H2 H 0.438162084352257 0.355390280650703 0.774908500185187
+      N3 N 0.205856742738401 0.431756946227291 0.696667485780331
+      C1 C 0.474481693536851 -0.004549092672671 0.769233484918348
+      C2 C 0.526832500944052 0.109794382998568 0.725002533572398
+      C3 C 0.573608980829396 0.173375136234712 0.680864590013549
+      H3 H 0.641304520527899 0.171972806468970 0.619535397717992
+      C4 C 0.528328403477943 0.239734440522606 0.711257388698696
+      H4 H 0.561377668625131 0.290756948660058 0.674330996682626
+      C5 C 0.438256618447994 0.242292537002387 0.782007332748966
+      C6 C 0.392470365294206 0.177895990263344 0.831467559019247
+      H6 H 0.323497598509474 0.180447333035857 0.886596098759546
+      C7 C 0.439374481536538 0.113483437306928 0.801403934430518
+      C8 C 0.301599348581000 0.325612673087911 0.828613309267038
+      C9 C 0.279000745969278 0.407463676645900 0.820733505851531
+      C10 C 0.149542542426078 0.386850104399765 0.554660065276014
+      H10B H 0.072592225465046 0.386384684790749 0.580948432581586
+      H10A H 0.175976543699461 0.330437995993188 0.566885021121906
+      C11 C 0.155657877765688 0.417044112480269 0.363532699592900
+      H11B H 0.103987485477295 0.385894513127654 0.266268481544029
+      H11A H 0.229353821475228 0.407577555014711 0.326525137857945
+      C12 C 0.133887786731529 0.498990529508436 0.347795522681978
+      H12 H 0.056447015230312 0.508042563911496 0.367957263374108
+      C13 C 0.198228888711432 0.540037707721867 0.499968732402116
+      H13B H 0.276132635886677 0.534574893939601 0.481756123084207
+      H13A H 0.180325827379510 0.598385668139746 0.495442901805944
+      C14 C 0.182421235968634 0.509920433270553 0.685766154406364
+      H14A H 0.227459077874685 0.537694282964261 0.798347855642531
+      H14B H 0.104927046334880 0.516728998226849 0.706353810058007
+      C15 C 0.147282918246004 0.527579010042608 0.156945251831051
+      H15A H 0.222864714936474 0.516036184413893 0.131900601505982
+      H15B H 0.098393795058262 0.496120307409728 0.055166134847786
+      C16 C 0.125443335626666 0.607905404342358 0.134581604497827
+      C17 C 0.028357142782691 0.633333158386110 0.115731220634401
+      H17 H -0.032115843912906 0.594251669432562 0.105679327890067
+      C18 C 0.006160293858412 0.707680919629361 0.112265702301551
+      H18 H -0.069669981523204 0.726460556801183 0.101722140446811
+      C19 C 0.084025785383464 0.756488529204204 0.126541345413704
+      C20 C 0.181286405096568 0.734318237991479 0.139680582666127
+      H20 H 0.239899770561366 0.774690677503288 0.147754092886779
+      C21 C 0.201372042123120 0.659509888854836 0.144544266107860
+      H21 H 0.277554687693294 0.640790718381225 0.160461788387923
+      #END
+  requested_properties:
+  - name: lower_free_energy_at_0k
+    value_type: string
+    comparison_group: polymorph_free_energy
+  - name: crossover_temperature
+    value_type: number
+    unit: K
+    comparison_group: polymorph_free_energy
+  gold_answers:
+  - property: lower_free_energy_at_0k
+    value: FormC
+    scoring_profile: property_calculation_lower_free_energy_form_exact_string_v2
+  - property: crossover_temperature
+    value: 343.15
+    unit: K
+    scoring_profile: property_calculation_crossover_temperature_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: polymorph_free_energy_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: polymorph_free_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_019_interaction_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_dimer
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - interaction_energy
+  - binding_energy
+  prompt: |
+    For the molecular dimer described by the supplied quantum-chemistry results, report two energies in kcal/mol. The counterpoise-corrected interaction energy is the corrected complexation energy shown in the result excerpt. Define the binding energy as (counterpoise-corrected dimer energy - twice the isolated monomer energy), converted from hartree to kcal/mol using 627.509474 kcal/mol per hartree. Preserve the signs.
+
+    ```text
+    Counterpoise corrected energy = -1096.945654791773 hartree
+    BSSE energy = 0.003661992035 hartree
+    isolated monomer energy = -548.426489650 hartree
+    complexation energy = -71.34 kcal/mole (raw)
+    complexation energy = -69.04 kcal/mole (corrected)
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answers":[{"property":"interaction_energy","value":<number>,"unit":"kcal/mol"},{"property":"binding_energy","value":<number>,"unit":"kcal/mol"}]}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: interaction_energy_gaussian_excerpt
+    type: gaussian_output_excerpt
+    presentation: prompt_inline
+    value: |
+      Counterpoise corrected energy = -1096.945654791773 hartree
+      BSSE energy = 0.003661992035 hartree
+      isolated monomer energy = -548.426489650 hartree
+      complexation energy = -71.34 kcal/mole (raw)
+      complexation energy = -69.04 kcal/mole (corrected)
+  requested_properties:
+  - name: interaction_energy
+    value_type: number
+    unit: kcal/mol
+    comparison_group: interaction_binding_energy
+  - name: binding_energy
+    value_type: number
+    unit: kcal/mol
+    comparison_group: interaction_binding_energy
+  gold_answers:
+  - property: interaction_energy
+    value: -69.04
+    unit: kcal/mol
+    scoring_profile: property_calculation_interaction_energy_numeric_gold_v2
+  - property: binding_energy
+    value: -58.15
+    unit: kcal/mol
+    scoring_profile: property_calculation_binding_energy_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_gaussian_counterpoise_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: interaction_binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_020_homo_lumo_gap
+  version: 1
+  task_type: property_calculation
+  object_type: small_molecule_electronic_structure
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - orbital_energy
+  - homo_lumo_gap
+  prompt: |
+    From the following occupied and virtual orbital energies in eV, calculate the HOMO-LUMO gap. Use the highest occupied orbital and the lowest unoccupied orbital, and report the gap in eV.
+
+    ```text
+    highest occupied orbital (HOMO): -7.7593264470 eV
+    lowest unoccupied orbital (LUMO): -0.4955193218 eV
+    ```
+
+    The corresponding frontier-orbital excerpt is:
+    ```text
+    Alpha occupied frontier orbital: -7.7593264470 eV
+    Alpha virtual frontier orbital: -0.4955193218 eV
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: homolumo_orbital_excerpt
+    type: gaussian_output_excerpt
+    presentation: prompt_inline
+    value: |
+      Alpha occupied frontier orbital: -7.7593264470 eV
+      Alpha virtual frontier orbital: -0.4955193218 eV
+  requested_properties:
+  - name: homo_lumo_gap
+    value_type: number
+    unit: eV
+    comparison_group: homo_lumo_gap
+  gold_answers:
+  - property: homo_lumo_gap
+    value: 7.26
+    unit: eV
+    scoring_profile: property_calculation_homo_lumo_gap_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_homolumo_calculation
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: homo_lumo_gap
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_021_hbond_distances
+  version: 1
+  task_type: property_calculation
+  object_type: optimized_molecular_complex
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - hydrogen_bonding
+  - geometry
+  prompt: |
+    The conformer.xyz input is a representative urea-phosphoric-acid 1:1 interaction unit. Using the optimized geometry excerpt below, report (1) the covalent O-H bond length and (2) the H...O contact distance, both in angstrom. In the final optimized geometry, the relevant H atom is atom 12, the covalent O atom is atom 5, and the acceptor O atom is atom 8.
+
+    Original conformer input:
+    ```xyz
+    16
+    CRBAMP01
+    P       5.420207    2.078914    2.777112
+    O       5.922540    0.677616    3.247140
+    O       4.837174    2.868723    3.927066
+    O       4.269479    1.868645    1.752738
+    O       6.619565    2.743899    2.127684
+    H       5.185425    0.067613    3.537768
+    H       4.516113    1.471140    0.862914
+    O       7.816309    4.730681    2.778906
+    N       8.885640    5.828835    4.423107
+    N       6.931911    4.702447    4.881474
+    C       7.870691    5.079148    4.024839
+    H       7.168959    3.801188    2.534922
+    H       9.631818    6.027216    3.762915
+    H       8.962506    6.105231    5.385588
+    H       6.135360    4.157085    4.562142
+    H       6.963285    5.003362    5.838573
+    ```
+
+    Optimized-geometry excerpt:
+    ```text
+    atom 5 (O):  -0.725031  -1.193251  -0.376053
+    atom 8 (O):   1.740683  -1.069248   0.099147
+    atom 12 (H):  0.280579  -1.139288  -0.163140
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answers":[{"property":"oh_bond_distance","value":<number>,"unit":"angstrom"},{"property":"h_o_contact_distance","value":<number>,"unit":"angstrom"}]}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: urea_phosphoric_acid_conformer_xyz
+    type: xyz
+    presentation: prompt_inline
+    value: |
+      16
+      CRBAMP01
+      P       5.420207    2.078914    2.777112
+      O       5.922540    0.677616    3.247140
+      O       4.837174    2.868723    3.927066
+      O       4.269479    1.868645    1.752738
+      O       6.619565    2.743899    2.127684
+      H       5.185425    0.067613    3.537768
+      H       4.516113    1.471140    0.862914
+      O       7.816309    4.730681    2.778906
+      N       8.885640    5.828835    4.423107
+      N       6.931911    4.702447    4.881474
+      C       7.870691    5.079148    4.024839
+      H       7.168959    3.801188    2.534922
+      H       9.631818    6.027216    3.762915
+      H       8.962506    6.105231    5.385588
+      H       6.135360    4.157085    4.562142
+      H       6.963285    5.003362    5.838573
+  - object_id: urea_phosphoric_acid_optimized_excerpt
+    type: gaussian_output_excerpt
+    presentation: prompt_inline
+    value: |
+      atom 5 (O):  -0.725031  -1.193251  -0.376053
+      atom 8 (O):   1.740683  -1.069248   0.099147
+      atom 12 (H):  0.280579  -1.139288  -0.163140
+  requested_properties:
+  - name: oh_bond_distance
+    value_type: number
+    unit: angstrom
+    comparison_group: hbond_distances
+  - name: h_o_contact_distance
+    value_type: number
+    unit: angstrom
+    comparison_group: hbond_distances
+  gold_answers:
+  - property: oh_bond_distance
+    value: 1.029
+    unit: angstrom
+    scoring_profile: property_calculation_oh_bond_distance_numeric_gold_v2
+  - property: h_o_contact_distance
+    value: 1.485
+    unit: angstrom
+    scoring_profile: property_calculation_h_o_contact_distance_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: CRBAMP01_optimized_geometry_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: hbond_distances
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_022_accessible_pore_volume_ratio
+  version: 1
+  task_type: property_calculation
+  object_type: porous_crystal
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - pore_volume
+  prompt: |
+    Using the supplied NOGCOE crystal structure and a spherical probe radius of 1.2 angstrom, report the ratio of accessible volume to inaccessible volume within the unit cell. Report a dimensionless ratio.
+
+    ```cif
+    data_NOGCOE
+    _symmetry_cell_setting           triclinic
+    _symmetry_space_group_name_H-M   'P -1'
+    _symmetry_Int_Tables_number      2
+    _space_group_name_Hall           '-P 1'
+    loop_
+    _symmetry_equiv_pos_site_id
+    _symmetry_equiv_pos_as_xyz
+    1 x,y,z
+    2 -x,-y,-z
+    _cell_length_a                   11.5479(6)
+    _cell_length_b                   12.0028(7)
+    _cell_length_c                   19.1221(9)
+    _cell_angle_alpha                97.337(4)
+    _cell_angle_beta                 101.200(4)
+    _cell_angle_gamma                107.491(5)
+    _cell_volume                     2430.23
+    loop_
+    _atom_site_label
+    _atom_site_type_symbol
+    _atom_site_fract_x
+    _atom_site_fract_y
+    _atom_site_fract_z
+    _atom_site_U_iso_or_equiv
+    _atom_site_thermal_displace_type
+    N1 N 0.7253(6) 0.3836(6) 0.4534(4) 0.0641 Uani
+    N2 N 0.6719(7) 0.9334(7) 0.8649(3) 0.0706 Uani
+    N3 N 0.8996(6) 0.6162(6) 0.4939(3) 0.0583 Uani
+    N4 N 0.2873(6) 0.3694(6) 0.7848(4) 0.0716 Uani
+    C1 C 0.7000(7) 0.7094(7) 0.6849(4) 0.0523 Uani
+    C2 C 0.8067(7) 0.5783(7) 0.5289(4) 0.0563 Uani
+    N5 N 1.0875(9) 0.5290(9) 0.2994(4) 0.0825 Uani
+    C3 C 0.7081(7) 0.6223(7) 0.6253(4) 0.0529 Uani
+    C4 C 0.5348(7) 0.4583(6) 0.6506(4) 0.0548 Uani
+    C5 C 0.5958(7) 1.0076(7) 0.8554(4) 0.0586 Uani
+    C6 C 0.6236(7) 0.5040(7) 0.6067(4) 0.0531 Uani
+    C7 C 0.7402(8) 0.9368(9) 0.9359(5) 0.0664 Uani
+    C8 C 0.8011(7) 0.7609(7) 0.7451(5) 0.0593 Uani
+    H1 H 0.8744 0.7432 0.7462 0.0720 Uiso
+    N6 N 0.9218(8) 0.3036(10) 0.2611(5) 0.0966 Uani
+    C9 C 0.8022(7) 0.6592(7) 0.5877(4) 0.0581 Uani
+    H2 H 0.8605 0.7358 0.6015 0.0700 Uiso
+    C10 C 0.9009(7) 0.5379(7) 0.4389(4) 0.0538 Uani
+    C11 C 0.8158(8) 0.4209(8) 0.4182(4) 0.0583 Uani
+    C12 C 0.5837(7) 0.8113(7) 0.7435(4) 0.0617 Uani
+    H3 H 0.5111 0.8307 0.7413 0.0740 Uiso
+    C13 C 0.7197(7) 0.4594(7) 0.5097(4) 0.0525 Uani
+    C14 C 0.5772(8) 0.4789(8) 0.7269(5) 0.0691 Uani
+    H4 H 0.6621 0.5166 0.7484 0.0830 Uiso
+    C15 C 0.6800(7) 0.8588(7) 0.8040(4) 0.0540 Uani
+    C16 C 0.5909(8) 0.7360(7) 0.6862(4) 0.0627 Uani
+    H5 H 0.5213 0.7015 0.6470 0.0750 Uiso
+    C17 C 0.6314(7) 0.4275(7) 0.5503(4) 0.0546 Uani
+    H6 H 0.5750 0.3500 0.5382 0.0660 Uiso
+    C18 C 0.3678(8) 0.3930(7) 0.7393(5) 0.0637 Uani
+    C19 C 0.4972(8) 0.4451(8) 0.7701(5) 0.0658 Uani
+    H7 H 0.5283 0.4567 0.8201 0.0790 Uiso
+    C20 C 0.9955(7) 0.5760(7) 0.3971(4) 0.0550 Uani
+    C21 C 0.7947(7) 0.8372(7) 0.8027(4) 0.0561 Uani
+    H8 H 0.8651 0.8750 0.8410 0.0670 Uiso
+    C22 C 0.4112(8) 0.4015(8) 0.6213(5) 0.0700 Uani
+    H9 H 0.3814 0.3852 0.5710 0.0840 Uiso
+    C23 C 1.0022(8) 0.4972(9) 0.3392(4) 0.0654 Uani
+    C24 C 0.9158(8) 0.3759(10) 0.3175(5) 0.0736 Uani
+    C25 C 0.8214(8) 0.3389(9) 0.3586(4) 0.0672 Uani
+    C26 C 0.3259(8) 0.3660(8) 0.6645(5) 0.0651 Uani
+    H10 H 0.2417 0.3246 0.6427 0.0780 Uiso
+    C27 C 0.1730(9) 0.2702(9) 0.7666(5) 0.0731 Uani
+    C28 C 0.6009(8) 1.0754(8) 0.8026(5) 0.0725 Uani
+    H11 H 0.6504 1.0712 0.7699 0.0870 Uiso
+    C29 C 0.8062(8) 1.0497(9) 0.9795(5) 0.0790 Uani
+    H12 H 0.8057 1.1192 0.9631 0.0950 Uiso
+    C30 C 0.5151(8) 1.0096(8) 0.9004(5) 0.0701 Uani
+    H13 H 0.5101 0.9603 0.9342 0.0840 Uiso
+    C31 C 0.3111(8) 0.4654(9) 0.8449(6) 0.0733 Uani
+    C32 C 0.7383(9) 0.2151(9) 0.3399(5) 0.0789 Uani
+    H14 H 0.6808 0.1845 0.3664 0.0950 Uiso
+    C33 C 1.0819(9) 0.6922(10) 0.4160(5) 0.0820 Uani
+    H15 H 1.0809 0.7468 0.4549 0.0980 Uiso
+    C34 C 0.7501(11) 0.8393(11) 0.9593(7) 0.0977 Uani
+    H16 H 0.7067 0.7652 0.9291 0.1180 Uiso
+    C35 C 0.8227(12) 0.8452(14) 1.0266(7) 0.1055 Uani
+    H17 H 0.8342 0.7767 1.0401 0.1270 Uiso
+    C36 C 1.1686(11) 0.7229(11) 0.3749(7) 0.0982 Uani
+    H18 H 1.2259 0.7997 0.3842 0.1180 Uiso
+    C37 C 0.5289(11) 1.1513(9) 0.7995(8) 0.1067 Uani
+    H19 H 0.5336 1.2000 0.7653 0.1280 Uiso
+    C38 C 0.4434(9) 1.0809(13) 0.8968(6) 0.0999 Uani
+    H20 H 0.3897 1.0808 0.9273 0.1200 Uiso
+    C39 C 0.4533(11) 1.1560(11) 0.8446(7) 0.0999 Uani
+    H21 H 0.4078 1.2080 0.8416 0.1200 Uiso
+    C40 C 0.8808(10) 0.9587(14) 1.0762(6) 0.0995 Uani
+    H22 H 0.9212 0.9649 1.1243 0.1190 Uiso
+    C41 C 1.1677(11) 0.6387(12) 0.3211(6) 0.0846 Uani
+    H23 H 1.2305 0.6600 0.2964 0.1010 Uiso
+    C42 C 0.1636(10) 0.1659(9) 0.7286(7) 0.0921 Uani
+    H24 H 0.2305 0.1538 0.7124 0.1110 Uiso
+    C43 C 0.7512(11) 0.1465(13) 0.2799(7) 0.1138 Uani
+    H25 H 0.6966 0.0686 0.2631 0.1360 Uiso
+    C44 C 0.0693(9) 0.2848(10) 0.7935(7) 0.0964 Uani
+    H26 H 0.0741 0.3572 0.8202 0.1160 Uiso
+    C45 C 0.8737(10) 1.0518(12) 1.0502(6) 0.0925 Uani
+    H27 H 0.9164 1.1259 1.0805 0.1110 Uiso
+    C46 C 0.8440(12) 0.1912(12) 0.2440(6) 0.1001 Uani
+    H28 H 0.8521 0.1397 0.2061 0.1200 Uiso
+    C47 C 0.0465(16) 0.0742(11) 0.7141(7) 0.1132 Uani
+    H29 H 0.0408 0.0020 0.6867 0.1360 Uiso
+    C48 C 0.3164(12) 0.5783(12) 0.8288(8) 0.1154 Uani
+    H30 H 0.3086 0.5943 0.7821 0.1380 Uiso
+    C49 C -0.0493(14) 0.0770(13) 0.7329(8) 0.1077 Uani
+    H31 H -0.1235 0.0124 0.7187 0.1290 Uiso
+    C50 C -0.0384(11) 0.1852(18) 0.7775(11) 0.1474 Uani
+    H32 H -0.1054 0.1897 0.7966 0.1770 Uiso
+    C51 C 0.3285(14) 0.4457(17) 0.9135(9) 0.1382 Uani
+    H33 H 0.3305 0.3699 0.9179 0.1660 Uiso
+    C52 C 0.343(3) 0.516(3) 0.9744(14) 0.2950 Uani
+    H34 H 0.3497 0.4927 1.0191 0.3510 Uiso
+    C53 C 0.3475(16) 0.633(3) 0.9656(10) 0.1901 Uani
+    H35 H 0.3584 0.6906 1.0061 0.2290 Uiso
+    C54 C 0.3350(15) 0.6647(13) 0.8918(16) 0.1928 Uani
+    H36 H 0.3394 0.7419 0.8872 0.2290 Uiso
+    loop_
+    _atom_site_aniso_label
+    _atom_site_aniso_U_11
+    _atom_site_aniso_U_22
+    _atom_site_aniso_U_33
+    _atom_site_aniso_U_23
+    _atom_site_aniso_U_13
+    _atom_site_aniso_U_12
+    N1 0.065(4) 0.074(4) 0.058(4) 0.007(4) 0.008(3) 0.037(4)
+    N2 0.084(5) 0.091(5) 0.050(4) 0.001(4) 0.008(3) 0.059(4)
+    N3 0.057(4) 0.069(4) 0.053(4) 0.005(3) 0.012(3) 0.031(3)
+    N4 0.059(4) 0.072(5) 0.078(5) 0.008(4) 0.032(4) 0.007(4)
+    C1 0.052(4) 0.061(4) 0.047(4) 0.002(4) 0.012(3) 0.027(4)
+    C2 0.061(5) 0.068(5) 0.052(5) 0.022(4) 0.015(4) 0.034(4)
+    N5 0.092(6) 0.114(7) 0.066(5) 0.022(5) 0.026(4) 0.064(6)
+    C3 0.053(4) 0.064(5) 0.041(4) 0.000(4) 0.005(3) 0.027(4)
+    C4 0.061(5) 0.051(4) 0.050(4) 0.004(4) 0.007(4) 0.022(4)
+    C5 0.061(5) 0.061(5) 0.059(5) -0.002(4) 0.014(4) 0.034(4)
+    C6 0.049(4) 0.061(5) 0.050(4) 0.022(4) 0.006(3) 0.019(4)
+    C7 0.069(5) 0.092(7) 0.056(5) 0.016(5) 0.022(4) 0.048(5)
+    C8 0.047(4) 0.069(5) 0.070(5) 0.011(4) 0.024(4) 0.026(4)
+    N6 0.086(6) 0.128(8) 0.076(6) -0.021(5) 0.009(4) 0.060(6)
+    C9 0.065(5) 0.065(5) 0.047(4) -0.002(4) 0.012(4) 0.032(4)
+    C10 0.061(4) 0.070(5) 0.042(4) 0.014(4) 0.015(3) 0.036(4)
+    C11 0.068(5) 0.076(6) 0.041(4) 0.004(4) 0.005(4) 0.047(5)
+    C12 0.055(5) 0.072(5) 0.061(5) 0.005(4) 0.004(4) 0.035(4)
+    C13 0.055(4) 0.056(5) 0.044(4) 0.005(4) 0.014(3) 0.016(4)
+    C14 0.065(5) 0.079(6) 0.069(6) 0.004(5) 0.019(4) 0.035(5)
+    C15 0.057(4) 0.054(4) 0.057(5) 0.004(4) 0.016(4) 0.029(4)
+    C16 0.060(5) 0.078(5) 0.050(5) 0.001(4) 0.008(4) 0.031(4)
+    C17 0.057(4) 0.052(4) 0.052(5) 0.000(4) 0.011(3) 0.020(4)
+    C18 0.059(5) 0.052(5) 0.077(6) 0.005(4) 0.011(4) 0.021(4)
+    C19 0.061(5) 0.072(5) 0.062(5) 0.010(4) 0.012(4) 0.022(4)
+    C20 0.049(4) 0.068(5) 0.055(5) 0.014(4) 0.014(3) 0.028(4)
+    C21 0.049(4) 0.065(5) 0.048(4) -0.009(4) 0.006(3) 0.022(4)
+    C22 0.074(6) 0.070(5) 0.067(5) 0.015(4) 0.006(5) 0.032(5)
+    C23 0.067(5) 0.092(7) 0.048(5) 0.020(5) 0.012(4) 0.041(5)
+    C24 0.070(6) 0.116(8) 0.049(5) 0.006(5) 0.011(4) 0.058(6)
+    C25 0.062(5) 0.094(7) 0.045(5) -0.013(4) 0.001(4) 0.044(5)
+    C26 0.058(5) 0.077(6) 0.069(6) 0.027(5) 0.022(4) 0.026(4)
+    C27 0.073(6) 0.076(6) 0.075(6) 0.029(5) 0.026(5) 0.021(5)
+    C28 0.072(6) 0.078(6) 0.081(6) 0.018(5) 0.028(5) 0.038(5)
+    C29 0.080(6) 0.078(6) 0.068(6) -0.003(5) 0.007(5) 0.025(5)
+    C30 0.080(6) 0.082(6) 0.059(5) 0.009(4) 0.021(4) 0.042(5)
+    C31 0.072(6) 0.078(6) 0.077(7) 0.010(5) 0.029(5) 0.031(5)
+    C32 0.068(5) 0.105(8) 0.060(5) -0.011(5) 0.004(4) 0.042(6)
+    C33 0.087(7) 0.104(8) 0.071(6) 0.015(6) 0.029(5) 0.050(6)
+    C34 0.109(8) 0.094(7) 0.097(8) 0.017(6) 0.012(7) 0.053(7)
+    C35 0.108(9) 0.153(12) 0.109(9) 0.081(9) 0.059(8) 0.078(9)
+    C36 0.093(8) 0.102(8) 0.105(9) 0.041(7) 0.031(7) 0.028(6)
+    C37 0.097(8) 0.057(6) 0.151(12) 0.023(6) -0.001(8) 0.023(6)
+    C38 0.074(6) 0.160(11) 0.070(7) -0.018(7) 0.008(5) 0.068(7)
+    C39 0.100(8) 0.107(8) 0.099(9) -0.020(7) 0.009(7) 0.070(7)
+    C40 0.071(7) 0.147(11) 0.076(7) 0.016(8) 0.008(5) 0.039(7)
+    C41 0.092(7) 0.109(9) 0.083(7) 0.034(7) 0.050(6) 0.053(7)
+    C42 0.077(7) 0.068(6) 0.121(9) 0.019(6) 0.006(6) 0.021(6)
+    C43 0.091(8) 0.145(10) 0.098(9) -0.034(8) 0.007(7) 0.063(7)
+    C44 0.067(6) 0.091(7) 0.134(10) 0.040(7) 0.036(6) 0.016(6)
+    C45 0.095(7) 0.106(8) 0.065(6) 0.018(6) -0.006(5) 0.033(6)
+    C46 0.093(8) 0.114(9) 0.090(8) -0.029(7) 0.018(6) 0.053(7)
+    C47 0.128(11) 0.072(7) 0.110(10) 0.036(6) -0.008(8) 0.007(8)
+    C48 0.109(9) 0.104(10) 0.123(10) 0.007(8) 0.018(7) 0.034(7)
+    C49 0.083(9) 0.081(9) 0.144(12) 0.049(8) 0.007(8) 0.008(7)
+    C50 0.071(8) 0.175(16) 0.204(17) 0.143(15) 0.020(9) 0.018(9)
+    C51 0.138(12) 0.207(17) 0.112(12) 0.067(12) 0.052(9) 0.091(12)
+    C52 0.32(3) 0.30(3) 0.126(18) -0.03(2) 0.14(2) -0.12(3)
+    C53 0.105(11) 0.28(3) 0.084(12) -0.043(15) 0.022(8) -0.048(14)
+    C54 0.121(12) 0.077(9) 0.33(3) -0.073(14) 0.025(15) 0.026(8)
+
+    #END
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"ratio"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: NOGCOE
+    type: cif
+    presentation: prompt_inline
+    value: |
+      data_NOGCOE
+      _symmetry_cell_setting           triclinic
+      _symmetry_space_group_name_H-M   'P -1'
+      _symmetry_Int_Tables_number      2
+      _space_group_name_Hall           '-P 1'
+      loop_
+      _symmetry_equiv_pos_site_id
+      _symmetry_equiv_pos_as_xyz
+      1 x,y,z
+      2 -x,-y,-z
+      _cell_length_a                   11.5479(6)
+      _cell_length_b                   12.0028(7)
+      _cell_length_c                   19.1221(9)
+      _cell_angle_alpha                97.337(4)
+      _cell_angle_beta                 101.200(4)
+      _cell_angle_gamma                107.491(5)
+      _cell_volume                     2430.23
+      loop_
+      _atom_site_label
+      _atom_site_type_symbol
+      _atom_site_fract_x
+      _atom_site_fract_y
+      _atom_site_fract_z
+      _atom_site_U_iso_or_equiv
+      _atom_site_thermal_displace_type
+      N1 N 0.7253(6) 0.3836(6) 0.4534(4) 0.0641 Uani
+      N2 N 0.6719(7) 0.9334(7) 0.8649(3) 0.0706 Uani
+      N3 N 0.8996(6) 0.6162(6) 0.4939(3) 0.0583 Uani
+      N4 N 0.2873(6) 0.3694(6) 0.7848(4) 0.0716 Uani
+      C1 C 0.7000(7) 0.7094(7) 0.6849(4) 0.0523 Uani
+      C2 C 0.8067(7) 0.5783(7) 0.5289(4) 0.0563 Uani
+      N5 N 1.0875(9) 0.5290(9) 0.2994(4) 0.0825 Uani
+      C3 C 0.7081(7) 0.6223(7) 0.6253(4) 0.0529 Uani
+      C4 C 0.5348(7) 0.4583(6) 0.6506(4) 0.0548 Uani
+      C5 C 0.5958(7) 1.0076(7) 0.8554(4) 0.0586 Uani
+      C6 C 0.6236(7) 0.5040(7) 0.6067(4) 0.0531 Uani
+      C7 C 0.7402(8) 0.9368(9) 0.9359(5) 0.0664 Uani
+      C8 C 0.8011(7) 0.7609(7) 0.7451(5) 0.0593 Uani
+      H1 H 0.8744 0.7432 0.7462 0.0720 Uiso
+      N6 N 0.9218(8) 0.3036(10) 0.2611(5) 0.0966 Uani
+      C9 C 0.8022(7) 0.6592(7) 0.5877(4) 0.0581 Uani
+      H2 H 0.8605 0.7358 0.6015 0.0700 Uiso
+      C10 C 0.9009(7) 0.5379(7) 0.4389(4) 0.0538 Uani
+      C11 C 0.8158(8) 0.4209(8) 0.4182(4) 0.0583 Uani
+      C12 C 0.5837(7) 0.8113(7) 0.7435(4) 0.0617 Uani
+      H3 H 0.5111 0.8307 0.7413 0.0740 Uiso
+      C13 C 0.7197(7) 0.4594(7) 0.5097(4) 0.0525 Uani
+      C14 C 0.5772(8) 0.4789(8) 0.7269(5) 0.0691 Uani
+      H4 H 0.6621 0.5166 0.7484 0.0830 Uiso
+      C15 C 0.6800(7) 0.8588(7) 0.8040(4) 0.0540 Uani
+      C16 C 0.5909(8) 0.7360(7) 0.6862(4) 0.0627 Uani
+      H5 H 0.5213 0.7015 0.6470 0.0750 Uiso
+      C17 C 0.6314(7) 0.4275(7) 0.5503(4) 0.0546 Uani
+      H6 H 0.5750 0.3500 0.5382 0.0660 Uiso
+      C18 C 0.3678(8) 0.3930(7) 0.7393(5) 0.0637 Uani
+      C19 C 0.4972(8) 0.4451(8) 0.7701(5) 0.0658 Uani
+      H7 H 0.5283 0.4567 0.8201 0.0790 Uiso
+      C20 C 0.9955(7) 0.5760(7) 0.3971(4) 0.0550 Uani
+      C21 C 0.7947(7) 0.8372(7) 0.8027(4) 0.0561 Uani
+      H8 H 0.8651 0.8750 0.8410 0.0670 Uiso
+      C22 C 0.4112(8) 0.4015(8) 0.6213(5) 0.0700 Uani
+      H9 H 0.3814 0.3852 0.5710 0.0840 Uiso
+      C23 C 1.0022(8) 0.4972(9) 0.3392(4) 0.0654 Uani
+      C24 C 0.9158(8) 0.3759(10) 0.3175(5) 0.0736 Uani
+      C25 C 0.8214(8) 0.3389(9) 0.3586(4) 0.0672 Uani
+      C26 C 0.3259(8) 0.3660(8) 0.6645(5) 0.0651 Uani
+      H10 H 0.2417 0.3246 0.6427 0.0780 Uiso
+      C27 C 0.1730(9) 0.2702(9) 0.7666(5) 0.0731 Uani
+      C28 C 0.6009(8) 1.0754(8) 0.8026(5) 0.0725 Uani
+      H11 H 0.6504 1.0712 0.7699 0.0870 Uiso
+      C29 C 0.8062(8) 1.0497(9) 0.9795(5) 0.0790 Uani
+      H12 H 0.8057 1.1192 0.9631 0.0950 Uiso
+      C30 C 0.5151(8) 1.0096(8) 0.9004(5) 0.0701 Uani
+      H13 H 0.5101 0.9603 0.9342 0.0840 Uiso
+      C31 C 0.3111(8) 0.4654(9) 0.8449(6) 0.0733 Uani
+      C32 C 0.7383(9) 0.2151(9) 0.3399(5) 0.0789 Uani
+      H14 H 0.6808 0.1845 0.3664 0.0950 Uiso
+      C33 C 1.0819(9) 0.6922(10) 0.4160(5) 0.0820 Uani
+      H15 H 1.0809 0.7468 0.4549 0.0980 Uiso
+      C34 C 0.7501(11) 0.8393(11) 0.9593(7) 0.0977 Uani
+      H16 H 0.7067 0.7652 0.9291 0.1180 Uiso
+      C35 C 0.8227(12) 0.8452(14) 1.0266(7) 0.1055 Uani
+      H17 H 0.8342 0.7767 1.0401 0.1270 Uiso
+      C36 C 1.1686(11) 0.7229(11) 0.3749(7) 0.0982 Uani
+      H18 H 1.2259 0.7997 0.3842 0.1180 Uiso
+      C37 C 0.5289(11) 1.1513(9) 0.7995(8) 0.1067 Uani
+      H19 H 0.5336 1.2000 0.7653 0.1280 Uiso
+      C38 C 0.4434(9) 1.0809(13) 0.8968(6) 0.0999 Uani
+      H20 H 0.3897 1.0808 0.9273 0.1200 Uiso
+      C39 C 0.4533(11) 1.1560(11) 0.8446(7) 0.0999 Uani
+      H21 H 0.4078 1.2080 0.8416 0.1200 Uiso
+      C40 C 0.8808(10) 0.9587(14) 1.0762(6) 0.0995 Uani
+      H22 H 0.9212 0.9649 1.1243 0.1190 Uiso
+      C41 C 1.1677(11) 0.6387(12) 0.3211(6) 0.0846 Uani
+      H23 H 1.2305 0.6600 0.2964 0.1010 Uiso
+      C42 C 0.1636(10) 0.1659(9) 0.7286(7) 0.0921 Uani
+      H24 H 0.2305 0.1538 0.7124 0.1110 Uiso
+      C43 C 0.7512(11) 0.1465(13) 0.2799(7) 0.1138 Uani
+      H25 H 0.6966 0.0686 0.2631 0.1360 Uiso
+      C44 C 0.0693(9) 0.2848(10) 0.7935(7) 0.0964 Uani
+      H26 H 0.0741 0.3572 0.8202 0.1160 Uiso
+      C45 C 0.8737(10) 1.0518(12) 1.0502(6) 0.0925 Uani
+      H27 H 0.9164 1.1259 1.0805 0.1110 Uiso
+      C46 C 0.8440(12) 0.1912(12) 0.2440(6) 0.1001 Uani
+      H28 H 0.8521 0.1397 0.2061 0.1200 Uiso
+      C47 C 0.0465(16) 0.0742(11) 0.7141(7) 0.1132 Uani
+      H29 H 0.0408 0.0020 0.6867 0.1360 Uiso
+      C48 C 0.3164(12) 0.5783(12) 0.8288(8) 0.1154 Uani
+      H30 H 0.3086 0.5943 0.7821 0.1380 Uiso
+      C49 C -0.0493(14) 0.0770(13) 0.7329(8) 0.1077 Uani
+      H31 H -0.1235 0.0124 0.7187 0.1290 Uiso
+      C50 C -0.0384(11) 0.1852(18) 0.7775(11) 0.1474 Uani
+      H32 H -0.1054 0.1897 0.7966 0.1770 Uiso
+      C51 C 0.3285(14) 0.4457(17) 0.9135(9) 0.1382 Uani
+      H33 H 0.3305 0.3699 0.9179 0.1660 Uiso
+      C52 C 0.343(3) 0.516(3) 0.9744(14) 0.2950 Uani
+      H34 H 0.3497 0.4927 1.0191 0.3510 Uiso
+      C53 C 0.3475(16) 0.633(3) 0.9656(10) 0.1901 Uani
+      H35 H 0.3584 0.6906 1.0061 0.2290 Uiso
+      C54 C 0.3350(15) 0.6647(13) 0.8918(16) 0.1928 Uani
+      H36 H 0.3394 0.7419 0.8872 0.2290 Uiso
+      loop_
+      _atom_site_aniso_label
+      _atom_site_aniso_U_11
+      _atom_site_aniso_U_22
+      _atom_site_aniso_U_33
+      _atom_site_aniso_U_23
+      _atom_site_aniso_U_13
+      _atom_site_aniso_U_12
+      N1 0.065(4) 0.074(4) 0.058(4) 0.007(4) 0.008(3) 0.037(4)
+      N2 0.084(5) 0.091(5) 0.050(4) 0.001(4) 0.008(3) 0.059(4)
+      N3 0.057(4) 0.069(4) 0.053(4) 0.005(3) 0.012(3) 0.031(3)
+      N4 0.059(4) 0.072(5) 0.078(5) 0.008(4) 0.032(4) 0.007(4)
+      C1 0.052(4) 0.061(4) 0.047(4) 0.002(4) 0.012(3) 0.027(4)
+      C2 0.061(5) 0.068(5) 0.052(5) 0.022(4) 0.015(4) 0.034(4)
+      N5 0.092(6) 0.114(7) 0.066(5) 0.022(5) 0.026(4) 0.064(6)
+      C3 0.053(4) 0.064(5) 0.041(4) 0.000(4) 0.005(3) 0.027(4)
+      C4 0.061(5) 0.051(4) 0.050(4) 0.004(4) 0.007(4) 0.022(4)
+      C5 0.061(5) 0.061(5) 0.059(5) -0.002(4) 0.014(4) 0.034(4)
+      C6 0.049(4) 0.061(5) 0.050(4) 0.022(4) 0.006(3) 0.019(4)
+      C7 0.069(5) 0.092(7) 0.056(5) 0.016(5) 0.022(4) 0.048(5)
+      C8 0.047(4) 0.069(5) 0.070(5) 0.011(4) 0.024(4) 0.026(4)
+      N6 0.086(6) 0.128(8) 0.076(6) -0.021(5) 0.009(4) 0.060(6)
+      C9 0.065(5) 0.065(5) 0.047(4) -0.002(4) 0.012(4) 0.032(4)
+      C10 0.061(4) 0.070(5) 0.042(4) 0.014(4) 0.015(3) 0.036(4)
+      C11 0.068(5) 0.076(6) 0.041(4) 0.004(4) 0.005(4) 0.047(5)
+      C12 0.055(5) 0.072(5) 0.061(5) 0.005(4) 0.004(4) 0.035(4)
+      C13 0.055(4) 0.056(5) 0.044(4) 0.005(4) 0.014(3) 0.016(4)
+      C14 0.065(5) 0.079(6) 0.069(6) 0.004(5) 0.019(4) 0.035(5)
+      C15 0.057(4) 0.054(4) 0.057(5) 0.004(4) 0.016(4) 0.029(4)
+      C16 0.060(5) 0.078(5) 0.050(5) 0.001(4) 0.008(4) 0.031(4)
+      C17 0.057(4) 0.052(4) 0.052(5) 0.000(4) 0.011(3) 0.020(4)
+      C18 0.059(5) 0.052(5) 0.077(6) 0.005(4) 0.011(4) 0.021(4)
+      C19 0.061(5) 0.072(5) 0.062(5) 0.010(4) 0.012(4) 0.022(4)
+      C20 0.049(4) 0.068(5) 0.055(5) 0.014(4) 0.014(3) 0.028(4)
+      C21 0.049(4) 0.065(5) 0.048(4) -0.009(4) 0.006(3) 0.022(4)
+      C22 0.074(6) 0.070(5) 0.067(5) 0.015(4) 0.006(5) 0.032(5)
+      C23 0.067(5) 0.092(7) 0.048(5) 0.020(5) 0.012(4) 0.041(5)
+      C24 0.070(6) 0.116(8) 0.049(5) 0.006(5) 0.011(4) 0.058(6)
+      C25 0.062(5) 0.094(7) 0.045(5) -0.013(4) 0.001(4) 0.044(5)
+      C26 0.058(5) 0.077(6) 0.069(6) 0.027(5) 0.022(4) 0.026(4)
+      C27 0.073(6) 0.076(6) 0.075(6) 0.029(5) 0.026(5) 0.021(5)
+      C28 0.072(6) 0.078(6) 0.081(6) 0.018(5) 0.028(5) 0.038(5)
+      C29 0.080(6) 0.078(6) 0.068(6) -0.003(5) 0.007(5) 0.025(5)
+      C30 0.080(6) 0.082(6) 0.059(5) 0.009(4) 0.021(4) 0.042(5)
+      C31 0.072(6) 0.078(6) 0.077(7) 0.010(5) 0.029(5) 0.031(5)
+      C32 0.068(5) 0.105(8) 0.060(5) -0.011(5) 0.004(4) 0.042(6)
+      C33 0.087(7) 0.104(8) 0.071(6) 0.015(6) 0.029(5) 0.050(6)
+      C34 0.109(8) 0.094(7) 0.097(8) 0.017(6) 0.012(7) 0.053(7)
+      C35 0.108(9) 0.153(12) 0.109(9) 0.081(9) 0.059(8) 0.078(9)
+      C36 0.093(8) 0.102(8) 0.105(9) 0.041(7) 0.031(7) 0.028(6)
+      C37 0.097(8) 0.057(6) 0.151(12) 0.023(6) -0.001(8) 0.023(6)
+      C38 0.074(6) 0.160(11) 0.070(7) -0.018(7) 0.008(5) 0.068(7)
+      C39 0.100(8) 0.107(8) 0.099(9) -0.020(7) 0.009(7) 0.070(7)
+      C40 0.071(7) 0.147(11) 0.076(7) 0.016(8) 0.008(5) 0.039(7)
+      C41 0.092(7) 0.109(9) 0.083(7) 0.034(7) 0.050(6) 0.053(7)
+      C42 0.077(7) 0.068(6) 0.121(9) 0.019(6) 0.006(6) 0.021(6)
+      C43 0.091(8) 0.145(10) 0.098(9) -0.034(8) 0.007(7) 0.063(7)
+      C44 0.067(6) 0.091(7) 0.134(10) 0.040(7) 0.036(6) 0.016(6)
+      C45 0.095(7) 0.106(8) 0.065(6) 0.018(6) -0.006(5) 0.033(6)
+      C46 0.093(8) 0.114(9) 0.090(8) -0.029(7) 0.018(6) 0.053(7)
+      C47 0.128(11) 0.072(7) 0.110(10) 0.036(6) -0.008(8) 0.007(8)
+      C48 0.109(9) 0.104(10) 0.123(10) 0.007(8) 0.018(7) 0.034(7)
+      C49 0.083(9) 0.081(9) 0.144(12) 0.049(8) 0.007(8) 0.008(7)
+      C50 0.071(8) 0.175(16) 0.204(17) 0.143(15) 0.020(9) 0.018(9)
+      C51 0.138(12) 0.207(17) 0.112(12) 0.067(12) 0.052(9) 0.091(12)
+      C52 0.32(3) 0.30(3) 0.126(18) -0.03(2) 0.14(2) -0.12(3)
+      C53 0.105(11) 0.28(3) 0.084(12) -0.043(15) 0.022(8) -0.048(14)
+      C54 0.121(12) 0.077(9) 0.33(3) -0.073(14) 0.025(15) 0.026(8)
+
+      #END
+  requested_properties:
+  - name: accessible_to_inaccessible_volume_ratio
+    value_type: number
+    unit: ratio
+    comparison_group: pore_volume_ratio
+  gold_answers:
+  - property: accessible_to_inaccessible_volume_ratio
+    value: 1.713
+    unit: ratio
+    scoring_profile: property_calculation_pore_volume_ratio_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: zeo_plus_plus_probe_1p2_angstrom_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: pore_volume_ratio
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_023_carboxyl_hydrogen_distance
+  version: 1
+  task_type: property_calculation
+  object_type: conformer_ensemble
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - conformer_search
+  - distance
+  prompt: |
+    The following three conformers are listed in increasing CREST energy order. Select the lowest-energy conformer and report the distance in angstrom between the two carboxylic-acid hydrogen atoms. The first conformer is the lowest-energy structure.
+
+    ```text
+    first-conformer energy: -49.04209475
+    ```
+
+    First conformer coordinates:
+    ```xyz
+      30
+            -49.04209475
+     O          1.3547137222        1.3323744992       -0.8733751728
+     O          1.2481030694        1.1588627066        1.3478502738
+     O         -1.3548480270        1.3322655934        0.8733910421
+     O         -1.2482506769        1.1588504795       -1.3478462195
+     H          0.2546164243        1.2751045666        1.2346279861
+     H          3.7215374438       -2.4146702312       -0.6436840740
+     H          3.6985956080       -1.7683406260        1.0068465632
+     H          4.9162645577       -0.2760385273       -0.5806464334
+     H          3.4428154028       -0.0971962816       -1.5495312299
+     H          3.8791318394        1.8149875270        0.0339772108
+     H          3.5972867434        0.7102745727        1.3978100382
+     H         -0.2547490106        1.2750125563       -1.2346316041
+     H         -3.6982786227       -1.7685403635       -1.0070197557
+     H         -3.7211774385       -2.4148412372        0.6435304100
+     H         -3.4429581751       -0.0974004040        1.5495424119
+     H         -4.9163468116       -0.2765015351        0.5805536848
+     H         -3.5974335471        0.7101193116       -1.3977799493
+     H         -3.8793483441        1.8146873432       -0.0338650790
+     C          1.8841975575        1.1400067321        0.2065547348
+     C          0.6791341679       -1.7395865480       -0.0033240479
+     C          1.8849769570       -1.6848657572       -0.0031336603
+     C          3.3282446675       -1.6116899741       -0.0119657215
+     C          3.8254150872       -0.2596286114       -0.5397871083
+     C          3.3704719608        0.9009191378        0.3486010714
+     C         -1.8843522505        1.1400219823       -0.2065484788
+     C         -0.6788600977       -1.7396279822        0.0034738096
+     C         -1.8847332142       -1.6845270151        0.0030935122
+     C         -3.3280288398       -1.6117926923        0.0118237401
+     C         -3.8254888829       -0.2598912640        0.5397744740
+     C         -3.3705978931        0.9007089130       -0.3485662218
+      30
+            -49.04188658
+     O          1.2828156377        1.3666503824       -1.0621249396
+     O          1.3602657751        1.1344732855        1.1546466113
+     O         -1.2774537209        1.2772394426        0.8967761484
+     O         -1.3494607156        1.2012777691       -1.3313893512
+     H          0.3587028935        1.2251300311        1.1214208132
+     H          3.6748727464       -1.5026327716       -1.1923133735
+     H          3.7287197416       -2.4891179567        0.2800417471
+     H          3.3752898484       -0.3963192934        1.6488296108
+     H          4.8873756636       -0.3999724128        0.7252411017
+     H          3.7628049751        1.0040259356       -1.0481394979
+     H          3.8351105883        1.7891615708        0.5445287137
+     H         -0.3491851241        1.3091602448       -1.2941143735
+     H         -3.7461676451       -1.6885078042       -1.0023703023
+     H         -3.7105060546       -2.4541628852        0.5962818692
+     H         -3.3464330657       -0.2018054596        1.6476685870
+     H         -4.8779207177       -0.3141296134        0.7623663274
+     H         -3.7012993562        0.8071135174       -1.2199856373
+     H         -3.8590958241        1.8143343919        0.2367080891
+     C          1.9026987124        1.1585307996       -0.0346464440
+     C          0.6698052906       -1.7385325677       -0.1364982057
+     C          1.8744101381       -1.6669408440       -0.1649948150
+     C          3.3165362450       -1.5753175615       -0.1601805513
+     C          3.7991037458       -0.3606247035        0.6436466994
+     C          3.4014651547        0.9606258362       -0.0195575403
+     C         -1.8932380315        1.1382082878       -0.1449596709
+     C         -0.6875836873       -1.7461741188       -0.1006932104
+     C         -1.8927290876       -1.6921257412       -0.0606676068
+     C         -3.3337372268       -1.6104390526        0.0091360503
+     C         -3.7915626188       -0.2960887742        0.6550352217
+     C         -3.3894125203        0.9212276269       -0.1814957680
+      30
+            -49.04182689
+     O          1.1768377859        1.3189473872        1.0996353245
+     O          1.4703367097        1.1758302167       -1.1065051930
+     O         -1.1767410396        1.3191902697       -1.0994968593
+     O         -1.4702194108        1.1751568711        1.1065831630
+     H          0.4705109881        1.2719530620       -1.1678299221
+     H          3.7532890395       -2.4778397449       -0.2763362596
+     H          3.6210783886       -1.6094880449        1.2637068238
+     H          4.9436107856       -0.3567091432       -0.4622222041
+     H          3.5104330018       -0.2956675647       -1.5022317180
+     H          3.8719307802        1.8079402710       -0.2014894275
+     H          3.6427143211        0.9066661537        1.3120055336
+     H         -0.4704153134        1.2715161122        1.1679270891
+     H         -3.6217520075       -1.6101025636       -1.2633646485
+     H         -3.7533221395       -2.4781071917        0.2769357366
+     H         -3.5102138267       -0.2958060253        1.5023433241
+     H         -4.9435657223       -0.3567294304        0.4625314806
+     H         -3.6424395283        0.9061292634       -1.3120708382
+     H         -3.8718258890        1.8076668651        0.2012022112
+     C          1.8936745493        1.1471686211        0.1299632190
+     C          0.6774464960       -1.7409217926        0.0430998080
+     C          1.8796968444       -1.6796837138        0.1319186771
+     C          3.3202293765       -1.5981834876        0.2107782704
+     C          3.8519698686       -0.3281772670       -0.4661774103
+     C          3.3865306432        0.9408679523        0.2520063751
+     C         -1.8935610388        1.1469539119       -0.1298925174
+     C         -0.6776187682       -1.7408632196       -0.0435608341
+     C         -1.8799021474       -1.6800797164       -0.1322447867
+     C         -3.3204622050       -1.5985617323       -0.2105625980
+     C         -3.8519108863       -0.3283920559        0.4663398662
+     C         -3.3863806195        0.9404992979       -0.2520492958
+    ```
+
+    The remaining conformers have higher energies (-49.04188658 and -49.04182689).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"angstrom"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: crest_conformers
+    type: xyz_multiframe
+    presentation: prompt_inline
+    value: |2
+        30
+              -49.04209475
+       O          1.3547137222        1.3323744992       -0.8733751728
+       O          1.2481030694        1.1588627066        1.3478502738
+       O         -1.3548480270        1.3322655934        0.8733910421
+       O         -1.2482506769        1.1588504795       -1.3478462195
+       H          0.2546164243        1.2751045666        1.2346279861
+       H          3.7215374438       -2.4146702312       -0.6436840740
+       H          3.6985956080       -1.7683406260        1.0068465632
+       H          4.9162645577       -0.2760385273       -0.5806464334
+       H          3.4428154028       -0.0971962816       -1.5495312299
+       H          3.8791318394        1.8149875270        0.0339772108
+       H          3.5972867434        0.7102745727        1.3978100382
+       H         -0.2547490106        1.2750125563       -1.2346316041
+       H         -3.6982786227       -1.7685403635       -1.0070197557
+       H         -3.7211774385       -2.4148412372        0.6435304100
+       H         -3.4429581751       -0.0974004040        1.5495424119
+       H         -4.9163468116       -0.2765015351        0.5805536848
+       H         -3.5974335471        0.7101193116       -1.3977799493
+       H         -3.8793483441        1.8146873432       -0.0338650790
+       C          1.8841975575        1.1400067321        0.2065547348
+       C          0.6791341679       -1.7395865480       -0.0033240479
+       C          1.8849769570       -1.6848657572       -0.0031336603
+       C          3.3282446675       -1.6116899741       -0.0119657215
+       C          3.8254150872       -0.2596286114       -0.5397871083
+       C          3.3704719608        0.9009191378        0.3486010714
+       C         -1.8843522505        1.1400219823       -0.2065484788
+       C         -0.6788600977       -1.7396279822        0.0034738096
+       C         -1.8847332142       -1.6845270151        0.0030935122
+       C         -3.3280288398       -1.6117926923        0.0118237401
+       C         -3.8254888829       -0.2598912640        0.5397744740
+       C         -3.3705978931        0.9007089130       -0.3485662218
+        30
+              -49.04188658
+       O          1.2828156377        1.3666503824       -1.0621249396
+       O          1.3602657751        1.1344732855        1.1546466113
+       O         -1.2774537209        1.2772394426        0.8967761484
+       O         -1.3494607156        1.2012777691       -1.3313893512
+       H          0.3587028935        1.2251300311        1.1214208132
+       H          3.6748727464       -1.5026327716       -1.1923133735
+       H          3.7287197416       -2.4891179567        0.2800417471
+       H          3.3752898484       -0.3963192934        1.6488296108
+       H          4.8873756636       -0.3999724128        0.7252411017
+       H          3.7628049751        1.0040259356       -1.0481394979
+       H          3.8351105883        1.7891615708        0.5445287137
+       H         -0.3491851241        1.3091602448       -1.2941143735
+       H         -3.7461676451       -1.6885078042       -1.0023703023
+       H         -3.7105060546       -2.4541628852        0.5962818692
+       H         -3.3464330657       -0.2018054596        1.6476685870
+       H         -4.8779207177       -0.3141296134        0.7623663274
+       H         -3.7012993562        0.8071135174       -1.2199856373
+       H         -3.8590958241        1.8143343919        0.2367080891
+       C          1.9026987124        1.1585307996       -0.0346464440
+       C          0.6698052906       -1.7385325677       -0.1364982057
+       C          1.8744101381       -1.6669408440       -0.1649948150
+       C          3.3165362450       -1.5753175615       -0.1601805513
+       C          3.7991037458       -0.3606247035        0.6436466994
+       C          3.4014651547        0.9606258362       -0.0195575403
+       C         -1.8932380315        1.1382082878       -0.1449596709
+       C         -0.6875836873       -1.7461741188       -0.1006932104
+       C         -1.8927290876       -1.6921257412       -0.0606676068
+       C         -3.3337372268       -1.6104390526        0.0091360503
+       C         -3.7915626188       -0.2960887742        0.6550352217
+       C         -3.3894125203        0.9212276269       -0.1814957680
+        30
+              -49.04182689
+       O          1.1768377859        1.3189473872        1.0996353245
+       O          1.4703367097        1.1758302167       -1.1065051930
+       O         -1.1767410396        1.3191902697       -1.0994968593
+       O         -1.4702194108        1.1751568711        1.1065831630
+       H          0.4705109881        1.2719530620       -1.1678299221
+       H          3.7532890395       -2.4778397449       -0.2763362596
+       H          3.6210783886       -1.6094880449        1.2637068238
+       H          4.9436107856       -0.3567091432       -0.4622222041
+       H          3.5104330018       -0.2956675647       -1.5022317180
+       H          3.8719307802        1.8079402710       -0.2014894275
+       H          3.6427143211        0.9066661537        1.3120055336
+       H         -0.4704153134        1.2715161122        1.1679270891
+       H         -3.6217520075       -1.6101025636       -1.2633646485
+       H         -3.7533221395       -2.4781071917        0.2769357366
+       H         -3.5102138267       -0.2958060253        1.5023433241
+       H         -4.9435657223       -0.3567294304        0.4625314806
+       H         -3.6424395283        0.9061292634       -1.3120708382
+       H         -3.8718258890        1.8076668651        0.2012022112
+       C          1.8936745493        1.1471686211        0.1299632190
+       C          0.6774464960       -1.7409217926        0.0430998080
+       C          1.8796968444       -1.6796837138        0.1319186771
+       C          3.3202293765       -1.5981834876        0.2107782704
+       C          3.8519698686       -0.3281772670       -0.4661774103
+       C          3.3865306432        0.9408679523        0.2520063751
+       C         -1.8935610388        1.1469539119       -0.1298925174
+       C         -0.6776187682       -1.7408632196       -0.0435608341
+       C         -1.8799021474       -1.6800797164       -0.1322447867
+       C         -3.3204622050       -1.5985617323       -0.2105625980
+       C         -3.8519108863       -0.3283920559        0.4663398662
+       C         -3.3863806195        0.9404992979       -0.2520492958
+  requested_properties:
+  - name: carboxyl_hydrogen_distance
+    value_type: number
+    unit: angstrom
+    comparison_group: carboxyl_hydrogen_distance
+  gold_answers:
+  - property: carboxyl_hydrogen_distance
+    value: 2.521
+    unit: angstrom
+    scoring_profile: property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: crest_conformer_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: carboxyl_hydrogen_distance
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_024_halogen_bond_energy
+  version: 1
+  task_type: property_calculation
+  object_type: halogen_bond_complex
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - halogen_bonding
+  prompt: |
+    For the expert-defined FI...NH3 halogen-bond complex, report the interaction energy in kcal/mol. Use the expert reference value for this complex and preserve its sign.
+
+    Reference input:
+    ```text
+    halogen-bond complex: FI...NH3
+    property: interaction energy
+    unit: kcal/mol
+    source: Modeling Halogen Bonding with Planewave Density Functional Theory
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: fi_nh3_halogen_bond_reference
+    type: molecular_complex_reference
+    presentation: prompt_inline
+    value: |
+      halogen-bond complex: FI...NH3
+      property: interaction energy
+      unit: kcal/mol
+      source: Modeling Halogen Bonding with Planewave Density Functional Theory
+  requested_properties:
+  - name: halogen_bond_interaction_energy
+    value_type: number
+    unit: kcal/mol
+    comparison_group: halogen_bond_energy
+  gold_answers:
+  - property: halogen_bond_interaction_energy
+    value: -17.11
+    unit: kcal/mol
+    scoring_profile: property_calculation_halogen_bond_energy_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: halogen_bonding_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: halogen_bond_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_025_bay069_pka
+  version: 1
+  task_type: property_calculation
+  object_type: ionizable_small_molecule
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - pka
+  prompt: |
+    For the following BAY-069 molecule, report the expert-validated pKa value in the convention used by the cited medicinal-chemistry reference.
+
+    ```text
+    COc1cc(Cl)c(Oc2ccccc2C)cc1-n1c(=O)cc(C(F)(F)F)[nH]c1=O
+    ```
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"pKa"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: BAY069
+    type: smiles
+    presentation: prompt_inline
+    value: COc1cc(Cl)c(Oc2ccccc2C)cc1-n1c(=O)cc(C(F)(F)F)[nH]c1=O
+  requested_properties:
+  - name: pka
+    value_type: number
+    unit: pKa
+    comparison_group: pka
+  gold_answers:
+  - property: pka
+    value: 5.7
+    unit: pKa
+    scoring_profile: property_calculation_pka_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: BAY069_JMedChem_2022_expert_answer
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: pka
       mode: all
     version: linear_goal_v2
   failure_policy:

@@ -1,7 +1,7 @@
 # 专家题 14-25 Property Calculation 转换预期
 
 日期：2026-08-20  
-状态：已获审批；本文件记录预期改动和已确认决定，任务注册在后续提交中执行
+状态：已获审批并实施；本文件同时记录实际注册结果和保留的解释边界
 
 ## 1. 范围与结论
 
@@ -22,7 +22,7 @@
 - 把附件复制进仓库；
 - 为这些题实现新的本机 verifier。
 
-本轮按本文件的决定实现题面、输入对象、gold schema、评分 profile 和测试。
+本轮已按本文件的决定实现题面、输入对象、gold schema、评分 profile 和测试。
 
 ## 1.1 已确认的审批决定
 
@@ -34,6 +34,8 @@
    interaction/binding energy，21 报告同一 O-H...O 中的 O-H 与 H...O 两个距离。
 4. 12 道题全部正式注册；仍会把题面定义、输入证据和外部 gold 来源写清楚，避免把
    “信任 gold”误写成“题面已经足以从头推导 gold”。
+5. 第24题的 `FI...NH3` 按原始题面逐字保留，不擅自规范化为 `F-I...NH3` 或反转原子
+   顺序；该字符串歧义已在实现记录中显式保留。
 
 ## 2. 附件可读性审计
 
@@ -254,9 +256,9 @@ scoring:
 - 原 gold：`-17.11 kcal/mol`。
 - 现状：题面中的 `FI。。。NH3` 存在字符/化学式歧义，且没有结构、计算输出、理论
   级别或文献摘录。无法确认是 I-F...NH3、F-I...NH3，还是原题中被截断的其他对象。
-- 正式注册决定：按专家 gold `-17.11 kcal/mol` 注册。prompt 将保留原题化学对象的
-  专家定义；由于 `FI。。。NH3` 存在歧义，实施前会把精确对象名/结构向你回报确认，
-  不擅自猜测化学式。
+- 正式注册决定：按专家 gold `-17.11 kcal/mol` 注册。prompt 保留原题对象为
+  `FI...NH3`，不擅自猜测化学式或原子顺序；若后续需要化学规范化，应作为单独的题面
+  修订处理。
 
 ### 25. BAY-069 pKa
 
@@ -270,9 +272,9 @@ scoring:
   写明 pKa 是文献报告值；若无法从附件确认酸碱位点、溶剂或温度，则在任务 metadata
   中标记这些定义来自专家来源，不把本机 pKa 预测当作注册前置条件。
 
-## 5. 审批后预计修改面
+## 5. 实际修改面
 
-若审批通过且所有“暂缓实现”项补齐证据，预计只会修改以下范围：
+本轮实际修改范围如下：
 
 1. `src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml`：新增
    12 个 `property_calculation` task、相应内联输入对象、请求字段和 withheld gold。
@@ -283,7 +285,8 @@ scoring:
 4. 评分 profile：为新单位/性质增加经过审批的 numeric gold 或 exact string profile；
    不复用不匹配的旧 profile 参数。
 5. `tests/test_property_calculation_tasks.py`：新增 task id、输入对象、结构化附件摘要、
-   answer schema、gold 隔离和 prompt 语言约束测试。
+   answer schema、gold 隔离和 prompt 语言约束测试；另更新公共 API、发布清单和安装包
+   smoke test 对正式任务总数的断言。
 6. 必要时新增 `docs/tracks/` 的 property calculation 能力说明，记录外部 gold 来源、
    输入摘要、精度与不可复核边界；不把用户附件路径写入任务 prompt。
 
@@ -291,20 +294,18 @@ scoring:
 schema；若需要扩展 `input_objects` 的类型或多字段答案契约，会先单独提交 schema 设计，
 不在新增题目的实现提交中隐式改变公共接口。
 
-## 6. 需要审批的决定
+## 6. 已决事项与保留边界
 
-请在实施前确认以下事项：
+以下决定已获确认并已落实：
 
-1. 是否同意 16、17、18、24、25 在补齐自洽输入/方法定义前保持暂缓，而不是用外部引用
-   或不可复核 gold 强行注册。
-2. 15 的三个频率输出顺序是否冻结为按频率升序；若按 IR intensity 降序，gold 顺序需
-   改为 1208.1036、1685.5562、1674.0688。
-3. 14 的氢键计数判据、21 的两个距离字段定义、19 的 interaction/binding 公式是否按
-   本文所述方式冻结。
-4. 是否接受对大体量 Gaussian 输出使用“相关结果片段 + 原文件 hash”的输入策略；如果
-   必须逐字提供完整输出，需要另行评估 prompt 体积和发布格式。
-5. 是否接受 14、15、19、20、21、22、23 先进入实现准备，待 profile 容错和字段顺序
-   审批后再一次性注册；本轮文档本身不做注册。
+1. 16、17、18、24、25 信任专家 gold，均正式注册，不以本机重算作为准入条件。
+2. 15 的三个频率使用 `unordered_numeric` comparison group，输出顺序不计对错。
+3. 14、19、21 按本文冻结的字段定义注册。
+4. 大体量 Gaussian 输出采用相关摘录，不逐字复制完整输出；原始体积审计仍保留在本文件。
+5. 14-25 全部进入正式 property-calculation pack；本轮没有新增本机 verifier。
+
+仍保留的边界：第24题的 `FI...NH3` 是原题保留字符串，化学式/原子顺序未被推断；数值
+容错采用 tasks.yaml 中记录的 profile 参数，后续若要改变需单独修订评分版本或 profile。
 
 ## 7. 审计命令与结果
 
@@ -319,5 +320,5 @@ uv run --extra materials python ...  # pymatgen/ASE/cclib author-side parsing
 uv run pytest                         # approval document change verification
 ```
 
-在本文件提交前会运行完整测试；测试只验证仓库当前行为，不会验证外部 Gaussian、Zeo++、
-CREST 或 pKa 计算结果。
+本轮完整测试结果：`530 passed, 7 skipped`。测试只验证仓库当前行为，不会验证外部
+Gaussian、Zeo++、CREST 或 pKa 计算结果。

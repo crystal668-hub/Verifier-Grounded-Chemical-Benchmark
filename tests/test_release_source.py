@@ -51,6 +51,18 @@ EXPECTED_TASK_IDS = {
     "property_calculation": [
         "property_calc_free_energy_001",
         "property_calc_crystal_phase_002",
+        "property_calc_014_hbond_count",
+        "property_calc_015_ir_top3_frequencies",
+        "property_calc_016_crystal_density",
+        "property_calc_017_cocrystal_ratio",
+        "property_calc_018_polymorph_free_energy_crossover",
+        "property_calc_019_interaction_binding_energy",
+        "property_calc_020_homo_lumo_gap",
+        "property_calc_021_hbond_distances",
+        "property_calc_022_accessible_pore_volume_ratio",
+        "property_calc_023_carboxyl_hydrogen_distance",
+        "property_calc_024_halogen_bond_energy",
+        "property_calc_025_bay069_pka",
     ],
 }
 

@@ -79,11 +79,11 @@ def test_property_calculation_track_scores_public_samples() -> None:
 
     report = track.evaluate_answers(track.sample_answers())
 
-    assert len(track.tasks()) == 2
-    assert len(track.sample_answers()) == 2
+    assert len(track.tasks()) == 14
+    assert len(track.sample_answers()) == 14
     assert report["summary"]["coverage"]["complete"] is True
     assert report["summary"]["benchmark_score"] == 1.0
-    assert [row["score"] for row in report["rows"]] == [1.0, 1.0]
+    assert [row["score"] for row in report["rows"]] == [1.0] * 14
 
 
 def test_load_track_rejects_unknown_track() -> None:

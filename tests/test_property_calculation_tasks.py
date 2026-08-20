@@ -32,6 +32,47 @@ EXPECTED_CIF = {
         108,
         "H12 C36 I36 N24",
     ),
+    "DEBXIT06": (
+        113,
+        "c90454dc1687775fe2185770643d0224ff80cdd84ce7e267b538f374d0155775",
+        92,
+        "H28 C46 N12 O6",
+    ),
+    "Radiprodil_FormA": (
+        73,
+        "a97cef84ea1032da99c1ca8741816814d3e6f8b7875402c7a0537182d697fdca",
+        196,
+        "H80 C84 N12 O16 F4",
+    ),
+    "Radiprodil_FormC": (
+        73,
+        "c3b6cf123c89aa53877083c1e0edf5800ed82fffd5cbb288154615a2e5a911a3",
+        196,
+        "H80 C84 N12 O16 F4",
+    ),
+    "NOGCOE": (
+        191,
+        "92469e31fdb204152ee9ade5463815cc6f47ea51bb06b0cfb2d820c8aff26ea2",
+        192,
+        "H72 C108 N12",
+    ),
+}
+
+EXPECTED_TASK_IDS = {
+    "property_calc_free_energy_001",
+    "property_calc_crystal_phase_002",
+    "property_calc_014_hbond_count",
+    "property_calc_015_ir_top3_frequencies",
+    "property_calc_016_crystal_density",
+    "property_calc_017_cocrystal_ratio",
+    "property_calc_018_polymorph_free_energy_crossover",
+    "property_calc_019_interaction_binding_energy",
+    "property_calc_020_homo_lumo_gap",
+    "property_calc_021_hbond_distances",
+    "property_calc_022_accessible_pore_volume_ratio",
+    "property_calc_023_carboxyl_hydrogen_distance",
+    "property_calc_024_halogen_bond_energy",
+    "property_calc_025_bay069_pka",
 }
 
 
@@ -49,14 +90,11 @@ def load_tasks() -> dict[str, dict]:
 def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
     tasks = load_tasks()
 
-    assert set(tasks) == {
-        "property_calc_free_energy_001",
-        "property_calc_crystal_phase_002",
-    }
+    assert set(tasks) == EXPECTED_TASK_IDS
     for task in tasks.values():
         assert task["version"] == 1
         assert task["task_type"] == "property_calculation"
-        assert task["object_type"] == "crystal_pair"
+        assert task["object_type"]
         assert task["formal_track"] is True
         assert task["answer_schema"] == {
             "format": "final_answer_line",
@@ -65,9 +103,9 @@ def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
             "cardinality": "one",
         }
         assert "constraints" not in task
-        assert task["gold_provenance"] == {
-            "disclosure": "withheld_initial_release"
-        }
+        assert task["gold_provenance"]["disclosure"] == "withheld_initial_release"
+        if task["task_id"].startswith("property_calc_0"):
+            assert task["gold_provenance"].get("source")
         assert task["scoring"]["aggregation"] == "arithmetic_mean"
         assert "parse_error" in set(task["failure_policy"].values())
 
@@ -78,9 +116,10 @@ def test_all_cif_inputs_are_complete_and_embedded_verbatim_in_prompts() -> None:
         item["object_id"]: (task, item)
         for task in tasks.values()
         for item in task["input_objects"]
+        if item["type"] == "cif"
     }
 
-    assert set(objects) == set(EXPECTED_CIF)
+    assert set(EXPECTED_CIF).issubset(objects)
     for object_id, (task, item) in objects.items():
         expected_lines, expected_hash, _, _ = EXPECTED_CIF[object_id]
         value = item["value"]
@@ -97,11 +136,19 @@ def test_cif_inputs_parse_to_expected_structures() -> None:
 
     for task in tasks.values():
         for item in task["input_objects"]:
+            if item["type"] != "cif":
+                continue
             _, _, atom_count, formula = EXPECTED_CIF[item["object_id"]]
             structure = pymatgen.Structure.from_str(item["value"], fmt="cif")
             assert len(structure) == atom_count
             assert structure.composition.formula == formula
             assert structure.volume > 0
+
+
+def test_every_input_object_is_embedded_exactly_once_in_its_prompt() -> None:
+    for task in load_tasks().values():
+        for item in task["input_objects"]:
+            assert task["prompt"].count(item["value"]) == 1
 
 
 def test_task_7_contract_and_gold() -> None:
@@ -197,10 +244,33 @@ def test_task_8_contract_and_gold() -> None:
     assert all("CCDC" not in item["value"] for item in task["input_objects"])
 
 
+def test_expert_task_special_contracts_are_frozen() -> None:
+    tasks = load_tasks()
+
+    task_15 = tasks["property_calc_015_ir_top3_frequencies"]
+    assert task_15["scoring"]["comparison_groups"] == [
+        {"id": "top_three_frequencies", "mode": "unordered_numeric"}
+    ]
+
+    task_19 = tasks["property_calc_019_interaction_binding_energy"]
+    assert "isolated monomer energy = -548.426489650 hartree" in task_19["prompt"]
+    assert "twice the isolated monomer energy" in task_19["prompt"]
+
+    task_21 = tasks["property_calc_021_hbond_distances"]
+    assert [item["type"] for item in task_21["input_objects"]] == [
+        "xyz",
+        "gaussian_output_excerpt",
+    ]
+
+    task_24 = tasks["property_calc_024_halogen_bond_energy"]
+    assert "FI...NH3" in task_24["prompt"]
+    assert "F-I...NH3" not in task_24["prompt"]
+
+
 def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:
     banned = [
         "/Users/",
-        "attachment",
+        "attached",
         "upload",
         "pymatgen",
         "xTB",
@@ -212,7 +282,9 @@ def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None
         prompt = task["prompt"]
         assert prompt.isascii()
         assert all(fragment.lower() not in prompt.lower() for fragment in banned)
-        assert prompt.count("```cif") == 2
+        assert prompt.count("```cif") == sum(
+            item["type"] == "cif" for item in task["input_objects"]
+        )
 
 
 def test_property_track_has_no_runtime_verifier_specs() -> None:

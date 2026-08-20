@@ -222,11 +222,12 @@ def test_complete_property_report_gets_official_benchmark_score() -> None:
 
     assert report.summary["coverage"]["complete"] is True
     assert report.summary["benchmark_score"] == 1.0
-    assert [row["score"] for row in report.rows] == [1.0, 1.0]
+    assert [row["score"] for row in report.rows] == [1.0] * 14
 
 
 def test_duplicate_unknown_and_missing_ids_invalidate_coverage() -> None:
-    engine = EvaluationEngine(_pack("property_calculation"))
+    pack = _pack("property_calculation")
+    engine = EvaluationEngine(pack)
     answer = {
         "task_id": "property_calc_free_energy_001",
         "answer": 0.258031679,
@@ -237,7 +238,11 @@ def test_duplicate_unknown_and_missing_ids_invalidate_coverage() -> None:
     coverage = report.summary["coverage"]
     assert coverage["duplicate_task_ids"] == ["property_calc_free_energy_001"]
     assert coverage["unknown_task_ids"] == ["unknown"]
-    assert coverage["missing_task_ids"] == ["property_calc_crystal_phase_002"]
+    assert coverage["missing_task_ids"] == [
+        task.task_id
+        for task in pack.tasks
+        if task.task_id != "property_calc_free_energy_001"
+    ]
     assert report.summary["benchmark_score"] is None
 
 
