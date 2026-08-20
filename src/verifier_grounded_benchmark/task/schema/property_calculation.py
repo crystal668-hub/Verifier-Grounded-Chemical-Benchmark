@@ -38,8 +38,10 @@ def validate_property_calculation_task(
         "comparison group",
     )
     for group_id, group in groups.items():
-        if group.get("mode") != "all":
-            raise ValueError(f"comparison group {group_id} must use mode all")
+        if group.get("mode") not in {"all", "unordered_numeric"}:
+            raise ValueError(
+                f"comparison group {group_id} must use mode all or unordered_numeric"
+            )
     used_groups: set[str] = set()
     for property_name, definition in requested.items():
         value_type = definition.get("value_type")
@@ -48,6 +50,10 @@ def validate_property_calculation_task(
         group_id = require_string(definition.get("comparison_group"), "comparison_group")
         if group_id not in groups:
             raise ValueError(f"unknown comparison group: {group_id}")
+        if groups[group_id].get("mode") == "unordered_numeric" and value_type != "number":
+            raise ValueError(
+                f"unordered_numeric group {group_id} only supports numeric properties"
+            )
         used_groups.add(group_id)
         gold_definition = gold[property_name]
         profile_id = require_string(gold_definition.get("scoring_profile"), "gold scoring_profile")

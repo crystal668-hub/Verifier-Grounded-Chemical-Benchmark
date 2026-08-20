@@ -15,6 +15,7 @@ from verifier_grounded_benchmark.evaluation.property_calculation.parsing.multi_p
 )
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
     score_comparison_group,
+    score_unordered_numeric_group,
 )
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.exact_string import (
     score_exact_string,
@@ -75,12 +76,18 @@ class PropertyCalculationEvaluator:
                 name for name, definition in requested.items()
                 if definition["comparison_group"] == group_id
             ]
+            mode = group["mode"]
+            group_score = (
+                score_unordered_numeric_group(submitted, members, gold, scoring_profiles)
+                if mode == "unordered_numeric"
+                else score_comparison_group([field_scores[name] for name in members])
+            )
             group_scores.append(
                 {
                     "group": group_id,
-                    "mode": "all",
+                    "mode": mode,
                     "members": members,
-                    "score": score_comparison_group([field_scores[name] for name in members]),
+                    "score": group_score,
                 }
             )
         task_score = score_task([item["score"] for item in group_scores])

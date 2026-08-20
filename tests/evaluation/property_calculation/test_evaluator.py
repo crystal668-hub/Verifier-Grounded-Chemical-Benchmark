@@ -8,6 +8,9 @@ from verifier_grounded_benchmark.evaluation.property_calculation import (
 from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
 from verifier_grounded_benchmark.task.resources import package_resource
+from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
+    score_unordered_numeric_group,
+)
 
 PACK = load_task_pack(
     package_resource("property_calculation", "tasks.yaml"),
@@ -174,3 +177,30 @@ def test_result_has_v2_schema_and_constraint_provenance() -> None:
             "scoring_version": "linear_goal_v2",
         }
     ]
+
+
+def test_unordered_numeric_group_uses_best_assignment() -> None:
+    members = ["frequency_1", "frequency_2", "frequency_3"]
+    submitted = {
+        "frequency_1": {"value": 1685.5562, "unit": "cm^-1"},
+        "frequency_2": {"value": 1208.1036, "unit": "cm^-1"},
+        "frequency_3": {"value": 1674.0688, "unit": "cm^-1"},
+    }
+    gold = {
+        name: {"value": value, "unit": "cm^-1", "scoring_profile": name}
+        for name, value in zip(
+            members, [1208.1036, 1674.0688, 1685.5562], strict=True
+        )
+    }
+    profiles = {
+        name: {
+            "property": name,
+            "type": "numeric_gold",
+            "unit": "cm^-1",
+            "lower_tolerance": 1.0,
+            "upper_tolerance": 1.0,
+        }
+        for name in members
+    }
+
+    assert score_unordered_numeric_group(submitted, members, gold, profiles) == pytest.approx(1.0)
