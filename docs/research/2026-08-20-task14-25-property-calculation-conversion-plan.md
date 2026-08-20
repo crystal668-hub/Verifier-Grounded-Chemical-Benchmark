@@ -59,8 +59,9 @@ ASCII/UTF-8 可读格式；CIF、XYZ 和 Gaussian 输出均可作为普通文本
 | 24 | 无 | 无附件；题面中的 `FI。。。NH3` 表达需确认 |
 | 25 | 无 | 无附件；只有分子 SMILES、文献来源和 pKa gold |
 
-附件没有复制到仓库。实现前应将需要公开给参评模型的内容整理成任务内的
-`input_objects`；不能在正式 prompt 中依赖 `/Users/...` 路径或不可解析的上传引用。
+附件没有复制到仓库。实现时仅将原题明确要求答题者查看的 CIF/XYZ 或分子对象整理成
+任务内的 `input_objects`；Gaussian `.out` 不属于答题者可见输入，不能在正式 prompt 中
+依赖 `/Users/...` 路径或不可解析的上传引用。
 
 ### 大体量 Gaussian 输出的体积
 
@@ -75,12 +76,8 @@ ASCII/UTF-8 可读格式；CIF、XYZ 和 Gaussian 输出均可作为普通文本
 | 合计 | 上述 6 个 Gaussian 文件 | 4,360,149 | 72,206 | 1.09M |
 
 \* token 按约 4 个 ASCII 字符/token 粗略估计，实际值取决于 tokenizer。当前 task v2
-还要求 `input_objects[].value` 与 prompt 内联内容同时保存；若完整文本在两处各放一份，
-仅这 6 个文件就约 8.72 MB、2.18M 粗略 token，尚未计入 YAML 标记和其他题面文字。
-因此本次实现会让题目**正式注册**，但默认采用“完整输入文件作为维护侧 provenance，
-prompt 只内联与问题直接相关的带上下文片段”的发布形式；这不改变 gold 的信任决定。
-如果你要求完整逐字可见，我会按上述体积扩展任务，但需要单独确认目标上下文窗口和发布
-包大小是否可接受。
+这些文件的体积仅用于维护侧容量审计；它们不写入 `input_objects`，也不进入答题者
+prompt。CIF/XYZ 等明确可见附件仍按完整内容内联；这不改变 gold 的信任决定。
 
 ## 3. 统一任务写法预期
 
@@ -104,9 +101,8 @@ scoring:
 
 题面拟改写为英文、工具中立、可独立阅读的科学问题：不出现 verifier、脚本路径、
 本 benchmark、gold 或“请使用某个内部后端”等实现信息。附件若是题目求解所必需的
-输入，将以 `input_objects` 的文本值和 prompt 内联块同时保存；大体量 Gaussian
-输出不直接整份塞进 YAML，而是保留与答案直接相关的、带上下文的结果片段，并在
-维护文档中记录原文件 hash。这样既避免数 MB prompt，也不依赖本地附件路径。
+输入，将以 `input_objects` 的文本值和 prompt 内联块同时保存；Gaussian `.out` 只保留
+维护侧来源和 hash，不写入正式任务。这样既避免数 MB prompt，也不依赖本地附件路径。
 
 数值 gold 统一使用 `value_type: number` 和 canonical unit，评分采用
 `numeric_gold` profile；字符串或离散标签使用 `value_type: string` 和
@@ -136,10 +132,10 @@ scoring:
 - 暂定 task id：`property_calc_015_ir_top3_frequencies`
 - 题型：三个数值字段；建议 `frequency_1`、`frequency_2`、`frequency_3`，unit
   `cm^-1`，同属一个 comparison group。
-- 拟题面：提供 M06-2X/cc-pVTZ 优化与频率计算结果片段，要求找出 IR intensity
-  最大的三个模式，并报告它们的 harmonic frequencies。
-- 输入对象：从 `gaussian.out` 提取 route、三组相关 `Frequencies --`/`IR Inten --`
-  行及 normal termination；维护侧保留完整文件 hash `5323390f...ab220d7`。
+- 拟题面：说明 M06-2X/cc-pVTZ 优化与频率计算背景，要求报告 IR intensity 最大的三个
+  模式对应的 harmonic frequencies。
+- 输入对象：无 Gaussian 输出输入对象；`gaussian.out` 仅作为维护侧证据留存，不进入
+  答题者可见 prompt。
 - Gold 数值集合：`1208.1036`、`1674.0688`、`1685.5562 cm^-1`。
 - 评分预期：三个 numeric gold 字段；comparison group 使用 `all`，要求三项都在
   各自容错内。
@@ -189,23 +185,21 @@ scoring:
 - 暂定 task id：`property_calc_019_interaction_binding_energy`
 - 题型：两个数值字段 `interaction_energy`、`binding_energy`，unit `kcal/mol`，
   同属一个 comparison group。
-- 拟题面：给出二聚体和单体计算结果，要求报告相互作用能与结合能，并保留负号。
-- 输入对象：`A.out`、`AB.out`、`BSSE.out` 的相关 SCF/thermal/counterpoise 结果片段；
-  不把整份约 1.8 MB Gaussian 文本直接嵌入 prompt。维护侧保留三个原文件 hash。
+- 拟题面：给出二聚体分子对象，要求报告专家验证的相互作用能与结合能，并保留负号。
+- 输入对象：仅保留二聚体分子式参考；`A.out`、`AB.out`、`BSSE.out` 是维护侧证据，
+  不进入答题者可见 prompt。
 - Gold：interaction energy `-69.04 kcal/mol`；binding energy `-58.15 kcal/mol`。
 - 评分预期：两个 numeric gold 字段，comparison group `all`；需在任务说明中冻结
   interaction/binding 的公式和是否采用 BSSE 修正，避免只凭字段名猜公式。
-- 可复核性：三个输出均可解析且 normal termination，BSSE 输出含
-  `Counterpoise corrected energy = -1096.945654791773` 和 BSSE energy 行；本机不需要
-  重跑 Gaussian。
+- 可复核性：三个输出均可解析且 normal termination；它们只用于维护侧证据和 gold 来源
+  追踪，本机不需要重跑 Gaussian。
 
 ### 20. HOMO-LUMO gap
 
 - 暂定 task id：`property_calc_020_homo_lumo_gap`
 - 题型：单个数值；property `homo_lumo_gap`，unit `eV`。
-- 拟题面：给出分子的计算输出或明确的 HOMO/LUMO orbital energies，要求计算能隙。
-- 输入对象：`homolumo.out` 中 route、最后一组 occupied/virtual eigenvalue 的相关
-  行和 normal termination；维护侧保留原文件 hash `8c42061b...9344ff3`。
+- 拟题面：给出分子 SMILES，要求报告专家验证的 HOMO-LUMO gap。
+- 输入对象：分子 SMILES；`homolumo.out` 仅作为维护侧证据留存，不进入答题者可见 prompt。
 - Gold：`7.26 eV`。作者侧从最后一组 alpha orbital energies 得到约 `7.263807 eV`，
   与题面四舍五入值一致。
 - 评分预期：numeric gold；需要审批报告精度和容错（建议 prompt 明确报告到 2 位小数，
@@ -217,8 +211,8 @@ scoring:
 - 题型：两个数值字段，unit `angstrom`，同属一个 comparison group。
 - 拟题面：给出优化后的代表性相互作用单元，要求报告同一个 O-H...O 相互作用中
   covalent O-H 距离和 H...O 接触距离。
-- 输入对象：`conformer.xyz` 与 Gaussian 最终几何的相关片段；`conformer.xyz` 仅 16
-  atoms，适合完整内联。
+- 输入对象：原题明确提到的 `conformer.xyz`，完整内联；Gaussian 最终几何只作为维护侧
+  证据，不进入答题者可见 prompt。
 - Gold：`1.029 angstrom` 和 `1.485 angstrom`。
 - 重要澄清：原题“两个 H 原子到两边 O 的距离”与附件几何不一致；作者侧最终几何显示
   是一个 H 到两个 O 的距离约 1.0293 和 1.4851 A。实现前必须按 atom label/元素关系
@@ -276,8 +270,9 @@ scoring:
 
 本轮实际修改范围如下：
 
-1. `src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml`：新增
-   12 个 `property_calculation` task、相应内联输入对象、请求字段和 withheld gold。
+1. `src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml`：注册
+   12 个 `property_calculation` task；删除 Gaussian `.out` 摘录输入，仅保留题面明确要求
+   可见的 CIF/XYZ/分子对象输入。
 2. `src/verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml`：
    保持空列表；这些题使用 gold comparison，不新增本机 verifier。
 3. `src/verifier_grounded_benchmark/task/packs/property_calculation/sample_answers.jsonl`：
@@ -301,7 +296,8 @@ schema；若需要扩展 `input_objects` 的类型或多字段答案契约，会
 1. 16、17、18、24、25 信任专家 gold，均正式注册，不以本机重算作为准入条件。
 2. 15 的三个频率使用 `unordered_numeric` comparison group，输出顺序不计对错。
 3. 14、19、21 按本文冻结的字段定义注册。
-4. 大体量 Gaussian 输出采用相关摘录，不逐字复制完整输出；原始体积审计仍保留在本文件。
+4. Gaussian `.out` 文件不进入答题者可见 prompt；原始文件仅作为开发和维护阶段的证据
+   留存，原始体积审计仍保留在本文件。
 5. 14-25 全部进入正式 property-calculation pack；本轮没有新增本机 verifier。
 
 仍保留的边界：第24题的 `FI...NH3` 是原题保留字符串，化学式/原子顺序未被推断；数值

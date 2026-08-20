@@ -1397,16 +1397,7 @@ tasks:
   - fixed_input
   - infrared_spectroscopy
   prompt: |
-    The following excerpt is from a M06-2X/cc-pVTZ frequency calculation for the lowest-energy resveratrol conformer. Identify the three vibrational modes with the largest IR intensities and report their harmonic frequencies in cm^-1. The three reported frequencies are compared as an unordered set, so their output order does not matter.
-
-    ```text
-    Frequencies --   1198.1242 1208.1036 1228.7040
-    IR Inten    --     67.2559  279.8915  60.4574
-    Frequencies --   1569.3830 1659.2062 1674.0688
-    IR Inten    --    184.6367  39.9875 258.8216
-    Frequencies --   1685.5562 1694.0655 1734.4131
-    IR Inten    --    271.6760  41.9270   7.1432
-    ```
+    For the expert-validated M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the three vibrational modes with the largest IR intensities in cm^-1. The three reported frequencies are compared as an unordered set, so their output order does not matter.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"},{"property":"frequency_3","value":<number>,"unit":"cm^-1"}]}
@@ -1415,17 +1406,7 @@ tasks:
     final_answer_prefix: 'FINAL ANSWER:'
     value_type: json
     cardinality: one
-  input_objects:
-  - object_id: resveratrol_gaussian_frequency_excerpt
-    type: gaussian_output_excerpt
-    presentation: prompt_inline
-    value: |
-      Frequencies --   1198.1242 1208.1036 1228.7040
-      IR Inten    --     67.2559  279.8915  60.4574
-      Frequencies --   1569.3830 1659.2062 1674.0688
-      IR Inten    --    184.6367  39.9875 258.8216
-      Frequencies --   1685.5562 1694.0655 1734.4131
-      IR Inten    --    271.6760  41.9270   7.1432
+  input_objects: []
   requested_properties:
   - name: frequency_1
     value_type: number
@@ -1962,14 +1943,12 @@ tasks:
   - interaction_energy
   - binding_energy
   prompt: |
-    For the molecular dimer described by the supplied quantum-chemistry results, report two energies in kcal/mol. The counterpoise-corrected interaction energy is the corrected complexation energy shown in the result excerpt. Define the binding energy as (counterpoise-corrected dimer energy - twice the isolated monomer energy), converted from hartree to kcal/mol using 627.509474 kcal/mol per hartree. Preserve the signs.
+    For the dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1, report the expert-validated interaction energy and binding energy in kcal/mol, preserving their signs. The two reported properties are scored independently.
 
+    Molecular reference:
     ```text
-    Counterpoise corrected energy = -1096.945654791773 hartree
-    BSSE energy = 0.003661992035 hartree
-    isolated monomer energy = -548.426489650 hartree
-    complexation energy = -71.34 kcal/mole (raw)
-    complexation energy = -69.04 kcal/mole (corrected)
+    molecule: NC1=CC=C2C=CC(=O)N=C2N1
+    dimer stoichiometry: 2 molecules
     ```
 
     Your final answer must appear on its own line exactly in this format:
@@ -1980,15 +1959,12 @@ tasks:
     value_type: json
     cardinality: one
   input_objects:
-  - object_id: interaction_energy_gaussian_excerpt
-    type: gaussian_output_excerpt
+  - object_id: interaction_energy_dimer_reference
+    type: molecular_dimer_reference
     presentation: prompt_inline
     value: |
-      Counterpoise corrected energy = -1096.945654791773 hartree
-      BSSE energy = 0.003661992035 hartree
-      isolated monomer energy = -548.426489650 hartree
-      complexation energy = -71.34 kcal/mole (raw)
-      complexation energy = -69.04 kcal/mole (corrected)
+      molecule: NC1=CC=C2C=CC(=O)N=C2N1
+      dimer stoichiometry: 2 molecules
   requested_properties:
   - name: interaction_energy
     value_type: number
@@ -2033,17 +2009,11 @@ tasks:
   - orbital_energy
   - homo_lumo_gap
   prompt: |
-    From the following occupied and virtual orbital energies in eV, calculate the HOMO-LUMO gap. Use the highest occupied orbital and the lowest unoccupied orbital, and report the gap in eV.
+    For the molecule O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1, report the expert-validated HOMO-LUMO gap in eV.
 
+    Molecular SMILES:
     ```text
-    highest occupied orbital (HOMO): -7.7593264470 eV
-    lowest unoccupied orbital (LUMO): -0.4955193218 eV
-    ```
-
-    The corresponding frontier-orbital excerpt is:
-    ```text
-    Alpha occupied frontier orbital: -7.7593264470 eV
-    Alpha virtual frontier orbital: -0.4955193218 eV
+    O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1
     ```
 
     Your final answer must appear on its own line exactly in this format:
@@ -2054,12 +2024,11 @@ tasks:
     value_type: json
     cardinality: one
   input_objects:
-  - object_id: homolumo_orbital_excerpt
-    type: gaussian_output_excerpt
+  - object_id: homolumo_molecule
+    type: smiles
     presentation: prompt_inline
     value: |
-      Alpha occupied frontier orbital: -7.7593264470 eV
-      Alpha virtual frontier orbital: -0.4955193218 eV
+      O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1
   requested_properties:
   - name: homo_lumo_gap
     value_type: number
@@ -2096,7 +2065,7 @@ tasks:
   - hydrogen_bonding
   - geometry
   prompt: |
-    The conformer.xyz input is a representative urea-phosphoric-acid 1:1 interaction unit. Using the optimized geometry excerpt below, report (1) the covalent O-H bond length and (2) the H...O contact distance, both in angstrom. In the final optimized geometry, the relevant H atom is atom 12, the covalent O atom is atom 5, and the acceptor O atom is atom 8.
+    The conformer.xyz input is a representative urea-phosphoric-acid 1:1 interaction unit. After the expert-validated geometry optimization, report (1) the covalent O-H bond length and (2) the H...O contact distance, both in angstrom. In the optimized geometry, the relevant H atom is atom 12, the covalent O atom is atom 5, and the acceptor O atom is atom 8.
 
     Original conformer input:
     ```xyz
@@ -2118,13 +2087,6 @@ tasks:
     H       8.962506    6.105231    5.385588
     H       6.135360    4.157085    4.562142
     H       6.963285    5.003362    5.838573
-    ```
-
-    Optimized-geometry excerpt:
-    ```text
-    atom 5 (O):  -0.725031  -1.193251  -0.376053
-    atom 8 (O):   1.740683  -1.069248   0.099147
-    atom 12 (H):  0.280579  -1.139288  -0.163140
     ```
 
     Your final answer must appear on its own line exactly in this format:
@@ -2157,13 +2119,6 @@ tasks:
       H       8.962506    6.105231    5.385588
       H       6.135360    4.157085    4.562142
       H       6.963285    5.003362    5.838573
-  - object_id: urea_phosphoric_acid_optimized_excerpt
-    type: gaussian_output_excerpt
-    presentation: prompt_inline
-    value: |
-      atom 5 (O):  -0.725031  -1.193251  -0.376053
-      atom 8 (O):   1.740683  -1.069248   0.099147
-      atom 12 (H):  0.280579  -1.139288  -0.163140
   requested_properties:
   - name: oh_bond_distance
     value_type: number

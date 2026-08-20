@@ -253,14 +253,23 @@ def test_expert_task_special_contracts_are_frozen() -> None:
     ]
 
     task_19 = tasks["property_calc_019_interaction_binding_energy"]
-    assert "isolated monomer energy = -548.426489650 hartree" in task_19["prompt"]
-    assert "twice the isolated monomer energy" in task_19["prompt"]
+    assert [item["type"] for item in task_19["input_objects"]] == [
+        "molecular_dimer_reference"
+    ]
+    assert "NC1=CC=C2C=CC(=O)N=C2N1" in task_19["prompt"]
 
     task_21 = tasks["property_calc_021_hbond_distances"]
-    assert [item["type"] for item in task_21["input_objects"]] == [
-        "xyz",
-        "gaussian_output_excerpt",
-    ]
+    assert [item["type"] for item in task_21["input_objects"]] == ["xyz"]
+
+    for task_id in (
+        "property_calc_015_ir_top3_frequencies",
+        "property_calc_019_interaction_binding_energy",
+        "property_calc_020_homo_lumo_gap",
+        "property_calc_021_hbond_distances",
+    ):
+        task = tasks[task_id]
+        assert all(item["type"] != "gaussian_output_excerpt" for item in task["input_objects"])
+        assert "gaussian" not in task["prompt"].lower()
 
     task_24 = tasks["property_calc_024_halogen_bond_energy"]
     assert "FI...NH3" in task_24["prompt"]
