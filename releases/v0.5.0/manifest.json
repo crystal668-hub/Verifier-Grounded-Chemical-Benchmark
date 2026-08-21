@@ -1,0 +1,52 @@
+{
+  "artifacts": [
+    {
+      "filename": "verifier_grounded_benchmark-0.5.0-py3-none-any.whl",
+      "sha256": "fb99d63fef0fd45a43ed8a074be93c7963c947ec2e371fe27b84a52fc5bdb98e",
+      "size": 175381
+    },
+    {
+      "filename": "verifier_grounded_benchmark-0.5.0.tar.gz",
+      "sha256": "8b43eb3d8c1eab8343d15e4a6ebf5f088ec77f0ddc804a7ba6e027559d9fe634",
+      "size": 764131
+    }
+  ],
+  "canonical_source": {
+    "commit": "0a9523176efb84e9d37163caf99bf7509789e823",
+    "source_date_epoch": 1787304127,
+    "tree": "6a812f074a35719950e15cf01b7cbf999a4f323a"
+  },
+  "integrations": {
+    "openclaw": {
+      "commit": "dca714c3ab5c89500b80854dac0a4a53b0c85b9a",
+      "datasets": {
+        "verifier_grounded_property_calculation": {
+          "count": 14,
+          "sha256": "e42684f128fec0b8b795a55c1b4234f8df32f6eacde6aaece5d27f0717f2f41a"
+        },
+        "verifier_grounded_rdkit": {
+          "count": 14,
+          "sha256": "5bd66585afedf8fc5a7999c520f82dd4c4899d32639a23f656fd013649d6ce48"
+        },
+        "verifier_grounded_xtb_xyz": {
+          "count": 20,
+          "sha256": "de33af6561312538557951fe4e38eefecfbd4fb14ea223a956d00500acfaeffa"
+        }
+      },
+      "release_config": "benchmarking/resources/verifier_grounded/release.json",
+      "release_config_sha256": "fe85d7fb1ae3b35221e70154cd40ccbdc3d45226e65a4f4d654105059b4e5178"
+    }
+  },
+  "package": "verifier-grounded-benchmark",
+  "result_schema_version": "2",
+  "schema_version": 1,
+  "scoring_profiles": "scoring-profiles.json",
+  "scoring_version": "linear_goal_v2",
+  "tag": "v0.5.0",
+  "task_inventory": "task-inventory.json",
+  "verified_payload": {
+    "file_count": 157,
+    "sha256": "850a5cbe710ab62ed39fee31b23cb3012c479b2c72be1704dfd1ed842b7c2ab0"
+  },
+  "version": "0.5.0"
+}

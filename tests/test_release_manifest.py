@@ -22,6 +22,7 @@ V4_RELEASE_DIR = ROOT / "releases" / "v0.4.0"
 V41_RELEASE_DIR = ROOT / "releases" / "v0.4.1"
 V42_RELEASE_DIR = ROOT / "releases" / "v0.4.2"
 V43_RELEASE_DIR = ROOT / "releases" / "v0.4.3"
+V50_RELEASE_DIR = ROOT / "releases" / "v0.5.0"
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
@@ -377,5 +378,57 @@ def test_v43_release_manifest_binds_recalibrated_artifacts_and_openclaw_runtime(
         "verifier_grounded_xtb_xyz": {
             "count": 20,
             "sha256": "f0c6788049c0921fc4f332f41caae27655079562b12fa9c7ec9713b0b23723fa",
+        },
+    }
+
+
+def test_v50_release_manifest_binds_property_calculation_expansion_and_openclaw_runtime() -> None:
+    manifest = json.loads((V50_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    inventory = json.loads((V50_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8"))
+
+    assert manifest["version"] == inventory["package_version"] == "0.5.0"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert {name: value["count"] for name, value in inventory["tracks"].items()} == {
+        "property_calculation": 14,
+        "rdkit": 14,
+        "xtb": 20,
+    }
+
+    tagged_commit = subprocess.run(
+        ["git", "rev-list", "-n", "1", manifest["tag"]],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert tagged_commit == manifest["canonical_source"]["commit"]
+
+    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
+    wheel_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.5.0-py3-none-any.whl"
+    sdist_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.5.0.tar.gz"
+    for path in (wheel_path, sdist_path):
+        content = path.read_bytes()
+        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
+        assert len(content) == artifacts[path.name]["size"]
+    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+
+    openclaw = manifest["integrations"]["openclaw"]
+    assert openclaw["commit"] == "dca714c3ab5c89500b80854dac0a4a53b0c85b9a"
+    assert openclaw["release_config_sha256"] == (
+        "fe85d7fb1ae3b35221e70154cd40ccbdc3d45226e65a4f4d654105059b4e5178"
+    )
+    assert openclaw["datasets"] == {
+        "verifier_grounded_property_calculation": {
+            "count": 14,
+            "sha256": "e42684f128fec0b8b795a55c1b4234f8df32f6eacde6aaece5d27f0717f2f41a",
+        },
+        "verifier_grounded_rdkit": {
+            "count": 14,
+            "sha256": "5bd66585afedf8fc5a7999c520f82dd4c4899d32639a23f656fd013649d6ce48",
+        },
+        "verifier_grounded_xtb_xyz": {
+            "count": 20,
+            "sha256": "de33af6561312538557951fe4e38eefecfbd4fb14ea223a956d00500acfaeffa",
         },
     }
