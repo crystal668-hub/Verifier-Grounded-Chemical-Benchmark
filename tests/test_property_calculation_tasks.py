@@ -61,18 +61,18 @@ EXPECTED_CIF = {
 EXPECTED_TASK_IDS = {
     "property_calc_free_energy_001",
     "property_calc_crystal_phase_002",
-    "property_calc_014_hbond_count",
-    "property_calc_015_ir_top3_frequencies",
-    "property_calc_016_crystal_density",
-    "property_calc_017_cocrystal_ratio",
-    "property_calc_018_polymorph_free_energy_crossover",
-    "property_calc_019_interaction_binding_energy",
-    "property_calc_020_homo_lumo_gap",
-    "property_calc_021_hbond_distances",
-    "property_calc_022_accessible_pore_volume_ratio",
-    "property_calc_023_carboxyl_hydrogen_distance",
-    "property_calc_024_halogen_bond_energy",
-    "property_calc_025_bay069_pka",
+    "property_calc_003_hbond_count",
+    "property_calc_004_ir_top3_frequencies",
+    "property_calc_005_crystal_density",
+    "property_calc_006_cocrystal_ratio",
+    "property_calc_007_polymorph_free_energy_crossover",
+    "property_calc_008_interaction_binding_energy",
+    "property_calc_009_homo_lumo_gap",
+    "property_calc_010_hbond_distances",
+    "property_calc_011_accessible_pore_volume_ratio",
+    "property_calc_012_carboxyl_hydrogen_distance",
+    "property_calc_013_halogen_bond_energy",
+    "property_calc_014_bay069_pka",
 }
 
 
@@ -247,31 +247,31 @@ def test_task_8_contract_and_gold() -> None:
 def test_expert_task_special_contracts_are_frozen() -> None:
     tasks = load_tasks()
 
-    task_15 = tasks["property_calc_015_ir_top3_frequencies"]
+    task_15 = tasks["property_calc_004_ir_top3_frequencies"]
     assert task_15["scoring"]["comparison_groups"] == [
         {"id": "top_three_frequencies", "mode": "unordered_numeric"}
     ]
 
-    task_19 = tasks["property_calc_019_interaction_binding_energy"]
+    task_19 = tasks["property_calc_008_interaction_binding_energy"]
     assert [item["type"] for item in task_19["input_objects"]] == [
         "molecular_dimer_reference"
     ]
     assert "NC1=CC=C2C=CC(=O)N=C2N1" in task_19["prompt"]
 
-    task_21 = tasks["property_calc_021_hbond_distances"]
+    task_21 = tasks["property_calc_010_hbond_distances"]
     assert [item["type"] for item in task_21["input_objects"]] == ["xyz"]
 
     for task_id in (
-        "property_calc_015_ir_top3_frequencies",
-        "property_calc_019_interaction_binding_energy",
-        "property_calc_020_homo_lumo_gap",
-        "property_calc_021_hbond_distances",
+        "property_calc_004_ir_top3_frequencies",
+        "property_calc_008_interaction_binding_energy",
+        "property_calc_009_homo_lumo_gap",
+        "property_calc_010_hbond_distances",
     ):
         task = tasks[task_id]
         assert all(item["type"] != "gaussian_output_excerpt" for item in task["input_objects"])
         assert "gaussian" not in task["prompt"].lower()
 
-    task_24 = tasks["property_calc_024_halogen_bond_energy"]
+    task_24 = tasks["property_calc_013_halogen_bond_energy"]
     assert "FI...NH3" in task_24["prompt"]
     assert "F-I...NH3" not in task_24["prompt"]
 

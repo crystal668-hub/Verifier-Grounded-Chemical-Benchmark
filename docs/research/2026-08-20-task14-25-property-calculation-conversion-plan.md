@@ -115,7 +115,7 @@ scoring:
 
 ### 14. DEBXIT06 氢键数量
 
-- 暂定 task id：`property_calc_014_hbond_count`
+- 暂定 task id：`property_calc_003_hbond_count`
 - 题型：单个整数数值；建议 property `hydrogen_bond_count`，unit `count`。
 - 拟题面：给出 `DEBXIT06.cif`，要求统计晶体中每个分子与其他分子形成的氢键总数，
   同时计入该分子作为供体和受体的氢键。
@@ -129,7 +129,7 @@ scoring:
 
 ### 15. Resveratrol 频率和 IR 强度前三
 
-- 暂定 task id：`property_calc_015_ir_top3_frequencies`
+- 暂定 task id：`property_calc_004_ir_top3_frequencies`
 - 题型：三个数值字段；建议 `frequency_1`、`frequency_2`、`frequency_3`，unit
   `cm^-1`，同属一个 comparison group。
 - 拟题面：说明 M06-2X/cc-pVTZ 优化与频率计算背景，要求报告 IR intensity 最大的三个
@@ -144,7 +144,7 @@ scoring:
 
 ### 16. 咖啡因一水合物晶体密度
 
-- 暂定 task id：`property_calc_016_crystal_density`
+- 暂定 task id：`property_calc_005_crystal_density`
 - 题型：单个数值；property `crystal_density`，unit `g/cm^3`。
 - 原 gold：`1.44728`。
 - 现状：没有 CIF、晶胞参数、空间群、Z 值或可由题面重建的晶体结构。仅凭
@@ -156,7 +156,7 @@ scoring:
 
 ### 17. Cannabinol–tetramethylpyrazine 共晶比例
 
-- 暂定 task id：`property_calc_017_cocrystal_ratio`
+- 暂定 task id：`property_calc_006_cocrystal_ratio`
 - 题型：单个字符串；property `cocrystal_molar_ratio`，gold `1:1`。
 - 拟题面方向：明确询问最终共晶中的组分摩尔比，不把投料质量比当作答案。
 - 现状：题面只有投料质量、溶剂和来源，没有最终晶体结构、化学分析或文献摘录。
@@ -168,7 +168,7 @@ scoring:
 
 ### 18. Radiprodil FormA/FormC 自由能反转
 
-- 暂定 task id：`property_calc_018_polymorph_free_energy_crossover`
+- 暂定 task id：`property_calc_007_polymorph_free_energy_crossover`
 - 题型：一个离散标签加一个温度数值；建议 properties `lower_free_energy_at_0k`
   （exact string，gold `FormC`）和 `crossover_temperature`（numeric，unit `K`，
   gold `343.15`）。
@@ -182,7 +182,7 @@ scoring:
 
 ### 19. 两分子相互作用能与结合能
 
-- 暂定 task id：`property_calc_019_interaction_binding_energy`
+- 暂定 task id：`property_calc_008_interaction_binding_energy`
 - 题型：两个数值字段 `interaction_energy`、`binding_energy`，unit `kcal/mol`，
   同属一个 comparison group。
 - 拟题面：给出二聚体分子对象，要求报告专家验证的相互作用能与结合能，并保留负号。
@@ -196,7 +196,7 @@ scoring:
 
 ### 20. HOMO-LUMO gap
 
-- 暂定 task id：`property_calc_020_homo_lumo_gap`
+- 暂定 task id：`property_calc_009_homo_lumo_gap`
 - 题型：单个数值；property `homo_lumo_gap`，unit `eV`。
 - 拟题面：给出分子 SMILES，要求报告专家验证的 HOMO-LUMO gap。
 - 输入对象：分子 SMILES；`homolumo.out` 仅作为维护侧证据留存，不进入答题者可见 prompt。
@@ -207,7 +207,7 @@ scoring:
 
 ### 21. 尿素–磷酸氢键距离
 
-- 暂定 task id：`property_calc_021_hbond_distances`
+- 暂定 task id：`property_calc_010_hbond_distances`
 - 题型：两个数值字段，unit `angstrom`，同属一个 comparison group。
 - 拟题面：给出优化后的代表性相互作用单元，要求报告同一个 O-H...O 相互作用中
   covalent O-H 距离和 H...O 接触距离。
@@ -220,7 +220,7 @@ scoring:
 
 ### 22. CIF 孔隙可接近/不可接近体积比
 
-- 暂定 task id：`property_calc_022_accessible_pore_volume_ratio`
+- 暂定 task id：`property_calc_011_accessible_pore_volume_ratio`
 - 题型：单个无量纲数值；property `accessible_to_inaccessible_volume_ratio`，unit
   `ratio`。
 - 拟题面：给出 `NOGCOE.cif`，使用半径 1.2 A 球形探针，报告晶胞内可接近体积与不可
@@ -233,7 +233,7 @@ scoring:
 
 ### 23. 最低能构象羧基氢间距离
 
-- 暂定 task id：`property_calc_023_carboxyl_hydrogen_distance`
+- 暂定 task id：`property_calc_012_carboxyl_hydrogen_distance`
 - 题型：单个数值；property `carboxyl_hydrogen_distance`，unit `angstrom`。
 - 拟题面：给出多构象 XYZ 及每帧能量，先选择能量最低构象，再报告两个羧基氢原子间
   的距离。
@@ -245,7 +245,7 @@ scoring:
 
 ### 24. 卤键相互作用能
 
-- 暂定 task id：`property_calc_024_halogen_bond_energy`
+- 暂定 task id：`property_calc_013_halogen_bond_energy`
 - 题型：单个数值；property `halogen_bond_interaction_energy`，unit `kcal/mol`。
 - 原 gold：`-17.11 kcal/mol`。
 - 现状：题面中的 `FI。。。NH3` 存在字符/化学式歧义，且没有结构、计算输出、理论
@@ -256,7 +256,7 @@ scoring:
 
 ### 25. BAY-069 pKa
 
-- 暂定 task id：`property_calc_025_bay069_pka`
+- 暂定 task id：`property_calc_014_bay069_pka`
 - 题型：单个数值；property `pka`，unit `pKa`，gold `5.7`。
 - 拟题面方向：给出完整 SMILES 和明确的 pKa 定义（酸性/碱性位点、溶剂、温度和报告
   约定），要求报告 pKa。

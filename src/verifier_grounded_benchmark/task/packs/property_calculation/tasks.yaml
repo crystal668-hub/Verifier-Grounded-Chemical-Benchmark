@@ -1107,7 +1107,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_014_hbond_count
+- task_id: property_calc_003_hbond_count
   version: 1
   task_type: property_calculation
   object_type: molecular_crystal
@@ -1386,7 +1386,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_015_ir_top3_frequencies
+- task_id: property_calc_004_ir_top3_frequencies
   version: 1
   task_type: property_calculation
   object_type: molecular_vibration_calculation
@@ -1447,7 +1447,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_016_crystal_density
+- task_id: property_calc_005_crystal_density
   version: 1
   task_type: property_calculation
   object_type: hydrate_crystal
@@ -1493,7 +1493,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_017_cocrystal_ratio
+- task_id: property_calc_006_cocrystal_ratio
   version: 1
   task_type: property_calculation
   object_type: molecular_cocrystal
@@ -1536,7 +1536,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_018_polymorph_free_energy_crossover
+- task_id: property_calc_007_polymorph_free_energy_crossover
   version: 1
   task_type: property_calculation
   object_type: polymorph_pair
@@ -1897,7 +1897,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_019_interaction_binding_energy
+- task_id: property_calc_008_interaction_binding_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_dimer
@@ -1955,7 +1955,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_020_homo_lumo_gap
+- task_id: property_calc_009_homo_lumo_gap
   version: 1
   task_type: property_calculation
   object_type: small_molecule_electronic_structure
@@ -2005,7 +2005,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_021_hbond_distances
+- task_id: property_calc_010_hbond_distances
   version: 1
   task_type: property_calculation
   object_type: optimized_molecular_complex
@@ -2103,7 +2103,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_022_accessible_pore_volume_ratio
+- task_id: property_calc_011_accessible_pore_volume_ratio
   version: 1
   task_type: property_calculation
   object_type: porous_crystal
@@ -2538,7 +2538,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_023_carboxyl_hydrogen_distance
+- task_id: property_calc_012_carboxyl_hydrogen_distance
   version: 1
   task_type: property_calculation
   object_type: conformer_ensemble
@@ -2584,7 +2584,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_024_halogen_bond_energy
+- task_id: property_calc_013_halogen_bond_energy
   version: 1
   task_type: property_calculation
   object_type: halogen_bond_complex
@@ -2629,7 +2629,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_025_bay069_pka
+- task_id: property_calc_014_bay069_pka
   version: 1
   task_type: property_calculation
   object_type: ionizable_small_molecule
