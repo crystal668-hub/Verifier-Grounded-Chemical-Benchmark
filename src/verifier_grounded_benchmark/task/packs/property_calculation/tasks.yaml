@@ -1119,7 +1119,7 @@ tasks:
   - crystal
   - hydrogen_bonding
   prompt: |
-    Using the DEBXIT06 crystal structure below, report the total number of hydrogen bonds formed by one molecule with all other molecules in the crystal. Count hydrogen bonds for which the molecule acts as either donor or acceptor. Use the source-defined hydrogen-bond counting convention and report the integer count.
+    Using the DEBXIT06 crystal structure below, report the total number of hydrogen bonds formed by one molecule with all other molecules in the crystal. Count hydrogen bonds for which the molecule acts as either donor or acceptor and report the integer count.
 
     ```cif
     data_DEBXIT06
@@ -1397,7 +1397,7 @@ tasks:
   - fixed_input
   - infrared_spectroscopy
   prompt: |
-    For the expert-validated M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the three vibrational modes with the largest IR intensities in cm^-1. The three reported frequencies are compared as an unordered set, so their output order does not matter.
+    For the M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the three vibrational modes with the largest IR intensities in cm^-1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"},{"property":"frequency_3","value":<number>,"unit":"cm^-1"}]}
@@ -1459,14 +1459,7 @@ tasks:
   - crystal
   - density
   prompt: |
-    A caffeine monohydrate crystal has a 1:1 caffeine:water composition. Using the expert-validated reference for this crystal form, report its approximate crystal density in g/cm^3. The caffeine molecular SMILES is Cn1cnc2c1c(=O)n(C)c(=O)n2C.
-
-    Reference input:
-    ```text
-    composition: caffeine:water = 1:1
-    caffeine_smiles: Cn1cnc2c1c(=O)n(C)c(=O)n2C
-    source: CCDC caffeine monohydrate data
-    ```
+    A caffeine monohydrate crystal has a 1:1 caffeine:water composition. Report its approximate crystal density in g/cm^3. The caffeine molecular SMILES is Cn1cnc2c1c(=O)n(C)c(=O)n2C.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
@@ -1475,14 +1468,7 @@ tasks:
     final_answer_prefix: 'FINAL ANSWER:'
     value_type: json
     cardinality: one
-  input_objects:
-  - object_id: caffeine_mono_hydrate_reference
-    type: molecular_crystal_reference
-    presentation: prompt_inline
-    value: |
-      composition: caffeine:water = 1:1
-      caffeine_smiles: Cn1cnc2c1c(=O)n(C)c(=O)n2C
-      source: CCDC caffeine monohydrate data
+  input_objects: []
   requested_properties:
   - name: crystal_density
     value_type: number
@@ -1520,16 +1506,6 @@ tasks:
   prompt: |
     Cannabinol (162.1 mg) and tetramethylpyrazine (142.6 mg) were stirred in 750 uL isooctane for 20 h at room temperature and produced a molecular cocrystal. Report the molar ratio of cannabinol to tetramethylpyrazine in the final cocrystal, not the ratio in the starting solution.
 
-    Experimental reference:
-    ```text
-    cannabinol: 162.1 mg
-    tetramethylpyrazine: 142.6 mg
-    isooctane: 750 uL
-    temperature: room temperature
-    time: 20 h
-    source: seventh blind test of crystal structure prediction
-    ```
-
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":"<cannabinol:tetramethylpyrazine ratio>"}
   answer_schema:
@@ -1537,17 +1513,7 @@ tasks:
     final_answer_prefix: 'FINAL ANSWER:'
     value_type: json
     cardinality: one
-  input_objects:
-  - object_id: cannabinol_tetramethylpyrazine_crystallization
-    type: experimental_cocrystal_reference
-    presentation: prompt_inline
-    value: |
-      cannabinol: 162.1 mg
-      tetramethylpyrazine: 142.6 mg
-      isooctane: 750 uL
-      temperature: room temperature
-      time: 20 h
-      source: seventh blind test of crystal structure prediction
+  input_objects: []
   requested_properties:
   - name: cocrystal_molar_ratio
     value_type: string
@@ -1582,7 +1548,7 @@ tasks:
   - crystal
   - polymorph
   prompt: |
-    For the supplied Radiprodil FormA and FormC polymorph structures, report which form has the lower free energy at 0 K and the temperature in K at which the free energies cross. Use the expert-validated free-energy reference associated with these structures.
+    For the supplied Radiprodil FormA and FormC polymorph structures, report which form has the lower free energy at 0 K and the temperature in K at which the free energies cross.
 
     FormA and FormC are provided as CIF structures below.
 
@@ -1943,13 +1909,7 @@ tasks:
   - interaction_energy
   - binding_energy
   prompt: |
-    For the dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1, report the expert-validated interaction energy and binding energy in kcal/mol, preserving their signs. The two reported properties are scored independently.
-
-    Molecular reference:
-    ```text
-    molecule: NC1=CC=C2C=CC(=O)N=C2N1
-    dimer stoichiometry: 2 molecules
-    ```
+    For the dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1, report the interaction energy and binding energy in kcal/mol, preserving their signs.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answers":[{"property":"interaction_energy","value":<number>,"unit":"kcal/mol"},{"property":"binding_energy","value":<number>,"unit":"kcal/mol"}]}
@@ -1962,9 +1922,7 @@ tasks:
   - object_id: interaction_energy_dimer_reference
     type: molecular_dimer_reference
     presentation: prompt_inline
-    value: |
-      molecule: NC1=CC=C2C=CC(=O)N=C2N1
-      dimer stoichiometry: 2 molecules
+    value: dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1
   requested_properties:
   - name: interaction_energy
     value_type: number
@@ -2009,12 +1967,7 @@ tasks:
   - orbital_energy
   - homo_lumo_gap
   prompt: |
-    For the molecule O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1, report the expert-validated HOMO-LUMO gap in eV.
-
-    Molecular SMILES:
-    ```text
-    O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1
-    ```
+    For the molecule O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1, report the HOMO-LUMO gap in eV.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"eV"}
@@ -2027,8 +1980,7 @@ tasks:
   - object_id: homolumo_molecule
     type: smiles
     presentation: prompt_inline
-    value: |
-      O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1
+    value: O=C(Nc1ccc(Cl)c(Cl)c1)C1CC1
   requested_properties:
   - name: homo_lumo_gap
     value_type: number
@@ -2065,7 +2017,7 @@ tasks:
   - hydrogen_bonding
   - geometry
   prompt: |
-    The conformer.xyz input is a representative urea-phosphoric-acid 1:1 interaction unit. After the expert-validated geometry optimization, report (1) the covalent O-H bond length and (2) the H...O contact distance, both in angstrom. In the optimized geometry, the relevant H atom is atom 12, the covalent O atom is atom 5, and the acceptor O atom is atom 8.
+    The conformer.xyz input is a representative urea-phosphoric-acid 1:1 interaction unit. After geometry optimization, report (1) the covalent O-H bond length and (2) the H...O contact distance, both in angstrom.
 
     Original conformer input:
     ```xyz
@@ -2163,7 +2115,7 @@ tasks:
   - crystal
   - pore_volume
   prompt: |
-    Using the supplied NOGCOE crystal structure and a spherical probe radius of 1.2 angstrom, report the ratio of accessible volume to inaccessible volume within the unit cell. Report a dimensionless ratio.
+    Using the supplied NOGCOE crystal structure and a spherical probe radius of 1.2 angstrom, report the ratio of accessible volume to inaccessible volume within the unit cell.
 
     ```cif
     data_NOGCOE
@@ -2598,113 +2550,7 @@ tasks:
   - conformer_search
   - distance
   prompt: |
-    The following three conformers are listed in increasing CREST energy order. Select the lowest-energy conformer and report the distance in angstrom between the two carboxylic-acid hydrogen atoms. The first conformer is the lowest-energy structure.
-
-    ```text
-    first-conformer energy: -49.04209475
-    ```
-
-    First conformer coordinates:
-    ```xyz
-      30
-            -49.04209475
-     O          1.3547137222        1.3323744992       -0.8733751728
-     O          1.2481030694        1.1588627066        1.3478502738
-     O         -1.3548480270        1.3322655934        0.8733910421
-     O         -1.2482506769        1.1588504795       -1.3478462195
-     H          0.2546164243        1.2751045666        1.2346279861
-     H          3.7215374438       -2.4146702312       -0.6436840740
-     H          3.6985956080       -1.7683406260        1.0068465632
-     H          4.9162645577       -0.2760385273       -0.5806464334
-     H          3.4428154028       -0.0971962816       -1.5495312299
-     H          3.8791318394        1.8149875270        0.0339772108
-     H          3.5972867434        0.7102745727        1.3978100382
-     H         -0.2547490106        1.2750125563       -1.2346316041
-     H         -3.6982786227       -1.7685403635       -1.0070197557
-     H         -3.7211774385       -2.4148412372        0.6435304100
-     H         -3.4429581751       -0.0974004040        1.5495424119
-     H         -4.9163468116       -0.2765015351        0.5805536848
-     H         -3.5974335471        0.7101193116       -1.3977799493
-     H         -3.8793483441        1.8146873432       -0.0338650790
-     C          1.8841975575        1.1400067321        0.2065547348
-     C          0.6791341679       -1.7395865480       -0.0033240479
-     C          1.8849769570       -1.6848657572       -0.0031336603
-     C          3.3282446675       -1.6116899741       -0.0119657215
-     C          3.8254150872       -0.2596286114       -0.5397871083
-     C          3.3704719608        0.9009191378        0.3486010714
-     C         -1.8843522505        1.1400219823       -0.2065484788
-     C         -0.6788600977       -1.7396279822        0.0034738096
-     C         -1.8847332142       -1.6845270151        0.0030935122
-     C         -3.3280288398       -1.6117926923        0.0118237401
-     C         -3.8254888829       -0.2598912640        0.5397744740
-     C         -3.3705978931        0.9007089130       -0.3485662218
-      30
-            -49.04188658
-     O          1.2828156377        1.3666503824       -1.0621249396
-     O          1.3602657751        1.1344732855        1.1546466113
-     O         -1.2774537209        1.2772394426        0.8967761484
-     O         -1.3494607156        1.2012777691       -1.3313893512
-     H          0.3587028935        1.2251300311        1.1214208132
-     H          3.6748727464       -1.5026327716       -1.1923133735
-     H          3.7287197416       -2.4891179567        0.2800417471
-     H          3.3752898484       -0.3963192934        1.6488296108
-     H          4.8873756636       -0.3999724128        0.7252411017
-     H          3.7628049751        1.0040259356       -1.0481394979
-     H          3.8351105883        1.7891615708        0.5445287137
-     H         -0.3491851241        1.3091602448       -1.2941143735
-     H         -3.7461676451       -1.6885078042       -1.0023703023
-     H         -3.7105060546       -2.4541628852        0.5962818692
-     H         -3.3464330657       -0.2018054596        1.6476685870
-     H         -4.8779207177       -0.3141296134        0.7623663274
-     H         -3.7012993562        0.8071135174       -1.2199856373
-     H         -3.8590958241        1.8143343919        0.2367080891
-     C          1.9026987124        1.1585307996       -0.0346464440
-     C          0.6698052906       -1.7385325677       -0.1364982057
-     C          1.8744101381       -1.6669408440       -0.1649948150
-     C          3.3165362450       -1.5753175615       -0.1601805513
-     C          3.7991037458       -0.3606247035        0.6436466994
-     C          3.4014651547        0.9606258362       -0.0195575403
-     C         -1.8932380315        1.1382082878       -0.1449596709
-     C         -0.6875836873       -1.7461741188       -0.1006932104
-     C         -1.8927290876       -1.6921257412       -0.0606676068
-     C         -3.3337372268       -1.6104390526        0.0091360503
-     C         -3.7915626188       -0.2960887742        0.6550352217
-     C         -3.3894125203        0.9212276269       -0.1814957680
-      30
-            -49.04182689
-     O          1.1768377859        1.3189473872        1.0996353245
-     O          1.4703367097        1.1758302167       -1.1065051930
-     O         -1.1767410396        1.3191902697       -1.0994968593
-     O         -1.4702194108        1.1751568711        1.1065831630
-     H          0.4705109881        1.2719530620       -1.1678299221
-     H          3.7532890395       -2.4778397449       -0.2763362596
-     H          3.6210783886       -1.6094880449        1.2637068238
-     H          4.9436107856       -0.3567091432       -0.4622222041
-     H          3.5104330018       -0.2956675647       -1.5022317180
-     H          3.8719307802        1.8079402710       -0.2014894275
-     H          3.6427143211        0.9066661537        1.3120055336
-     H         -0.4704153134        1.2715161122        1.1679270891
-     H         -3.6217520075       -1.6101025636       -1.2633646485
-     H         -3.7533221395       -2.4781071917        0.2769357366
-     H         -3.5102138267       -0.2958060253        1.5023433241
-     H         -4.9435657223       -0.3567294304        0.4625314806
-     H         -3.6424395283        0.9061292634       -1.3120708382
-     H         -3.8718258890        1.8076668651        0.2012022112
-     C          1.8936745493        1.1471686211        0.1299632190
-     C          0.6774464960       -1.7409217926        0.0430998080
-     C          1.8796968444       -1.6796837138        0.1319186771
-     C          3.3202293765       -1.5981834876        0.2107782704
-     C          3.8519698686       -0.3281772670       -0.4661774103
-     C          3.3865306432        0.9408679523        0.2520063751
-     C         -1.8935610388        1.1469539119       -0.1298925174
-     C         -0.6776187682       -1.7408632196       -0.0435608341
-     C         -1.8799021474       -1.6800797164       -0.1322447867
-     C         -3.3204622050       -1.5985617323       -0.2105625980
-     C         -3.8519108863       -0.3283920559        0.4663398662
-     C         -3.3863806195        0.9404992979       -0.2520492958
-    ```
-
-    The remaining conformers have higher energies (-49.04188658 and -49.04182689).
+    For the gas-phase lowest-energy conformer of O=C(O)CCCC#CC#CCCCC(=O)O, report the distance in angstrom between the two carboxylic-acid hydrogen atoms.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"angstrom"}
@@ -2713,107 +2559,7 @@ tasks:
     final_answer_prefix: 'FINAL ANSWER:'
     value_type: json
     cardinality: one
-  input_objects:
-  - object_id: crest_conformers
-    type: xyz_multiframe
-    presentation: prompt_inline
-    value: |2
-        30
-              -49.04209475
-       O          1.3547137222        1.3323744992       -0.8733751728
-       O          1.2481030694        1.1588627066        1.3478502738
-       O         -1.3548480270        1.3322655934        0.8733910421
-       O         -1.2482506769        1.1588504795       -1.3478462195
-       H          0.2546164243        1.2751045666        1.2346279861
-       H          3.7215374438       -2.4146702312       -0.6436840740
-       H          3.6985956080       -1.7683406260        1.0068465632
-       H          4.9162645577       -0.2760385273       -0.5806464334
-       H          3.4428154028       -0.0971962816       -1.5495312299
-       H          3.8791318394        1.8149875270        0.0339772108
-       H          3.5972867434        0.7102745727        1.3978100382
-       H         -0.2547490106        1.2750125563       -1.2346316041
-       H         -3.6982786227       -1.7685403635       -1.0070197557
-       H         -3.7211774385       -2.4148412372        0.6435304100
-       H         -3.4429581751       -0.0974004040        1.5495424119
-       H         -4.9163468116       -0.2765015351        0.5805536848
-       H         -3.5974335471        0.7101193116       -1.3977799493
-       H         -3.8793483441        1.8146873432       -0.0338650790
-       C          1.8841975575        1.1400067321        0.2065547348
-       C          0.6791341679       -1.7395865480       -0.0033240479
-       C          1.8849769570       -1.6848657572       -0.0031336603
-       C          3.3282446675       -1.6116899741       -0.0119657215
-       C          3.8254150872       -0.2596286114       -0.5397871083
-       C          3.3704719608        0.9009191378        0.3486010714
-       C         -1.8843522505        1.1400219823       -0.2065484788
-       C         -0.6788600977       -1.7396279822        0.0034738096
-       C         -1.8847332142       -1.6845270151        0.0030935122
-       C         -3.3280288398       -1.6117926923        0.0118237401
-       C         -3.8254888829       -0.2598912640        0.5397744740
-       C         -3.3705978931        0.9007089130       -0.3485662218
-        30
-              -49.04188658
-       O          1.2828156377        1.3666503824       -1.0621249396
-       O          1.3602657751        1.1344732855        1.1546466113
-       O         -1.2774537209        1.2772394426        0.8967761484
-       O         -1.3494607156        1.2012777691       -1.3313893512
-       H          0.3587028935        1.2251300311        1.1214208132
-       H          3.6748727464       -1.5026327716       -1.1923133735
-       H          3.7287197416       -2.4891179567        0.2800417471
-       H          3.3752898484       -0.3963192934        1.6488296108
-       H          4.8873756636       -0.3999724128        0.7252411017
-       H          3.7628049751        1.0040259356       -1.0481394979
-       H          3.8351105883        1.7891615708        0.5445287137
-       H         -0.3491851241        1.3091602448       -1.2941143735
-       H         -3.7461676451       -1.6885078042       -1.0023703023
-       H         -3.7105060546       -2.4541628852        0.5962818692
-       H         -3.3464330657       -0.2018054596        1.6476685870
-       H         -4.8779207177       -0.3141296134        0.7623663274
-       H         -3.7012993562        0.8071135174       -1.2199856373
-       H         -3.8590958241        1.8143343919        0.2367080891
-       C          1.9026987124        1.1585307996       -0.0346464440
-       C          0.6698052906       -1.7385325677       -0.1364982057
-       C          1.8744101381       -1.6669408440       -0.1649948150
-       C          3.3165362450       -1.5753175615       -0.1601805513
-       C          3.7991037458       -0.3606247035        0.6436466994
-       C          3.4014651547        0.9606258362       -0.0195575403
-       C         -1.8932380315        1.1382082878       -0.1449596709
-       C         -0.6875836873       -1.7461741188       -0.1006932104
-       C         -1.8927290876       -1.6921257412       -0.0606676068
-       C         -3.3337372268       -1.6104390526        0.0091360503
-       C         -3.7915626188       -0.2960887742        0.6550352217
-       C         -3.3894125203        0.9212276269       -0.1814957680
-        30
-              -49.04182689
-       O          1.1768377859        1.3189473872        1.0996353245
-       O          1.4703367097        1.1758302167       -1.1065051930
-       O         -1.1767410396        1.3191902697       -1.0994968593
-       O         -1.4702194108        1.1751568711        1.1065831630
-       H          0.4705109881        1.2719530620       -1.1678299221
-       H          3.7532890395       -2.4778397449       -0.2763362596
-       H          3.6210783886       -1.6094880449        1.2637068238
-       H          4.9436107856       -0.3567091432       -0.4622222041
-       H          3.5104330018       -0.2956675647       -1.5022317180
-       H          3.8719307802        1.8079402710       -0.2014894275
-       H          3.6427143211        0.9066661537        1.3120055336
-       H         -0.4704153134        1.2715161122        1.1679270891
-       H         -3.6217520075       -1.6101025636       -1.2633646485
-       H         -3.7533221395       -2.4781071917        0.2769357366
-       H         -3.5102138267       -0.2958060253        1.5023433241
-       H         -4.9435657223       -0.3567294304        0.4625314806
-       H         -3.6424395283        0.9061292634       -1.3120708382
-       H         -3.8718258890        1.8076668651        0.2012022112
-       C          1.8936745493        1.1471686211        0.1299632190
-       C          0.6774464960       -1.7409217926        0.0430998080
-       C          1.8796968444       -1.6796837138        0.1319186771
-       C          3.3202293765       -1.5981834876        0.2107782704
-       C          3.8519698686       -0.3281772670       -0.4661774103
-       C          3.3865306432        0.9408679523        0.2520063751
-       C         -1.8935610388        1.1469539119       -0.1298925174
-       C         -0.6776187682       -1.7408632196       -0.0435608341
-       C         -1.8799021474       -1.6800797164       -0.1322447867
-       C         -3.3204622050       -1.5985617323       -0.2105625980
-       C         -3.8519108863       -0.3283920559        0.4663398662
-       C         -3.3863806195        0.9404992979       -0.2520492958
+  input_objects: []
   requested_properties:
   - name: carboxyl_hydrogen_distance
     value_type: number
@@ -2849,15 +2595,7 @@ tasks:
   - fixed_input
   - halogen_bonding
   prompt: |
-    For the expert-defined FI...NH3 halogen-bond complex, report the interaction energy in kcal/mol. Use the expert reference value for this complex and preserve its sign.
-
-    Reference input:
-    ```text
-    halogen-bond complex: FI...NH3
-    property: interaction energy
-    unit: kcal/mol
-    source: Modeling Halogen Bonding with Planewave Density Functional Theory
-    ```
+    For the FI...NH3 halogen-bond complex, where the iodine atom of FI interacts with NH3, report the interaction energy in kcal/mol and preserve its sign.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
@@ -2866,15 +2604,7 @@ tasks:
     final_answer_prefix: 'FINAL ANSWER:'
     value_type: json
     cardinality: one
-  input_objects:
-  - object_id: fi_nh3_halogen_bond_reference
-    type: molecular_complex_reference
-    presentation: prompt_inline
-    value: |
-      halogen-bond complex: FI...NH3
-      property: interaction energy
-      unit: kcal/mol
-      source: Modeling Halogen Bonding with Planewave Density Functional Theory
+  input_objects: []
   requested_properties:
   - name: halogen_bond_interaction_energy
     value_type: number
@@ -2910,7 +2640,7 @@ tasks:
   - fixed_input
   - pka
   prompt: |
-    For the following BAY-069 molecule, report the expert-validated pKa value in the convention used by the cited medicinal-chemistry reference.
+    For the following BAY-069 molecule, report its pKa value.
 
     ```text
     COc1cc(Cl)c(Oc2ccccc2C)cc1-n1c(=O)cc(C(F)(F)F)[nH]c1=O
