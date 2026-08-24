@@ -10,11 +10,11 @@
 
 | task_id | 输入 | 输出 |
 |---|---|---|
-| `property_calc_015_formaldehyde_socme` | formaldehyde SMILES 与固定气相 TD-DFT 协议 | T1-S0 SOCME，`eV` |
-| `property_calc_016_anthracene_isc_rate` | anthracene SMILES、77 K 与固定气相协议 | S1 总 ISC 速率，`s^-1` |
+| `property_calc_015_formaldehyde_socme` | formaldehyde SMILES 与气相条件 | T1-S0 SOCME，`eV` |
+| `property_calc_016_anthracene_isc_rate` | anthracene SMILES、77 K 与气相条件 | S1 ISC 速率，`s^-1` |
 | `property_calc_017_biacetyl_phosphorescence_rate` | biacetyl SMILES、乙醇隐式溶剂与 298 K | 磷光速率，`s^-1` |
-| `property_calc_018_anthracene_ht_contribution` | anthracene SMILES、77 K 与固定气相协议 | HT 项占比，`percent` |
-| `property_calc_019_acetophenone_isc_rate` | acetophenone SMILES、77 K 与固定气相协议 | S1-to-T1 ISC 速率，`s^-1` |
+| `property_calc_018_anthracene_ht_contribution` | anthracene SMILES、77 K 与气相条件 | HT 项占比，`percent` |
+| `property_calc_019_acetophenone_isc_rate` | acetophenone SMILES、77 K 与气相条件 | S1-to-T1 ISC 速率，`s^-1` |
 | `property_calc_020_azulene_internal_conversion_rate` | azulene SMILES、甲醇隐式溶剂与 298.15 K | S1-to-S0 IC 速率，`s^-1` |
 
 `property_calc_free_energy_001` 至 `property_calc_014_bay069_pka` 保持既有定义。所有

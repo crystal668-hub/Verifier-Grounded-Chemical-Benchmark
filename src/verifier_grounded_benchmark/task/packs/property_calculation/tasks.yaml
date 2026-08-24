@@ -2772,7 +2772,7 @@ tasks:
   - photophysics
   - spin_orbit_coupling
   prompt: |
-    For gas-phase formaldehyde (C=O), report the magnitude of the T1-S0 spin-orbit coupling matrix element in eV. Use a B3LYP/def2-SVP spin-orbit-coupled TD-DFT calculation with five excited roots and no solvent model.
+    For gas-phase formaldehyde (C=O), report the magnitude of the T1-S0 spin-orbit coupling matrix element in eV.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"eV"}
@@ -2822,7 +2822,7 @@ tasks:
   - photophysics
   - intersystem_crossing
   prompt: |
-    Assuming Kasha's rule, report the total S1 intersystem-crossing rate constant for gas-phase anthracene (c1ccc2cc3ccccc3cc2c1) at 77 K in s^-1. Use the B3LYP/def2-TZVP(-F) full TD-DFT protocol with Herzberg-Teller vibronic coupling and the J-correlation treatment enabled, and an energy-gap input of 11548 cm^-1. Include both S1-to-T1 and S1-to-T2 transitions and sum all three triplet spin-sublevel contributions for each transition.
+    Assuming Kasha's rule, report the S1 intersystem-crossing rate constant for gas-phase anthracene (c1ccc2cc3ccccc3cc2c1) at 77 K in s^-1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
@@ -2872,7 +2872,7 @@ tasks:
   - photophysics
   - phosphorescence
   prompt: |
-    For biacetyl (CC(=O)C(C)=O) in ethanol represented by a CPCM implicit-solvent model at 298 K, report the phosphorescence rate constant in s^-1. Use the B3LYP/def2-TZVP(-F) full TD-DFT protocol with the RI-SOMF(1X) spin-orbit treatment, Herzberg-Teller vibronic coupling, and an adiabatic energy difference of 17260 cm^-1.
+    For biacetyl (CC(=O)C(C)=O) in ethanol represented by a CPCM implicit-solvent model at 298 K, report the phosphorescence rate constant in s^-1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
@@ -2923,7 +2923,7 @@ tasks:
   - intersystem_crossing
   - herzberg_teller
   prompt: |
-    For gas-phase anthracene (c1ccc2cc3ccccc3cc2c1), consider the S1-to-T1 intersystem-crossing calculation at 77 K using B3LYP/def2-TZVP(-f) full TD-DFT, with Herzberg-Teller vibronic coupling and the J-correlation treatment enabled and an adiabatic energy difference of 12341.9 cm^-1. After summing the three T1 spin-sublevel contributions, report the percentage of the calculated rate assigned to the Herzberg-Teller term on a 0-to-100 scale.
+    For gas-phase anthracene (c1ccc2cc3ccccc3cc2c1) at 77 K, report the percentage contribution of the Herzberg-Teller term to the S1-to-T1 intersystem-crossing rate.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"percent"}
@@ -2974,7 +2974,7 @@ tasks:
   - intersystem_crossing
   - herzberg_teller
   prompt: |
-    For gas-phase acetophenone (CC(=O)c1ccccc1), report the total S1-to-T1 intersystem-crossing rate constant at 77 K in s^-1, including the Herzberg-Teller effect. Use PBE0/TZVP full TD-DFT with the J-correlation treatment enabled and an adiabatic energy difference of 4863.1 cm^-1. Sum the rate constants for the -1, 0, and +1 T1 spin sublevels.
+    For gas-phase acetophenone (CC(=O)c1ccccc1) at 77 K, report the S1-to-T1 intersystem-crossing rate constant in s^-1, including the Herzberg-Teller effect.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
@@ -3024,7 +3024,7 @@ tasks:
   - photophysics
   - internal_conversion
   prompt: |
-    For azulene (C1=CC2=CC=CC=CC2=C1) in methanol represented by a CPCM implicit-solvent model at 298.15 K, report the S1-to-S0 internal-conversion rate constant in s^-1. Use the B3LYP-D3/def2-SVP full TD-DFT protocol with nonadiabatic coupling matrix elements, electron-translation-factor corrections, and the J-correlation treatment enabled, and an adiabatic energy difference of 16699.89 cm^-1.
+    For azulene (C1=CC2=CC=CC=CC2=C1) in methanol represented by a CPCM implicit-solvent model at 298.15 K, report the S1-to-S0 internal-conversion rate constant in s^-1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}

@@ -358,10 +358,24 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
         assert profile["upper_tolerance"] == tolerance
         assert profile["provenance"]["review_status"] == "approved"
 
-    acetophenone = pack.tasks_by_id["property_calc_019_acetophenone_isc_rate"]
-    assert "-1, 0, and +1 T1 spin sublevels" in acetophenone["prompt"]
-    anthracene_ht = pack.tasks_by_id["property_calc_018_anthracene_ht_contribution"]
-    assert "0-to-100 scale" in anthracene_ht["prompt"]
+    source_protocol_fragments = (
+        "B3LYP",
+        "PBE0",
+        "TD-DFT",
+        "def2-",
+        "TZVP",
+        "RI-SOMF",
+        "J-correlation",
+        "energy-gap input",
+        "energy difference",
+        "excited roots",
+        "spin-sublevel",
+        "nonadiabatic coupling matrix elements",
+        "electron-translation-factor",
+    )
+    for task_id in expected:
+        prompt = pack.tasks_by_id[task_id]["prompt"].lower()
+        assert all(fragment.lower() not in prompt for fragment in source_protocol_fragments)
 
 
 def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:
