@@ -18,7 +18,7 @@ def _load(pack: str):
     )
 
 
-def test_formal_packs_cover_exactly_48_unique_tasks() -> None:
+def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
     packs = [
         _load("rdkit"),
         _load("xtb"),
@@ -26,8 +26,8 @@ def test_formal_packs_cover_exactly_48_unique_tasks() -> None:
     ]
     task_ids = [task.task_id for pack in packs for task in pack.tasks]
 
-    assert len(task_ids) == 48
-    assert len(set(task_ids)) == 48
+    assert len(task_ids) == 54
+    assert len(set(task_ids)) == 54
     assert all(pack.schema_version == 2 for pack in packs)
     assert all(pack.scoring_version == "linear_goal_v2" for pack in packs)
 

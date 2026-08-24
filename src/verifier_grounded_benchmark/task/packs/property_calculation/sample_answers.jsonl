@@ -12,3 +12,9 @@
 {"task_id":"property_calc_012_carboxyl_hydrogen_distance","answer":2.521,"unit":"angstrom"}
 {"task_id":"property_calc_013_halogen_bond_energy","answer":-17.11,"unit":"kcal/mol"}
 {"task_id":"property_calc_014_bay069_pka","answer":5.7,"unit":"pKa"}
+{"task_id":"property_calc_015_formaldehyde_socme","answer":0.00734,"unit":"eV"}
+{"task_id":"property_calc_016_anthracene_isc_rate","answer":117000000.0,"unit":"s^-1"}
+{"task_id":"property_calc_017_biacetyl_phosphorescence_rate","answer":98.0,"unit":"s^-1"}
+{"task_id":"property_calc_018_anthracene_ht_contribution","answer":100.0,"unit":"percent"}
+{"task_id":"property_calc_019_acetophenone_isc_rate","answer":28400000000.0,"unit":"s^-1"}
+{"task_id":"property_calc_020_azulene_internal_conversion_rate","answer":382000000.0,"unit":"s^-1"}

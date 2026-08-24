@@ -269,6 +269,84 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
+  property_calculation_socme_numeric_gold_v2:
+    property: spin_orbit_coupling_matrix_element
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 0.0001
+    upper_tolerance: 0.0001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
+  property_calculation_anthracene_isc_rate_numeric_gold_v2:
+    property: intersystem_crossing_rate
+    type: numeric_gold
+    unit: s^-1
+    lower_tolerance: 10000000.0
+    upper_tolerance: 10000000.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
+  property_calculation_phosphorescence_rate_numeric_gold_v2:
+    property: phosphorescence_rate
+    type: numeric_gold
+    unit: s^-1
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
+  property_calculation_ht_contribution_numeric_gold_v2:
+    property: herzberg_teller_contribution
+    type: numeric_gold
+    unit: percent
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
+  property_calculation_acetophenone_isc_rate_numeric_gold_v2:
+    property: intersystem_crossing_rate
+    type: numeric_gold
+    unit: s^-1
+    lower_tolerance: 100000000.0
+    upper_tolerance: 100000000.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
+  property_calculation_internal_conversion_rate_numeric_gold_v2:
+    property: internal_conversion_rate
+    type: numeric_gold
+    unit: s^-1
+    lower_tolerance: 10000000.0
+    upper_tolerance: 10000000.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-24'
+      review_owner: benchmark_maintainers
 tasks:
 - task_id: property_calc_free_energy_001
   version: 1
@@ -2675,6 +2753,308 @@ tasks:
     aggregation: arithmetic_mean
     comparison_groups:
     - id: pka
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_015_formaldehyde_socme
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_calculation
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - spin_orbit_coupling
+  prompt: |
+    For gas-phase formaldehyde (C=O), report the magnitude of the T1-S0 spin-orbit coupling matrix element in eV. Use a B3LYP/def2-SVP spin-orbit-coupled TD-DFT calculation with five excited roots and no solvent model.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: formaldehyde_socme_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C=O
+  requested_properties:
+  - name: spin_orbit_coupling_matrix_element
+    value_type: number
+    unit: eV
+    comparison_group: spin_orbit_coupling_matrix_element
+  gold_answers:
+  - property: spin_orbit_coupling_matrix_element
+    value: 0.00734
+    unit: eV
+    scoring_profile: property_calculation_socme_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1_SOC_tutorial_formaldehyde
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: spin_orbit_coupling_matrix_element
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_016_anthracene_isc_rate
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_rate
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - intersystem_crossing
+  prompt: |
+    Assuming Kasha's rule, report the total S1 intersystem-crossing rate constant for gas-phase anthracene (c1ccc2cc3ccccc3cc2c1) at 77 K in s^-1. Use the B3LYP/def2-TZVP(-F) full TD-DFT protocol with Herzberg-Teller vibronic coupling and the J-correlation treatment enabled, and an energy-gap input of 11548 cm^-1. Include both S1-to-T1 and S1-to-T2 transitions and sum all three triplet spin-sublevel contributions for each transition.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: anthracene_total_isc_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc2cc3ccccc3cc2c1
+  requested_properties:
+  - name: intersystem_crossing_rate
+    value_type: number
+    unit: s^-1
+    comparison_group: intersystem_crossing_rate
+  gold_answers:
+  - property: intersystem_crossing_rate
+    value: 117000000.0
+    unit: s^-1
+    scoring_profile: property_calculation_anthracene_isc_rate_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1.1_manual_section_5.5.4.2
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: intersystem_crossing_rate
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_017_biacetyl_phosphorescence_rate
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_rate
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - phosphorescence
+  prompt: |
+    For biacetyl (CC(=O)C(C)=O) in ethanol represented by a CPCM implicit-solvent model at 298 K, report the phosphorescence rate constant in s^-1. Use the B3LYP/def2-TZVP(-F) full TD-DFT protocol with the RI-SOMF(1X) spin-orbit treatment, Herzberg-Teller vibronic coupling, and an adiabatic energy difference of 17260 cm^-1.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: biacetyl_phosphorescence_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC(=O)C(C)=O
+  requested_properties:
+  - name: phosphorescence_rate
+    value_type: number
+    unit: s^-1
+    comparison_group: phosphorescence_rate
+  gold_answers:
+  - property: phosphorescence_rate
+    value: 98.0
+    unit: s^-1
+    scoring_profile: property_calculation_phosphorescence_rate_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1.1_manual_section_5.5.3.2
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: phosphorescence_rate
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_018_anthracene_ht_contribution
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_rate
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - intersystem_crossing
+  - herzberg_teller
+  prompt: |
+    For gas-phase anthracene (c1ccc2cc3ccccc3cc2c1), consider the S1-to-T1 intersystem-crossing calculation at 77 K using B3LYP/def2-TZVP(-f) full TD-DFT, with Herzberg-Teller vibronic coupling and the J-correlation treatment enabled and an adiabatic energy difference of 12341.9 cm^-1. After summing the three T1 spin-sublevel contributions, report the percentage of the calculated rate assigned to the Herzberg-Teller term on a 0-to-100 scale.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"percent"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: anthracene_ht_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc2cc3ccccc3cc2c1
+  requested_properties:
+  - name: herzberg_teller_contribution
+    value_type: number
+    unit: percent
+    comparison_group: herzberg_teller_contribution
+  gold_answers:
+  - property: herzberg_teller_contribution
+    value: 100.0
+    unit: percent
+    scoring_profile: property_calculation_ht_contribution_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1.0_ESD_anthracene_expert_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: herzberg_teller_contribution
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_019_acetophenone_isc_rate
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_rate
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - intersystem_crossing
+  - herzberg_teller
+  prompt: |
+    For gas-phase acetophenone (CC(=O)c1ccccc1), report the total S1-to-T1 intersystem-crossing rate constant at 77 K in s^-1, including the Herzberg-Teller effect. Use PBE0/TZVP full TD-DFT with the J-correlation treatment enabled and an adiabatic energy difference of 4863.1 cm^-1. Sum the rate constants for the -1, 0, and +1 T1 spin sublevels.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetophenone_isc_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC(=O)c1ccccc1
+  requested_properties:
+  - name: intersystem_crossing_rate
+    value_type: number
+    unit: s^-1
+    comparison_group: intersystem_crossing_rate
+  gold_answers:
+  - property: intersystem_crossing_rate
+    value: 28400000000.0
+    unit: s^-1
+    scoring_profile: property_calculation_acetophenone_isc_rate_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1.0_ESD_acetophenone_expert_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: intersystem_crossing_rate
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_020_azulene_internal_conversion_rate
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_rate
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - photophysics
+  - internal_conversion
+  prompt: |
+    For azulene (C1=CC2=CC=CC=CC2=C1) in methanol represented by a CPCM implicit-solvent model at 298.15 K, report the S1-to-S0 internal-conversion rate constant in s^-1. Use the B3LYP-D3/def2-SVP full TD-DFT protocol with nonadiabatic coupling matrix elements, electron-translation-factor corrections, and the J-correlation treatment enabled, and an adiabatic energy difference of 16699.89 cm^-1.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"s^-1"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: azulene_internal_conversion_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C1=CC2=CC=CC=CC2=C1
+  requested_properties:
+  - name: internal_conversion_rate
+    value_type: number
+    unit: s^-1
+    comparison_group: internal_conversion_rate
+  gold_answers:
+  - property: internal_conversion_rate
+    value: 382000000.0
+    unit: s^-1
+    scoring_profile: property_calculation_internal_conversion_rate_numeric_gold_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: ORCA_6.1.1_manual_section_5.5.5
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: internal_conversion_rate
       mode: all
     version: linear_goal_v2
   failure_policy:

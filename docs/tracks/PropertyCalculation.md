@@ -1,19 +1,24 @@
 # Property Calculation Track
 
-更新日期：2026-07-13
+更新日期：2026-08-24
 
 ## 1. 定位
 
 `property_calculation` 是独立于 open-generation 的正式 track。题面给出完整化学或材料结构，模型报告计算结果；评分器只比较最终答案与公开 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。
 
-当前正式题目：
+当前正式题目共 20 道。新增的激发态动力学题目如下：
 
 | task_id | 输入 | 输出 |
 |---|---|---|
-| `property_calc_free_energy_001` | 两个完整内嵌 CIF | 300 K 自由能绝对差，`kJ/mol` |
-| `property_calc_crystal_phase_002` | alpha/beta 两个完整内嵌 CIF | 势能绝对差、常压相和高压相 |
+| `property_calc_015_formaldehyde_socme` | formaldehyde SMILES 与固定气相 TD-DFT 协议 | T1-S0 SOCME，`eV` |
+| `property_calc_016_anthracene_isc_rate` | anthracene SMILES、77 K 与固定气相协议 | S1 总 ISC 速率，`s^-1` |
+| `property_calc_017_biacetyl_phosphorescence_rate` | biacetyl SMILES、乙醇隐式溶剂与 298 K | 磷光速率，`s^-1` |
+| `property_calc_018_anthracene_ht_contribution` | anthracene SMILES、77 K 与固定气相协议 | HT 项占比，`percent` |
+| `property_calc_019_acetophenone_isc_rate` | acetophenone SMILES、77 K 与固定气相协议 | S1-to-T1 ISC 速率，`s^-1` |
+| `property_calc_020_azulene_internal_conversion_rate` | azulene SMILES、甲醇隐式溶剂与 298.15 K | S1-to-S0 IC 速率，`s^-1` |
 
-所有模型输入都在英文 `prompt` 中。运行时不读取附件、文件路径或外部结构数据库。
+`property_calc_free_energy_001` 至 `property_calc_014_bay069_pka` 保持既有定义。所有
+模型输入均在英文 `prompt` 中，运行时不读取附件、文件路径或外部结构数据库。
 
 ## 2. Task Schema
 

@@ -73,6 +73,12 @@ EXPECTED_TASK_IDS = {
     "property_calc_012_carboxyl_hydrogen_distance",
     "property_calc_013_halogen_bond_energy",
     "property_calc_014_bay069_pka",
+    "property_calc_015_formaldehyde_socme",
+    "property_calc_016_anthracene_isc_rate",
+    "property_calc_017_biacetyl_phosphorescence_rate",
+    "property_calc_018_anthracene_ht_contribution",
+    "property_calc_019_acetophenone_isc_rate",
+    "property_calc_020_azulene_internal_conversion_rate",
 }
 
 
@@ -274,6 +280,88 @@ def test_expert_task_special_contracts_are_frozen() -> None:
     task_24 = tasks["property_calc_013_halogen_bond_energy"]
     assert "FI...NH3" in task_24["prompt"]
     assert "F-I...NH3" not in task_24["prompt"]
+
+
+def test_excited_state_expert_task_contracts_are_frozen() -> None:
+    pack = load_pack()
+    expected = {
+        "property_calc_015_formaldehyde_socme": (
+            "spin_orbit_coupling_matrix_element",
+            0.00734,
+            "eV",
+            "property_calculation_socme_numeric_gold_v2",
+            0.0001,
+        ),
+        "property_calc_016_anthracene_isc_rate": (
+            "intersystem_crossing_rate",
+            117000000.0,
+            "s^-1",
+            "property_calculation_anthracene_isc_rate_numeric_gold_v2",
+            10000000.0,
+        ),
+        "property_calc_017_biacetyl_phosphorescence_rate": (
+            "phosphorescence_rate",
+            98.0,
+            "s^-1",
+            "property_calculation_phosphorescence_rate_numeric_gold_v2",
+            1.0,
+        ),
+        "property_calc_018_anthracene_ht_contribution": (
+            "herzberg_teller_contribution",
+            100.0,
+            "percent",
+            "property_calculation_ht_contribution_numeric_gold_v2",
+            1.0,
+        ),
+        "property_calc_019_acetophenone_isc_rate": (
+            "intersystem_crossing_rate",
+            28400000000.0,
+            "s^-1",
+            "property_calculation_acetophenone_isc_rate_numeric_gold_v2",
+            100000000.0,
+        ),
+        "property_calc_020_azulene_internal_conversion_rate": (
+            "internal_conversion_rate",
+            382000000.0,
+            "s^-1",
+            "property_calculation_internal_conversion_rate_numeric_gold_v2",
+            10000000.0,
+        ),
+    }
+
+    for task_id, (property_name, value, unit, profile_id, tolerance) in expected.items():
+        task = pack.tasks_by_id[task_id]
+        assert task["requested_properties"] == [
+            {
+                "name": property_name,
+                "value_type": "number",
+                "unit": unit,
+                "comparison_group": property_name,
+            }
+        ]
+        assert task["gold_answers"] == [
+            {
+                "property": property_name,
+                "value": value,
+                "unit": unit,
+                "scoring_profile": profile_id,
+            }
+        ]
+        assert task["scoring"]["comparison_groups"] == [
+            {"id": property_name, "mode": "all"}
+        ]
+        assert [item["type"] for item in task["input_objects"]] == ["smiles"]
+        assert all(suffix not in task["prompt"] for suffix in (".out", ".inp", ".hess"))
+        assert "ORCA" not in task["prompt"]
+        profile = pack.scoring_profiles[profile_id]
+        assert profile["lower_tolerance"] == tolerance
+        assert profile["upper_tolerance"] == tolerance
+        assert profile["provenance"]["review_status"] == "approved"
+
+    acetophenone = pack.tasks_by_id["property_calc_019_acetophenone_isc_rate"]
+    assert "-1, 0, and +1 T1 spin sublevels" in acetophenone["prompt"]
+    anthracene_ht = pack.tasks_by_id["property_calc_018_anthracene_ht_contribution"]
+    assert "0-to-100 scale" in anthracene_ht["prompt"]
 
 
 def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:

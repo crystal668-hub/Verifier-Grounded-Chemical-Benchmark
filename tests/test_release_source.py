@@ -63,6 +63,12 @@ EXPECTED_TASK_IDS = {
         "property_calc_012_carboxyl_hydrogen_distance",
         "property_calc_013_halogen_bond_energy",
         "property_calc_014_bay069_pka",
+        "property_calc_015_formaldehyde_socme",
+        "property_calc_016_anthracene_isc_rate",
+        "property_calc_017_biacetyl_phosphorescence_rate",
+        "property_calc_018_anthracene_ht_contribution",
+        "property_calc_019_acetophenone_isc_rate",
+        "property_calc_020_azulene_internal_conversion_rate",
     ],
 }
 
