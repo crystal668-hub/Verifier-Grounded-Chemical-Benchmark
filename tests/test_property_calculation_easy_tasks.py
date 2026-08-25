@@ -3,6 +3,9 @@ from __future__ import annotations
 import json
 import re
 
+import pytest
+
+import verifier_grounded_benchmark as vgb
 from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.resources import package_resource
 
@@ -83,6 +86,37 @@ ORIGINAL_PROPERTY_TASK_IDS = [
     "property_calc_020_azulene_internal_conversion_rate",
 ]
 
+REFERENCE_PROFILE_TOLERANCES = {
+    1: (-1.1, -0.7, 0.29, 0.13),
+    2: (-5.6, -4.4, 0.19, 1.03),
+    3: (-2.19, -0.99, 0.09, 1.13),
+    4: (-3.05, -1.85, 1.08, 0.14),
+    5: (-1.15, -1.15, 0.01, 0.1),
+    6: (0.24, 0.24, 0.01, 0.04),
+    7: (0.81, 0.81, 0.03, 0.01),
+    8: (0.92, 0.92, 0.01, 0.11),
+    9: (1.23, 1.23, 0.01, 0.13),
+    10: (-5.02, -5.02, 0.06, 0.01),
+    11: (-3.17, -3.17, 0.33, 0.01),
+    12: (-2.77, -2.71, 0.3, 0.01),
+    13: (-16.37, -16.37, 0.25, 0.01),
+    14: (-5.12, -5.12, 0.24, 0.01),
+    15: (-1.53, -1.53, 0.21, 0.01),
+    20: (1.9, 1.9, 0.01, 0.03),
+    21: (3.92, 3.92, 0.01, 0.08),
+    25: (-26.15, -26.15, 0.21, 0.01),
+    28: (1.32, 1.32, 0.014, 0.001),
+    29: (1.654, 1.654, 0.066, 0.01),
+    30: (1.763, 1.763, 0.069, 0.001),
+    37: (64.34, 64.34, 0.34, 0.01),
+    38: (58.19, 58.19, 0.01, 0.32),
+    39: (73.2, 73.2, 0.69, 0.01),
+    40: (44.52, 44.52, 0.1, 0.22),
+    41: (45.97, 45.97, 0.01, 0.06),
+    42: (51.07, 51.07, 0.12, 0.01),
+    43: (-15.3, -15.3, 0.01, 0.75),
+}
+
 
 def load_pack(name: str = "property_calculation_easy"):
     return load_task_pack(
@@ -142,16 +176,13 @@ def test_easy_pack_gold_and_sample_answers_are_frozen() -> None:
         assert sample.get("unit") == expected_unit
 
 
-def test_easy_profiles_follow_reported_precision() -> None:
+def test_easy_profiles_without_references_keep_reported_precision() -> None:
     profiles = load_pack().scoring_profiles
 
     expected_tolerances = {
         "property_calculation_easy_wiberg_bond_order_numeric_gold_v2": 0.0001,
-        "property_calculation_easy_batch2_crystal_density_3dp_numeric_gold_v2": 0.001,
-        "property_calculation_easy_batch2_crystal_density_2dp_numeric_gold_v2": 0.01,
         "property_calculation_easy_fukui_function_numeric_gold_v2": 0.001,
         "property_calculation_easy_fukui_function_2dp_numeric_gold_v2": 0.01,
-        "property_calculation_easy_standard_entropy_1dp_numeric_gold_v2": 0.1,
         "property_calculation_easy_vdw_surface_area_numeric_gold_v2": 0.1,
     }
     for profile_id, tolerance in expected_tolerances.items():
@@ -159,6 +190,65 @@ def test_easy_profiles_follow_reported_precision() -> None:
         assert profile["lower_tolerance"] == tolerance
         assert profile["upper_tolerance"] == tolerance
         assert profile["provenance"]["review_status"] == "approved"
+
+
+def test_easy_reference_profiles_define_scoreable_asymmetric_ranges() -> None:
+    pack = load_pack()
+    tasks = list(pack.tasks_by_id.values())
+
+    assert len(REFERENCE_PROFILE_TOLERANCES) == 28
+    for number, (
+        reference_lower,
+        reference_upper,
+        lower_tolerance,
+        upper_tolerance,
+    ) in REFERENCE_PROFILE_TOLERANCES.items():
+        task = tasks[number - 1]
+        profile_id = task["gold_answers"][0]["scoring_profile"]
+        profile = pack.scoring_profiles[profile_id]
+        assert profile_id.startswith(
+            task["task_id"].replace(
+                "property_calc_easy_", "property_calculation_easy_", 1
+            )
+        )
+        assert profile["lower_tolerance"] == pytest.approx(lower_tolerance)
+        assert profile["upper_tolerance"] == pytest.approx(upper_tolerance)
+        assert profile["provenance"]["decay_source"] == (
+            "expert_reference_value_range"
+        )
+        assert profile["provenance"]["reference_lower"] == reference_lower
+        assert profile["provenance"]["reference_upper"] == reference_upper
+
+
+def test_easy_reference_boundaries_receive_score_but_outer_boundaries_do_not() -> None:
+    track = vgb.load_track("property_calculation_easy")
+    pack = load_pack()
+    tasks = track.tasks()
+
+    for number, (reference_lower, reference_upper, _, _) in (
+        REFERENCE_PROFILE_TOLERANCES.items()
+    ):
+        task = tasks[number - 1]
+        gold = task["gold_answers"][0]
+        profile = pack.scoring_profiles[gold["scoring_profile"]]
+        for reference in {reference_lower, reference_upper}:
+            result = track.evaluate_one(
+                {"task_id": task["task_id"], "answer": reference, "unit": gold["unit"]}
+            )
+            assert result["scores"]["score"] > 0.0
+
+        for outer_boundary in (
+            gold["value"] - profile["lower_tolerance"],
+            gold["value"] + profile["upper_tolerance"],
+        ):
+            result = track.evaluate_one(
+                {
+                    "task_id": task["task_id"],
+                    "answer": outer_boundary,
+                    "unit": gold["unit"],
+                }
+            )
+            assert result["scores"]["score"] == pytest.approx(0.0, abs=1e-12)
 
 
 def test_easy_prompts_are_self_contained_and_exclude_source_commands() -> None:

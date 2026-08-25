@@ -28,8 +28,9 @@ task_type: property_calculation
 ```
 
 `verifier_specs.yaml` therefore contains an empty `verifiers` list. Numeric scores use the same
-`linear_goal_v2` implementation as the original property-calculation track, with track-local
-profiles whose decay widths reflect the expert answer's reported precision.
+`linear_goal_v2` implementation as the original property-calculation track. When provided, source
+reference values widen the scoreable interval between the reference and expert gold; otherwise,
+track-local profile widths follow the expert answer's reported precision.
 
 ## Input And Gold Policy
 
@@ -38,6 +39,7 @@ English prompt. Atom-specific tasks explicitly state zero-based indices where ne
 commands and local environment paths are maintenance evidence only and are never executed by the
 benchmark or shown to the model.
 
-The expert `answer` value is the frozen gold. Experimental or higher-level reference values remain
-provenance and are not substituted for the expert result. Canonical sample answers are included for
-local scoring sanity checks, following the same public-gold policy as `property_calculation`.
+The expert `answer` value is the frozen gold. Experimental or higher-level reference values define
+scoreable tolerance ranges but are not substituted for the expert result. Canonical sample answers
+are included for local scoring sanity checks, following the same public-gold policy as
+`property_calculation`.

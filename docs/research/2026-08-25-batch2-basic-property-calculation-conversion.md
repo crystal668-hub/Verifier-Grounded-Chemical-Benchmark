@@ -53,12 +53,17 @@ property. Script names and local environment setup are excluded.
 
 ## Scoring Decisions
 
-Numeric tasks use `numeric_gold` profiles. The linear decay width follows the precision reported by
-each expert answer: `0.0001` for four-decimal bond orders; `0.001` for three-decimal densities,
-spin densities, Fukui functions, and charges; `0.1` for one-decimal results; and `0.01` for
-two-decimal results. Separate profiles cover mixed-precision values within the same property
-family. These widths are zero-score distances under
-`linear_goal_v2`, not full-credit intervals.
+Numeric tasks use `numeric_gold` profiles. The expert `answer` remains the unique full-score gold.
+When a source row has a numeric `reference value`, the interval from the gold through that reference
+is scoreable. A `value +/- uncertainty` reference contributes its full lower-to-upper interval; a
+single reference contributes the interval between that point and the gold. The task-specific
+profile extends one original precision width beyond the far reference boundary so that the
+reference boundary itself receives a positive score under `linear_goal_v2`.
+
+Rows without a reference retain the original precision-based widths: `0.0001` for four-decimal bond
+orders; `0.001` for three-decimal densities, spin densities, Fukui functions, and charges; `0.1`
+for one-decimal results; and `0.01` for two-decimal results. Separate profiles cover mixed-precision
+values within the same property family.
 
 The two atom-identification tasks use exact strings: `11 O` for caffeine and `3 N` for methyl
 azide. Their prompts explicitly define zero-based SMILES atom order and require the index followed
@@ -66,5 +71,5 @@ by the element symbol. The supplied parenthetical charge remains provenance cont
 second scored field.
 
 The final empty CSV row is ignored because it has no question, command, or answer. Expert answers
-in the `answer` column are the frozen gold values; experimental or high-level values in the
-`reference value` column are retained only as provenance and do not replace the expert gold.
+in the `answer` column are the frozen gold values. Experimental or high-level values in the
+`reference value` column set scoreable ranges but do not replace the expert gold.
