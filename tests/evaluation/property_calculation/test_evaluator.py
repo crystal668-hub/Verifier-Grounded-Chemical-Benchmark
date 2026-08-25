@@ -52,7 +52,7 @@ def _evaluate(task_id: str, answer: dict):
 )
 def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: float) -> None:
     result = _evaluate(
-        "property_calc_free_energy_001",
+        "property_calc_001_free_energy",
         {"answer": answer, "unit": "kJ/mol"},
     )
 
@@ -62,7 +62,7 @@ def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: floa
 
 def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
     result = _evaluate(
-        "property_calc_crystal_phase_002",
+        "property_calc_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.1185, "unit": "eV"},
@@ -79,7 +79,7 @@ def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
 
 def test_exact_string_is_case_sensitive() -> None:
     result = _evaluate(
-        "property_calc_crystal_phase_002",
+        "property_calc_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
@@ -98,7 +98,7 @@ def test_exact_string_is_case_sensitive() -> None:
 
 
 def test_missing_requested_field_scores_zero_without_infrastructure_error() -> None:
-    result = _evaluate("property_calc_crystal_phase_002", {"answers": []})
+    result = _evaluate("property_calc_002_crystal_phase", {"answers": []})
 
     assert result["status"] == "scored"
     assert result["failure_scope"] is None
@@ -107,7 +107,7 @@ def test_missing_requested_field_scores_zero_without_infrastructure_error() -> N
 
 def test_wrong_numeric_unit_scores_zero() -> None:
     result = _evaluate(
-        "property_calc_free_energy_001",
+        "property_calc_001_free_energy",
         {"answer": 0.258031679, "unit": "eV"},
     )
 
@@ -116,7 +116,7 @@ def test_wrong_numeric_unit_scores_zero() -> None:
 
 def test_unknown_property_is_ignored_and_recorded() -> None:
     result = _evaluate(
-        "property_calc_crystal_phase_002",
+        "property_calc_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
@@ -149,7 +149,7 @@ def test_unknown_property_is_ignored_and_recorded() -> None:
 def test_known_task_parse_failure_is_submission_zero(
     answer: dict, message: str
 ) -> None:
-    result = _evaluate("property_calc_crystal_phase_002", answer)
+    result = _evaluate("property_calc_002_crystal_phase", answer)
 
     assert result["status"] == "scored"
     assert result["failure_scope"] == "submission"
@@ -160,7 +160,7 @@ def test_known_task_parse_failure_is_submission_zero(
 
 def test_result_has_v2_schema_and_constraint_provenance() -> None:
     result = _evaluate(
-        "property_calc_free_energy_001",
+        "property_calc_001_free_energy",
         {"answer": 0.258031679, "unit": "kJ/mol"},
     )
 

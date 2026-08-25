@@ -49,8 +49,8 @@ EXPECTED_TASK_IDS = {
         "xtb_pyrene_substituent_energy_min_020",
     ],
     "property_calculation": [
-        "property_calc_free_energy_001",
-        "property_calc_crystal_phase_002",
+        "property_calc_001_free_energy",
+        "property_calc_002_crystal_phase",
         "property_calc_003_hbond_count",
         "property_calc_004_ir_top3_frequencies",
         "property_calc_005_crystal_density",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 
 import pytest
 
@@ -59,8 +60,8 @@ EXPECTED_CIF = {
 }
 
 EXPECTED_TASK_IDS = {
-    "property_calc_free_energy_001",
-    "property_calc_crystal_phase_002",
+    "property_calc_001_free_energy",
+    "property_calc_002_crystal_phase",
     "property_calc_003_hbond_count",
     "property_calc_004_ir_top3_frequencies",
     "property_calc_005_crystal_density",
@@ -93,6 +94,13 @@ def load_tasks() -> dict[str, dict]:
     return load_pack().tasks_by_id
 
 
+def test_property_task_ids_use_standard_format() -> None:
+    for task_number, task_id in enumerate(load_tasks(), start=1):
+        assert re.fullmatch(
+            rf"property_calc_{task_number:03d}_[a-z0-9_]+", task_id
+        )
+
+
 def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
     tasks = load_tasks()
 
@@ -110,7 +118,8 @@ def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
         }
         assert "constraints" not in task
         assert task["gold_provenance"]["disclosure"] == "withheld_initial_release"
-        if task["task_id"].startswith("property_calc_0"):
+        task_number = int(task["task_id"].split("_", 3)[2])
+        if task_number >= 3:
             assert task["gold_provenance"].get("source")
         assert task["scoring"]["aggregation"] == "arithmetic_mean"
         assert "parse_error" in set(task["failure_policy"].values())
@@ -159,7 +168,7 @@ def test_every_input_object_is_embedded_exactly_once_in_its_prompt() -> None:
 
 def test_task_7_contract_and_gold() -> None:
     pack = load_pack()
-    task = pack.tasks_by_id["property_calc_free_energy_001"]
+    task = pack.tasks_by_id["property_calc_001_free_energy"]
 
     assert [item["object_id"] for item in task["input_objects"]] == [
         "ETDIAM01",
@@ -196,7 +205,7 @@ def test_task_7_contract_and_gold() -> None:
 
 def test_task_8_contract_and_gold() -> None:
     pack = load_pack()
-    task = pack.tasks_by_id["property_calc_crystal_phase_002"]
+    task = pack.tasks_by_id["property_calc_002_crystal_phase"]
 
     assert [item["object_id"] for item in task["input_objects"]] == [
         "alpha_CONTCAR",

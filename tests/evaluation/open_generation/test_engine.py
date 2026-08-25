@@ -197,14 +197,14 @@ def test_engine_dispatches_property_calculation_and_raw_json() -> None:
     engine = EvaluationEngine(_pack("property_calculation"))
     structured = engine.evaluate_one(
         {
-            "task_id": "property_calc_free_energy_001",
+            "task_id": "property_calc_001_free_energy",
             "answer": 0.258531679,
             "unit": "kJ/mol",
         }
     )
     raw = engine.evaluate_one(
         {
-            "task_id": "property_calc_free_energy_001",
+            "task_id": "property_calc_001_free_energy",
             "response": 'FINAL ANSWER: {"answer":0.258531679,"unit":"kJ/mol"}',
         }
     )
@@ -229,19 +229,19 @@ def test_duplicate_unknown_and_missing_ids_invalidate_coverage() -> None:
     pack = _pack("property_calculation")
     engine = EvaluationEngine(pack)
     answer = {
-        "task_id": "property_calc_free_energy_001",
+        "task_id": "property_calc_001_free_energy",
         "answer": 0.258031679,
         "unit": "kJ/mol",
     }
     report = engine.evaluate_many([answer, answer, {"task_id": "unknown"}])
 
     coverage = report.summary["coverage"]
-    assert coverage["duplicate_task_ids"] == ["property_calc_free_energy_001"]
+    assert coverage["duplicate_task_ids"] == ["property_calc_001_free_energy"]
     assert coverage["unknown_task_ids"] == ["unknown"]
     assert coverage["missing_task_ids"] == [
         task.task_id
         for task in pack.tasks
-        if task.task_id != "property_calc_free_energy_001"
+        if task.task_id != "property_calc_001_free_energy"
     ]
     assert report.summary["benchmark_score"] is None
 

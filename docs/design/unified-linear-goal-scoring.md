@@ -444,8 +444,8 @@ q_relax = score_minimize(relaxation_energy; T_relax, B_relax)
 
 | Task | Field/group 规则 | 单题计算 |
 | --- | --- | --- |
-| `property_calc_free_energy_001` | `free_energy_difference`：gold `0.258031679 kJ/mol`，左右容错 `tauL_free/tauU_free` TBD，使用 Numeric Gold | `s_free_energy` |
-| `property_calc_crystal_phase_002` | `potential_energy_difference`：gold `0.079 eV`，左右容错 TBD，使用 Numeric Gold；phase gold 为 `alpha/beta`，使用 Exact String | `(s_energy_group + s_phase_group) / 2` |
+| `property_calc_001_free_energy` | `free_energy_difference`：gold `0.258031679 kJ/mol`，左右容错 `tauL_free/tauU_free` TBD，使用 Numeric Gold | `s_free_energy` |
+| `property_calc_002_crystal_phase` | `potential_energy_difference`：gold `0.079 eV`，左右容错 TBD，使用 Numeric Gold；phase gold 为 `alpha/beta`，使用 Exact String | `(s_energy_group + s_phase_group) / 2` |
 
 第二题的 group 计算为：
 

@@ -348,7 +348,7 @@ scoring_profiles:
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
 tasks:
-- task_id: property_calc_free_energy_001
+- task_id: property_calc_001_free_energy
   version: 1
   task_type: property_calculation
   object_type: crystal_pair
@@ -581,7 +581,7 @@ tasks:
     invalid_json: parse_error
     malformed_property_answer: parse_error
     invalid_task_schema: task_error
-- task_id: property_calc_crystal_phase_002
+- task_id: property_calc_002_crystal_phase
   version: 1
   task_type: property_calculation
   object_type: crystal_pair

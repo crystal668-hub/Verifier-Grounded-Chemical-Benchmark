@@ -17,7 +17,7 @@
 | `property_calc_019_acetophenone_isc_rate` | acetophenone SMILES、77 K 与气相条件 | S1-to-T1 ISC 速率，`s^-1` |
 | `property_calc_020_azulene_internal_conversion_rate` | azulene SMILES、甲醇隐式溶剂与 298.15 K | S1-to-S0 IC 速率，`s^-1` |
 
-`property_calc_free_energy_001` 至 `property_calc_014_bay069_pka` 保持既有定义。所有
+`property_calc_001_free_energy` 至 `property_calc_014_bay069_pka` 保持既有定义。所有
 模型输入均在英文 `prompt` 中，运行时不读取附件、文件路径或外部结构数据库。
 
 ## 2. Task Schema
@@ -46,13 +46,13 @@ verifiers: []
 Task 7 的规范化 JSONL：
 
 ```json
-{"task_id":"property_calc_free_energy_001","answer":0.258031679,"unit":"kJ/mol"}
+{"task_id":"property_calc_001_free_energy","answer":0.258031679,"unit":"kJ/mol"}
 ```
 
 Task 8 的规范化 JSONL：
 
 ```json
-{"task_id":"property_calc_crystal_phase_002","answers":[{"property":"potential_energy_difference","value":0.079,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
+{"task_id":"property_calc_002_crystal_phase","answers":[{"property":"potential_energy_difference","value":0.079,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
 ```
 
 原始模型回复使用相同 JSON 内容，并放在单行 `FINAL ANSWER:` 之后。答案归一化支持原始回复和结构化 JSONL；重复属性或非法列表结构是 `parse_error`。
