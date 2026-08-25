@@ -5,12 +5,12 @@ import pytest
 from verifier_grounded_benchmark.evaluation.property_calculation import (
     PropertyCalculationEvaluator,
 )
-from verifier_grounded_benchmark.task.loader import load_task_pack
-from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
-from verifier_grounded_benchmark.task.resources import package_resource
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
     score_unordered_numeric_group,
 )
+from verifier_grounded_benchmark.task.loader import load_task_pack
+from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
+from verifier_grounded_benchmark.task.resources import package_resource
 
 PACK = load_task_pack(
     package_resource("property_calculation", "tasks.yaml"),
