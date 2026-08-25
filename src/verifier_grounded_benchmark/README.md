@@ -67,19 +67,20 @@ print(report["rows"][0])
 ```python
 import vgb
 
-suite = vgb.load_suite(["rdkit", "xtb", "property_calculation"])
+suite = vgb.load_suite(["rdkit", "xtb", "property_calculation", "property_calculation_easy"])
 print([track.name for track in suite.tracks()])
 ```
 
 ## 内置 tracks
 
-默认正式 track 有三类：
+默认正式 track 有四类：
 
 | track | 内容 | 额外环境要求 |
 | --- | --- | --- |
 | `rdkit` | RDKit small-molecule descriptor tasks，输入通常是 SMILES | 无额外命令行工具 |
 | `xtb` | xTB molecular optimization tasks，按题目接受 explicit-H XYZ 或 SMILES | 真实评分需要 `xtb`；构象搜索题还需要 CREST 2.12 |
 | `property_calculation` | 给定完整结构并对照公开 gold 评分的性质计算题 | 无额外命令行工具 |
+| `property_calculation_easy` | 基础小分子固定输入性质计算题 | 无额外命令行工具 |
 
 查看当前可用正式 track：
 
@@ -130,7 +131,7 @@ sample answer 或 gold。评分端应通过同一安装版本的 `track.evaluate
 加载多个 tracks 组成 suite：
 
 ```python
-suite = vgb.load_suite(["rdkit", "xtb", "property_calculation"])
+suite = vgb.load_suite(["rdkit", "xtb", "property_calculation", "property_calculation_easy"])
 all_prompts = suite.prompts()
 ```
 

@@ -20,6 +20,7 @@ FORMAL_TRACK_PATHS = {
     "rdkit": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "rdkit" / "tasks.yaml",
     "xtb": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "xtb" / "tasks.yaml",
     "property_calculation": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation" / "tasks.yaml",
+    "property_calculation_easy": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_easy" / "tasks.yaml",
 }
 
 
@@ -103,7 +104,12 @@ def normalized_release_payloads(
     return wheel_payloads, sdist_payloads
 
 
-def verify_archive_payloads(wheel_path: Path, sdist_path: Path) -> dict[str, Any]:
+def verify_archive_payloads(
+    wheel_path: Path,
+    sdist_path: Path,
+    *,
+    additional_required: set[str] | None = None,
+) -> dict[str, Any]:
     wheel_payloads, sdist_payloads = normalized_release_payloads(wheel_path, sdist_path)
     if wheel_payloads != sdist_payloads:
         wheel_only = sorted(wheel_payloads.keys() - sdist_payloads.keys())
@@ -126,6 +132,7 @@ def verify_archive_payloads(wheel_path: Path, sdist_path: Path) -> dict[str, Any
         "src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
         "src/verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
     }
+    required.update(additional_required or ())
     missing = sorted(required - wheel_payloads.keys())
     if missing:
         raise ValueError(f"Release payload is missing required files: {missing}")
@@ -163,7 +170,14 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
     if not wheel_path.is_file() or not sdist_path.is_file():
         raise FileNotFoundError("Expected wheel and sdist were not both created")
 
-    payload = verify_archive_payloads(wheel_path, sdist_path)
+    payload = verify_archive_payloads(
+        wheel_path,
+        sdist_path,
+        additional_required={
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_easy/tasks.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_easy/verifier_specs.yaml",
+        },
+    )
     artifacts = [
         {
             "filename": path.name,

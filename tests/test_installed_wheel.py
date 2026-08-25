@@ -78,7 +78,8 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
                 "from importlib.resources import files; import json; "
                 "print(json.dumps(["
                 "str(files('verifier_grounded_benchmark.task.packs.rdkit').joinpath('sample_answers.jsonl')),"
-                "str(files('verifier_grounded_benchmark.task.packs.property_calculation').joinpath('sample_answers.jsonl'))]))"
+                "str(files('verifier_grounded_benchmark.task.packs.property_calculation').joinpath('sample_answers.jsonl')),"
+                "str(files('verifier_grounded_benchmark.task.packs.property_calculation_easy').joinpath('sample_answers.jsonl'))]))"
             ),
         ],
         cwd=tmp_path,
@@ -87,7 +88,9 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         capture_output=True,
         env=env,
     )
-    answers_path, property_answers_path = json.loads(resources_completed.stdout)
+    answers_path, property_answers_path, property_easy_answers_path = json.loads(
+        resources_completed.stdout
+    )
     completed = subprocess.run(
         [
             str(executable),
@@ -126,6 +129,26 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     assert property_report["summary"]["coverage"]["complete"] is True
     assert property_report["summary"]["benchmark_score"] == 1.0
     assert [row["score"] for row in property_report["rows"]] == [1.0] * 20
+
+    property_easy_completed = subprocess.run(
+        [
+            str(executable),
+            "--track",
+            "property_calculation_easy",
+            "--answers",
+            property_easy_answers_path,
+            "--require-complete",
+        ],
+        cwd=tmp_path,
+        check=True,
+        text=True,
+        capture_output=True,
+        env=env,
+    )
+    property_easy_report = json.loads(property_easy_completed.stdout)
+    assert property_easy_report["summary"]["coverage"]["complete"] is True
+    assert property_easy_report["summary"]["benchmark_score"] == 1.0
+    assert [row["score"] for row in property_easy_report["rows"]] == [1.0] * 51
 
     xtb_completed = subprocess.run(
         [

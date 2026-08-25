@@ -10,6 +10,7 @@ def test_list_tracks_returns_formal_builtin_names() -> None:
         "rdkit",
         "xtb",
         "property_calculation",
+        "property_calculation_easy",
     ]
 
 
@@ -20,6 +21,7 @@ def test_vgb_alias_exposes_same_public_api() -> None:
         "rdkit",
         "xtb",
         "property_calculation",
+        "property_calculation_easy",
     ]
     assert short_vgb.load_track("rdkit").name == "rdkit"
 
@@ -53,6 +55,8 @@ def test_load_suite_defaults_to_formal_tracks_only() -> None:
     assert "xtb_gap_window_001" in task_ids
     assert "property_calc_001_free_energy" in task_ids
     assert "property_calc_002_crystal_phase" in task_ids
+    assert "property_calc_easy_001_toluene_aqueous_solvation_free_energy" in task_ids
+    assert "property_calc_easy_051_formaldehyde_t1_vertical_excitation_energy" in task_ids
     assert not any(task_id.startswith("matgl_") for task_id in task_ids)
     assert not any(task_id.startswith("mace_") for task_id in task_ids)
     assert not any(task_id.startswith("atomistic" + "skills_") for task_id in task_ids)
@@ -72,6 +76,7 @@ def test_builtin_track_uses_importable_module_executors() -> None:
         assert all(importlib.util.find_spec(module) is not None for module in modules)
 
     assert vgb.load_track("property_calculation").verifier_specs_by_id == {}
+    assert vgb.load_track("property_calculation_easy").verifier_specs_by_id == {}
 
 
 def test_property_calculation_track_scores_public_samples() -> None:
@@ -84,6 +89,18 @@ def test_property_calculation_track_scores_public_samples() -> None:
     assert report["summary"]["coverage"]["complete"] is True
     assert report["summary"]["benchmark_score"] == 1.0
     assert [row["score"] for row in report["rows"]] == [1.0] * 20
+
+
+def test_property_calculation_easy_track_scores_public_samples() -> None:
+    track = vgb.load_track("property_calculation_easy")
+
+    report = track.evaluate_answers(track.sample_answers())
+
+    assert len(track.tasks()) == 51
+    assert len(track.sample_answers()) == 51
+    assert report["summary"]["coverage"]["complete"] is True
+    assert report["summary"]["benchmark_score"] == 1.0
+    assert [row["score"] for row in report["rows"]] == [1.0] * 51
 
 
 def test_load_track_rejects_unknown_track() -> None:

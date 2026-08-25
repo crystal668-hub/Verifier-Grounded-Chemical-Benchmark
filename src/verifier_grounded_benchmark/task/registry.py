@@ -100,6 +100,14 @@ def builtin_definitions() -> list[TrackDefinition]:
             tags=("property_calculation", "fixed_input", "crystal"),
             resource_pack="property_calculation",
         ),
+        TrackDefinition(
+            name="property_calculation_easy", version="0.6.0",
+            display_name="Easy fixed-input property calculation tasks",
+            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            sample_answers_path="sample_answers.jsonl",
+            tags=("property_calculation", "fixed_input", "easy", "small_molecule"),
+            resource_pack="property_calculation_easy",
+        ),
     ]
 
 

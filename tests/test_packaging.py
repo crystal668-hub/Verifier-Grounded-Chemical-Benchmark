@@ -34,6 +34,9 @@ FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation/sample_answers.jsonl",
+    "verifier_grounded_benchmark/task/packs/property_calculation_easy/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_easy/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_easy/sample_answers.jsonl",
 }
 FORMAL_EXPERT_XTB_TASK_IDS = {
     "xtb_formula_dipole_min_014",

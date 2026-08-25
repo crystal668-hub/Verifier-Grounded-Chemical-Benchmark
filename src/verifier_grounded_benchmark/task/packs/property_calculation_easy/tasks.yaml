@@ -1,0 +1,2824 @@
+schema_version: 2
+task_pack:
+  id: property_calculation_easy
+  version: 0.6.0
+  scoring_version: linear_goal_v2
+scoring_profiles:
+  property_calculation_easy_aqueous_solvation_free_energy_numeric_gold_v2:
+    property: aqueous_solvation_free_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_first_reduction_potential_sce_numeric_gold_v2:
+    property: first_reduction_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_first_oxidation_potential_sce_numeric_gold_v2:
+    property: first_oxidation_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_batch2_binding_energy_numeric_gold_v2:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_static_mean_polarizability_numeric_gold_v2:
+    property: static_mean_polarizability
+    type: numeric_gold
+    unit: a.u.
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_dipole_moment_numeric_gold_v2:
+    property: dipole_moment
+    type: numeric_gold
+    unit: Debye
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_wiberg_bond_order_numeric_gold_v2:
+    property: wiberg_bond_order
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.0001
+    upper_tolerance: 0.0001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_surface_esp_minimum_numeric_gold_v2:
+    property: surface_electrostatic_potential_minimum
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_vdw_surface_area_numeric_gold_v2:
+    property: van_der_waals_surface_area
+    type: numeric_gold
+    unit: angstrom^2
+    lower_tolerance: 0.1
+    upper_tolerance: 0.1
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_surface_esp_variance_numeric_gold_v2:
+    property: surface_electrostatic_potential_total_variance
+    type: numeric_gold
+    unit: (kcal/mol)^2
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_batch2_crystal_density_3dp_numeric_gold_v2:
+    property: crystal_density
+    type: numeric_gold
+    unit: g/cm^3
+    lower_tolerance: 0.001
+    upper_tolerance: 0.001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_batch2_crystal_density_2dp_numeric_gold_v2:
+    property: crystal_density
+    type: numeric_gold
+    unit: g/cm^3
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_spin_density_numeric_gold_v2:
+    property: spin_density
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.001
+    upper_tolerance: 0.001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_fukui_function_numeric_gold_v2:
+    property: fukui_function
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.001
+    upper_tolerance: 0.001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_fukui_function_2dp_numeric_gold_v2:
+    property: fukui_function
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_standard_entropy_numeric_gold_v2:
+    property: standard_entropy
+    type: numeric_gold
+    unit: cal/(mol*K)
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_standard_entropy_1dp_numeric_gold_v2:
+    property: standard_entropy
+    type: numeric_gold
+    unit: cal/(mol*K)
+    lower_tolerance: 0.1
+    upper_tolerance: 0.1
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_dimerization_enthalpy_numeric_gold_v2:
+    property: dimerization_enthalpy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_most_negative_mulliken_atom_exact_string_v2:
+    property: most_negative_mulliken_atom
+    type: exact_string
+    normalization: exact
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: not_applicable
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_mulliken_charge_numeric_gold_v2:
+    property: mulliken_charge
+    type: numeric_gold
+    unit: e
+    lower_tolerance: 0.001
+    upper_tolerance: 0.001
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+  property_calculation_easy_vertical_excitation_energy_numeric_gold_v2:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 0.01
+    upper_tolerance: 0.01
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: expert_reported_precision
+      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      review_status: approved
+      review_date: '2026-08-25'
+      review_owner: benchmark_maintainers
+tasks:
+- task_id: property_calc_easy_001_toluene_aqueous_solvation_free_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_solvation_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - solvation
+  - free_energy
+  prompt: |
+    For toluene (SMILES: Cc1ccccc1), report the aqueous solvation free energy in kcal/mol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: toluene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Cc1ccccc1
+  requested_properties:
+  - name: aqueous_solvation_free_energy
+    value_type: number
+    comparison_group: aqueous_solvation_free_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: aqueous_solvation_free_energy
+    value: -0.82
+    scoring_profile: property_calculation_easy_aqueous_solvation_free_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_FreeSolv_v0.52
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: aqueous_solvation_free_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_002_ethanol_aqueous_solvation_free_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_solvation_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - solvation
+  - free_energy
+  prompt: |
+    For ethanol (SMILES: CCO), report the aqueous solvation free energy in kcal/mol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: ethanol_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CCO
+  requested_properties:
+  - name: aqueous_solvation_free_energy
+    value_type: number
+    comparison_group: aqueous_solvation_free_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: aqueous_solvation_free_energy
+    value: -5.42
+    scoring_profile: property_calculation_easy_aqueous_solvation_free_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_FreeSolv_v0.52
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: aqueous_solvation_free_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_003_diethyl_ether_aqueous_solvation_free_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_solvation_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - solvation
+  - free_energy
+  prompt: |
+    For diethyl ether (SMILES: CCOCC), report the aqueous solvation free energy in kcal/mol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: diethyl_ether_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CCOCC
+  requested_properties:
+  - name: aqueous_solvation_free_energy
+    value_type: number
+    comparison_group: aqueous_solvation_free_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: aqueous_solvation_free_energy
+    value: -2.11
+    scoring_profile: property_calculation_easy_aqueous_solvation_free_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_FreeSolv_v0.52
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: aqueous_solvation_free_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_004_anisole_aqueous_solvation_free_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_solvation_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - solvation
+  - free_energy
+  prompt: |
+    For anisole (SMILES: COc1ccccc1), report the aqueous solvation free energy in kcal/mol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: anisole_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: COc1ccccc1
+  requested_properties:
+  - name: aqueous_solvation_free_energy
+    value_type: number
+    comparison_group: aqueous_solvation_free_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: aqueous_solvation_free_energy
+    value: -1.98
+    scoring_profile: property_calculation_easy_aqueous_solvation_free_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_FreeSolv_v0.52
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: aqueous_solvation_free_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_005_nitrobenzene_reduction_potential
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_redox_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - redox
+  - reduction
+  prompt: |
+    For nitrobenzene (SMILES: [O-][N+](=O)c1ccccc1) in acetonitrile, report its first reduction potential relative to SCE in V.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"V"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: nitrobenzene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: '[O-][N+](=O)c1ccccc1'
+  requested_properties:
+  - name: first_reduction_potential_vs_sce
+    value_type: number
+    comparison_group: first_reduction_potential_vs_sce
+    unit: V
+  gold_answers:
+  - property: first_reduction_potential_vs_sce
+    value: -1.24
+    scoring_profile: property_calculation_easy_first_reduction_potential_sce_numeric_gold_v2
+    unit: V
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: first_reduction_potential_vs_sce
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_006_tetracyanoethylene_reduction_potential
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_redox_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - redox
+  - reduction
+  prompt: |
+    For tetracyanoethylene (SMILES: N#CC(C#N)=C(C#N)C#N) in acetonitrile, report its first reduction potential relative to SCE in V.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"V"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: tetracyanoethylene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: N#CC(C#N)=C(C#N)C#N
+  requested_properties:
+  - name: first_reduction_potential_vs_sce
+    value_type: number
+    comparison_group: first_reduction_potential_vs_sce
+    unit: V
+  gold_answers:
+  - property: first_reduction_potential_vs_sce
+    value: 0.21
+    scoring_profile: property_calculation_easy_first_reduction_potential_sce_numeric_gold_v2
+    unit: V
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: first_reduction_potential_vs_sce
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_007_dimethylaniline_oxidation_potential
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_redox_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - redox
+  - oxidation
+  prompt: |
+    For dimethylaniline (SMILES: CN(C)c1ccccc1) in acetonitrile, report its first oxidation potential relative to SCE in V.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"V"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: dimethylaniline_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CN(C)c1ccccc1
+  requested_properties:
+  - name: first_oxidation_potential_vs_sce
+    value_type: number
+    comparison_group: first_oxidation_potential_vs_sce
+    unit: V
+  gold_answers:
+  - property: first_oxidation_potential_vs_sce
+    value: 0.83
+    scoring_profile: property_calculation_easy_first_oxidation_potential_sce_numeric_gold_v2
+    unit: V
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: first_oxidation_potential_vs_sce
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_008_triphenylamine_oxidation_potential
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_redox_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - redox
+  - oxidation
+  prompt: |
+    For triphenylamine (SMILES: c1ccc(N(c2ccccc2)c2ccccc2)cc1) in acetonitrile, report its first oxidation potential relative to SCE in V.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"V"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: triphenylamine_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc(N(c2ccccc2)c2ccccc2)cc1
+  requested_properties:
+  - name: first_oxidation_potential_vs_sce
+    value_type: number
+    comparison_group: first_oxidation_potential_vs_sce
+    unit: V
+  gold_answers:
+  - property: first_oxidation_potential_vs_sce
+    value: 0.82
+    scoring_profile: property_calculation_easy_first_oxidation_potential_sce_numeric_gold_v2
+    unit: V
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: first_oxidation_potential_vs_sce
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_009_thianthrene_oxidation_potential
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_redox_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - redox
+  - oxidation
+  prompt: |
+    For thianthrene (SMILES: c1ccc2Sc3ccccc3Sc2c1) in acetonitrile, report its first oxidation potential relative to SCE in V.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"V"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: thianthrene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc2Sc3ccccc3Sc2c1
+  requested_properties:
+  - name: first_oxidation_potential_vs_sce
+    value_type: number
+    comparison_group: first_oxidation_potential_vs_sce
+    unit: V
+  gold_answers:
+  - property: first_oxidation_potential_vs_sce
+    value: 1.11
+    scoring_profile: property_calculation_easy_first_oxidation_potential_sce_numeric_gold_v2
+    unit: V
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: first_oxidation_potential_vs_sce
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_010_water_dimer_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the hydrogen-bonded water dimer, represented by the SMILES pair O | O, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: water_dimer_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: O | O
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -4.97
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_S22_CCSDT_CBS
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_011_ammonia_dimer_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the hydrogen-bonded ammonia dimer, represented by the SMILES pair N | N, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: ammonia_dimer_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: N | N
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -2.85
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_S22_CCSDT_CBS
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_012_benzene_t_dimer_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the T-shaped benzene dimer, represented by the SMILES pair c1ccccc1 | c1ccccc1, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: benzene_t_dimer_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: c1ccccc1 | c1ccccc1
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -2.48
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_CCSDT_CBS_OSTI_1958183
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_013_adenine_thymine_wc_pair_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the Watson-Crick adenine-thymine pair, represented by the SMILES pair Cn1cnc2c(N)ncnc21 | Cc1cn(C)c(=O)[nH]c1=O, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: adenine_thymine_wc_pair_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: Cn1cnc2c(N)ncnc21 | Cc1cn(C)c(=O)[nH]c1=O
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -16.13
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_S22_CCSDT_CBS
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_014_water_methanol_complex_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the hydrogen-bonded water-methanol complex, represented by the SMILES pair O | CO, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: water_methanol_complex_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: O | CO
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -4.89
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_S66_CCSDT_CBS
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_015_ethene_ethyne_t_complex_binding_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_complex
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - noncovalent_interaction
+  - binding_energy
+  prompt: |
+    For the T-shaped ethene-ethyne complex, represented by the SMILES pair C=C | C#C, report the binding energy in kcal/mol. Preserve the sign of the energy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: ethene_ethyne_t_complex_pair
+    type: smiles_pair
+    presentation: prompt_inline
+    value: C=C | C#C
+  requested_properties:
+  - name: binding_energy
+    value_type: number
+    comparison_group: binding_energy
+    unit: kcal/mol
+  gold_answers:
+  - property: binding_energy
+    value: -1.33
+    scoring_profile: property_calculation_easy_batch2_binding_energy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_S22_CCSDT_CBS
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: binding_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_016_thiophene_polarizability
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - polarizability
+  - GFN2
+  prompt: |
+    At the GFN2 level, for thiophene (SMILES: c1ccsc1), report the static mean polarizability in atomic units (a.u.).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: thiophene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccsc1
+  requested_properties:
+  - name: static_mean_polarizability
+    value_type: number
+    comparison_group: static_mean_polarizability
+    unit: a.u.
+  gold_answers:
+  - property: static_mean_polarizability
+    value: 65.01
+    scoring_profile: property_calculation_easy_static_mean_polarizability_numeric_gold_v2
+    unit: a.u.
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: static_mean_polarizability
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_017_benzene_polarizability
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - polarizability
+  - GFN2
+  prompt: |
+    At the GFN2 level, for benzene (SMILES: c1ccccc1), report the static mean polarizability in atomic units (a.u.).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: benzene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccccc1
+  requested_properties:
+  - name: static_mean_polarizability
+    value_type: number
+    comparison_group: static_mean_polarizability
+    unit: a.u.
+  gold_answers:
+  - property: static_mean_polarizability
+    value: 67.87
+    scoring_profile: property_calculation_easy_static_mean_polarizability_numeric_gold_v2
+    unit: a.u.
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: static_mean_polarizability
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_018_octatetraene_polarizability
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - polarizability
+  - GFN2
+  prompt: |
+    At the GFN2 level, for octatetraene (SMILES: C=CC=CC=CC=C), report the static mean polarizability in atomic units (a.u.).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: octatetraene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C=CC=CC=CC=C
+  requested_properties:
+  - name: static_mean_polarizability
+    value_type: number
+    comparison_group: static_mean_polarizability
+    unit: a.u.
+  gold_answers:
+  - property: static_mean_polarizability
+    value: 95.51
+    scoring_profile: property_calculation_easy_static_mean_polarizability_numeric_gold_v2
+    unit: a.u.
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: static_mean_polarizability
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_019_dimethyl_sulfoxide_water_dipole_moment
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - dipole_moment
+  - GFN2
+  prompt: |
+    At the GFN2 level, for dimethyl sulfoxide (SMILES: CS(C)=O) in water, report the dipole moment in Debye.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: dimethyl_sulfoxide_water_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CS(C)=O
+  requested_properties:
+  - name: dipole_moment
+    value_type: number
+    comparison_group: dipole_moment
+    unit: Debye
+  gold_answers:
+  - property: dipole_moment
+    value: 5.43
+    scoring_profile: property_calculation_easy_dipole_moment_numeric_gold_v2
+    unit: Debye
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: dipole_moment
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_020_cis_dichloroethene_dipole_moment
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - dipole_moment
+  - GFN2
+  prompt: |
+    At the GFN2 level, for cis-1,2-dichloroethene (SMILES: Cl/C=C\Cl) in the gas phase, report the dipole moment in Debye.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: cis_dichloroethene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Cl/C=C\Cl
+  requested_properties:
+  - name: dipole_moment
+    value_type: number
+    comparison_group: dipole_moment
+    unit: Debye
+  gold_answers:
+  - property: dipole_moment
+    value: 1.88
+    scoring_profile: property_calculation_easy_dipole_moment_numeric_gold_v2
+    unit: Debye
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: dipole_moment
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_021_acetonitrile_dipole_moment
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_electronic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - dipole_moment
+  - GFN2
+  prompt: |
+    At the GFN2 level, for acetonitrile (SMILES: CC#N) in the gas phase, report the dipole moment in Debye.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetonitrile_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC#N
+  requested_properties:
+  - name: dipole_moment
+    value_type: number
+    comparison_group: dipole_moment
+    unit: Debye
+  gold_answers:
+  - property: dipole_moment
+    value: 3.85
+    scoring_profile: property_calculation_easy_dipole_moment_numeric_gold_v2
+    unit: Debye
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: dipole_moment
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_022_naphthalene_bridge_bond_order
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_bond_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - bond_order
+  - GFN2
+  prompt: |
+    At the GFN2 level, for naphthalene (SMILES: c1ccc2ccccc2c1), report the Wiberg bond order of the bridgehead C-C bond between zero-based atom indices 3 and 8.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: naphthalene_bridge_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc2ccccc2c1
+  requested_properties:
+  - name: wiberg_bond_order
+    value_type: number
+    comparison_group: wiberg_bond_order
+    unit: dimensionless
+  gold_answers:
+  - property: wiberg_bond_order
+    value: 1.2522
+    scoring_profile: property_calculation_easy_wiberg_bond_order_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: wiberg_bond_order
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_023_dimethyl_sulfone_so_bond_order
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_bond_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - bond_order
+  - GFN2
+  prompt: |
+    At the GFN2 level, for dimethyl sulfone (SMILES: CS(C)(=O)=O), report the Wiberg bond order of the S-O bond between zero-based atom indices 1 and 3.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: dimethyl_sulfone_so_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CS(C)(=O)=O
+  requested_properties:
+  - name: wiberg_bond_order
+    value_type: number
+    comparison_group: wiberg_bond_order
+    unit: dimensionless
+  gold_answers:
+  - property: wiberg_bond_order
+    value: 1.6615
+    scoring_profile: property_calculation_easy_wiberg_bond_order_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: wiberg_bond_order
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_024_methyl_nitrate_no_bond_order
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_bond_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - bond_order
+  - GFN2
+  prompt: |
+    At the GFN2 level, for methyl nitrate (SMILES: CO[N+](=O)[O-]), report the Wiberg bond order of the N-O single bond between zero-based atom indices 1 and 2.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: methyl_nitrate_no_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CO[N+](=O)[O-]
+  requested_properties:
+  - name: wiberg_bond_order
+    value_type: number
+    comparison_group: wiberg_bond_order
+    unit: dimensionless
+  gold_answers:
+  - property: wiberg_bond_order
+    value: 0.9292
+    scoring_profile: property_calculation_easy_wiberg_bond_order_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: wiberg_bond_order
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_025_phenol_surface_esp_minimum
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_surface_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - electrostatic_potential
+  - surface
+  prompt: |
+    At the B3LYP/6-31G** level, for phenol (SMILES: Oc1ccccc1), report the minimum electrostatic potential on the van der Waals surface in kcal/mol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: phenol_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Oc1ccccc1
+  requested_properties:
+  - name: surface_electrostatic_potential_minimum
+    value_type: number
+    comparison_group: surface_electrostatic_potential_minimum
+    unit: kcal/mol
+  gold_answers:
+  - property: surface_electrostatic_potential_minimum
+    value: -25.95
+    scoring_profile: property_calculation_easy_surface_esp_minimum_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: surface_electrostatic_potential_minimum
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_026_nitrobenzene_vdw_surface_area
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_surface_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - surface_area
+  - surface
+  prompt: |
+    At the B3LYP/6-31G** level, for nitrobenzene (SMILES: [O-][N+](=O)c1ccccc1), report the van der Waals surface area in angstrom^2.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"angstrom^2"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: nitrobenzene_surface_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: '[O-][N+](=O)c1ccccc1'
+  requested_properties:
+  - name: van_der_waals_surface_area
+    value_type: number
+    comparison_group: van_der_waals_surface_area
+    unit: angstrom^2
+  gold_answers:
+  - property: van_der_waals_surface_area
+    value: 150.3
+    scoring_profile: property_calculation_easy_vdw_surface_area_numeric_gold_v2
+    unit: angstrom^2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: van_der_waals_surface_area
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_027_pyrrole_surface_esp_variance
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_surface_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - electrostatic_potential
+  - surface
+  prompt: |
+    At the B3LYP/6-31G** level, for pyrrole (SMILES: c1cc[nH]c1), report the total variance of the electrostatic potential on the van der Waals surface in (kcal/mol)^2.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"(kcal/mol)^2"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: pyrrole_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1cc[nH]c1
+  requested_properties:
+  - name: surface_electrostatic_potential_total_variance
+    value_type: number
+    comparison_group: surface_electrostatic_potential_total_variance
+    unit: (kcal/mol)^2
+  gold_answers:
+  - property: surface_electrostatic_potential_total_variance
+    value: 178.25
+    scoring_profile: property_calculation_easy_surface_esp_variance_numeric_gold_v2
+    unit: (kcal/mol)^2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: surface_electrostatic_potential_total_variance
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_028_urea_crystal_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_crystal_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - density
+  prompt: |
+    For the molecular crystal of urea represented by SMILES O=C(N)N, report the crystal density in g/cm^3.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: urea_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: O=C(N)N
+  requested_properties:
+  - name: crystal_density
+    value_type: number
+    comparison_group: crystal_density
+    unit: g/cm^3
+  gold_answers:
+  - property: crystal_density
+    value: 1.333
+    scoring_profile: property_calculation_easy_batch2_crystal_density_3dp_numeric_gold_v2
+    unit: g/cm^3
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: crystal_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_029_tnt_crystal_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_crystal_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - density
+  prompt: |
+    For the molecular crystal of tnt represented by SMILES Cc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-], report the crystal density in g/cm^3.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: tnt_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Cc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]
+  requested_properties:
+  - name: crystal_density
+    value_type: number
+    comparison_group: crystal_density
+    unit: g/cm^3
+  gold_answers:
+  - property: crystal_density
+    value: 1.71
+    scoring_profile: property_calculation_easy_batch2_crystal_density_2dp_numeric_gold_v2
+    unit: g/cm^3
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: crystal_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_030_picric_acid_crystal_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_crystal_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - crystal
+  - density
+  prompt: |
+    For the molecular crystal of picric acid represented by SMILES Oc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-], report the crystal density in g/cm^3.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: picric_acid_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Oc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]
+  requested_properties:
+  - name: crystal_density
+    value_type: number
+    comparison_group: crystal_density
+    unit: g/cm^3
+  gold_answers:
+  - property: crystal_density
+    value: 1.831
+    scoring_profile: property_calculation_easy_batch2_crystal_density_3dp_numeric_gold_v2
+    unit: g/cm^3
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: crystal_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_031_allyl_radical_c1_spin_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - spin_density
+  - UB3LYP
+  prompt: |
+    At the UB3LYP/6-31G* level, for the allyl radical (SMILES: [CH2]C=C), report the spin density at zero-based atom index 1.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: allyl_radical_c1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: '[CH2]C=C'
+  requested_properties:
+  - name: spin_density
+    value_type: number
+    comparison_group: spin_density
+    unit: dimensionless
+  gold_answers:
+  - property: spin_density
+    value: -0.266
+    scoring_profile: property_calculation_easy_spin_density_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: spin_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_032_benzyl_radical_para_c_spin_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - spin_density
+  - UB3LYP
+  prompt: |
+    At the UB3LYP/6-31G* level, for the benzyl radical (SMILES: [CH2]c1ccccc1), report the spin density at zero-based atom index 4.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: benzyl_radical_para_c_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: '[CH2]c1ccccc1'
+  requested_properties:
+  - name: spin_density
+    value_type: number
+    comparison_group: spin_density
+    unit: dimensionless
+  gold_answers:
+  - property: spin_density
+    value: 0.301
+    scoring_profile: property_calculation_easy_spin_density_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: spin_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_033_phenoxy_radical_o_spin_density
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - spin_density
+  - UB3LYP
+  prompt: |
+    At the UB3LYP/6-31G* level, for the phenoxy radical (SMILES: [O]c1ccccc1), report the spin density at zero-based atom index 0.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: phenoxy_radical_o_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: '[O]c1ccccc1'
+  requested_properties:
+  - name: spin_density
+    value_type: number
+    comparison_group: spin_density
+    unit: dimensionless
+  gold_answers:
+  - property: spin_density
+    value: 0.415
+    scoring_profile: property_calculation_easy_spin_density_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: spin_density
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_034_indole_c3_fukui_minus
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - fukui_function
+  - GFN2
+  prompt: |
+    At the GFN2 level, for indole (SMILES: c1ccc2[nH]ccc2c1), report the f- Fukui function at zero-based atom index 6.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: indole_c3_fukui_minus_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccc2[nH]ccc2c1
+  requested_properties:
+  - name: fukui_function
+    value_type: number
+    comparison_group: fukui_function
+    unit: dimensionless
+  gold_answers:
+  - property: fukui_function
+    value: 0.076
+    scoring_profile: property_calculation_easy_fukui_function_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: fukui_function
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_035_chloronitrobenzene_c_fukui_plus
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - fukui_function
+  - GFN2
+  prompt: |
+    At the GFN2 level, for chloronitrobenzene (SMILES: Clc1ccc(cc1)[N+](=O)[O-]), report the f+ Fukui function at zero-based atom index 1.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: chloronitrobenzene_c_fukui_plus_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Clc1ccc(cc1)[N+](=O)[O-]
+  requested_properties:
+  - name: fukui_function
+    value_type: number
+    comparison_group: fukui_function
+    unit: dimensionless
+  gold_answers:
+  - property: fukui_function
+    value: 0.055
+    scoring_profile: property_calculation_easy_fukui_function_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: fukui_function
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_036_furfural_carbonyl_c_fukui_plus
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - fukui_function
+  - GFN2
+  prompt: |
+    At the GFN2 level, for furfural (SMILES: O=Cc1ccco1), report the f+ Fukui function at zero-based atom index 1.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: furfural_carbonyl_c_fukui_plus_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: O=Cc1ccco1
+  requested_properties:
+  - name: fukui_function
+    value_type: number
+    comparison_group: fukui_function
+    unit: dimensionless
+  gold_answers:
+  - property: fukui_function
+    value: 0.07
+    scoring_profile: property_calculation_easy_fukui_function_2dp_numeric_gold_v2
+    unit: dimensionless
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: fukui_function
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_037_benzene_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase benzene (SMILES: c1ccccc1) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: benzene_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1ccccc1
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 64.67
+    scoring_profile: property_calculation_easy_standard_entropy_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_038_acetonitrile_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase acetonitrile (SMILES: CC#N) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetonitrile_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC#N
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 57.88
+    scoring_profile: property_calculation_easy_standard_entropy_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_039_neopentane_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase neopentane (SMILES: CC(C)(C)C) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: neopentane_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC(C)(C)C
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 73.88
+    scoring_profile: property_calculation_easy_standard_entropy_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_040_methane_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase methane (SMILES: C) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: methane_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 44.4
+    scoring_profile: property_calculation_easy_standard_entropy_1dp_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_041_ammonia_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase ammonia (SMILES N) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: ammonia_molecule
+    type: molecule_description
+    presentation: prompt_inline
+    value: ammonia (SMILES N)
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 45.92
+    scoring_profile: property_calculation_easy_standard_entropy_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_042_carbon_dioxide_standard_entropy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - entropy
+  prompt: |
+    For gas-phase carbon dioxide (SMILES: O=C=O) at 298.15 K, report the standard molar entropy in cal/(mol*K).
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"cal/(mol*K)"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: carbon_dioxide_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: O=C=O
+  requested_properties:
+  - name: standard_entropy
+    value_type: number
+    comparison_group: standard_entropy
+    unit: cal/(mol*K)
+  gold_answers:
+  - property: standard_entropy
+    value: 51.18
+    scoring_profile: property_calculation_easy_standard_entropy_numeric_gold_v2
+    unit: cal/(mol*K)
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_NIST_gas_phase_data
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: standard_entropy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_043_acetic_acid_dimerization_enthalpy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_thermochemistry
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - thermochemistry
+  - dimerization
+  prompt: |
+    At the GFN2 level, for the cyclic dimer formed by two acetic acid molecules (SMILES: CC(=O)O) at 298.15 K, report the dimerization enthalpy in kcal/mol. Preserve the sign of the enthalpy.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetic_acid_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC(=O)O
+  requested_properties:
+  - name: dimerization_enthalpy
+    value_type: number
+    comparison_group: dimerization_enthalpy
+    unit: kcal/mol
+  gold_answers:
+  - property: dimerization_enthalpy
+    value: -16.04
+    scoring_profile: property_calculation_easy_dimerization_enthalpy_numeric_gold_v2
+    unit: kcal/mol
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_checked_against_reported_reference_value
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: dimerization_enthalpy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_044_caffeine_most_negative_mulliken_atom
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - atomic_charge
+  - GFN2
+  prompt: |
+    At the GFN2 level, for caffeine (SMILES: Cn1cnc2c1c(=O)n(C)c(=O)n2C), identify the atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":"<zero-based index> <element symbol>"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: caffeine_charge_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: Cn1cnc2c1c(=O)n(C)c(=O)n2C
+  requested_properties:
+  - name: most_negative_mulliken_atom
+    value_type: string
+    comparison_group: most_negative_mulliken_atom
+  gold_answers:
+  - property: most_negative_mulliken_atom
+    value: 11 O
+    scoring_profile: property_calculation_easy_most_negative_mulliken_atom_exact_string_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: most_negative_mulliken_atom
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_045_trifluoroacetic_acid_hydrogen_charge
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - atomic_charge
+  - GFN2
+  prompt: |
+    At the GFN2 level, for trifluoroacetic acid (SMILES: OC(=O)C(F)(F)F), report the Mulliken charge of the carboxylic hydrogen at zero-based atom index 7 in e.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"e"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: trifluoroacetic_acid_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: OC(=O)C(F)(F)F
+  requested_properties:
+  - name: mulliken_charge
+    value_type: number
+    comparison_group: mulliken_charge
+    unit: e
+  gold_answers:
+  - property: mulliken_charge
+    value: 0.364
+    scoring_profile: property_calculation_easy_mulliken_charge_numeric_gold_v2
+    unit: e
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: mulliken_charge
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_046_methyl_azide_most_negative_mulliken_atom
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_atomic_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - atomic_charge
+  - GFN2
+  prompt: |
+    At the GFN2 level, for methyl azide (SMILES: CN=[N+]=[N-]), identify the nitrogen atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":"<zero-based index> <element symbol>"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: methyl_azide_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CN=[N+]=[N-]
+  requested_properties:
+  - name: most_negative_mulliken_atom
+    value_type: string
+    comparison_group: most_negative_mulliken_atom
+  gold_answers:
+  - property: most_negative_mulliken_atom
+    value: 3 N
+    scoring_profile: property_calculation_easy_most_negative_mulliken_atom_exact_string_v2
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: most_negative_mulliken_atom
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_047_formaldehyde_s1_vertical_excitation_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - excited_state
+  - vertical_excitation
+  prompt: |
+    At the RI-TDA-B3LYP/def2-SVP level, for formaldehyde (SMILES: C=O), report the S1 vertical excitation energy in eV.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: formaldehyde_s1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C=O
+  requested_properties:
+  - name: vertical_excitation_energy
+    value_type: number
+    comparison_group: vertical_excitation_energy
+    unit: eV
+  gold_answers:
+  - property: vertical_excitation_energy
+    value: 4.12
+    scoring_profile: property_calculation_easy_vertical_excitation_energy_numeric_gold_v2
+    unit: eV
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: vertical_excitation_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_048_acetaldehyde_s1_vertical_excitation_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - excited_state
+  - vertical_excitation
+  prompt: |
+    At the RI-TDA-B3LYP/def2-SVP level, for acetaldehyde (SMILES: CC=O), report the S1 vertical excitation energy in eV.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetaldehyde_s1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC=O
+  requested_properties:
+  - name: vertical_excitation_energy
+    value_type: number
+    comparison_group: vertical_excitation_energy
+    unit: eV
+  gold_answers:
+  - property: vertical_excitation_energy
+    value: 4.42
+    scoring_profile: property_calculation_easy_vertical_excitation_energy_numeric_gold_v2
+    unit: eV
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: vertical_excitation_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_049_acetone_s1_vertical_excitation_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - excited_state
+  - vertical_excitation
+  prompt: |
+    At the RI-TDA-B3LYP/def2-SVP level, for acetone (SMILES: CC(C)=O), report the S1 vertical excitation energy in eV.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: acetone_s1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: CC(C)=O
+  requested_properties:
+  - name: vertical_excitation_energy
+    value_type: number
+    comparison_group: vertical_excitation_energy
+    unit: eV
+  gold_answers:
+  - property: vertical_excitation_energy
+    value: 4.51
+    scoring_profile: property_calculation_easy_vertical_excitation_energy_numeric_gold_v2
+    unit: eV
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: vertical_excitation_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_050_pyrazine_s1_vertical_excitation_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - excited_state
+  - vertical_excitation
+  prompt: |
+    At the RI-TDA-B3LYP/def2-SVP level, for pyrazine (SMILES: c1cnccn1), report the S1 vertical excitation energy in eV.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: pyrazine_s1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: c1cnccn1
+  requested_properties:
+  - name: vertical_excitation_energy
+    value_type: number
+    comparison_group: vertical_excitation_energy
+    unit: eV
+  gold_answers:
+  - property: vertical_excitation_energy
+    value: 4.04
+    scoring_profile: property_calculation_easy_vertical_excitation_energy_numeric_gold_v2
+    unit: eV
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: vertical_excitation_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+- task_id: property_calc_easy_051_formaldehyde_t1_vertical_excitation_energy
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_excited_state_property
+  difficulty: basic
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - excited_state
+  - vertical_excitation
+  prompt: |
+    At the RI-TDA-B3LYP/def2-SVP level, for formaldehyde (SMILES: C=O), report the T1 vertical excitation energy in eV.
+
+    Your final answer must appear on its own line exactly in this format:
+    FINAL ANSWER: {"answer":<number>,"unit":"eV"}
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects:
+  - object_id: formaldehyde_t1_molecule
+    type: smiles
+    presentation: prompt_inline
+    value: C=O
+  requested_properties:
+  - name: vertical_excitation_energy
+    value_type: number
+    comparison_group: vertical_excitation_energy
+    unit: eV
+  gold_answers:
+  - property: vertical_excitation_energy
+    value: 3.39
+    scoring_profile: property_calculation_easy_vertical_excitation_energy_numeric_gold_v2
+    unit: eV
+  gold_provenance:
+    disclosure: withheld_initial_release
+    source: expert_calculation_output
+  scoring:
+    aggregation: arithmetic_mean
+    comparison_groups:
+    - id: vertical_excitation_energy
+      mode: all
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error

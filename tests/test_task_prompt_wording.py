@@ -4,7 +4,7 @@ import yaml
 
 from verifier_grounded_benchmark.task.resources import package_resource
 
-PACKS = ("rdkit", "xtb", "property_calculation")
+PACKS = ("rdkit", "xtb", "property_calculation", "property_calculation_easy")
 
 FORBIDDEN_PROMPT_FRAGMENTS = [
     "RDKit-calculated",

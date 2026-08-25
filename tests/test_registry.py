@@ -49,6 +49,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         "rdkit",
         "xtb",
         "property_calculation",
+        "property_calculation_easy",
     ]
     assert tracks[0] == TrackDefinition(
         name="rdkit",
@@ -83,6 +84,17 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         status="formal",
         tags=("property_calculation", "fixed_input", "crystal"),
         resource_pack="property_calculation",
+    )
+    assert tracks[3] == TrackDefinition(
+        name="property_calculation_easy",
+            version="0.6.0",
+        display_name="Easy fixed-input property calculation tasks",
+        task_pack_path="tasks.yaml",
+        verifier_specs_path="verifier_specs.yaml",
+        sample_answers_path="sample_answers.jsonl",
+        status="formal",
+        tags=("property_calculation", "fixed_input", "easy", "small_molecule"),
+        resource_pack="property_calculation_easy",
     )
 
 
