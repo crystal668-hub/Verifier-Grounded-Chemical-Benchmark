@@ -23,6 +23,7 @@ V41_RELEASE_DIR = ROOT / "releases" / "v0.4.1"
 V42_RELEASE_DIR = ROOT / "releases" / "v0.4.2"
 V43_RELEASE_DIR = ROOT / "releases" / "v0.4.3"
 V50_RELEASE_DIR = ROOT / "releases" / "v0.5.0"
+V60_RELEASE_DIR = ROOT / "releases" / "v0.6.0"
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
@@ -432,3 +433,39 @@ def test_v50_release_manifest_binds_property_calculation_expansion_and_openclaw_
             "sha256": "de33af6561312538557951fe4e38eefecfbd4fb14ea223a956d00500acfaeffa",
         },
     }
+
+
+def test_v60_release_manifest_binds_standardized_property_calculation_tasks() -> None:
+    manifest = json.loads((V60_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
+    inventory = json.loads((V60_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8"))
+
+    assert manifest["version"] == inventory["package_version"] == "0.6.0"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert {name: value["count"] for name, value in inventory["tracks"].items()} == {
+        "property_calculation": 20,
+        "rdkit": 14,
+        "xtb": 20,
+    }
+    assert inventory["tracks"]["property_calculation"]["task_ids"][:2] == [
+        "property_calc_001_free_energy",
+        "property_calc_002_crystal_phase",
+    ]
+
+    tagged_commit = subprocess.run(
+        ["git", "rev-list", "-n", "1", manifest["tag"]],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert tagged_commit == manifest["canonical_source"]["commit"]
+
+    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
+    wheel_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.6.0-py3-none-any.whl"
+    sdist_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.6.0.tar.gz"
+    for path in (wheel_path, sdist_path):
+        content = path.read_bytes()
+        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
+        assert len(content) == artifacts[path.name]["size"]
+    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
