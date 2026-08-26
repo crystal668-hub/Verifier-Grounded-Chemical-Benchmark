@@ -298,6 +298,27 @@ def test_easy_atom_and_condition_contracts_are_explicit() -> None:
         assert "index followed by the element symbol" in tasks[task_id]["prompt"]
 
 
+def test_easy_prompts_preserve_gfn2_xtb_method_and_density_protocol() -> None:
+    tasks = load_pack().tasks_by_id
+
+    for task in tasks.values():
+        if "GFN2" in task["capability_tags"]:
+            assert "GFN2-xTB" in task["prompt"]
+
+    for task_id in (
+        "property_calc_easy_028_urea_crystal_density",
+        "property_calc_easy_029_tnt_crystal_density",
+        "property_calc_easy_030_picric_acid_crystal_density",
+    ):
+        prompt = tasks[task_id]["prompt"]
+        assert "rho = M/V(0.001)" in prompt
+        assert "0.001 a.u. electron-density isosurface" in prompt
+        assert "B3LYP/6-31G**" in prompt
+        assert "GFN2-xTB geometry optimization" in prompt
+        assert "Do not apply a crystal packing factor" in prompt
+        assert "only for molecular crystals" in prompt
+
+
 def test_original_property_calculation_track_is_unchanged() -> None:
     assert list(load_pack("property_calculation").tasks_by_id) == ORIGINAL_PROPERTY_TASK_IDS
 

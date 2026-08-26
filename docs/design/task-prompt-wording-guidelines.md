@@ -32,7 +32,7 @@ Use three separate layers for task meaning, evaluation transparency, and machine
 
 Do not use these kinds of phrases in a task `prompt`:
 
-- Tool or backend names as requirements, such as "RDKit-calculated", "local xTB", "GFN2-xTB", "MatGL", or "MACE-MP-small".
+- Tool or backend names as requirements, such as "RDKit-calculated", "local xTB", "MatGL", or "MACE-MP-small". A method name may be retained when it is part of the scientific quantity being requested (for example, a fixed `GFN2-xTB` property level), rather than an instruction to use a local backend.
 - Verifier implementation details, such as "verifier_id", script paths, "sigma", or "geometric_mean".
 - Benchmark meta-language, such as "benchmark-evaluated", "benchmark optimization", or "benchmark protocol".
 

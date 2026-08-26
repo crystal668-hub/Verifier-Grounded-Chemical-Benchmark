@@ -22,6 +22,10 @@ FORBIDDEN_PROMPT_FRAGMENTS = [
     "benchmark",
 ]
 
+SCIENTIFIC_METHOD_PROMPT_ALLOWLIST = {
+    "property_calculation_easy": {"GFN2-xTB"},
+}
+
 
 def test_task_prompts_do_not_expose_tool_or_benchmark_internals() -> None:
     violations: list[str] = []
@@ -32,6 +36,8 @@ def test_task_prompts_do_not_expose_tool_or_benchmark_internals() -> None:
         for task in payload["tasks"]:
             prompt = task["prompt"]
             for fragment in FORBIDDEN_PROMPT_FRAGMENTS:
+                if fragment in SCIENTIFIC_METHOD_PROMPT_ALLOWLIST.get(pack_name, set()):
+                    continue
                 if fragment.lower() in prompt.lower():
                     violations.append(
                         f"{pack_name}/tasks.yaml:{task['task_id']} contains {fragment!r}"

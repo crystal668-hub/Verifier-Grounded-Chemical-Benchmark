@@ -1356,7 +1356,7 @@ tasks:
   - polarizability
   - GFN2
   prompt: |
-    At the GFN2 level, for thiophene (SMILES: c1ccsc1), report the static mean polarizability in atomic units (a.u.).
+    At the GFN2-xTB level, for thiophene (SMILES: c1ccsc1), report the static mean polarizability in atomic units (a.u.).
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
@@ -1406,7 +1406,7 @@ tasks:
   - polarizability
   - GFN2
   prompt: |
-    At the GFN2 level, for benzene (SMILES: c1ccccc1), report the static mean polarizability in atomic units (a.u.).
+    At the GFN2-xTB level, for benzene (SMILES: c1ccccc1), report the static mean polarizability in atomic units (a.u.).
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
@@ -1456,7 +1456,7 @@ tasks:
   - polarizability
   - GFN2
   prompt: |
-    At the GFN2 level, for octatetraene (SMILES: C=CC=CC=CC=C), report the static mean polarizability in atomic units (a.u.).
+    At the GFN2-xTB level, for octatetraene (SMILES: C=CC=CC=CC=C), report the static mean polarizability in atomic units (a.u.).
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"a.u."}
@@ -1506,7 +1506,7 @@ tasks:
   - dipole_moment
   - GFN2
   prompt: |
-    At the GFN2 level, for dimethyl sulfoxide (SMILES: CS(C)=O) in water, report the dipole moment in Debye.
+    At the GFN2-xTB level, for dimethyl sulfoxide (SMILES: CS(C)=O) in water, report the dipole moment in Debye.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
@@ -1556,7 +1556,7 @@ tasks:
   - dipole_moment
   - GFN2
   prompt: |
-    At the GFN2 level, for cis-1,2-dichloroethene (SMILES: Cl/C=C\Cl) in the gas phase, report the dipole moment in Debye.
+    At the GFN2-xTB level, for cis-1,2-dichloroethene (SMILES: Cl/C=C\Cl) in the gas phase, report the dipole moment in Debye.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
@@ -1606,7 +1606,7 @@ tasks:
   - dipole_moment
   - GFN2
   prompt: |
-    At the GFN2 level, for acetonitrile (SMILES: CC#N) in the gas phase, report the dipole moment in Debye.
+    At the GFN2-xTB level, for acetonitrile (SMILES: CC#N) in the gas phase, report the dipole moment in Debye.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"Debye"}
@@ -1656,7 +1656,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2 level, for naphthalene (SMILES: c1ccc2ccccc2c1), report the Wiberg bond order of the bridgehead C-C bond between zero-based atom indices 3 and 8.
+    At the GFN2-xTB level, for naphthalene (SMILES: c1ccc2ccccc2c1), report the Wiberg bond order of the bridgehead C-C bond between zero-based atom indices 3 and 8.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1706,7 +1706,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2 level, for dimethyl sulfone (SMILES: CS(C)(=O)=O), report the Wiberg bond order of the S-O bond between zero-based atom indices 1 and 3.
+    At the GFN2-xTB level, for dimethyl sulfone (SMILES: CS(C)(=O)=O), report the Wiberg bond order of the S-O bond between zero-based atom indices 1 and 3.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1756,7 +1756,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2 level, for methyl nitrate (SMILES: CO[N+](=O)[O-]), report the Wiberg bond order of the N-O single bond between zero-based atom indices 1 and 2.
+    At the GFN2-xTB level, for methyl nitrate (SMILES: CO[N+](=O)[O-]), report the Wiberg bond order of the N-O single bond between zero-based atom indices 1 and 2.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1956,7 +1956,7 @@ tasks:
   - crystal
   - density
   prompt: |
-    For the molecular crystal of urea represented by SMILES O=C(N)N, report the crystal density in g/cm^3.
+    Using the molecular-crystal approximation rho = M/V(0.001), where V(0.001) is the volume enclosed by the 0.001 a.u. electron-density isosurface computed at B3LYP/6-31G** after GFN2-xTB geometry optimization, report the crystal density of urea (SMILES: O=C(N)N) in g/cm^3. Do not apply a crystal packing factor; this approximation is intended only for molecular crystals.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
@@ -2006,7 +2006,7 @@ tasks:
   - crystal
   - density
   prompt: |
-    For the molecular crystal of tnt represented by SMILES Cc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-], report the crystal density in g/cm^3.
+    Using the molecular-crystal approximation rho = M/V(0.001), where V(0.001) is the volume enclosed by the 0.001 a.u. electron-density isosurface computed at B3LYP/6-31G** after GFN2-xTB geometry optimization, report the crystal density of TNT (SMILES: Cc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]) in g/cm^3. Do not apply a crystal packing factor; this approximation is intended only for molecular crystals.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
@@ -2056,7 +2056,7 @@ tasks:
   - crystal
   - density
   prompt: |
-    For the molecular crystal of picric acid represented by SMILES Oc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-], report the crystal density in g/cm^3.
+    Using the molecular-crystal approximation rho = M/V(0.001), where V(0.001) is the volume enclosed by the 0.001 a.u. electron-density isosurface computed at B3LYP/6-31G** after GFN2-xTB geometry optimization, report the crystal density of picric acid (SMILES: Oc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]) in g/cm^3. Do not apply a crystal packing factor; this approximation is intended only for molecular crystals.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"g/cm^3"}
@@ -2256,7 +2256,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2 level, for indole (SMILES: c1ccc2[nH]ccc2c1), report the f- Fukui function at zero-based atom index 6.
+    At the GFN2-xTB level, for indole (SMILES: c1ccc2[nH]ccc2c1), report the f- Fukui function at zero-based atom index 6.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -2306,7 +2306,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2 level, for chloronitrobenzene (SMILES: Clc1ccc(cc1)[N+](=O)[O-]), report the f+ Fukui function at zero-based atom index 1.
+    At the GFN2-xTB level, for chloronitrobenzene (SMILES: Clc1ccc(cc1)[N+](=O)[O-]), report the f+ Fukui function at zero-based atom index 1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -2356,7 +2356,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2 level, for furfural (SMILES: O=Cc1ccco1), report the f+ Fukui function at zero-based atom index 1.
+    At the GFN2-xTB level, for furfural (SMILES: O=Cc1ccco1), report the f+ Fukui function at zero-based atom index 1.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -2706,7 +2706,7 @@ tasks:
   - thermochemistry
   - dimerization
   prompt: |
-    At the GFN2 level, for the cyclic dimer formed by two acetic acid molecules (SMILES: CC(=O)O) at 298.15 K, report the dimerization enthalpy in kcal/mol. Preserve the sign of the enthalpy.
+    At the GFN2-xTB level, for the cyclic dimer formed by two acetic acid molecules (SMILES: CC(=O)O) at 298.15 K, report the dimerization enthalpy in kcal/mol. Preserve the sign of the enthalpy.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}
@@ -2756,7 +2756,7 @@ tasks:
   - atomic_charge
   - GFN2
   prompt: |
-    At the GFN2 level, for caffeine (SMILES: Cn1cnc2c1c(=O)n(C)c(=O)n2C), identify the atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
+    At the GFN2-xTB level, for caffeine (SMILES: Cn1cnc2c1c(=O)n(C)c(=O)n2C), identify the atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":"<zero-based index> <element symbol>"}
@@ -2804,7 +2804,7 @@ tasks:
   - atomic_charge
   - GFN2
   prompt: |
-    At the GFN2 level, for trifluoroacetic acid (SMILES: OC(=O)C(F)(F)F), report the Mulliken charge of the carboxylic hydrogen at zero-based atom index 7 in e.
+    At the GFN2-xTB level, for trifluoroacetic acid (SMILES: OC(=O)C(F)(F)F), report the Mulliken charge of the carboxylic hydrogen at zero-based atom index 7 in e.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"e"}
@@ -2854,7 +2854,7 @@ tasks:
   - atomic_charge
   - GFN2
   prompt: |
-    At the GFN2 level, for methyl azide (SMILES: CN=[N+]=[N-]), identify the nitrogen atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
+    At the GFN2-xTB level, for methyl azide (SMILES: CN=[N+]=[N-]), identify the nitrogen atom with the most negative Mulliken charge. Atom indices are zero-based in SMILES order, with hydrogens after all heavy atoms. Report exactly the index followed by the element symbol.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":"<zero-based index> <element symbol>"}
