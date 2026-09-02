@@ -86,12 +86,12 @@ def test_verifier_selection_uses_only_submitted_tasks() -> None:
     track = load_track("xtb")
 
     regular = verifier_specs_for_answers(
-        track.tasks_by_id,
+        track._task_pack.tasks_by_id,
         track.verifier_specs_by_id,
         [{"task_id": "xtb_gap_window_001"}],
     )
     conformer_search = verifier_specs_for_answers(
-        track.tasks_by_id,
+        track._task_pack.tasks_by_id,
         track.verifier_specs_by_id,
         [{"task_id": "xtb_pyrene_substituent_energy_min_020"}],
     )

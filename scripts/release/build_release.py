@@ -19,8 +19,8 @@ ARCHIVE_PACKAGES = ("verifier_grounded_benchmark", "vgb")
 FORMAL_TRACK_PATHS = {
     "rdkit": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "rdkit" / "tasks.yaml",
     "xtb": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "xtb" / "tasks.yaml",
-    "property_calculation": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation" / "tasks.yaml",
-    "property_calculation_easy": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_easy" / "tasks.yaml",
+    "property_calculation_advanced": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation" / "tasks.yaml",
+    "property_calculation_basic": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_easy" / "tasks.yaml",
 }
 
 
@@ -44,7 +44,11 @@ def task_inventory(version: str) -> dict[str, Any]:
         task_pack = payload.get("task_pack")
         if not isinstance(task_pack, dict):
             raise ValueError(f"Invalid task-pack metadata: {path}")
-        scoring_version = str(task_pack["scoring_version"])
+        scoring_payload = yaml.safe_load((path.parent / "scoring.yaml").read_text(encoding="utf-8"))
+        scoring_config = scoring_payload.get("scoring_config")
+        if not isinstance(scoring_config, dict):
+            raise ValueError(f"Invalid scoring config: {path.parent / 'scoring.yaml'}")
+        scoring_version = str(scoring_config["scoring_version"])
         scoring_versions.add(scoring_version)
         tracks[track] = {
             "count": len(task_ids),
@@ -52,9 +56,9 @@ def task_inventory(version: str) -> dict[str, Any]:
             "tasks_sha256": sha256_file(path),
             "task_pack_version": payload["task_pack"]["version"],
             "scoring_version": scoring_version,
-            "scoring_status": task_pack.get("scoring_status", "formal"),
+            "scoring_status": scoring_config.get("scoring_status", "formal"),
         }
-        for profile_id, profile in payload["scoring_profiles"].items():
+        for profile_id, profile in scoring_payload["scoring_profiles"].items():
             encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
             profile_hash = hashlib.sha256(encoded).hexdigest()
             existing = scoring_profiles.get(profile_id)

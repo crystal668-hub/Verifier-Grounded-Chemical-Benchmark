@@ -9,8 +9,8 @@ def test_list_tracks_returns_formal_builtin_names() -> None:
     assert [track.name for track in vgb.list_tracks()] == [
         "rdkit",
         "xtb",
-        "property_calculation",
-        "property_calculation_easy",
+        "property_calculation_advanced",
+        "property_calculation_basic",
     ]
 
 
@@ -20,8 +20,8 @@ def test_vgb_alias_exposes_same_public_api() -> None:
     assert [definition.name for definition in short_vgb.list_tracks()] == [
         "rdkit",
         "xtb",
-        "property_calculation",
-        "property_calculation_easy",
+        "property_calculation_advanced",
+        "property_calculation_basic",
     ]
     assert short_vgb.load_track("rdkit").name == "rdkit"
 
@@ -79,28 +79,21 @@ def test_builtin_track_uses_importable_module_executors() -> None:
     assert vgb.load_track("property_calculation_easy").verifier_specs_by_id == {}
 
 
-def test_property_calculation_track_scores_public_samples() -> None:
-    track = vgb.load_track("property_calculation")
-
-    report = track.evaluate_answers(track.sample_answers())
-
+def test_property_calculation_track_has_no_public_samples_and_redacts_gold() -> None:
+    track = vgb.load_track("property_calculation_advanced")
+    task = track.tasks()[0]
     assert len(track.tasks()) == 20
-    assert len(track.sample_answers()) == 20
-    assert report["summary"]["coverage"]["complete"] is True
-    assert report["summary"]["benchmark_score"] == 1.0
-    assert [row["score"] for row in report["rows"]] == [1.0] * 20
+    assert track.sample_answers() == []
+    assert "gold_answers" not in task
+    gold_task = track.task(task["task_id"], include_gold=True)
+    assert "gold_answers" in gold_task
 
 
-def test_property_calculation_easy_track_scores_public_samples() -> None:
-    track = vgb.load_track("property_calculation_easy")
-
-    report = track.evaluate_answers(track.sample_answers())
-
+def test_property_calculation_basic_track_has_no_public_samples() -> None:
+    track = vgb.load_track("property_calculation_basic")
     assert len(track.tasks()) == 51
-    assert len(track.sample_answers()) == 51
-    assert report["summary"]["coverage"]["complete"] is True
-    assert report["summary"]["benchmark_score"] == 1.0
-    assert [row["score"] for row in report["rows"]] == [1.0] * 51
+    assert track.sample_answers() == []
+    assert "gold_answers" not in track.tasks()[0]
 
 
 def test_load_track_rejects_unknown_track() -> None:

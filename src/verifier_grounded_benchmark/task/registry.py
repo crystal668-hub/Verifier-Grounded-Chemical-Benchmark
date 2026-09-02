@@ -82,14 +82,14 @@ class Registry:
 def builtin_definitions() -> list[TrackDefinition]:
     return [
         TrackDefinition(
-            name="rdkit", version="0.7.0", display_name="RDKit baseline small-molecule tasks",
+            name="rdkit", version="0.8.0", display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
-            name="xtb", version="0.7.0", display_name="xTB molecular optimization tasks",
+            name="xtb", version="0.8.0", display_name="xTB molecular optimization tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",

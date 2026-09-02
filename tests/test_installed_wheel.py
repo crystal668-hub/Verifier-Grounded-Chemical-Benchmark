@@ -76,10 +76,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
             "-c",
             (
                 "from importlib.resources import files; import json; "
-                "print(json.dumps(["
-                "str(files('verifier_grounded_benchmark.task.packs.rdkit').joinpath('sample_answers.jsonl')),"
-                "str(files('verifier_grounded_benchmark.task.packs.property_calculation').joinpath('sample_answers.jsonl')),"
-                "str(files('verifier_grounded_benchmark.task.packs.property_calculation_easy').joinpath('sample_answers.jsonl'))]))"
+                "print(str(files('verifier_grounded_benchmark.task.packs.rdkit').joinpath('sample_answers.jsonl')))"
             ),
         ],
         cwd=tmp_path,
@@ -88,9 +85,16 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         capture_output=True,
         env=env,
     )
-    answers_path, property_answers_path, property_easy_answers_path = json.loads(
-        resources_completed.stdout
+    answers_path = resources_completed.stdout.strip()
+    property_answers_path = tmp_path / "property_answers.jsonl"
+    property_easy_answers_path = tmp_path / "property_basic_answers.jsonl"
+    generator = (
+        "import json, pathlib, verifier_grounded_benchmark as v; "
+        "paths=[(" + repr(str(property_answers_path)) + ", 'property_calculation_advanced'), "
+        "(" + repr(str(property_easy_answers_path)) + ", 'property_calculation_basic')]; "
+        "[(lambda tr: pathlib.Path(p).write_text('\\n'.join(json.dumps({'task_id': t['task_id'], 'answers': [{'property': g['property'], 'value': g['value'], **({'unit': g['unit']} if 'unit' in g else {})} for g in tr.task(t['task_id'], include_gold=True)['gold_answers']]}) for t in tr.tasks())+'\\n'))(v.load_track(n)) for p,n in paths]"
     )
+    subprocess.run([str(python), "-c", generator], cwd=tmp_path, check=True, env=env)
     completed = subprocess.run(
         [
             str(executable),
@@ -114,7 +118,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         [
             str(executable),
             "--track",
-            "property_calculation",
+            "property_calculation_advanced",
             "--answers",
             property_answers_path,
             "--require-complete",
@@ -134,7 +138,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         [
             str(executable),
             "--track",
-            "property_calculation_easy",
+            "property_calculation_basic",
             "--answers",
             property_easy_answers_path,
             "--require-complete",

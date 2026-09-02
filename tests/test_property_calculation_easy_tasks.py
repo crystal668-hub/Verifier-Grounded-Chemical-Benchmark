@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import re
 
 import pytest
@@ -156,24 +155,14 @@ def test_easy_pack_has_frozen_ids_and_common_property_envelope() -> None:
         assert "parse_error" in set(task["failure_policy"].values())
 
 
-def test_easy_pack_gold_and_sample_answers_are_frozen() -> None:
+def test_easy_pack_gold_is_frozen_and_samples_are_removed() -> None:
     pack = load_pack()
-    samples = [
-        json.loads(line)
-        for line in package_resource(
-            "property_calculation_easy", "sample_answers.jsonl"
-        ).read_text(encoding="utf-8").splitlines()
-    ]
-
-    assert [sample["task_id"] for sample in samples] == list(EXPECTED_GOLD)
-    for sample in samples:
-        expected_value, expected_unit = EXPECTED_GOLD[sample["task_id"]]
-        task = pack.tasks_by_id[sample["task_id"]]
+    assert not package_resource("property_calculation_easy", "sample_answers.jsonl").is_file()
+    for task_id, (expected_value, expected_unit) in EXPECTED_GOLD.items():
+        task = pack.tasks_by_id[task_id]
         gold = task["gold_answers"][0]
         assert gold["value"] == expected_value
         assert gold.get("unit") == expected_unit
-        assert sample["answer"] == expected_value
-        assert sample.get("unit") == expected_unit
 
 
 def test_easy_profiles_without_references_keep_reported_precision() -> None:
@@ -203,7 +192,7 @@ def test_easy_reference_profiles_define_scoreable_asymmetric_ranges() -> None:
         lower_tolerance,
         upper_tolerance,
     ) in REFERENCE_PROFILE_TOLERANCES.items():
-        task = tasks[number - 1]
+        task = pack.tasks_by_id[tasks[number - 1]["task_id"]]
         profile_id = task["gold_answers"][0]["scoring_profile"]
         profile = pack.scoring_profiles[profile_id]
         assert profile_id.startswith(
@@ -229,7 +218,8 @@ def test_easy_reference_boundaries_receive_score_but_outer_boundaries_do_not() -
         REFERENCE_PROFILE_TOLERANCES.items()
     ):
         task = tasks[number - 1]
-        gold = task["gold_answers"][0]
+        scored_task = pack.tasks_by_id[task["task_id"]]
+        gold = scored_task["gold_answers"][0]
         profile = pack.scoring_profiles[gold["scoring_profile"]]
         for reference in {reference_lower, reference_upper}:
             result = track.evaluate_one(

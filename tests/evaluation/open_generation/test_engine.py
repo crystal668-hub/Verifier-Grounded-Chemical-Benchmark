@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import json
 import sys
 from copy import deepcopy
 
 import pytest
 
+import verifier_grounded_benchmark as vgb
 from verifier_grounded_benchmark.evaluation import EvaluationEngine
 from verifier_grounded_benchmark.evaluation.open_generation.verification.evidence import (
     VerificationEvidence,
@@ -215,8 +215,12 @@ def test_engine_dispatches_property_calculation_and_raw_json() -> None:
 
 
 def test_complete_property_report_gets_official_benchmark_score() -> None:
-    pack = _pack("property_calculation")
-    answers = [json.loads(line) for line in package_resource("property_calculation", "sample_answers.jsonl").read_text().splitlines()]
+    track = vgb.load_track("property_calculation_advanced")
+    pack = track._task_pack
+    answers = []
+    for task in track.tasks():
+        gold = track.task(task["task_id"], include_gold=True)["gold_answers"]
+        answers.append({"task_id": task["task_id"], "answers": [{"property": g["property"], "value": g["value"], **({"unit": g["unit"]} if "unit" in g else {})} for g in gold]})
 
     report = EvaluationEngine(pack).evaluate_many(answers)
 

@@ -16,12 +16,10 @@ from verifier_grounded_benchmark.evaluation.external_dependencies import (
 )
 from verifier_grounded_benchmark.evaluation.io import load_answers_jsonl_file
 from verifier_grounded_benchmark.task.loader import (
-    load_tasks_file,
+    load_task_pack,
     load_verifier_specs_file,
-    task_pack_from_mappings,
 )
 from verifier_grounded_benchmark.task.models import TaskPack
-from verifier_grounded_benchmark.task.resources import materialize_verifier_specs
 
 
 def load_development_task_pack(
@@ -29,12 +27,13 @@ def load_development_task_pack(
     specs_path: Path,
     *,
     script_root: Path | None = None,
+    scoring_path: Path | None = None,
 ) -> TaskPack:
-    resolved_script_root = script_root or specs_path.resolve().parent
-    specs = load_verifier_specs_file(specs_path)
-    return task_pack_from_mappings(
-        load_tasks_file(tasks_path),
-        materialize_verifier_specs(specs, script_root=resolved_script_root),
+    load_verifier_specs_file(specs_path)
+    return load_task_pack(
+        tasks_path,
+        specs_path,
+        scoring_path,
     )
 
 
@@ -54,6 +53,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         help="Development-only verifier spec override for maintaining task packs.",
     )
+    parser.add_argument(
+        "--scoring",
+        type=Path,
+        help="Development-only scoring config override for maintaining task packs.",
+    )
     parser.add_argument("--answers", required=True, type=Path)
     parser.add_argument(
         "--require-complete",
@@ -61,10 +65,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Exit with an error unless submitted answers cover every task exactly once.",
     )
     args = parser.parse_args(argv)
-    if args.track and (args.tasks is not None or args.specs is not None):
-        parser.error("--track cannot be combined with --tasks or --specs")
-    if (args.tasks is None) != (args.specs is None):
-        parser.error("--tasks and --specs must be provided together")
+    if args.track and any(x is not None for x in (args.tasks, args.specs, args.scoring)):
+        parser.error("--track cannot be combined with --tasks, --specs, or --scoring")
+    if len({args.tasks is None, args.specs is None, args.scoring is None}) != 1:
+        parser.error("--tasks, --specs, and --scoring must be provided together")
     return args
 
 
@@ -81,11 +85,12 @@ def main(argv: list[str] | None = None) -> int:
         tasks_by_id = track.tasks_by_id
         specs_by_id = track.verifier_specs_by_id
     else:
-        assert args.specs is not None
+        assert args.specs is not None and args.scoring is not None
         pack = load_development_task_pack(
             args.tasks,
             args.specs,
             script_root=args.specs.resolve().parent,
+            scoring_path=args.scoring,
         )
         tasks_by_id = pack.tasks_by_id
         specs_by_id = pack.verifier_specs_by_id

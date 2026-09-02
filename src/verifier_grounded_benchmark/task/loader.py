@@ -66,6 +66,12 @@ def load_task_pack(
     verifier_data = _load_yaml_mapping(verifier_resource)
     if scoring_resource is None and "scoring_profiles" not in task_data:
         scoring_resource = _sibling_resource(tasks_resource, "scoring.yaml")
+        if scoring_resource is None:
+            pack_id = (task_data.get("task_pack") or {}).get("id")
+            if pack_id in {"rdkit", "xtb", "property_calculation", "property_calculation_easy"}:
+                from verifier_grounded_benchmark.task.resources import package_resource
+
+                scoring_resource = package_resource(pack_id, "scoring.yaml")
     scoring_data = (
         _load_yaml_mapping(scoring_resource) if scoring_resource is not None else None
     )
@@ -79,7 +85,8 @@ def load_task_pack(
 
 def _sibling_resource(resource: Any, filename: str) -> Any | None:
     try:
-        return resource.parent.joinpath(filename)
+        candidate = resource.parent.joinpath(filename)
+        return candidate if candidate.is_file() else None
     except AttributeError:
         path = Path(resource).resolve().parent / filename
         return path if path.exists() else None
