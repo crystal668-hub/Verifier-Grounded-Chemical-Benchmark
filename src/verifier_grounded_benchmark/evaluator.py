@@ -10,7 +10,7 @@ from verifier_grounded_benchmark.evaluation import (
     EvaluationReport,
 )
 from verifier_grounded_benchmark.task.loader import task_pack_from_mappings
-from verifier_grounded_benchmark.task.models import TaskPack
+from verifier_grounded_benchmark.task.models import TaskPack, public_task_dict
 
 
 class Evaluator:
@@ -29,7 +29,10 @@ class Evaluator:
 
     @property
     def tasks(self) -> dict[str, dict[str, Any]]:
-        return self.task_pack.tasks_by_id
+        return {
+            task_id: public_task_dict(task.to_dict())
+            for task_id, task in ((task.task_id, task) for task in self.task_pack.tasks)
+        }
 
     @property
     def verifier_specs(self) -> dict[str, dict[str, Any]]:

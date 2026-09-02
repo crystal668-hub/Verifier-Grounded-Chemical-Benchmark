@@ -2,158 +2,6 @@ schema_version: 2
 task_pack:
   id: rdkit
   version: 0.7.0
-  scoring_version: linear_goal_v2
-scoring_profiles:
-  rdkit_qed_maximize_0p0_1p0_v2:
-    property: qed
-    type: maximize
-    unit: dimensionless
-    full_score_target: 1.0
-    zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_sa_score_minimize_1p0_10p0_v2:
-    property: sa_score
-    type: minimize
-    unit: score
-    full_score_target: 1.0
-    zero_score_anchor: 10.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_logp_window_1p0_3p0_2p0_v2:
-    property: logp
-    type: window
-    unit: dimensionless
-    full_score:
-      min: 1.0
-      max: 3.0
-    decay:
-      lower_width: 2.0
-      upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_tpsa_window_35p0_75p0_40p0_v2:
-    property: tpsa
-    type: window
-    unit: angstrom_squared
-    full_score:
-      min: 35.0
-      max: 75.0
-    decay:
-      lower_width: 40.0
-      upper_width: 40.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_hba_window_2_4_2p0_v2:
-    property: hba
-    type: window
-    unit: count
-    full_score:
-      min: 2
-      max: 4
-    decay:
-      lower_width: 2.0
-      upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_hbd_window_1_2_1p0_v2:
-    property: hbd
-    type: window
-    unit: count
-    full_score:
-      min: 1
-      max: 2
-    decay:
-      lower_width: 1.0
-      upper_width: 1.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_fraction_csp3_maximize_0p0_1p0_v2:
-    property: fraction_csp3
-    type: maximize
-    unit: fraction
-    full_score_target: 1.0
-    zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_logp_target_3p0_3p0_v2:
-    property: logp
-    type: target
-    unit: dimensionless
-    full_score_target: 3.0
-    decay:
-      lower_width: 3.0
-      upper_width: 3.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  rdkit_terminal_atom_distance_maximize_6p36_21p68_v2:
-    property: terminal_atom_distance
-    type: maximize
-    unit: angstrom
-    full_score_target: 21.68
-    zero_score_anchor: 6.36
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: rdkit-013-terminal-atom-distance-calibration-2026-07-30
-      decision_record: docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
-  rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2:
-    property: caffeine_morgan_tanimoto
-    type: maximize
-    unit: dimensionless
-    full_score_target: 1.0
-    zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
 tasks:
 - task_id: rdkit_qed_max_001
   version: 1
@@ -182,20 +30,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: maximize
-    property: qed
-    verifier_id: rdkit_qed_v1
-    role: main
-    scoring_profile: rdkit_qed_maximize_0p0_1p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_sa_min_002
   version: 1
@@ -224,20 +58,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: minimize
-    property: sa_score
-    verifier_id: rdkit_sa_score_v1
-    role: main
-    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_logp_window_003
   version: 1
@@ -266,20 +86,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: logp
-    verifier_id: rdkit_logp_v1
-    role: main
-    scoring_profile: rdkit_logp_window_1p0_3p0_2p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_tpsa_window_004
   version: 1
@@ -308,20 +114,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: tpsa
-    verifier_id: rdkit_tpsa_v1
-    role: main
-    scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_hba_window_005
   version: 1
@@ -350,20 +142,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: hba
-    verifier_id: rdkit_hba_v1
-    role: main
-    scoring_profile: rdkit_hba_window_2_4_2p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_hbd_window_006
   version: 1
@@ -392,20 +170,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: hbd
-    verifier_id: rdkit_hbd_v1
-    role: main
-    scoring_profile: rdkit_hbd_window_1_2_1p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_fsp3_max_007
   version: 1
@@ -434,20 +198,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: maximize
-    property: fraction_csp3
-    verifier_id: rdkit_fraction_csp3_v1
-    role: main
-    scoring_profile: rdkit_fraction_csp3_maximize_0p0_1p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_qed_sa_008
   version: 1
@@ -478,25 +228,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: maximize
-    property: qed
-    verifier_id: rdkit_qed_v1
-    role: main
-    scoring_profile: rdkit_qed_maximize_0p0_1p0_v2
-  - type: minimize
-    property: sa_score
-    verifier_id: rdkit_sa_score_v1
-    role: main
-    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_logp_tpsa_009
   version: 1
@@ -527,25 +258,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: logp
-    verifier_id: rdkit_logp_v1
-    role: main
-    scoring_profile: rdkit_logp_window_1p0_3p0_2p0_v2
-  - type: window
-    property: tpsa
-    verifier_id: rdkit_tpsa_v1
-    role: main
-    scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_hba_hbd_010
   version: 1
@@ -576,25 +288,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: window
-    property: hba
-    verifier_id: rdkit_hba_v1
-    role: main
-    scoring_profile: rdkit_hba_window_2_4_2p0_v2
-  - type: window
-    property: hbd
-    verifier_id: rdkit_hbd_v1
-    role: main
-    scoring_profile: rdkit_hbd_window_1_2_1p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_logp_target_011
   version: 1
@@ -624,20 +317,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
-  constraints:
-  - type: target
-    property: logp
-    verifier_id: rdkit_logp_expert_v1
-    role: main
-    scoring_profile: rdkit_logp_target_3p0_3p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_json: parse_error
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
   task_type: open_generation
 - task_id: rdkit_sa_logp_target_012
   version: 1
@@ -667,25 +346,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CCCC'
-  hard_constraints:
-  - property: sa_score
-    verifier_id: rdkit_sa_logp_domain_sa_v1
-    operator: lt
-    threshold: 5.0
-  constraints:
-  - type: target
-    property: logp
-    verifier_id: rdkit_sa_logp_domain_logp_v1
-    role: main
-    scoring_profile: rdkit_logp_target_3p0_3p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
-    hard_property_failure: hard_constraint_failed
   task_type: open_generation
 - task_id: rdkit_chain_end_to_end_max_013
   version: 2
@@ -715,20 +375,6 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: CCCCCC'
-  constraints:
-  - type: maximize
-    property: terminal_atom_distance
-    verifier_id: rdkit_terminal_atom_distance_uff_v2
-    role: main
-    scoring_profile: rdkit_terminal_atom_distance_maximize_6p36_21p68_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    outside_domain: domain_error
-    backend_failure: verifier_tool_error
   task_type: open_generation
 - task_id: rdkit_caffeine_similarity_max_014
   version: 1
@@ -757,32 +403,4 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: COc1ccc(C(=O)N)cc1'
-  hard_constraints:
-  - property: logp
-    verifier_id: rdkit_caffeine_properties_v1
-    operator: closed_window
-    lower: -0.5
-    upper: 1.5
-  - property: sa_score
-    verifier_id: rdkit_caffeine_properties_v1
-    operator: le
-    threshold: 2.79798245679401
-  - property: qed
-    verifier_id: rdkit_caffeine_properties_v1
-    operator: closed_window
-    lower: 0.65
-    upper: 0.75
-  constraints:
-  - type: maximize
-    property: caffeine_morgan_tanimoto
-    verifier_id: rdkit_caffeine_similarity_v1
-    role: main
-    scoring_profile: rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    hard_property_failure: hard_constraint_failed
   task_type: open_generation

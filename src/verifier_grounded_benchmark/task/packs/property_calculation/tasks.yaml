@@ -2,351 +2,6 @@ schema_version: 2
 task_pack:
   id: property_calculation
   version: 0.7.0
-  scoring_version: linear_goal_v2
-scoring_profiles:
-  property_calculation_free_energy_difference_numeric_gold_v2:
-    property: free_energy_difference
-    type: numeric_gold
-    unit: kJ/mol
-    lower_tolerance: 0.258031679
-    upper_tolerance: 0.258031679
-    provenance:
-      target_source: task_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  property_calculation_potential_energy_difference_numeric_gold_v2:
-    property: potential_energy_difference
-    type: numeric_gold
-    unit: eV
-    lower_tolerance: 0.079
-    upper_tolerance: 0.079
-    provenance:
-      target_source: task_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  property_calculation_ambient_pressure_phase_exact_string_v2:
-    property: ambient_pressure_phase
-    type: exact_string
-    normalization: exact
-    provenance:
-      target_source: task_gold_answer
-      decay_source: not_applicable
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  property_calculation_high_pressure_phase_exact_string_v2:
-    property: high_pressure_phase
-    type: exact_string
-    normalization: exact
-    provenance:
-      target_source: task_gold_answer
-      decay_source: not_applicable
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  property_calculation_hydrogen_bond_count_numeric_gold_v2:
-    property: hydrogen_bond_count
-    type: numeric_gold
-    unit: count
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_1_numeric_gold_v2:
-    property: frequency_1
-    type: numeric_gold
-    unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_2_numeric_gold_v2:
-    property: frequency_2
-    type: numeric_gold
-    unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_3_numeric_gold_v2:
-    property: frequency_3
-    type: numeric_gold
-    unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_crystal_density_numeric_gold_v2:
-    property: crystal_density
-    type: numeric_gold
-    unit: g/cm^3
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_cocrystal_molar_ratio_exact_string_v2:
-    property: cocrystal_molar_ratio
-    type: exact_string
-    normalization: exact
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: not_applicable
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_lower_free_energy_form_exact_string_v2:
-    property: lower_free_energy_at_0k
-    type: exact_string
-    normalization: exact
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: not_applicable
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_crossover_temperature_numeric_gold_v2:
-    property: crossover_temperature
-    type: numeric_gold
-    unit: K
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_interaction_energy_numeric_gold_v2:
-    property: interaction_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_homo_lumo_gap_numeric_gold_v2:
-    property: homo_lumo_gap
-    type: numeric_gold
-    unit: eV
-    lower_tolerance: 0.05
-    upper_tolerance: 0.05
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_oh_bond_distance_numeric_gold_v2:
-    property: oh_bond_distance
-    type: numeric_gold
-    unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_h_o_contact_distance_numeric_gold_v2:
-    property: h_o_contact_distance
-    type: numeric_gold
-    unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_pore_volume_ratio_numeric_gold_v2:
-    property: accessible_to_inaccessible_volume_ratio
-    type: numeric_gold
-    unit: ratio
-    lower_tolerance: 0.05
-    upper_tolerance: 0.05
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2:
-    property: carboxyl_hydrogen_distance
-    type: numeric_gold
-    unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_halogen_bond_energy_numeric_gold_v2:
-    property: halogen_bond_interaction_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_pka_numeric_gold_v2:
-    property: pka
-    type: numeric_gold
-    unit: pKa
-    lower_tolerance: 0.1
-    upper_tolerance: 0.1
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_socme_numeric_gold_v2:
-    property: spin_orbit_coupling_matrix_element
-    type: numeric_gold
-    unit: eV
-    lower_tolerance: 0.0001
-    upper_tolerance: 0.0001
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
-  property_calculation_anthracene_isc_rate_numeric_gold_v2:
-    property: intersystem_crossing_rate
-    type: numeric_gold
-    unit: s^-1
-    lower_tolerance: 10000000.0
-    upper_tolerance: 10000000.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
-  property_calculation_phosphorescence_rate_numeric_gold_v2:
-    property: phosphorescence_rate
-    type: numeric_gold
-    unit: s^-1
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
-  property_calculation_ht_contribution_numeric_gold_v2:
-    property: herzberg_teller_contribution
-    type: numeric_gold
-    unit: percent
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
-  property_calculation_acetophenone_isc_rate_numeric_gold_v2:
-    property: intersystem_crossing_rate
-    type: numeric_gold
-    unit: s^-1
-    lower_tolerance: 100000000.0
-    upper_tolerance: 100000000.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
-  property_calculation_internal_conversion_rate_numeric_gold_v2:
-    property: internal_conversion_rate
-    type: numeric_gold
-    unit: s^-1
-    lower_tolerance: 10000000.0
-    upper_tolerance: 10000000.0
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-24'
-      review_owner: benchmark_maintainers
 tasks:
 - task_id: property_calc_001_free_energy
   version: 1
@@ -563,24 +218,6 @@ tasks:
     value_type: number
     unit: kJ/mol
     comparison_group: free_energy_difference
-  gold_answers:
-  - property: free_energy_difference
-    value: 0.258031679
-    unit: kJ/mol
-    scoring_profile: property_calculation_free_energy_difference_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: free_energy_difference
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_002_crystal_phase
   version: 1
   task_type: property_calculation
@@ -1159,32 +796,6 @@ tasks:
   - name: high_pressure_phase
     value_type: string
     comparison_group: pressure_phase_assignment
-  gold_answers:
-  - property: potential_energy_difference
-    value: 0.079
-    unit: eV
-    scoring_profile: property_calculation_potential_energy_difference_numeric_gold_v2
-  - property: ambient_pressure_phase
-    value: alpha
-    scoring_profile: property_calculation_ambient_pressure_phase_exact_string_v2
-  - property: high_pressure_phase
-    value: beta
-    scoring_profile: property_calculation_high_pressure_phase_exact_string_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: potential_energy_difference
-      mode: all
-    - id: pressure_phase_assignment
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_003_hbond_count
   version: 1
   task_type: property_calculation
@@ -1445,25 +1056,6 @@ tasks:
     value_type: number
     unit: count
     comparison_group: hydrogen_bond_count
-  gold_answers:
-  - property: hydrogen_bond_count
-    value: 12
-    unit: count
-    scoring_profile: property_calculation_hydrogen_bond_count_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: T2_paper_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: hydrogen_bond_count
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_004_ir_top3_frequencies
   version: 1
   task_type: property_calculation
@@ -1498,33 +1090,6 @@ tasks:
     value_type: number
     unit: cm^-1
     comparison_group: top_three_frequencies
-  gold_answers:
-  - property: frequency_1
-    value: 1208.1036
-    unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_1_numeric_gold_v2
-  - property: frequency_2
-    value: 1674.0688
-    unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_2_numeric_gold_v2
-  - property: frequency_3
-    value: 1685.5562
-    unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_3_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: resveratrol_gaussian_output_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: top_three_frequencies
-      mode: unordered_numeric
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_005_crystal_density
   version: 1
   task_type: property_calculation
@@ -1552,25 +1117,6 @@ tasks:
     value_type: number
     unit: g/cm^3
     comparison_group: crystal_density
-  gold_answers:
-  - property: crystal_density
-    value: 1.44728
-    unit: g/cm^3
-    scoring_profile: property_calculation_crystal_density_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: CCDC_caffeine_monohydrate_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: crystal_density
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_006_cocrystal_ratio
   version: 1
   task_type: property_calculation
@@ -1596,24 +1142,6 @@ tasks:
   - name: cocrystal_molar_ratio
     value_type: string
     comparison_group: cocrystal_ratio
-  gold_answers:
-  - property: cocrystal_molar_ratio
-    value: '1:1'
-    scoring_profile: property_calculation_cocrystal_molar_ratio_exact_string_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: crystal_structure_prediction_blind_test_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: cocrystal_ratio
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_007_polymorph_free_energy_crossover
   version: 1
   task_type: property_calculation
@@ -1953,28 +1481,6 @@ tasks:
     value_type: number
     unit: K
     comparison_group: polymorph_free_energy
-  gold_answers:
-  - property: lower_free_energy_at_0k
-    value: FormC
-    scoring_profile: property_calculation_lower_free_energy_form_exact_string_v2
-  - property: crossover_temperature
-    value: 343.15
-    unit: K
-    scoring_profile: property_calculation_crossover_temperature_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: polymorph_free_energy_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: polymorph_free_energy
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_008_interaction_binding_energy
   version: 1
   task_type: property_calculation
@@ -2010,29 +1516,6 @@ tasks:
     value_type: number
     unit: kcal/mol
     comparison_group: interaction_binding_energy
-  gold_answers:
-  - property: interaction_energy
-    value: -69.04
-    unit: kcal/mol
-    scoring_profile: property_calculation_interaction_energy_numeric_gold_v2
-  - property: binding_energy
-    value: -58.15
-    unit: kcal/mol
-    scoring_profile: property_calculation_binding_energy_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_gaussian_counterpoise_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: interaction_binding_energy
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_009_homo_lumo_gap
   version: 1
   task_type: property_calculation
@@ -2064,25 +1547,6 @@ tasks:
     value_type: number
     unit: eV
     comparison_group: homo_lumo_gap
-  gold_answers:
-  - property: homo_lumo_gap
-    value: 7.26
-    unit: eV
-    scoring_profile: property_calculation_homo_lumo_gap_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_homolumo_calculation
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: homo_lumo_gap
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_010_hbond_distances
   version: 1
   task_type: property_calculation
@@ -2158,29 +1622,6 @@ tasks:
     value_type: number
     unit: angstrom
     comparison_group: hbond_distances
-  gold_answers:
-  - property: oh_bond_distance
-    value: 1.029
-    unit: angstrom
-    scoring_profile: property_calculation_oh_bond_distance_numeric_gold_v2
-  - property: h_o_contact_distance
-    value: 1.485
-    unit: angstrom
-    scoring_profile: property_calculation_h_o_contact_distance_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: CRBAMP01_optimized_geometry_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: hbond_distances
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_011_accessible_pore_volume_ratio
   version: 1
   task_type: property_calculation
@@ -2597,25 +2038,6 @@ tasks:
     value_type: number
     unit: ratio
     comparison_group: pore_volume_ratio
-  gold_answers:
-  - property: accessible_to_inaccessible_volume_ratio
-    value: 1.713
-    unit: ratio
-    scoring_profile: property_calculation_pore_volume_ratio_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: zeo_plus_plus_probe_1p2_angstrom_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: pore_volume_ratio
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_012_carboxyl_hydrogen_distance
   version: 1
   task_type: property_calculation
@@ -2643,25 +2065,6 @@ tasks:
     value_type: number
     unit: angstrom
     comparison_group: carboxyl_hydrogen_distance
-  gold_answers:
-  - property: carboxyl_hydrogen_distance
-    value: 2.521
-    unit: angstrom
-    scoring_profile: property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: crest_conformer_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: carboxyl_hydrogen_distance
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_013_halogen_bond_energy
   version: 1
   task_type: property_calculation
@@ -2688,25 +2091,6 @@ tasks:
     value_type: number
     unit: kcal/mol
     comparison_group: halogen_bond_energy
-  gold_answers:
-  - property: halogen_bond_interaction_energy
-    value: -17.11
-    unit: kcal/mol
-    scoring_profile: property_calculation_halogen_bond_energy_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: halogen_bonding_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: halogen_bond_energy
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_014_bay069_pka
   version: 1
   task_type: property_calculation
@@ -2741,25 +2125,6 @@ tasks:
     value_type: number
     unit: pKa
     comparison_group: pka
-  gold_answers:
-  - property: pka
-    value: 5.7
-    unit: pKa
-    scoring_profile: property_calculation_pka_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: BAY069_JMedChem_2022_expert_answer
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: pka
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_015_formaldehyde_socme
   version: 1
   task_type: property_calculation
@@ -2791,25 +2156,6 @@ tasks:
     value_type: number
     unit: eV
     comparison_group: spin_orbit_coupling_matrix_element
-  gold_answers:
-  - property: spin_orbit_coupling_matrix_element
-    value: 0.00734
-    unit: eV
-    scoring_profile: property_calculation_socme_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1_SOC_tutorial_formaldehyde
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: spin_orbit_coupling_matrix_element
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_016_anthracene_isc_rate
   version: 1
   task_type: property_calculation
@@ -2841,25 +2187,6 @@ tasks:
     value_type: number
     unit: s^-1
     comparison_group: intersystem_crossing_rate
-  gold_answers:
-  - property: intersystem_crossing_rate
-    value: 117000000.0
-    unit: s^-1
-    scoring_profile: property_calculation_anthracene_isc_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.4.2
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: intersystem_crossing_rate
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_017_biacetyl_phosphorescence_rate
   version: 1
   task_type: property_calculation
@@ -2891,25 +2218,6 @@ tasks:
     value_type: number
     unit: s^-1
     comparison_group: phosphorescence_rate
-  gold_answers:
-  - property: phosphorescence_rate
-    value: 98.0
-    unit: s^-1
-    scoring_profile: property_calculation_phosphorescence_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.3.2
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: phosphorescence_rate
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_018_anthracene_ht_contribution
   version: 1
   task_type: property_calculation
@@ -2942,25 +2250,6 @@ tasks:
     value_type: number
     unit: percent
     comparison_group: herzberg_teller_contribution
-  gold_answers:
-  - property: herzberg_teller_contribution
-    value: 100.0
-    unit: percent
-    scoring_profile: property_calculation_ht_contribution_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.0_ESD_anthracene_expert_output
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: herzberg_teller_contribution
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_019_acetophenone_isc_rate
   version: 1
   task_type: property_calculation
@@ -2993,25 +2282,6 @@ tasks:
     value_type: number
     unit: s^-1
     comparison_group: intersystem_crossing_rate
-  gold_answers:
-  - property: intersystem_crossing_rate
-    value: 28400000000.0
-    unit: s^-1
-    scoring_profile: property_calculation_acetophenone_isc_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.0_ESD_acetophenone_expert_output
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: intersystem_crossing_rate
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error
 - task_id: property_calc_020_azulene_internal_conversion_rate
   version: 1
   task_type: property_calculation
@@ -3043,22 +2313,3 @@ tasks:
     value_type: number
     unit: s^-1
     comparison_group: internal_conversion_rate
-  gold_answers:
-  - property: internal_conversion_rate
-    value: 382000000.0
-    unit: s^-1
-    scoring_profile: property_calculation_internal_conversion_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.5
-  scoring:
-    aggregation: arithmetic_mean
-    comparison_groups:
-    - id: internal_conversion_rate
-      mode: all
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_json: parse_error
-    malformed_property_answer: parse_error
-    invalid_task_schema: task_error

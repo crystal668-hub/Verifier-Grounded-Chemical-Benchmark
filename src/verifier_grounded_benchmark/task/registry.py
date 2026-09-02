@@ -19,6 +19,7 @@ class TrackDefinition:
     display_name: str
     task_pack_path: str | Path
     verifier_specs_path: str | Path
+    scoring_config_path: str | Path | None = None
     sample_answers_path: str | Path | None = None
     status: str = "formal"
     tags: tuple[str, ...] = field(default_factory=tuple)
@@ -83,28 +84,32 @@ def builtin_definitions() -> list[TrackDefinition]:
         TrackDefinition(
             name="rdkit", version="0.7.0", display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
             name="xtb", version="0.7.0", display_name="xTB molecular optimization tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
             requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="xtb",
         ),
         TrackDefinition(
-            name="property_calculation", version="0.7.0", display_name="Fixed-input property calculation tasks",
+            name="property_calculation_advanced", version="0.8.0", display_name="Advanced fixed-input property calculation tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
-            sample_answers_path="sample_answers.jsonl",
+            scoring_config_path="scoring.yaml",
+            sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "crystal"),
             resource_pack="property_calculation",
         ),
         TrackDefinition(
-            name="property_calculation_easy", version="0.7.0",
-            display_name="Easy fixed-input property calculation tasks",
+            name="property_calculation_basic", version="0.8.0",
+            display_name="Basic fixed-input property calculation tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
-            sample_answers_path="sample_answers.jsonl",
+            scoring_config_path="scoring.yaml",
+            sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "easy", "small_molecule"),
             resource_pack="property_calculation_easy",
         ),

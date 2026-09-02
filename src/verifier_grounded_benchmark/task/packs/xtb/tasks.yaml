@@ -2,331 +2,6 @@ schema_version: 2
 task_pack:
   id: xtb
   version: 0.7.0
-  scoring_version: linear_goal_v2
-  scoring_status: formal
-scoring_profiles:
-  xtb_homo_lumo_gap_window_3p5_5p5_2p0_v2:
-    property: homo_lumo_gap
-    type: window
-    unit: eV
-    full_score:
-      min: 3.5
-      max: 5.5
-    decay:
-      lower_width: 2.0
-      upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_relaxation_energy_minimize_0p05_0p35_v2:
-    property: relaxation_energy
-    type: minimize
-    unit: eV
-    full_score_target: 0.05
-    zero_score_anchor: 0.35
-    provenance:
-      target_source: engineering_task_boundary
-      decay_source: quality_gate_threshold_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_window_3p0_5p5_2p5_v2:
-    property: dipole_moment
-    type: window
-    unit: debye
-    full_score:
-      min: 3.0
-      max: 5.5
-    decay:
-      lower_width: 2.5
-      upper_width: 2.5
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_homo_lumo_gap_maximize_10p0_12p0_v2:
-    property: homo_lumo_gap
-    type: maximize
-    unit: eV
-    full_score_target: 9.749630028571
-    zero_score_anchor: 1.389963462368
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_homo_lumo_gap_minimize_0p0_5p0_v2:
-    property: homo_lumo_gap
-    type: minimize
-    unit: eV
-    full_score_target: 1.389963462368
-    zero_score_anchor: 9.749630028571
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_maximize_3p0_10p0_v2:
-    property: dipole_moment
-    type: maximize
-    unit: debye
-    full_score_target: 13.374
-    zero_score_anchor: 3.32
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2:
-    property: homo_lumo_gap
-    type: window
-    unit: eV
-    full_score:
-      min: 2.5
-      max: 4.2
-    decay:
-      lower_width: 1.7
-      upper_width: 1.7
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_window_3p5_6p0_2p5_v2:
-    property: dipole_moment
-    type: window
-    unit: debye
-    full_score:
-      min: 3.5
-      max: 6.0
-    decay:
-      lower_width: 2.5
-      upper_width: 2.5
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2:
-    property: lumo_energy
-    type: minimize
-    unit: eV
-    full_score_target: -10.6883
-    zero_score_anchor: -1.94
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2:
-    property: polarizability_per_heavy_atom
-    type: maximize
-    unit: atomic_units_per_heavy_atom
-    full_score_target: 9.3430346
-    zero_score_anchor: 6.4845643
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_window_3p0_8p0_5p0_v2:
-    property: dipole_moment
-    type: window
-    unit: debye
-    full_score:
-      min: 3.0
-      max: 8.0
-    decay:
-      lower_width: 5.0
-      upper_width: 5.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2:
-    property: alpb_water_hexane_selectivity
-    type: maximize
-    unit: eV
-    full_score_target: 0.3953163242456749
-    zero_score_anchor: -0.17228322475548233
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_global_electrophilicity_maximize_0p5_3p8_v2:
-    property: global_electrophilicity
-    type: maximize
-    unit: eV
-    full_score_target: 3.1359
-    zero_score_anchor: 0.4862
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2:
-    property: max_f_plus_on_carbon
-    type: maximize
-    unit: dimensionless
-    full_score_target: 0.276
-    zero_score_anchor: 0.076
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_f_plus_contrast_maximize_0p0_0p15_v2:
-    property: f_plus_contrast
-    type: maximize
-    unit: dimensionless
-    full_score_target: 0.094
-    zero_score_anchor: 0.0
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: scientific_tie_boundary
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2:
-    property: entropy_298_per_heavy_atom
-    type: maximize
-    unit: J mol-1 K-1 per heavy atom
-    full_score_target: 76.094775
-    zero_score_anchor: 40.59789
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_dipole_moment_minimize_0p0_20p0_v2:
-    property: dipole_moment
-    type: minimize
-    unit: debye
-    full_score_target: 3.042
-    zero_score_anchor: 9.328
-    provenance:
-      target_source: frozen_benchmark_reference_panel_supported_by_literature
-      decay_source: frozen_benchmark_baseline_panel_supported_by_literature
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_homo_lumo_gap_minimize_0p0_10p0_v2:
-    property: homo_lumo_gap
-    type: minimize
-    unit: eV
-    full_score_target: 1.242666887976
-    zero_score_anchor: 12.358052453139
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
-  xtb_total_energy_minimize_neg_50p3_neg_50p25_v2:
-    property: total_energy
-    type: minimize
-    unit: hartree
-    full_score_target: -50.302552312418
-    zero_score_anchor: -50.287905192962
-    provenance:
-      target_source: frozen_run_candidate_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
-      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
-  xtb_total_energy_minimize_neg_148p2_neg_148p15_v2:
-    property: total_energy
-    type: minimize
-    unit: hartree
-    full_score_target: -148.213721794168
-    zero_score_anchor: -148.183476873812
-    provenance:
-      target_source: independent_crest_candidate_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
-      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
-  xtb_odd_element_gap_maximize_3p6_11p9_v2:
-    property: homo_lumo_gap
-    type: maximize
-    unit: eV
-    full_score_target: 11.9
-    zero_score_anchor: 3.6
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
-  xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2:
-    property: total_energy
-    type: minimize
-    unit: hartree
-    full_score_target: -63.56975
-    zero_score_anchor: -63.5669
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
 tasks:
 - task_id: xtb_gap_window_001
   version: 2
@@ -377,17 +52,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: window
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_window_3p5_5p5_2p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 6
@@ -402,19 +66,6 @@ tasks:
     - CH2O
     - C2H4
     - C6H6
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_dipole_window_002
   version: 2
@@ -465,17 +116,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: window
-    property: dipole_moment
-    verifier_id: xtb_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_window_3p0_5p5_2p5_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 5
@@ -488,19 +128,6 @@ tasks:
     - HCN
     - CH2O
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_gap_max_003
   version: 2
@@ -551,17 +178,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_maximize_10p0_12p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     atom_count:
     - 12
@@ -579,19 +195,6 @@ tasks:
     - CH3F
     - CF4
     - C2F6
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_gap_min_004
   version: 2
@@ -642,17 +245,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_5p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -664,19 +256,6 @@ tasks:
     - C2H4
     - C6H6
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_dipole_max_005
   version: 2
@@ -727,17 +306,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: dipole_moment
-    verifier_id: xtb_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_maximize_3p0_10p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 6
@@ -749,19 +317,6 @@ tasks:
     - CH3CN
     - CH2O
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_low_gap_high_dipole_opt_006
   version: 2
@@ -815,22 +370,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_5p0_v2
-  - type: maximize
-    property: dipole_moment
-    verifier_id: xtb_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_maximize_3p0_10p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -844,19 +383,6 @@ tasks:
     - C6H6
     - CH3CN
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_gap_dipole_window_007
   version: 2
@@ -910,22 +436,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: window
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2
-  - type: window
-    property: dipole_moment
-    verifier_id: xtb_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_window_3p5_6p0_2p5_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -939,19 +449,6 @@ tasks:
     - C6H6
     - CH3CN
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_lumo_min_008
   version: 1
@@ -1003,17 +500,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: lumo_energy
-    verifier_id: xtb_lumo_gfn2_v1
-    role: main
-    scoring_profile: xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -1024,19 +510,6 @@ tasks:
     - HCN
     - CH2O
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_polarizability_dipole_opt_009
   version: 1
@@ -1090,22 +563,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: polarizability_per_heavy_atom
-    verifier_id: xtb_polarizability_gfn2_v1
-    role: main
-    scoring_profile: xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2
-  - type: window
-    property: dipole_moment
-    verifier_id: xtb_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_window_3p0_8p0_5p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -1113,19 +570,6 @@ tasks:
     carbon_count_min: 4
     hetero_atom_count_min: 2
     heavy_element_diversity_min: 2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_solvation_selectivity_alpb_010
   version: 1
@@ -1177,17 +621,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: alpb_water_hexane_selectivity
-    verifier_id: xtb_solvation_selectivity_alpb_v1
-    role: main
-    scoring_profile: xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -1201,19 +634,6 @@ tasks:
     - CH2O
     - CH3OH
     - CH3CN
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_electrophilicity_max_011
   version: 1
@@ -1265,17 +685,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: global_electrophilicity
-    verifier_id: xtb_electrophilicity_gfn1_ipea_v1
-    role: main
-    scoring_profile: xtb_global_electrophilicity_maximize_0p5_3p8_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 8
@@ -1286,19 +695,6 @@ tasks:
     - HCN
     - CH2O
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_fukui_carbon_site_012
   version: 1
@@ -1351,22 +747,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: max_f_plus_on_carbon
-    verifier_id: xtb_fukui_gfn1_v1
-    role: main
-    scoring_profile: xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2
-  - type: maximize
-    property: f_plus_contrast
-    verifier_id: xtb_fukui_gfn1_v1
-    role: main
-    scoring_profile: xtb_f_plus_contrast_maximize_0p0_0p15_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
   structural_domain:
     heavy_atom_count:
     - 4
@@ -1377,19 +757,6 @@ tasks:
     - HCN
     - CH2O
     - CH3NO2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_hessian_thermo_stability_013
   version: 2
@@ -1442,23 +809,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: maximize
-    property: entropy_298_per_heavy_atom
-    verifier_id: xtb_hessian_thermo_gfn2_v1
-    role: main
-    scoring_profile: xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2
-  - type: minimize
-    property: relaxation_energy
-    verifier_id: xtb_relaxation_energy_gfn2_v1
-    role: quality_gate
-    scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-  hard_constraints:
-  - property: imaginary_frequency_count
-    verifier_id: xtb_hessian_thermo_gfn2_v1
-    operator: closed_window
-    lower: 0
-    upper: 0
   structural_domain:
     atom_count:
     - 6
@@ -1468,20 +818,7 @@ tasks:
     - 18
     carbon_count_min: 2
     hetero_atom_count_min: 1
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
   timeout_seconds: 600
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_formula_dipole_min_014
   version: 1
@@ -1526,27 +863,8 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: dipole_moment
-    verifier_id: xtb_dipole_doublet_gfn2_v1
-    role: main
-    scoring_profile: xtb_dipole_moment_minimize_0p0_20p0_v2
   structural_domain:
     formula: C12H16N3O8
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_two_fluorine_gap_min_015
   version: 1
@@ -1594,12 +912,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
   structural_domain:
     allowed_elements:
     - H
@@ -1616,19 +928,6 @@ tasks:
       F: 2
     element_count_max:
       C: 10
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_c10_f2_gap_min_016
   version: 1
@@ -1676,12 +975,6 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: homo_lumo_gap
-    verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
-    role: main
-    scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
   structural_domain:
     allowed_elements:
     - H
@@ -1697,19 +990,6 @@ tasks:
     element_count_exact:
       C: 10
       F: 2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_roy_singlepoint_energy_min_017
   version: 1
@@ -1752,30 +1032,11 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: total_energy
-    verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
-    role: main
-    scoring_profile: xtb_total_energy_minimize_neg_50p3_neg_50p25_v2
   structural_domain:
     formula: C12H9N3O2S
   structure_identity:
     reference_smiles: Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
     require_stereochemistry: false
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_ritonavir_optimized_energy_min_018
   version: 1
@@ -1818,31 +1079,13 @@ tasks:
       H -0.500000 -0.900000 0.000000
       H 1.400000 1.000000 0.000000
       ```
-  constraints:
-  - type: minimize
-    property: total_energy
-    verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
-    role: main
-    scoring_profile: xtb_total_energy_minimize_neg_148p2_neg_148p15_v2
   structural_domain:
     formula: C37H48N6O5S2
   structure_identity:
-    reference_smiles: CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
+    reference_smiles: 
+      CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
     require_stereochemistry: true
     recheck_after_optimization: true
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    invalid_coordinates: validity_error
-    disconnected_geometry: validity_error
-    atom_overlap: validity_error
-    outside_domain: domain_error
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_odd_element_counts_gap_max_019
   version: 1
@@ -1888,17 +1131,6 @@ tasks:
       H -0.629118 0.629118 -0.629118
       H 0.629118 -0.629118 -0.629118
       ```
-  hard_constraints:
-  - property: dipole_moment
-    verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
-    operator: lt
-    threshold: 2.0
-  constraints:
-  - type: maximize
-    property: homo_lumo_gap
-    verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
-    role: main
-    scoring_profile: xtb_odd_element_gap_maximize_3p6_11p9_v2
   structural_domain:
     allowed_elements: [H, C, O, N, S, F, Cl]
     atom_count: [1, 40]
@@ -1910,18 +1142,6 @@ tasks:
       exclude_elements: [H]
     inferred_components: 1
     all_hydrogens_explicit: true
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    malformed_final_answer: parse_error
-    invalid_xyz: parse_error
-    disconnected_geometry: validity_error
-    outside_domain: domain_error
-    hard_property_failure: hard_constraint_failed
-    missing_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation
 - task_id: xtb_pyrene_substituent_energy_min_020
   version: 1
@@ -1946,21 +1166,4 @@ tasks:
     value_type: smiles
     cardinality: one
     example: 'FINAL ANSWER: Nc1cc2ccc3cccc4cc(C(=O)O)c(c1[N+](=O)[O-])c2c34'
-  constraints:
-  - type: minimize
-    property: total_energy
-    verifier_id: xtb_pyrene_crest_energy_v1
-    role: main
-    scoring_profile: xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2
-  scoring:
-    aggregation: geometric_mean
-    version: linear_goal_v2
-  failure_policy:
-    invalid_smiles: parse_error
-    multi_component: validity_error
-    identity_mismatch: identity_error
-    structure_change: structure_identity_error
-    missing_crest_or_xtb: verifier_environment_error
-    backend_failure: verifier_tool_error
-    timeout: verifier_timeout
   task_type: open_generation

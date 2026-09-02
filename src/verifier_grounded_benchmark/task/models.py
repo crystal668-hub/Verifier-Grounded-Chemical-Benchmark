@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
+from copy import deepcopy
 from dataclasses import dataclass
 from numbers import Real
 from types import MappingProxyType
@@ -72,6 +73,30 @@ class TaskSpec:
 
     def to_dict(self) -> dict[str, Any]:
         return _thaw(self.raw)
+
+
+_SCORING_FIELDS = {
+    "constraints",
+    "hard_constraints",
+    "failure_policy",
+    "gold_answers",
+    "gold_provenance",
+    "scoring",
+}
+
+
+def public_task_dict(task: Mapping[str, Any], *, include_gold: bool = False) -> dict[str, Any]:
+    """Return the supported public task view without scoring configuration."""
+    view = {
+        key: deepcopy(value)
+        for key, value in task.items()
+        if key not in _SCORING_FIELDS
+    }
+    if include_gold:
+        for key in ("gold_answers", "gold_provenance"):
+            if key in task:
+                view[key] = deepcopy(task[key])
+    return view
 
 
 @dataclass(frozen=True)

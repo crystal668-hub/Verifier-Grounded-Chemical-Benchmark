@@ -57,13 +57,60 @@ _UniqueKeyLoader.add_constructor(
 )
 
 
-def load_task_pack(tasks_resource: Any, verifier_resource: Any) -> TaskPack:
+def load_task_pack(
+    tasks_resource: Any,
+    verifier_resource: Any,
+    scoring_resource: Any | None = None,
+) -> TaskPack:
     task_data = _load_yaml_mapping(tasks_resource)
     verifier_data = _load_yaml_mapping(verifier_resource)
+    if scoring_resource is None and "scoring_profiles" not in task_data:
+        scoring_resource = _sibling_resource(tasks_resource, "scoring.yaml")
+    scoring_data = (
+        _load_yaml_mapping(scoring_resource) if scoring_resource is not None else None
+    )
     if task_data.get("schema_version") == 2:
         task_data = _load_yaml_mapping(tasks_resource, require_unique_keys=True)
+        if scoring_data is not None:
+            task_data = _merge_scoring_data(task_data, scoring_data)
         return _load_v2(task_data, verifier_data)
     return _load_legacy(task_data, verifier_data, source=str(tasks_resource))
+
+
+def _sibling_resource(resource: Any, filename: str) -> Any | None:
+    try:
+        return resource.parent.joinpath(filename)
+    except AttributeError:
+        path = Path(resource).resolve().parent / filename
+        return path if path.exists() else None
+
+
+def _merge_scoring_data(
+    task_data: dict[str, Any], scoring_data: dict[str, Any]
+) -> dict[str, Any]:
+    config = require_mapping(scoring_data.get("scoring_config"), "scoring_config")
+    merged = deepcopy(task_data)
+    metadata = require_mapping(merged.get("task_pack"), "task_pack")
+    metadata["scoring_version"] = require_string(
+        config.get("scoring_version"), "scoring_config scoring_version"
+    )
+    metadata["scoring_status"] = config.get("scoring_status", "formal")
+    merged["scoring_profiles"] = scoring_data.get("scoring_profiles")
+    scoring_by_id = index_unique(
+        require_list(scoring_data.get("tasks"), "scoring tasks"),
+        "task_id",
+        "scoring task",
+    )
+    tasks = require_list(merged.get("tasks"), "tasks")
+    task_ids = {str(task.get("task_id")) for task in tasks}
+    if task_ids != set(scoring_by_id):
+        raise ValueError("tasks and scoring tasks must contain the same task_ids")
+    for task in tasks:
+        scoring = scoring_by_id[str(task["task_id"])]
+        for key, value in scoring.items():
+            if key != "task_id":
+                task[key] = deepcopy(value)
+    return merged
 
 
 def load_tasks_file(resource: Any) -> dict[str, dict[str, Any]]:

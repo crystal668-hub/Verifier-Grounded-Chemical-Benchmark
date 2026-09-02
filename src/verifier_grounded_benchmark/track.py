@@ -14,7 +14,10 @@ from verifier_grounded_benchmark.task.loader import (
     load_answers_jsonl_file,
     load_task_pack,
 )
-from verifier_grounded_benchmark.task.models import merge_task_packs
+from verifier_grounded_benchmark.task.models import (
+    merge_task_packs,
+    public_task_dict,
+)
 from verifier_grounded_benchmark.task.registry import TrackDefinition
 from verifier_grounded_benchmark.task.resources import materialize_verifier_specs
 
@@ -25,6 +28,9 @@ class Track:
         self._task_pack = load_task_pack(
             _resolve_track_resource(definition, definition.task_pack_path),
             _resolve_track_resource(definition, definition.verifier_specs_path),
+            _resolve_track_resource(definition, definition.scoring_config_path)
+            if definition.scoring_config_path is not None
+            else None,
         )
         self._tasks_by_id = self._task_pack.tasks_by_id
         specs = self._task_pack.verifier_specs_by_id
@@ -43,18 +49,18 @@ class Track:
 
     @property
     def tasks_by_id(self) -> dict[str, dict[str, Any]]:
-        return deepcopy(self._tasks_by_id)
+        return {task_id: public_task_dict(task) for task_id, task in self._tasks_by_id.items()}
 
     @property
     def verifier_specs_by_id(self) -> dict[str, dict[str, Any]]:
         return deepcopy(self._verifier_specs_by_id)
 
     def tasks(self) -> list[dict[str, Any]]:
-        return [deepcopy(task) for task in self._tasks_by_id.values()]
+        return [public_task_dict(task) for task in self._tasks_by_id.values()]
 
-    def task(self, task_id: str) -> dict[str, Any]:
+    def task(self, task_id: str, *, include_gold: bool = False) -> dict[str, Any]:
         try:
-            return deepcopy(self._tasks_by_id[task_id])
+            return public_task_dict(self._tasks_by_id[task_id], include_gold=include_gold)
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for track {self.name!r}: {task_id}") from exc
 
@@ -124,18 +130,18 @@ class Suite:
 
     @property
     def tasks_by_id(self) -> dict[str, dict[str, Any]]:
-        return deepcopy(self._tasks_by_id)
+        return {task_id: public_task_dict(task) for task_id, task in self._tasks_by_id.items()}
 
     @property
     def verifier_specs_by_id(self) -> dict[str, dict[str, Any]]:
         return deepcopy(self._verifier_specs_by_id)
 
     def tasks(self) -> list[dict[str, Any]]:
-        return [deepcopy(task) for task in self._tasks_by_id.values()]
+        return [public_task_dict(task) for task in self._tasks_by_id.values()]
 
     def task(self, task_id: str) -> dict[str, Any]:
         try:
-            return deepcopy(self._tasks_by_id[task_id])
+            return public_task_dict(self._tasks_by_id[task_id])
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for suite: {task_id}") from exc
 

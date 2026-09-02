@@ -95,13 +95,6 @@ class PropertyCalculationEvaluator:
             task_id=task.task_id,
             properties={
                 "submitted_answers": submitted,
-                "gold_answers": {
-                    name: {
-                        "value": definition["value"],
-                        **({"unit": definition["unit"]} if "unit" in definition else {}),
-                    }
-                    for name, definition in gold.items()
-                },
                 "diagnostics": {"unknown_properties": unknown},
             },
             scores={
