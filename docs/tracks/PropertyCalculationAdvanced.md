@@ -1,10 +1,10 @@
-# Property Calculation Track
+# Property Calculation Advanced Track
 
 更新日期：2026-08-24
 
 ## 1. 定位
 
-`property_calculation` 是独立于 open-generation 的正式 track。题面给出完整化学或材料结构，模型报告计算结果；评分器只比较最终答案与公开 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。
+`property_calculation_advanced` 是独立于 open-generation 的正式 track。题面给出完整化学或材料结构，模型报告计算结果；评分器只比较最终答案与公开 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。
 
 当前正式题目共 20 道。新增的激发态动力学题目如下：
 
@@ -22,15 +22,12 @@
 
 ## 2. Task Schema
 
-该 track 复用公共 task envelope，并通过以下字段表达固定输入和公开答案：
+该 track 复用公共 task envelope；评分字段位于同目录的 `scoring.yaml`，不再混入任务文件。
 
 ```yaml
 task_type: property_calculation
 input_objects: [mapping]
 requested_properties: [mapping]
-gold_answers: [mapping]
-gold_provenance:
-  disclosure: withheld_initial_release
 ```
 
 它不创建伪 `constraints`。为了兼容现有 `TrackDefinition`，`verifier_specs.yaml` 内容为：
@@ -96,4 +93,8 @@ versions: mapping
 
 ## 6. Gold Policy
 
-gold 数值随 task data 和公开 sample answers 发布，用于本地 sanity check、agent 计算能力评估和模型回归。初版只记录 `withheld_initial_release`，不公布 gold 生成协议，也不把协议写入 prompt。
+发行包保留 scoring data 供本地离线评分和审计，但普通任务视图、`prompts()`、sample answers
+和评分结果都不返回 gold。需要公开读取标准答案时，只能通过
+`track.task(task_id, include_gold=True)` 获取；该接口明确表达答案访问意图，避免 gold 在多层
+公共 API 中重复暴露。初版只记录 `withheld_initial_release`，不公布 gold 生成协议，也不把协议
+写入 prompt。

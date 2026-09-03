@@ -1,6 +1,6 @@
 schema_version: 2
 task_pack:
-  id: property_calculation_easy
+  id: property_calculation_basic
   version: 0.8.0
 tasks:
 - task_id: property_calc_easy_001_toluene_aqueous_solvation_free_energy

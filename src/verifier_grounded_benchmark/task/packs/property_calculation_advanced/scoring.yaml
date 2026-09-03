@@ -1,11 +1,11 @@
 schema_version: 1
 scoring_config:
-  task_pack_id: property_calculation
+  task_pack_id: property_calculation_advanced
   task_pack_version: 0.8.0
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:
-  property_calculation_free_energy_difference_numeric_gold_v2:
+  property_calculation_advanced_free_energy_difference_numeric_gold_v2:
     property: free_energy_difference
     type: numeric_gold
     unit: kJ/mol
@@ -18,7 +18,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_potential_energy_difference_numeric_gold_v2:
+  property_calculation_advanced_potential_energy_difference_numeric_gold_v2:
     property: potential_energy_difference
     type: numeric_gold
     unit: eV
@@ -31,7 +31,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_ambient_pressure_phase_exact_string_v2:
+  property_calculation_advanced_ambient_pressure_phase_exact_string_v2:
     property: ambient_pressure_phase
     type: exact_string
     normalization: exact
@@ -42,7 +42,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_high_pressure_phase_exact_string_v2:
+  property_calculation_advanced_high_pressure_phase_exact_string_v2:
     property: high_pressure_phase
     type: exact_string
     normalization: exact
@@ -53,7 +53,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-07-21'
       review_owner: benchmark_maintainers
-  property_calculation_hydrogen_bond_count_numeric_gold_v2:
+  property_calculation_advanced_hydrogen_bond_count_numeric_gold_v2:
     property: hydrogen_bond_count
     type: numeric_gold
     unit: count
@@ -66,7 +66,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_1_numeric_gold_v2:
+  property_calculation_advanced_ir_frequency_1_numeric_gold_v2:
     property: frequency_1
     type: numeric_gold
     unit: cm^-1
@@ -79,7 +79,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_2_numeric_gold_v2:
+  property_calculation_advanced_ir_frequency_2_numeric_gold_v2:
     property: frequency_2
     type: numeric_gold
     unit: cm^-1
@@ -92,7 +92,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_ir_frequency_3_numeric_gold_v2:
+  property_calculation_advanced_ir_frequency_3_numeric_gold_v2:
     property: frequency_3
     type: numeric_gold
     unit: cm^-1
@@ -105,7 +105,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_crystal_density_numeric_gold_v2:
+  property_calculation_advanced_crystal_density_numeric_gold_v2:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
@@ -118,7 +118,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_cocrystal_molar_ratio_exact_string_v2:
+  property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2:
     property: cocrystal_molar_ratio
     type: exact_string
     normalization: exact
@@ -129,7 +129,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_lower_free_energy_form_exact_string_v2:
+  property_calculation_advanced_lower_free_energy_form_exact_string_v2:
     property: lower_free_energy_at_0k
     type: exact_string
     normalization: exact
@@ -140,7 +140,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_crossover_temperature_numeric_gold_v2:
+  property_calculation_advanced_crossover_temperature_numeric_gold_v2:
     property: crossover_temperature
     type: numeric_gold
     unit: K
@@ -153,7 +153,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_interaction_energy_numeric_gold_v2:
+  property_calculation_advanced_interaction_energy_numeric_gold_v2:
     property: interaction_energy
     type: numeric_gold
     unit: kcal/mol
@@ -166,7 +166,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_binding_energy_numeric_gold_v2:
+  property_calculation_advanced_binding_energy_numeric_gold_v2:
     property: binding_energy
     type: numeric_gold
     unit: kcal/mol
@@ -179,7 +179,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_homo_lumo_gap_numeric_gold_v2:
+  property_calculation_advanced_homo_lumo_gap_numeric_gold_v2:
     property: homo_lumo_gap
     type: numeric_gold
     unit: eV
@@ -192,7 +192,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_oh_bond_distance_numeric_gold_v2:
+  property_calculation_advanced_oh_bond_distance_numeric_gold_v2:
     property: oh_bond_distance
     type: numeric_gold
     unit: angstrom
@@ -205,7 +205,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_h_o_contact_distance_numeric_gold_v2:
+  property_calculation_advanced_h_o_contact_distance_numeric_gold_v2:
     property: h_o_contact_distance
     type: numeric_gold
     unit: angstrom
@@ -218,7 +218,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_pore_volume_ratio_numeric_gold_v2:
+  property_calculation_advanced_pore_volume_ratio_numeric_gold_v2:
     property: accessible_to_inaccessible_volume_ratio
     type: numeric_gold
     unit: ratio
@@ -231,7 +231,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2:
+  property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2:
     property: carboxyl_hydrogen_distance
     type: numeric_gold
     unit: angstrom
@@ -244,7 +244,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_halogen_bond_energy_numeric_gold_v2:
+  property_calculation_advanced_halogen_bond_energy_numeric_gold_v2:
     property: halogen_bond_interaction_energy
     type: numeric_gold
     unit: kcal/mol
@@ -257,7 +257,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_pka_numeric_gold_v2:
+  property_calculation_advanced_pka_numeric_gold_v2:
     property: pka
     type: numeric_gold
     unit: pKa
@@ -270,7 +270,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-20'
       review_owner: benchmark_maintainers
-  property_calculation_socme_numeric_gold_v2:
+  property_calculation_advanced_socme_numeric_gold_v2:
     property: spin_orbit_coupling_matrix_element
     type: numeric_gold
     unit: eV
@@ -283,7 +283,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
-  property_calculation_anthracene_isc_rate_numeric_gold_v2:
+  property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
@@ -296,7 +296,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
-  property_calculation_phosphorescence_rate_numeric_gold_v2:
+  property_calculation_advanced_phosphorescence_rate_numeric_gold_v2:
     property: phosphorescence_rate
     type: numeric_gold
     unit: s^-1
@@ -309,7 +309,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
-  property_calculation_ht_contribution_numeric_gold_v2:
+  property_calculation_advanced_ht_contribution_numeric_gold_v2:
     property: herzberg_teller_contribution
     type: numeric_gold
     unit: percent
@@ -322,7 +322,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
-  property_calculation_acetophenone_isc_rate_numeric_gold_v2:
+  property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
@@ -335,7 +335,7 @@ scoring_profiles:
       review_status: approved
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
-  property_calculation_internal_conversion_rate_numeric_gold_v2:
+  property_calculation_advanced_internal_conversion_rate_numeric_gold_v2:
     property: internal_conversion_rate
     type: numeric_gold
     unit: s^-1
@@ -365,7 +365,7 @@ tasks:
   - property: free_energy_difference
     value: 0.258031679
     unit: kJ/mol
-    scoring_profile: property_calculation_free_energy_difference_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_free_energy_difference_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
 - task_id: property_calc_002_crystal_phase
@@ -386,13 +386,13 @@ tasks:
   - property: potential_energy_difference
     value: 0.079
     unit: eV
-    scoring_profile: property_calculation_potential_energy_difference_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_potential_energy_difference_numeric_gold_v2
   - property: ambient_pressure_phase
     value: alpha
-    scoring_profile: property_calculation_ambient_pressure_phase_exact_string_v2
+    scoring_profile: property_calculation_advanced_ambient_pressure_phase_exact_string_v2
   - property: high_pressure_phase
     value: beta
-    scoring_profile: property_calculation_high_pressure_phase_exact_string_v2
+    scoring_profile: property_calculation_advanced_high_pressure_phase_exact_string_v2
   gold_provenance:
     disclosure: withheld_initial_release
 - task_id: property_calc_003_hbond_count
@@ -411,7 +411,7 @@ tasks:
   - property: hydrogen_bond_count
     value: 12
     unit: count
-    scoring_profile: property_calculation_hydrogen_bond_count_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_hydrogen_bond_count_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: T2_paper_expert_answer
@@ -431,15 +431,15 @@ tasks:
   - property: frequency_1
     value: 1208.1036
     unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_1_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_ir_frequency_1_numeric_gold_v2
   - property: frequency_2
     value: 1674.0688
     unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_2_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_ir_frequency_2_numeric_gold_v2
   - property: frequency_3
     value: 1685.5562
     unit: cm^-1
-    scoring_profile: property_calculation_ir_frequency_3_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_ir_frequency_3_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: resveratrol_gaussian_output_expert_answer
@@ -459,7 +459,7 @@ tasks:
   - property: crystal_density
     value: 1.44728
     unit: g/cm^3
-    scoring_profile: property_calculation_crystal_density_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_crystal_density_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: CCDC_caffeine_monohydrate_expert_answer
@@ -478,7 +478,7 @@ tasks:
   gold_answers:
   - property: cocrystal_molar_ratio
     value: '1:1'
-    scoring_profile: property_calculation_cocrystal_molar_ratio_exact_string_v2
+    scoring_profile: property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: crystal_structure_prediction_blind_test_expert_answer
@@ -497,11 +497,11 @@ tasks:
   gold_answers:
   - property: lower_free_energy_at_0k
     value: FormC
-    scoring_profile: property_calculation_lower_free_energy_form_exact_string_v2
+    scoring_profile: property_calculation_advanced_lower_free_energy_form_exact_string_v2
   - property: crossover_temperature
     value: 343.15
     unit: K
-    scoring_profile: property_calculation_crossover_temperature_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_crossover_temperature_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: polymorph_free_energy_expert_answer
@@ -521,11 +521,11 @@ tasks:
   - property: interaction_energy
     value: -69.04
     unit: kcal/mol
-    scoring_profile: property_calculation_interaction_energy_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_interaction_energy_numeric_gold_v2
   - property: binding_energy
     value: -58.15
     unit: kcal/mol
-    scoring_profile: property_calculation_binding_energy_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_binding_energy_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_gaussian_counterpoise_answer
@@ -545,7 +545,7 @@ tasks:
   - property: homo_lumo_gap
     value: 7.26
     unit: eV
-    scoring_profile: property_calculation_homo_lumo_gap_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_homo_lumo_gap_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_homolumo_calculation
@@ -565,11 +565,11 @@ tasks:
   - property: oh_bond_distance
     value: 1.029
     unit: angstrom
-    scoring_profile: property_calculation_oh_bond_distance_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_oh_bond_distance_numeric_gold_v2
   - property: h_o_contact_distance
     value: 1.485
     unit: angstrom
-    scoring_profile: property_calculation_h_o_contact_distance_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_h_o_contact_distance_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: CRBAMP01_optimized_geometry_expert_answer
@@ -589,7 +589,7 @@ tasks:
   - property: accessible_to_inaccessible_volume_ratio
     value: 1.713
     unit: ratio
-    scoring_profile: property_calculation_pore_volume_ratio_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_pore_volume_ratio_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: zeo_plus_plus_probe_1p2_angstrom_expert_answer
@@ -609,7 +609,7 @@ tasks:
   - property: carboxyl_hydrogen_distance
     value: 2.521
     unit: angstrom
-    scoring_profile: property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: crest_conformer_expert_answer
@@ -629,7 +629,7 @@ tasks:
   - property: halogen_bond_interaction_energy
     value: -17.11
     unit: kcal/mol
-    scoring_profile: property_calculation_halogen_bond_energy_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_halogen_bond_energy_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: halogen_bonding_expert_answer
@@ -649,7 +649,7 @@ tasks:
   - property: pka
     value: 5.7
     unit: pKa
-    scoring_profile: property_calculation_pka_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_pka_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: BAY069_JMedChem_2022_expert_answer
@@ -669,7 +669,7 @@ tasks:
   - property: spin_orbit_coupling_matrix_element
     value: 0.00734
     unit: eV
-    scoring_profile: property_calculation_socme_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_socme_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1_SOC_tutorial_formaldehyde
@@ -689,7 +689,7 @@ tasks:
   - property: intersystem_crossing_rate
     value: 117000000.0
     unit: s^-1
-    scoring_profile: property_calculation_anthracene_isc_rate_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.1_manual_section_5.5.4.2
@@ -709,7 +709,7 @@ tasks:
   - property: phosphorescence_rate
     value: 98.0
     unit: s^-1
-    scoring_profile: property_calculation_phosphorescence_rate_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_phosphorescence_rate_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.1_manual_section_5.5.3.2
@@ -729,7 +729,7 @@ tasks:
   - property: herzberg_teller_contribution
     value: 100.0
     unit: percent
-    scoring_profile: property_calculation_ht_contribution_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_ht_contribution_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.0_ESD_anthracene_expert_output
@@ -749,7 +749,7 @@ tasks:
   - property: intersystem_crossing_rate
     value: 28400000000.0
     unit: s^-1
-    scoring_profile: property_calculation_acetophenone_isc_rate_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.0_ESD_acetophenone_expert_output
@@ -769,7 +769,7 @@ tasks:
   - property: internal_conversion_rate
     value: 382000000.0
     unit: s^-1
-    scoring_profile: property_calculation_internal_conversion_rate_numeric_gold_v2
+    scoring_profile: property_calculation_advanced_internal_conversion_rate_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.1_manual_section_5.5.5

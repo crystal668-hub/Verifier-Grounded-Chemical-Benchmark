@@ -31,12 +31,12 @@ FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/xtb/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml",
     "verifier_grounded_benchmark/task/packs/xtb/sample_answers.jsonl",
-    "verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation/scoring.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation_easy/tasks.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation_easy/scoring.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation_easy/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_advanced/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
+    "verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
 }
 FORMAL_EXPERT_XTB_TASK_IDS = {
     "xtb_formula_dipole_min_014",

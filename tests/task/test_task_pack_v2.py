@@ -23,7 +23,7 @@ def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
     packs = [
         _load("rdkit"),
         _load("xtb"),
-        _load("property_calculation"),
+        _load("property_calculation_advanced"),
     ]
     task_ids = [task.task_id for pack in packs for task in pack.tasks]
 
@@ -43,7 +43,7 @@ def test_all_numeric_constraints_normalize_to_linear_goal() -> None:
 
 
 def test_property_calculation_profiles_bind_numeric_and_exact_string_policies() -> None:
-    pack = _load("property_calculation")
+    pack = _load("property_calculation_advanced")
     for task in pack.tasks:
         requested = {item["name"]: item for item in task.raw["requested_properties"]}
         for gold in task.raw["gold_answers"]:

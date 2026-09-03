@@ -18,10 +18,6 @@ def list_tracks(status: str | None = "formal") -> list[TrackDefinition]:
 
 
 def load_track(name: str) -> Track:
-    name = {
-        "property_calculation": "property_calculation_advanced",
-        "property_calculation_easy": "property_calculation_basic",
-    }.get(name, name)
     return Track(DEFAULT_REGISTRY.get_track_definition(name))
 
 

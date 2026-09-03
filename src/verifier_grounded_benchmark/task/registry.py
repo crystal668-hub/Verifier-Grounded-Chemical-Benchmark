@@ -102,7 +102,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "crystal"),
-            resource_pack="property_calculation",
+            resource_pack="property_calculation_advanced",
         ),
         TrackDefinition(
             name="property_calculation_basic", version="0.8.0",
@@ -110,8 +110,8 @@ def builtin_definitions() -> list[TrackDefinition]:
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
-            tags=("property_calculation", "fixed_input", "easy", "small_molecule"),
-            resource_pack="property_calculation_easy",
+            tags=("property_calculation", "fixed_input", "basic", "small_molecule"),
+            resource_pack="property_calculation_basic",
         ),
     ]
 

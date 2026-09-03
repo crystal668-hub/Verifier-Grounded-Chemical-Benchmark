@@ -19,8 +19,8 @@ ARCHIVE_PACKAGES = ("verifier_grounded_benchmark", "vgb")
 FORMAL_TRACK_PATHS = {
     "rdkit": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "rdkit" / "tasks.yaml",
     "xtb": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "xtb" / "tasks.yaml",
-    "property_calculation_advanced": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation" / "tasks.yaml",
-    "property_calculation_basic": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_easy" / "tasks.yaml",
+    "property_calculation_advanced": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_advanced" / "tasks.yaml",
+    "property_calculation_basic": ROOT / "src" / "verifier_grounded_benchmark" / "task" / "packs" / "property_calculation_basic" / "tasks.yaml",
 }
 
 
@@ -133,8 +133,6 @@ def verify_archive_payloads(
         "src/verifier_grounded_benchmark/task/packs/rdkit/verifier_specs.yaml",
         "src/verifier_grounded_benchmark/task/packs/xtb/tasks.yaml",
         "src/verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml",
-        "src/verifier_grounded_benchmark/task/packs/property_calculation/tasks.yaml",
-        "src/verifier_grounded_benchmark/task/packs/property_calculation/verifier_specs.yaml",
     }
     required.update(additional_required or ())
     missing = sorted(required - wheel_payloads.keys())
@@ -178,8 +176,12 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         wheel_path,
         sdist_path,
         additional_required={
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_easy/tasks.yaml",
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_easy/verifier_specs.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/verifier_specs.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
+            "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
         },
     )
     artifacts = [

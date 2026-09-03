@@ -75,8 +75,12 @@ def test_builtin_track_uses_importable_module_executors() -> None:
         assert modules
         assert all(importlib.util.find_spec(module) is not None for module in modules)
 
-    assert vgb.load_track("property_calculation").verifier_specs_by_id == {}
-    assert vgb.load_track("property_calculation_easy").verifier_specs_by_id == {}
+    assert vgb.load_track("property_calculation_advanced").verifier_specs_by_id == {}
+    assert vgb.load_track("property_calculation_basic").verifier_specs_by_id == {}
+    with pytest.raises(KeyError):
+        vgb.load_track("property_calculation")
+    with pytest.raises(KeyError):
+        vgb.load_track("property_calculation_easy")
 
 
 def test_property_calculation_track_has_no_public_samples_and_redacts_gold() -> None:

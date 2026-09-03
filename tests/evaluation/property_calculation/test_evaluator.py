@@ -13,11 +13,11 @@ from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
 from verifier_grounded_benchmark.task.resources import package_resource
 
 PACK = load_task_pack(
-    package_resource("property_calculation", "tasks.yaml"),
-    package_resource("property_calculation", "verifier_specs.yaml"),
+    package_resource("property_calculation_advanced", "tasks.yaml"),
+    package_resource("property_calculation_advanced", "verifier_specs.yaml"),
 )
 VERSIONS = {
-    "package": "0.7.0",
+    "package": "0.8.0",
     "task_pack": PACK.version,
     "scoring": PACK.scoring_version,
     "verifiers": {},
@@ -173,7 +173,7 @@ def test_result_has_v2_schema_and_constraint_provenance() -> None:
             "role": "main",
             "value": 0.258031679,
             "score": 1.0,
-            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v2",
+                "scoring_profile": "property_calculation_advanced_free_energy_difference_numeric_gold_v2",
             "scoring_version": "linear_goal_v2",
         }
     ]

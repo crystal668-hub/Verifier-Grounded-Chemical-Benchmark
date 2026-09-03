@@ -85,8 +85,8 @@ EXPECTED_TASK_IDS = {
 
 def load_pack():
     return load_task_pack(
-        package_resource("property_calculation", "tasks.yaml"),
-        package_resource("property_calculation", "verifier_specs.yaml"),
+        package_resource("property_calculation_advanced", "tasks.yaml"),
+        package_resource("property_calculation_advanced", "verifier_specs.yaml"),
     )
 
 
@@ -187,7 +187,7 @@ def test_task_7_contract_and_gold() -> None:
             "property": "free_energy_difference",
             "value": 0.258031679,
             "unit": "kJ/mol",
-            "scoring_profile": "property_calculation_free_energy_difference_numeric_gold_v2",
+            "scoring_profile": "property_calculation_advanced_free_energy_difference_numeric_gold_v2",
         }
     ]
     profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
@@ -234,17 +234,17 @@ def test_task_8_contract_and_gold() -> None:
             "property": "potential_energy_difference",
             "value": 0.079,
             "unit": "eV",
-            "scoring_profile": "property_calculation_potential_energy_difference_numeric_gold_v2",
+            "scoring_profile": "property_calculation_advanced_potential_energy_difference_numeric_gold_v2",
         },
         {
             "property": "ambient_pressure_phase",
             "value": "alpha",
-            "scoring_profile": "property_calculation_ambient_pressure_phase_exact_string_v2",
+            "scoring_profile": "property_calculation_advanced_ambient_pressure_phase_exact_string_v2",
         },
         {
             "property": "high_pressure_phase",
             "value": "beta",
-            "scoring_profile": "property_calculation_high_pressure_phase_exact_string_v2",
+            "scoring_profile": "property_calculation_advanced_high_pressure_phase_exact_string_v2",
         },
     ]
     assert task["scoring"]["comparison_groups"] == [
@@ -298,42 +298,42 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             "spin_orbit_coupling_matrix_element",
             0.00734,
             "eV",
-            "property_calculation_socme_numeric_gold_v2",
+            "property_calculation_advanced_socme_numeric_gold_v2",
             0.0001,
         ),
         "property_calc_016_anthracene_isc_rate": (
             "intersystem_crossing_rate",
             117000000.0,
             "s^-1",
-            "property_calculation_anthracene_isc_rate_numeric_gold_v2",
+            "property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2",
             10000000.0,
         ),
         "property_calc_017_biacetyl_phosphorescence_rate": (
             "phosphorescence_rate",
             98.0,
             "s^-1",
-            "property_calculation_phosphorescence_rate_numeric_gold_v2",
+            "property_calculation_advanced_phosphorescence_rate_numeric_gold_v2",
             1.0,
         ),
         "property_calc_018_anthracene_ht_contribution": (
             "herzberg_teller_contribution",
             100.0,
             "percent",
-            "property_calculation_ht_contribution_numeric_gold_v2",
+            "property_calculation_advanced_ht_contribution_numeric_gold_v2",
             1.0,
         ),
         "property_calc_019_acetophenone_isc_rate": (
             "intersystem_crossing_rate",
             28400000000.0,
             "s^-1",
-            "property_calculation_acetophenone_isc_rate_numeric_gold_v2",
+            "property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2",
             100000000.0,
         ),
         "property_calc_020_azulene_internal_conversion_rate": (
             "internal_conversion_rate",
             382000000.0,
             "s^-1",
-            "property_calculation_internal_conversion_rate_numeric_gold_v2",
+            "property_calculation_advanced_internal_conversion_rate_numeric_gold_v2",
             10000000.0,
         ),
     }

@@ -25,8 +25,8 @@ print(result["scores"]["score"])
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
 | `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
 
-v0.7 名称 `property_calculation_easy` 和 `property_calculation` 仍可传给
-`load_track()`，分别映射到 basic 和 advanced；新代码应使用 canonical names。
+v0.8 仅支持上述 canonical names；旧的 `property_calculation` 和
+`property_calculation_easy` 名称已移除。
 
 ## Public API
 

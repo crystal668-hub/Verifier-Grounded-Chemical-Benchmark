@@ -4,7 +4,7 @@ import yaml
 
 from verifier_grounded_benchmark.task.resources import package_resource
 
-PACKS = ("rdkit", "xtb", "property_calculation", "property_calculation_easy")
+PACKS = ("rdkit", "xtb", "property_calculation_advanced", "property_calculation_basic")
 
 FORBIDDEN_PROMPT_FRAGMENTS = [
     "RDKit-calculated",
@@ -23,7 +23,7 @@ FORBIDDEN_PROMPT_FRAGMENTS = [
 ]
 
 SCIENTIFIC_METHOD_PROMPT_ALLOWLIST = {
-    "property_calculation_easy": {"GFN2-xTB"},
+    "property_calculation_basic": {"GFN2-xTB"},
 }
 
 

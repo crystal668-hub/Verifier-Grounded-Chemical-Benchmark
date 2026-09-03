@@ -194,7 +194,7 @@ def test_known_task_parse_failure_is_submission_zero() -> None:
 
 
 def test_engine_dispatches_property_calculation_and_raw_json() -> None:
-    engine = EvaluationEngine(_pack("property_calculation"))
+    engine = EvaluationEngine(_pack("property_calculation_advanced"))
     structured = engine.evaluate_one(
         {
             "task_id": "property_calc_001_free_energy",
@@ -230,7 +230,7 @@ def test_complete_property_report_gets_official_benchmark_score() -> None:
 
 
 def test_duplicate_unknown_and_missing_ids_invalidate_coverage() -> None:
-    pack = _pack("property_calculation")
+    pack = _pack("property_calculation_advanced")
     engine = EvaluationEngine(pack)
     answer = {
         "task_id": "property_calc_001_free_energy",

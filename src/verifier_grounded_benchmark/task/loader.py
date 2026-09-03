@@ -68,7 +68,7 @@ def load_task_pack(
         scoring_resource = _sibling_resource(tasks_resource, "scoring.yaml")
         if scoring_resource is None:
             pack_id = (task_data.get("task_pack") or {}).get("id")
-            if pack_id in {"rdkit", "xtb", "property_calculation", "property_calculation_easy"}:
+            if pack_id in {"rdkit", "xtb", "property_calculation_basic", "property_calculation_advanced"}:
                 from verifier_grounded_benchmark.task.resources import package_resource
 
                 scoring_resource = package_resource(pack_id, "scoring.yaml")

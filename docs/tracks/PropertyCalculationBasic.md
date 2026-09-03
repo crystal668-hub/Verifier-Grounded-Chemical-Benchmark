@@ -1,12 +1,12 @@
-# Property Calculation Easy Track
+# Property Calculation Basic Track
 
 Updated: 2026-08-25
 
 ## Positioning
 
-`property_calculation_easy` is a formal track for 51 fixed-input, basic molecular property
-questions. It is separate from `property_calculation`; adding or revising easy-track tasks does not
-change the original track's 20 task definitions, scoring profiles, or sample answers.
+`property_calculation_basic` is a formal track for 51 fixed-input, basic molecular property
+questions. It is separate from `property_calculation_advanced`; adding or revising basic-track tasks does not
+change the advanced track's 20 task definitions or scoring profiles.
 
 The track covers aqueous solvation free energies, redox potentials, noncovalent binding energies,
 polarizabilities, dipole moments, bond orders, molecular-surface properties, crystal densities,
@@ -22,7 +22,7 @@ chemistry executable.
 
 ```yaml
 task_pack:
-  id: property_calculation_easy
+  id: property_calculation_basic
   scoring_version: linear_goal_v2
 task_type: property_calculation
 ```
@@ -40,6 +40,5 @@ commands and local environment paths are maintenance evidence only and are never
 benchmark or shown to the model.
 
 The expert `answer` value is the frozen gold. Experimental or higher-level reference values define
-scoreable tolerance ranges but are not substituted for the expert result. Canonical sample answers
-are included for local scoring sanity checks, following the same public-gold policy as
-`property_calculation`.
+scoreable tolerance ranges but are not substituted for the expert result. This track does not ship
+sample answers; use test fixtures or model outputs for local scoring.

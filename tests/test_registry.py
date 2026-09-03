@@ -86,7 +86,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         sample_answers_path=None,
         status="formal",
         tags=("property_calculation", "fixed_input", "crystal"),
-        resource_pack="property_calculation",
+        resource_pack="property_calculation_advanced",
     )
     assert tracks[3] == TrackDefinition(
         name="property_calculation_basic",
@@ -97,8 +97,8 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         scoring_config_path="scoring.yaml",
         sample_answers_path=None,
         status="formal",
-        tags=("property_calculation", "fixed_input", "easy", "small_molecule"),
-        resource_pack="property_calculation_easy",
+        tags=("property_calculation", "fixed_input", "basic", "small_molecule"),
+        resource_pack="property_calculation_basic",
     )
 
 

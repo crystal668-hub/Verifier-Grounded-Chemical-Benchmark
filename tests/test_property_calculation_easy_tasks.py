@@ -117,7 +117,7 @@ REFERENCE_PROFILE_TOLERANCES = {
 }
 
 
-def load_pack(name: str = "property_calculation_easy"):
+def load_pack(name: str = "property_calculation_basic"):
     return load_task_pack(
         package_resource(name, "tasks.yaml"),
         package_resource(name, "verifier_specs.yaml"),
@@ -127,7 +127,7 @@ def load_pack(name: str = "property_calculation_easy"):
 def test_easy_pack_has_frozen_ids_and_common_property_envelope() -> None:
     pack = load_pack()
 
-    assert pack.pack_id == "property_calculation_easy"
+    assert pack.pack_id == "property_calculation_basic"
     assert list(pack.tasks_by_id) == list(EXPECTED_GOLD)
     for number, task in enumerate(pack.tasks_by_id.values(), start=1):
         assert re.fullmatch(
@@ -157,7 +157,7 @@ def test_easy_pack_has_frozen_ids_and_common_property_envelope() -> None:
 
 def test_easy_pack_gold_is_frozen_and_samples_are_removed() -> None:
     pack = load_pack()
-    assert not package_resource("property_calculation_easy", "sample_answers.jsonl").is_file()
+    assert not package_resource("property_calculation_basic", "sample_answers.jsonl").is_file()
     for task_id, (expected_value, expected_unit) in EXPECTED_GOLD.items():
         task = pack.tasks_by_id[task_id]
         gold = task["gold_answers"][0]
@@ -169,10 +169,10 @@ def test_easy_profiles_without_references_keep_reported_precision() -> None:
     profiles = load_pack().scoring_profiles
 
     expected_tolerances = {
-        "property_calculation_easy_wiberg_bond_order_numeric_gold_v2": 0.0001,
-        "property_calculation_easy_fukui_function_numeric_gold_v2": 0.001,
-        "property_calculation_easy_fukui_function_2dp_numeric_gold_v2": 0.01,
-        "property_calculation_easy_vdw_surface_area_numeric_gold_v2": 0.1,
+        "property_calculation_basic_wiberg_bond_order_numeric_gold_v2": 0.0001,
+        "property_calculation_basic_fukui_function_numeric_gold_v2": 0.001,
+        "property_calculation_basic_fukui_function_2dp_numeric_gold_v2": 0.01,
+        "property_calculation_basic_vdw_surface_area_numeric_gold_v2": 0.1,
     }
     for profile_id, tolerance in expected_tolerances.items():
         profile = profiles[profile_id]
@@ -197,7 +197,7 @@ def test_easy_reference_profiles_define_scoreable_asymmetric_ranges() -> None:
         profile = pack.scoring_profiles[profile_id]
         assert profile_id.startswith(
             task["task_id"].replace(
-                "property_calc_easy_", "property_calculation_easy_", 1
+                "property_calc_easy_", "property_calculation_basic_", 1
             )
         )
         assert profile["lower_tolerance"] == pytest.approx(lower_tolerance)
@@ -210,7 +210,7 @@ def test_easy_reference_profiles_define_scoreable_asymmetric_ranges() -> None:
 
 
 def test_easy_reference_boundaries_receive_score_but_outer_boundaries_do_not() -> None:
-    track = vgb.load_track("property_calculation_easy")
+    track = vgb.load_track("property_calculation_basic")
     pack = load_pack()
     tasks = track.tasks()
 
@@ -310,7 +310,7 @@ def test_easy_prompts_preserve_gfn2_xtb_method_and_density_protocol() -> None:
 
 
 def test_original_property_calculation_track_is_unchanged() -> None:
-    assert list(load_pack("property_calculation").tasks_by_id) == ORIGINAL_PROPERTY_TASK_IDS
+    assert list(load_pack("property_calculation_advanced").tasks_by_id) == ORIGINAL_PROPERTY_TASK_IDS
 
 
 def test_easy_track_has_no_runtime_verifier_specs() -> None:
