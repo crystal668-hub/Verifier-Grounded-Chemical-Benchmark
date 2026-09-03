@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: property_calculation_advanced
-  version: 0.8.0
+  version: 0.9.0
 tasks:
 - task_id: property_calc_001_free_energy
   version: 1

@@ -1,4 +1,4 @@
-# Verifier-Grounded Benchmark (v0.8)
+# Verifier-Grounded Benchmark (v0.9)
 
 `verifier_grounded_benchmark` 提供可复现的化学 benchmark task pack、verifier 和评分工具。
 模型调用由用户或 agent runner 负责；本包负责提供题目、解析答案并生成评分报告。
@@ -25,7 +25,7 @@ print(result["scores"]["score"])
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
 | `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
 
-v0.8 仅支持上述 canonical names；旧的 `property_calculation` 和
+v0.9 仅支持上述 canonical names；旧的 `property_calculation` 和
 `property_calculation_easy` 名称已移除。
 
 ## Public API
