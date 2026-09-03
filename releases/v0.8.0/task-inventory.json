@@ -3,7 +3,7 @@
   "result_schema_version": "2",
   "schema_version": 2,
   "scoring_profiles": {
-    "property_calculation_acetophenone_isc_rate_numeric_gold_v2": {
+    "property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 100000000.0,
         "property": "intersystem_crossing_rate",
@@ -21,7 +21,7 @@
       },
       "sha256": "b97b0c5c2b0b385a90dcefb0e4b749135a704484dd1b1beb0b97e1c7a0613733"
     },
-    "property_calculation_ambient_pressure_phase_exact_string_v2": {
+    "property_calculation_advanced_ambient_pressure_phase_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "ambient_pressure_phase",
@@ -37,7 +37,7 @@
       },
       "sha256": "547eaeec7e8264158f568ee012b7591bef412d06ddd1e53a21f5af096d809afa"
     },
-    "property_calculation_anthracene_isc_rate_numeric_gold_v2": {
+    "property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 10000000.0,
         "property": "intersystem_crossing_rate",
@@ -55,7 +55,7 @@
       },
       "sha256": "1f26fe09dea49aac9551763d82017840a763d56013699b695cdba39b4e4b05cc"
     },
-    "property_calculation_binding_energy_numeric_gold_v2": {
+    "property_calculation_advanced_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.5,
         "property": "binding_energy",
@@ -73,7 +73,7 @@
       },
       "sha256": "bd380e8daf2304c063884f107a361055b63faa6a1a299745db523c46ef62bf88"
     },
-    "property_calculation_carboxyl_hydrogen_distance_numeric_gold_v2": {
+    "property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "carboxyl_hydrogen_distance",
@@ -91,7 +91,7 @@
       },
       "sha256": "be835006a45ebf9309e1f471f3f24b13a7a3ebbd41870b9b5c3e9e2f3dcf12ef"
     },
-    "property_calculation_cocrystal_molar_ratio_exact_string_v2": {
+    "property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "cocrystal_molar_ratio",
@@ -107,7 +107,7 @@
       },
       "sha256": "708254a73a370787f041e694b5869a478e21cfdaa60c1e8fa7514cccca36b9c4"
     },
-    "property_calculation_crossover_temperature_numeric_gold_v2": {
+    "property_calculation_advanced_crossover_temperature_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 1.0,
         "property": "crossover_temperature",
@@ -125,7 +125,7 @@
       },
       "sha256": "e23f3b92e8e8ff93bd131057fbd9dfd42fa5b083ac35d637e70c70d162e3f775"
     },
-    "property_calculation_crystal_density_numeric_gold_v2": {
+    "property_calculation_advanced_crystal_density_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "crystal_density",
@@ -143,7 +143,345 @@
       },
       "sha256": "ea2cbde0b140a110be8ded2da9b2f2ca47743baea21deba9bd9f291ff3106757"
     },
-    "property_calculation_easy_001_toluene_aqueous_solvation_free_energy_numeric_gold_v2": {
+    "property_calculation_advanced_free_energy_difference_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.258031679,
+        "property": "free_energy_difference",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "kJ/mol",
+        "upper_tolerance": 0.258031679
+      },
+      "sha256": "584d089fab5a5c356ab5c27aeb7058d7312bb9b31205056bc128a135b7014014"
+    },
+    "property_calculation_advanced_h_o_contact_distance_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.01,
+        "property": "h_o_contact_distance",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "angstrom",
+        "upper_tolerance": 0.01
+      },
+      "sha256": "eab56ca9dddb9b387858e813077cf72f6a5712f72fb6387fec1588f68b566a29"
+    },
+    "property_calculation_advanced_halogen_bond_energy_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.5,
+        "property": "halogen_bond_interaction_energy",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "kcal/mol",
+        "upper_tolerance": 0.5
+      },
+      "sha256": "4c725f1d9706b7f6684e12126db05639fb84f01eaa2c6620dc990ae91ee8def8"
+    },
+    "property_calculation_advanced_high_pressure_phase_exact_string_v2": {
+      "definition": {
+        "normalization": "exact",
+        "property": "high_pressure_phase",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "4f70178040baf2c55396ed49a15d8d4a8dacb5ffed6a823f30050a6ac95ceec7"
+    },
+    "property_calculation_advanced_homo_lumo_gap_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.05,
+        "property": "homo_lumo_gap",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "eV",
+        "upper_tolerance": 0.05
+      },
+      "sha256": "50aed866972d9f60882938b2fb208c1b4595434b419a0a5ffc8591b8199709b5"
+    },
+    "property_calculation_advanced_ht_contribution_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 1.0,
+        "property": "herzberg_teller_contribution",
+        "provenance": {
+          "decay_source": "expert_reported_precision",
+          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
+          "review_date": "2026-08-24",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "percent",
+        "upper_tolerance": 1.0
+      },
+      "sha256": "78978c6731a638f10c4593f6281bf8f854ae2adab6940e441fa4d4d12e16d075"
+    },
+    "property_calculation_advanced_hydrogen_bond_count_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 1.0,
+        "property": "hydrogen_bond_count",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "count",
+        "upper_tolerance": 1.0
+      },
+      "sha256": "ed6fc6023414e2d490c6d51056ccf41802ae3e689b1167bca13a244d6ffea211"
+    },
+    "property_calculation_advanced_interaction_energy_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.5,
+        "property": "interaction_energy",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "kcal/mol",
+        "upper_tolerance": 0.5
+      },
+      "sha256": "a8ba8aa8240d02e5f0a751d5808b3bfef927828114a3b75ce00a16e07124d9d8"
+    },
+    "property_calculation_advanced_internal_conversion_rate_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 10000000.0,
+        "property": "internal_conversion_rate",
+        "provenance": {
+          "decay_source": "expert_reported_precision",
+          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
+          "review_date": "2026-08-24",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "s^-1",
+        "upper_tolerance": 10000000.0
+      },
+      "sha256": "3cb2350b4680dd1bdbb206239a785ef9cad877c3bdea2536eeb14f4422aaa7ec"
+    },
+    "property_calculation_advanced_ir_frequency_1_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.5,
+        "property": "frequency_1",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "cm^-1",
+        "upper_tolerance": 0.5
+      },
+      "sha256": "b5f26348472758deb7d950ded6965b6a99239acb49401d722e276f0651096616"
+    },
+    "property_calculation_advanced_ir_frequency_2_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.5,
+        "property": "frequency_2",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "cm^-1",
+        "upper_tolerance": 0.5
+      },
+      "sha256": "a0efe3c3026fef5123eb7edbdea3db539d6713e93bbcc0697216f54057f49741"
+    },
+    "property_calculation_advanced_ir_frequency_3_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.5,
+        "property": "frequency_3",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "cm^-1",
+        "upper_tolerance": 0.5
+      },
+      "sha256": "a36de2d8ee875525d4532015bb567040626638d3d67440ca3f16b5e6fe57f275"
+    },
+    "property_calculation_advanced_lower_free_energy_form_exact_string_v2": {
+      "definition": {
+        "normalization": "exact",
+        "property": "lower_free_energy_at_0k",
+        "provenance": {
+          "decay_source": "not_applicable",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "exact_string"
+      },
+      "sha256": "f2360e4209f63144dd7c15f4a8c70766ae97f295bc8aa5a1e9e340d866ac1f7d"
+    },
+    "property_calculation_advanced_oh_bond_distance_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.01,
+        "property": "oh_bond_distance",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "angstrom",
+        "upper_tolerance": 0.01
+      },
+      "sha256": "99226e1975537b139dcd581eb96f4f3b62a53fb4dda2581411530e55a093b395"
+    },
+    "property_calculation_advanced_phosphorescence_rate_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 1.0,
+        "property": "phosphorescence_rate",
+        "provenance": {
+          "decay_source": "expert_reported_precision",
+          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
+          "review_date": "2026-08-24",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "s^-1",
+        "upper_tolerance": 1.0
+      },
+      "sha256": "7e3f213f0b44e71e5724419b8db13761df8837030ac056dc90f2d5e09c65d67d"
+    },
+    "property_calculation_advanced_pka_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.1,
+        "property": "pka",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "pKa",
+        "upper_tolerance": 0.1
+      },
+      "sha256": "40cd9c7a30395866bb9cd2358a07cce18b26d65a61fa263b70315e712a84ce07"
+    },
+    "property_calculation_advanced_pore_volume_ratio_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.05,
+        "property": "accessible_to_inaccessible_volume_ratio",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
+          "review_date": "2026-08-20",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "ratio",
+        "upper_tolerance": 0.05
+      },
+      "sha256": "21df64bf8aa156b8eee954acd67710780c0aed8ee6778dadf42d42b465b0324b"
+    },
+    "property_calculation_advanced_potential_energy_difference_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.079,
+        "property": "potential_energy_difference",
+        "provenance": {
+          "decay_source": "gold_to_zero_rule",
+          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
+          "review_date": "2026-07-21",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "task_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "eV",
+        "upper_tolerance": 0.079
+      },
+      "sha256": "6ffbb82e573160aced72b1808280859cdcd4dc97f0e5855595c814285b5906e1"
+    },
+    "property_calculation_advanced_socme_numeric_gold_v2": {
+      "definition": {
+        "lower_tolerance": 0.0001,
+        "property": "spin_orbit_coupling_matrix_element",
+        "provenance": {
+          "decay_source": "expert_reported_precision",
+          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
+          "review_date": "2026-08-24",
+          "review_owner": "benchmark_maintainers",
+          "review_status": "approved",
+          "target_source": "expert_gold_answer"
+        },
+        "type": "numeric_gold",
+        "unit": "eV",
+        "upper_tolerance": 0.0001
+      },
+      "sha256": "a4ea9017196cb2dfb09b6f94c7b0a7a1af8db9cf0a560ff778578ffbd14b836c"
+    },
+    "property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.29,
         "property": "aqueous_solvation_free_energy",
@@ -164,7 +502,7 @@
       },
       "sha256": "b46573d96d9f77ff599ba565ffef54359ec45e47d0c796ccf90b550949a61342"
     },
-    "property_calculation_easy_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v2": {
+    "property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.19,
         "property": "aqueous_solvation_free_energy",
@@ -185,7 +523,7 @@
       },
       "sha256": "0b1429496de9aecf659e3485f4a86153c0de3bc4ff082176d4a146f36bdcc971"
     },
-    "property_calculation_easy_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v2": {
+    "property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.09,
         "property": "aqueous_solvation_free_energy",
@@ -206,7 +544,7 @@
       },
       "sha256": "de8283b7e3b4fb65d32f9f2f199befe130780c600e241b3f128b8d6a7fe0b3ea"
     },
-    "property_calculation_easy_004_anisole_aqueous_solvation_free_energy_numeric_gold_v2": {
+    "property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 1.08,
         "property": "aqueous_solvation_free_energy",
@@ -227,7 +565,7 @@
       },
       "sha256": "47ba663898a0c45e583a20273a31c957a1c65440885b857ea278ffa8773ed26f"
     },
-    "property_calculation_easy_005_nitrobenzene_reduction_potential_numeric_gold_v2": {
+    "property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "first_reduction_potential_vs_sce",
@@ -248,7 +586,7 @@
       },
       "sha256": "2ec9137e877fe2bc4e684419c6d58973ac80a2c8ff7108f4c37573fcb4ad93f2"
     },
-    "property_calculation_easy_006_tetracyanoethylene_reduction_potential_numeric_gold_v2": {
+    "property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "first_reduction_potential_vs_sce",
@@ -269,7 +607,7 @@
       },
       "sha256": "badbd923362dceed555d2f418e8d752058a2fb5e600066a909c72d3d15217dc9"
     },
-    "property_calculation_easy_007_dimethylaniline_oxidation_potential_numeric_gold_v2": {
+    "property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.03,
         "property": "first_oxidation_potential_vs_sce",
@@ -290,7 +628,7 @@
       },
       "sha256": "a745cb319be7a25a8deace867181d5899fa046392637dfad167822dad5e1a461"
     },
-    "property_calculation_easy_008_triphenylamine_oxidation_potential_numeric_gold_v2": {
+    "property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "first_oxidation_potential_vs_sce",
@@ -311,7 +649,7 @@
       },
       "sha256": "40262f4c6961169845dc6056133f976282a45b439589eba39330e1307c32d790"
     },
-    "property_calculation_easy_009_thianthrene_oxidation_potential_numeric_gold_v2": {
+    "property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "first_oxidation_potential_vs_sce",
@@ -332,7 +670,7 @@
       },
       "sha256": "2f1d018fa94541159e19ee1c7eb5e9fed132bf4327dc9bb803f2d7fcc9d7d57a"
     },
-    "property_calculation_easy_010_water_dimer_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.06,
         "property": "binding_energy",
@@ -353,7 +691,7 @@
       },
       "sha256": "901c559923887f08e1a153d89f7d19ec5463a92cc0e2fadee10951cf0666f65d"
     },
-    "property_calculation_easy_011_ammonia_dimer_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.33,
         "property": "binding_energy",
@@ -374,7 +712,7 @@
       },
       "sha256": "83c3d21859e5d8df2299640cf5a8ca0ede19982d8c3cc316a761aa7085c69647"
     },
-    "property_calculation_easy_012_benzene_t_dimer_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.3,
         "property": "binding_energy",
@@ -395,7 +733,7 @@
       },
       "sha256": "485b35b0357cb62690e6e2ac6c8506e26d7c8214c9afa1c0df17c4a80706bf21"
     },
-    "property_calculation_easy_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.25,
         "property": "binding_energy",
@@ -416,7 +754,7 @@
       },
       "sha256": "3767f1dd5a31f2091590ea56b8f2fee317a13bd58e37fb25ecbb9f32331dabea"
     },
-    "property_calculation_easy_014_water_methanol_complex_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.24,
         "property": "binding_energy",
@@ -437,7 +775,7 @@
       },
       "sha256": "142198e5a6e259d299d99c8959422d2edb900210319403bc069fab8b959ebe3e"
     },
-    "property_calculation_easy_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v2": {
+    "property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.21,
         "property": "binding_energy",
@@ -458,7 +796,7 @@
       },
       "sha256": "9d638aab2a205741801c899dcc7941701cc082063235b9358e8ace6c6e35b754"
     },
-    "property_calculation_easy_020_cis_dichloroethene_dipole_moment_numeric_gold_v2": {
+    "property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "dipole_moment",
@@ -479,7 +817,7 @@
       },
       "sha256": "ba95a3b004ccd1ab6f5a1ae6f4d1a339f7ff2bddd4f672a795e3a2aad3852862"
     },
-    "property_calculation_easy_021_acetonitrile_dipole_moment_numeric_gold_v2": {
+    "property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "dipole_moment",
@@ -500,7 +838,7 @@
       },
       "sha256": "eaa3069f1a9a68d78fc9b7c04f908a3e0f6dc134c69488f9776a609beef81cff"
     },
-    "property_calculation_easy_025_phenol_surface_esp_minimum_numeric_gold_v2": {
+    "property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.21,
         "property": "surface_electrostatic_potential_minimum",
@@ -521,7 +859,7 @@
       },
       "sha256": "1389375e6e3cc3f4824b1e955dd899ba0c6b33c0833d498f33c230fb072085a8"
     },
-    "property_calculation_easy_028_urea_crystal_density_numeric_gold_v2": {
+    "property_calculation_basic_028_urea_crystal_density_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.014,
         "property": "crystal_density",
@@ -542,7 +880,7 @@
       },
       "sha256": "4ce71097a7c0e939ed67f74ed91333fd72119713d875980840a127446ef6c1dc"
     },
-    "property_calculation_easy_029_tnt_crystal_density_numeric_gold_v2": {
+    "property_calculation_basic_029_tnt_crystal_density_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.066,
         "property": "crystal_density",
@@ -563,7 +901,7 @@
       },
       "sha256": "600f0008ad6ce1317c9a63288873f9dc7417285498b73a27c4699cfaedfbba18"
     },
-    "property_calculation_easy_030_picric_acid_crystal_density_numeric_gold_v2": {
+    "property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.069,
         "property": "crystal_density",
@@ -584,7 +922,7 @@
       },
       "sha256": "0f94144157ac1720b378b70c0e0c57ccc0ac648503555e9fbb8d65b7f8e91c59"
     },
-    "property_calculation_easy_037_benzene_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.34,
         "property": "standard_entropy",
@@ -605,7 +943,7 @@
       },
       "sha256": "ee9073d19a7ad179b94e0db31d8366f1b2e359ac1cd2ad18fc80f662840e1944"
     },
-    "property_calculation_easy_038_acetonitrile_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "standard_entropy",
@@ -626,7 +964,7 @@
       },
       "sha256": "8950783841e94ed9db452e02a7a4f456f199eea00262dacde6d8e18521c1a002"
     },
-    "property_calculation_easy_039_neopentane_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.69,
         "property": "standard_entropy",
@@ -647,7 +985,7 @@
       },
       "sha256": "1447563fc77db010eb1c1e91466ac9156eb9185699625b6231e62b5d2a682571"
     },
-    "property_calculation_easy_040_methane_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_040_methane_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.1,
         "property": "standard_entropy",
@@ -668,7 +1006,7 @@
       },
       "sha256": "5fcdaec11a58de3a6f61e7d339cd30f4acaa46d8fd3d2ac9b8779a885e87c2b6"
     },
-    "property_calculation_easy_041_ammonia_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "standard_entropy",
@@ -689,7 +1027,7 @@
       },
       "sha256": "dc42575c89e0ac459b32f9258f2358ab1922503e5cf057a2753248849714c204"
     },
-    "property_calculation_easy_042_carbon_dioxide_standard_entropy_numeric_gold_v2": {
+    "property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.12,
         "property": "standard_entropy",
@@ -710,7 +1048,7 @@
       },
       "sha256": "c9b9b0ac655e0cf281cf1d0b45163c5284ba90fb892ba6f54de8d06ecfcb1cfa"
     },
-    "property_calculation_easy_043_acetic_acid_dimerization_enthalpy_numeric_gold_v2": {
+    "property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "dimerization_enthalpy",
@@ -731,7 +1069,7 @@
       },
       "sha256": "d3bd26499693da6d7ca13df6fd39ad58c13be163c5c8719b6a9c4038914897d8"
     },
-    "property_calculation_easy_dipole_moment_numeric_gold_v2": {
+    "property_calculation_basic_dipole_moment_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "dipole_moment",
@@ -749,7 +1087,7 @@
       },
       "sha256": "2ac2ab1e3760c9f871a8e9c329771b270bac918267c63eaacbaa1b50d824ddbc"
     },
-    "property_calculation_easy_fukui_function_2dp_numeric_gold_v2": {
+    "property_calculation_basic_fukui_function_2dp_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "fukui_function",
@@ -767,7 +1105,7 @@
       },
       "sha256": "9c6517c2185ff7f4b8412e1712d9a6815d1d6e06a4a5fff834498532718117cf"
     },
-    "property_calculation_easy_fukui_function_numeric_gold_v2": {
+    "property_calculation_basic_fukui_function_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.001,
         "property": "fukui_function",
@@ -785,7 +1123,7 @@
       },
       "sha256": "ce2d8c2b36574a376fd5fa3006f5a964afe2d334de570cff85e74f7f81c78970"
     },
-    "property_calculation_easy_most_negative_mulliken_atom_exact_string_v2": {
+    "property_calculation_basic_most_negative_mulliken_atom_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "most_negative_mulliken_atom",
@@ -801,7 +1139,7 @@
       },
       "sha256": "250c980e77847bf91ded19933b39930b777c0583e138323175467cfaa02aa9f8"
     },
-    "property_calculation_easy_mulliken_charge_numeric_gold_v2": {
+    "property_calculation_basic_mulliken_charge_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.001,
         "property": "mulliken_charge",
@@ -819,7 +1157,7 @@
       },
       "sha256": "cc711b7eabc61a8da63b5494be0292edbd81a664bac233356d130667b4d142a9"
     },
-    "property_calculation_easy_spin_density_numeric_gold_v2": {
+    "property_calculation_basic_spin_density_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.001,
         "property": "spin_density",
@@ -837,7 +1175,7 @@
       },
       "sha256": "8c6a2e53ef3197227e5844c8f828c9bb707afe0861090eb97f95786a4f7ecd18"
     },
-    "property_calculation_easy_static_mean_polarizability_numeric_gold_v2": {
+    "property_calculation_basic_static_mean_polarizability_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "static_mean_polarizability",
@@ -855,7 +1193,7 @@
       },
       "sha256": "d4160be8cb808b6f5f2dd225486f8bf520cdeaa1c5270f78b24088de04f27249"
     },
-    "property_calculation_easy_surface_esp_variance_numeric_gold_v2": {
+    "property_calculation_basic_surface_esp_variance_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "surface_electrostatic_potential_total_variance",
@@ -873,7 +1211,7 @@
       },
       "sha256": "43ebd52a90b7df48abc0e7b72922122a0bb1a2ca5c63db6ea1ab6942781942ff"
     },
-    "property_calculation_easy_vdw_surface_area_numeric_gold_v2": {
+    "property_calculation_basic_vdw_surface_area_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.1,
         "property": "van_der_waals_surface_area",
@@ -891,7 +1229,7 @@
       },
       "sha256": "65fbe9f03df0703c18f05cea77bc3f5f92d4dde1c9a722ff28ae733150b929a9"
     },
-    "property_calculation_easy_vertical_excitation_energy_numeric_gold_v2": {
+    "property_calculation_basic_vertical_excitation_energy_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.01,
         "property": "vertical_excitation_energy",
@@ -909,7 +1247,7 @@
       },
       "sha256": "cb85c04e9174fe8c5c70708471e3f40f16f33e876890cdc41b6b2cc7a3ae4004"
     },
-    "property_calculation_easy_wiberg_bond_order_numeric_gold_v2": {
+    "property_calculation_basic_wiberg_bond_order_numeric_gold_v2": {
       "definition": {
         "lower_tolerance": 0.0001,
         "property": "wiberg_bond_order",
@@ -926,344 +1264,6 @@
         "upper_tolerance": 0.0001
       },
       "sha256": "4c7683a4b0212b75ef893aa418c544951c1ddce70910bf2a76fe88cfd8ee27da"
-    },
-    "property_calculation_free_energy_difference_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.258031679,
-        "property": "free_energy_difference",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "kJ/mol",
-        "upper_tolerance": 0.258031679
-      },
-      "sha256": "584d089fab5a5c356ab5c27aeb7058d7312bb9b31205056bc128a135b7014014"
-    },
-    "property_calculation_h_o_contact_distance_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.01,
-        "property": "h_o_contact_distance",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "angstrom",
-        "upper_tolerance": 0.01
-      },
-      "sha256": "eab56ca9dddb9b387858e813077cf72f6a5712f72fb6387fec1588f68b566a29"
-    },
-    "property_calculation_halogen_bond_energy_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.5,
-        "property": "halogen_bond_interaction_energy",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "kcal/mol",
-        "upper_tolerance": 0.5
-      },
-      "sha256": "4c725f1d9706b7f6684e12126db05639fb84f01eaa2c6620dc990ae91ee8def8"
-    },
-    "property_calculation_high_pressure_phase_exact_string_v2": {
-      "definition": {
-        "normalization": "exact",
-        "property": "high_pressure_phase",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_gold_answer"
-        },
-        "type": "exact_string"
-      },
-      "sha256": "4f70178040baf2c55396ed49a15d8d4a8dacb5ffed6a823f30050a6ac95ceec7"
-    },
-    "property_calculation_homo_lumo_gap_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.05,
-        "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "eV",
-        "upper_tolerance": 0.05
-      },
-      "sha256": "50aed866972d9f60882938b2fb208c1b4595434b419a0a5ffc8591b8199709b5"
-    },
-    "property_calculation_ht_contribution_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 1.0,
-        "property": "herzberg_teller_contribution",
-        "provenance": {
-          "decay_source": "expert_reported_precision",
-          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
-          "review_date": "2026-08-24",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "percent",
-        "upper_tolerance": 1.0
-      },
-      "sha256": "78978c6731a638f10c4593f6281bf8f854ae2adab6940e441fa4d4d12e16d075"
-    },
-    "property_calculation_hydrogen_bond_count_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 1.0,
-        "property": "hydrogen_bond_count",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "count",
-        "upper_tolerance": 1.0
-      },
-      "sha256": "ed6fc6023414e2d490c6d51056ccf41802ae3e689b1167bca13a244d6ffea211"
-    },
-    "property_calculation_interaction_energy_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.5,
-        "property": "interaction_energy",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "kcal/mol",
-        "upper_tolerance": 0.5
-      },
-      "sha256": "a8ba8aa8240d02e5f0a751d5808b3bfef927828114a3b75ce00a16e07124d9d8"
-    },
-    "property_calculation_internal_conversion_rate_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 10000000.0,
-        "property": "internal_conversion_rate",
-        "provenance": {
-          "decay_source": "expert_reported_precision",
-          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
-          "review_date": "2026-08-24",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "s^-1",
-        "upper_tolerance": 10000000.0
-      },
-      "sha256": "3cb2350b4680dd1bdbb206239a785ef9cad877c3bdea2536eeb14f4422aaa7ec"
-    },
-    "property_calculation_ir_frequency_1_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.5,
-        "property": "frequency_1",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "cm^-1",
-        "upper_tolerance": 0.5
-      },
-      "sha256": "b5f26348472758deb7d950ded6965b6a99239acb49401d722e276f0651096616"
-    },
-    "property_calculation_ir_frequency_2_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.5,
-        "property": "frequency_2",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "cm^-1",
-        "upper_tolerance": 0.5
-      },
-      "sha256": "a0efe3c3026fef5123eb7edbdea3db539d6713e93bbcc0697216f54057f49741"
-    },
-    "property_calculation_ir_frequency_3_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.5,
-        "property": "frequency_3",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "cm^-1",
-        "upper_tolerance": 0.5
-      },
-      "sha256": "a36de2d8ee875525d4532015bb567040626638d3d67440ca3f16b5e6fe57f275"
-    },
-    "property_calculation_lower_free_energy_form_exact_string_v2": {
-      "definition": {
-        "normalization": "exact",
-        "property": "lower_free_energy_at_0k",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "exact_string"
-      },
-      "sha256": "f2360e4209f63144dd7c15f4a8c70766ae97f295bc8aa5a1e9e340d866ac1f7d"
-    },
-    "property_calculation_oh_bond_distance_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.01,
-        "property": "oh_bond_distance",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "angstrom",
-        "upper_tolerance": 0.01
-      },
-      "sha256": "99226e1975537b139dcd581eb96f4f3b62a53fb4dda2581411530e55a093b395"
-    },
-    "property_calculation_phosphorescence_rate_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 1.0,
-        "property": "phosphorescence_rate",
-        "provenance": {
-          "decay_source": "expert_reported_precision",
-          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
-          "review_date": "2026-08-24",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "s^-1",
-        "upper_tolerance": 1.0
-      },
-      "sha256": "7e3f213f0b44e71e5724419b8db13761df8837030ac056dc90f2d5e09c65d67d"
-    },
-    "property_calculation_pka_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.1,
-        "property": "pka",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "pKa",
-        "upper_tolerance": 0.1
-      },
-      "sha256": "40cd9c7a30395866bb9cd2358a07cce18b26d65a61fa263b70315e712a84ce07"
-    },
-    "property_calculation_pore_volume_ratio_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.05,
-        "property": "accessible_to_inaccessible_volume_ratio",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "ratio",
-        "upper_tolerance": 0.05
-      },
-      "sha256": "21df64bf8aa156b8eee954acd67710780c0aed8ee6778dadf42d42b465b0324b"
-    },
-    "property_calculation_potential_energy_difference_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.079,
-        "property": "potential_energy_difference",
-        "provenance": {
-          "decay_source": "gold_to_zero_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "eV",
-        "upper_tolerance": 0.079
-      },
-      "sha256": "6ffbb82e573160aced72b1808280859cdcd4dc97f0e5855595c814285b5906e1"
-    },
-    "property_calculation_socme_numeric_gold_v2": {
-      "definition": {
-        "lower_tolerance": 0.0001,
-        "property": "spin_orbit_coupling_matrix_element",
-        "provenance": {
-          "decay_source": "expert_reported_precision",
-          "decision_record": "docs/research/2026-08-24-excited-state-property-calculation-conversion.md",
-          "review_date": "2026-08-24",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
-        "type": "numeric_gold",
-        "unit": "eV",
-        "upper_tolerance": 0.0001
-      },
-      "sha256": "a4ea9017196cb2dfb09b6f94c7b0a7a1af8db9cf0a560ff778578ffbd14b836c"
     },
     "rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2": {
       "definition": {
@@ -1946,7 +1946,7 @@
         "property_calc_020_azulene_internal_conversion_rate"
       ],
       "task_pack_version": "0.8.0",
-      "tasks_sha256": "56be30202d84aec9149d602e3c591c996f5097134f9fcf5f539b5a6c17d0954f"
+      "tasks_sha256": "5109cbc550f5e0fda0568d957ae9e8413b22e8d7aad41d346807960f6af35384"
     },
     "property_calculation_basic": {
       "count": 51,
@@ -2006,7 +2006,7 @@
         "property_calc_easy_051_formaldehyde_t1_vertical_excitation_energy"
       ],
       "task_pack_version": "0.8.0",
-      "tasks_sha256": "b62e1bb662e8babdcea6e075382f9e73d8d19cab74059862ae8e187bcdd1d688"
+      "tasks_sha256": "ce8de9197297aeddeb11a1833c37977e13a5d7b474dc8ae5ca3c3e78ca5ad605"
     },
     "rdkit": {
       "count": 14,
