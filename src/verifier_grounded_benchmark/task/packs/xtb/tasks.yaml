@@ -1082,7 +1082,7 @@ tasks:
   structural_domain:
     formula: C37H48N6O5S2
   structure_identity:
-    reference_smiles: 
+    reference_smiles:
       CC(C)C1=NC(=CS1)CN(C)C(=O)N[C@@H](C(C)C)C(=O)N[C@@H](CC2=CC=CC=C2)C[C@@H]([C@H](CC3=CC=CC=C3)NC(=O)OCC4=CN=CS4)O
     require_stereochemistry: true
     recheck_after_optimization: true
