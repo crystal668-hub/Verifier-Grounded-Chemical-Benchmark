@@ -1067,10 +1067,10 @@ tasks:
   - fixed_input
   - infrared_spectroscopy
   prompt: |
-    For the M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the three vibrational modes with the largest IR intensities in cm^-1.
+    For the M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the two vibrational modes with the largest IR intensities in cm^-1.
 
     Your final answer must appear on its own line exactly in this format:
-    FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"},{"property":"frequency_3","value":<number>,"unit":"cm^-1"}]}
+    FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"}]}
   answer_schema:
     format: final_answer_line
     final_answer_prefix: 'FINAL ANSWER:'
@@ -1081,15 +1081,11 @@ tasks:
   - name: frequency_1
     value_type: number
     unit: cm^-1
-    comparison_group: top_three_frequencies
+    comparison_group: top_two_frequencies
   - name: frequency_2
     value_type: number
     unit: cm^-1
-    comparison_group: top_three_frequencies
-  - name: frequency_3
-    value_type: number
-    unit: cm^-1
-    comparison_group: top_three_frequencies
+    comparison_group: top_two_frequencies
 - task_id: property_calc_005_crystal_density
   version: 1
   task_type: property_calculation

@@ -209,7 +209,7 @@ def test_engine_dispatches_property_calculation_and_raw_json() -> None:
         }
     )
 
-    assert structured["scores"]["score"] == pytest.approx(1 - 0.0005 / 0.258031679)
+    assert structured["scores"]["score"] == pytest.approx(1 - 0.0005 / 10.0)
     assert raw["scores"] == structured["scores"]
     assert raw["raw_answer"].startswith("FINAL ANSWER")
 

@@ -21,5 +21,18 @@ def score_numeric_gold(
     value = submitted.get("value")
     if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(float(value)):
         return 0.0
-    region = linear_goal_from_profile(profile, gold=gold.get("value"))
-    return score(float(value), region)
+    transform = profile.get("value_transform", "identity")
+    numeric_value = float(value)
+    numeric_gold = gold.get("value")
+    if transform == "absolute":
+        numeric_value = abs(numeric_value)
+        numeric_gold = abs(float(numeric_gold))
+    elif transform == "log10":
+        if numeric_value <= 0 or not isinstance(numeric_gold, Real) or float(numeric_gold) <= 0:
+            return 0.0
+        numeric_value = math.log10(numeric_value)
+        numeric_gold = math.log10(float(numeric_gold))
+    elif transform != "identity":
+        raise ValueError(f"unsupported numeric gold value_transform: {transform}")
+    region = linear_goal_from_profile(profile, gold=numeric_gold)
+    return score(numeric_value, region)

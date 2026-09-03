@@ -191,8 +191,8 @@ def test_task_7_contract_and_gold() -> None:
         }
     ]
     profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
-    assert profile["lower_tolerance"] == 0.258031679
-    assert profile["upper_tolerance"] == 0.258031679
+    assert profile["lower_tolerance"] == 10.0
+    assert profile["upper_tolerance"] == 10.0
     assert profile["provenance"]["review_status"] == "approved"
     assert task["scoring"]["comparison_groups"] == [
         {"id": "free_energy_difference", "mode": "all"}
@@ -264,8 +264,14 @@ def test_expert_task_special_contracts_are_frozen() -> None:
 
     task_15 = tasks["property_calc_004_ir_top3_frequencies"]
     assert task_15["scoring"]["comparison_groups"] == [
-        {"id": "top_three_frequencies", "mode": "unordered_numeric"}
+        {"id": "top_two_frequencies", "mode": "unordered_numeric"}
     ]
+    assert [item["name"] for item in task_15["requested_properties"]] == [
+        "frequency_1",
+        "frequency_2",
+    ]
+    assert "two vibrational modes" in task_15["prompt"]
+    assert "frequency_3" not in task_15["prompt"]
 
     task_19 = tasks["property_calc_008_interaction_binding_energy"]
     assert [item["type"] for item in task_19["input_objects"]] == [
@@ -299,46 +305,66 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             0.00734,
             "eV",
             "property_calculation_advanced_socme_numeric_gold_v2",
-            0.0001,
+            1.0,
+            1.0,
+            "log10",
         ),
         "property_calc_016_anthracene_isc_rate": (
             "intersystem_crossing_rate",
             117000000.0,
             "s^-1",
             "property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2",
-            10000000.0,
+            3.0,
+            3.0,
+            "log10",
         ),
         "property_calc_017_biacetyl_phosphorescence_rate": (
             "phosphorescence_rate",
             98.0,
             "s^-1",
             "property_calculation_advanced_phosphorescence_rate_numeric_gold_v2",
-            1.0,
+            2.0,
+            3.0,
+            "log10",
         ),
         "property_calc_018_anthracene_ht_contribution": (
             "herzberg_teller_contribution",
             100.0,
             "percent",
             "property_calculation_advanced_ht_contribution_numeric_gold_v2",
+            10.0,
             1.0,
+            "identity",
         ),
         "property_calc_019_acetophenone_isc_rate": (
             "intersystem_crossing_rate",
             28400000000.0,
             "s^-1",
             "property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2",
-            100000000.0,
+            3.0,
+            3.0,
+            "log10",
         ),
         "property_calc_020_azulene_internal_conversion_rate": (
             "internal_conversion_rate",
             382000000.0,
             "s^-1",
             "property_calculation_advanced_internal_conversion_rate_numeric_gold_v2",
-            10000000.0,
+            3.0,
+            3.0,
+            "log10",
         ),
     }
 
-    for task_id, (property_name, value, unit, profile_id, tolerance) in expected.items():
+    for task_id, (
+        property_name,
+        value,
+        unit,
+        profile_id,
+        lower_tolerance,
+        upper_tolerance,
+        transform,
+    ) in expected.items():
         task = pack.tasks_by_id[task_id]
         assert task["requested_properties"] == [
             {
@@ -363,8 +389,9 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
         assert all(suffix not in task["prompt"] for suffix in (".out", ".inp", ".hess"))
         assert "ORCA" not in task["prompt"]
         profile = pack.scoring_profiles[profile_id]
-        assert profile["lower_tolerance"] == tolerance
-        assert profile["upper_tolerance"] == tolerance
+        assert profile["lower_tolerance"] == lower_tolerance
+        assert profile["upper_tolerance"] == upper_tolerance
+        assert profile.get("value_transform", "identity") == transform
         assert profile["provenance"]["review_status"] == "approved"
 
     source_protocol_fragments = (

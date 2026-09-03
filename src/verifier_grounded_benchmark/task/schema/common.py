@@ -81,8 +81,25 @@ def validate_profiles(
         if profile_type == "exact_string":
             if profile.get("normalization") != "exact":
                 raise ValueError(f"exact string profile {profile_id} must use exact normalization")
+            partial_scores = profile.get("partial_scores", {})
+            if not isinstance(partial_scores, Mapping):
+                raise ValueError(f"exact string profile {profile_id} partial_scores must be an object")
+            for value, partial_score in partial_scores.items():
+                if (
+                    not isinstance(value, str)
+                    or isinstance(partial_score, bool)
+                    or not isinstance(partial_score, Real)
+                ):
+                    raise ValueError(f"exact string profile {profile_id} partial_scores must map strings to numbers")
+                if not 0.0 <= float(partial_score) < 1.0:
+                    raise ValueError(f"exact string profile {profile_id} partial scores must be in [0, 1)")
         else:
             require_string(profile.get("unit"), f"scoring profile {profile_id} unit")
+            transform = profile.get("value_transform", "identity")
+            if transform not in {"identity", "absolute", "log10"}:
+                raise ValueError(f"unsupported value_transform for {profile_id}: {transform}")
+            if profile_type != "numeric_gold" and transform != "identity":
+                raise ValueError(f"value_transform is only supported for numeric_gold: {profile_id}")
     return dict(mappings)
 
 

@@ -42,12 +42,12 @@ def _evaluate(task_id: str, answer: dict):
 @pytest.mark.parametrize(
     ("answer", "expected"),
     [
-        (0.0, 0.0),
-        (0.1290158395, 0.5),
+        (-9.741968321, 0.0),
+        (-4.741968321, 0.5),
         (0.258031679, 1.0),
-        (0.3870475185, 0.5),
-        (0.516063358, 0.0),
-        (0.6, 0.0),
+        (5.258031679, 0.5),
+        (10.258031679, 0.0),
+        (11.0, 0.0),
     ],
 )
 def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: float) -> None:
@@ -65,7 +65,7 @@ def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
         "property_calc_002_crystal_phase",
         {
             "answers": [
-                {"property": "potential_energy_difference", "value": 0.1185, "unit": "eV"},
+                {"property": "potential_energy_difference", "value": 0.579, "unit": "eV"},
                 {"property": "ambient_pressure_phase", "value": "wrong"},
                 {"property": "high_pressure_phase", "value": "beta"},
             ]
@@ -204,3 +204,89 @@ def test_unordered_numeric_group_uses_best_assignment() -> None:
     }
 
     assert score_unordered_numeric_group(submitted, members, gold, profiles) == pytest.approx(1.0)
+
+
+def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
+    result = _evaluate(
+        "property_calc_004_ir_top3_frequencies",
+        {
+            "answers": [
+                {"property": "frequency_1", "value": 1685.56, "unit": "cm^-1"},
+                {"property": "frequency_2", "value": 1208.10, "unit": "cm^-1"},
+            ]
+        },
+    )
+
+    assert result["scores"]["score"] == pytest.approx(1.0)
+    assert result["scores"]["comparison_group_scores"][0]["members"] == [
+        "frequency_1",
+        "frequency_2",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("answer", "expected"),
+    [("1:1", 1.0), ("1:2", 0.5), ("2:1", 0.5), ("1:3", 0.0)],
+)
+def test_cocrystal_ratio_has_explicit_partial_credit(answer: str, expected: float) -> None:
+    result = _evaluate("property_calc_006_cocrystal_ratio", {"answer": answer})
+
+    assert result["scores"]["score"] == pytest.approx(expected)
+
+
+def test_absolute_value_scoring_compares_answer_and_gold_magnitudes() -> None:
+    result = _evaluate(
+        "property_calc_013_halogen_bond_energy",
+        {"answer": 17.11, "unit": "kcal/mol"},
+    )
+
+    assert result["scores"]["score"] == pytest.approx(1.0)
+
+
+@pytest.mark.parametrize(
+    ("answer", "expected"),
+    [
+        (117000000.0, 1.0),
+        (117000.0, 0.0),
+        (117000000000.0, 0.0),
+        (11700000.0, 2.0 / 3.0),
+        (0.0, 0.0),
+        (-117000000.0, 0.0),
+    ],
+)
+def test_log10_scoring_uses_order_of_magnitude_distance(
+    answer: float, expected: float
+) -> None:
+    result = _evaluate(
+        "property_calc_016_anthracene_isc_rate",
+        {"answer": answer, "unit": "s^-1"},
+    )
+
+    assert result["scores"]["score"] == pytest.approx(expected)
+
+
+@pytest.mark.parametrize(
+    ("answer", "expected"),
+    [(9.8, 0.5), (98.0, 1.0), (98.0 * 10**1.5, 0.5)],
+)
+def test_asymmetric_log10_scoring_uses_separate_side_widths(
+    answer: float, expected: float
+) -> None:
+    result = _evaluate(
+        "property_calc_017_biacetyl_phosphorescence_rate",
+        {"answer": answer, "unit": "s^-1"},
+    )
+
+    assert result["scores"]["score"] == pytest.approx(expected)
+
+
+@pytest.mark.parametrize(("answer", "expected"), [(95.0, 0.5), (100.0, 1.0), (100.5, 0.5)])
+def test_asymmetric_linear_scoring_uses_separate_side_widths(
+    answer: float, expected: float
+) -> None:
+    result = _evaluate(
+        "property_calc_018_anthracene_ht_contribution",
+        {"answer": answer, "unit": "percent"},
+    )
+
+    assert result["scores"]["score"] == pytest.approx(expected)

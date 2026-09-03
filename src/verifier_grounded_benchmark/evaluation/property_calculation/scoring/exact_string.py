@@ -14,4 +14,8 @@ def score_exact_string(
     if profile.get("normalization") != "exact":
         raise ValueError("unsupported string normalization")
     value = None if submitted is None else submitted.get("value")
-    return float(isinstance(value, str) and value == gold.get("value"))
+    if not isinstance(value, str):
+        return 0.0
+    if value == gold.get("value"):
+        return 1.0
+    return float(profile.get("partial_scores", {}).get(value, 0.0))

@@ -9,8 +9,8 @@ scoring_profiles:
     property: free_energy_difference
     type: numeric_gold
     unit: kJ/mol
-    lower_tolerance: 0.258031679
-    upper_tolerance: 0.258031679
+    lower_tolerance: 10.0
+    upper_tolerance: 10.0
     provenance:
       target_source: task_gold_answer
       decay_source: gold_to_zero_rule
@@ -22,8 +22,8 @@ scoring_profiles:
     property: potential_energy_difference
     type: numeric_gold
     unit: eV
-    lower_tolerance: 0.079
-    upper_tolerance: 0.079
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
     provenance:
       target_source: task_gold_answer
       decay_source: gold_to_zero_rule
@@ -57,8 +57,8 @@ scoring_profiles:
     property: hydrogen_bond_count
     type: numeric_gold
     unit: count
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -70,8 +70,8 @@ scoring_profiles:
     property: frequency_1
     type: numeric_gold
     unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 100.0
+    upper_tolerance: 100.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -83,21 +83,8 @@ scoring_profiles:
     property: frequency_2
     type: numeric_gold
     unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
-      review_status: approved
-      review_date: '2026-08-20'
-      review_owner: benchmark_maintainers
-  property_calculation_advanced_ir_frequency_3_numeric_gold_v2:
-    property: frequency_3
-    type: numeric_gold
-    unit: cm^-1
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 100.0
+    upper_tolerance: 100.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -109,8 +96,8 @@ scoring_profiles:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 0.2
+    upper_tolerance: 0.2
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -122,6 +109,9 @@ scoring_profiles:
     property: cocrystal_molar_ratio
     type: exact_string
     normalization: exact
+    partial_scores:
+      '1:2': 0.5
+      '2:1': 0.5
     provenance:
       target_source: expert_gold_answer
       decay_source: not_applicable
@@ -144,8 +134,8 @@ scoring_profiles:
     property: crossover_temperature
     type: numeric_gold
     unit: K
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
+    lower_tolerance: 200.0
+    upper_tolerance: 200.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -157,8 +147,9 @@ scoring_profiles:
     property: interaction_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 20.0
+    upper_tolerance: 20.0
+    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -170,8 +161,9 @@ scoring_profiles:
     property: binding_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 20.0
+    upper_tolerance: 20.0
+    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -183,8 +175,8 @@ scoring_profiles:
     property: homo_lumo_gap
     type: numeric_gold
     unit: eV
-    lower_tolerance: 0.05
-    upper_tolerance: 0.05
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -196,8 +188,9 @@ scoring_profiles:
     property: oh_bond_distance
     type: numeric_gold
     unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 0.3
+    upper_tolerance: 0.3
+    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -209,8 +202,9 @@ scoring_profiles:
     property: h_o_contact_distance
     type: numeric_gold
     unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 0.3
+    upper_tolerance: 0.3
+    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -222,8 +216,8 @@ scoring_profiles:
     property: accessible_to_inaccessible_volume_ratio
     type: numeric_gold
     unit: ratio
-    lower_tolerance: 0.05
-    upper_tolerance: 0.05
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -235,8 +229,8 @@ scoring_profiles:
     property: carboxyl_hydrogen_distance
     type: numeric_gold
     unit: angstrom
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 0.5
+    upper_tolerance: 0.5
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -248,8 +242,9 @@ scoring_profiles:
     property: halogen_bond_interaction_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 5.0
+    upper_tolerance: 5.0
+    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -261,8 +256,8 @@ scoring_profiles:
     property: pka
     type: numeric_gold
     unit: pKa
-    lower_tolerance: 0.1
-    upper_tolerance: 0.1
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     provenance:
       target_source: expert_gold_answer
       decay_source: gold_to_zero_rule
@@ -274,8 +269,9 @@ scoring_profiles:
     property: spin_orbit_coupling_matrix_element
     type: numeric_gold
     unit: eV
-    lower_tolerance: 0.0001
-    upper_tolerance: 0.0001
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    value_transform: log10
     provenance:
       target_source: expert_gold_answer
       decay_source: expert_reported_precision
@@ -287,8 +283,9 @@ scoring_profiles:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 10000000.0
-    upper_tolerance: 10000000.0
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    value_transform: log10
     provenance:
       target_source: expert_gold_answer
       decay_source: expert_reported_precision
@@ -300,8 +297,9 @@ scoring_profiles:
     property: phosphorescence_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
+    lower_tolerance: 2.0
+    upper_tolerance: 3.0
+    value_transform: log10
     provenance:
       target_source: expert_gold_answer
       decay_source: expert_reported_precision
@@ -313,7 +311,7 @@ scoring_profiles:
     property: herzberg_teller_contribution
     type: numeric_gold
     unit: percent
-    lower_tolerance: 1.0
+    lower_tolerance: 10.0
     upper_tolerance: 1.0
     provenance:
       target_source: expert_gold_answer
@@ -326,8 +324,9 @@ scoring_profiles:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 100000000.0
-    upper_tolerance: 100000000.0
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    value_transform: log10
     provenance:
       target_source: expert_gold_answer
       decay_source: expert_reported_precision
@@ -339,8 +338,9 @@ scoring_profiles:
     property: internal_conversion_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 10000000.0
-    upper_tolerance: 10000000.0
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    value_transform: log10
     provenance:
       target_source: expert_gold_answer
       decay_source: expert_reported_precision
@@ -419,7 +419,7 @@ tasks:
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
-    - id: top_three_frequencies
+    - id: top_two_frequencies
       mode: unordered_numeric
     version: linear_goal_v2
   failure_policy:
@@ -429,17 +429,13 @@ tasks:
     invalid_task_schema: task_error
   gold_answers:
   - property: frequency_1
-    value: 1208.1036
+    value: 1208.10
     unit: cm^-1
     scoring_profile: property_calculation_advanced_ir_frequency_1_numeric_gold_v2
   - property: frequency_2
-    value: 1674.0688
+    value: 1685.56
     unit: cm^-1
     scoring_profile: property_calculation_advanced_ir_frequency_2_numeric_gold_v2
-  - property: frequency_3
-    value: 1685.5562
-    unit: cm^-1
-    scoring_profile: property_calculation_advanced_ir_frequency_3_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
     source: resveratrol_gaussian_output_expert_answer

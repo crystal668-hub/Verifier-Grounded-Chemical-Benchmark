@@ -56,6 +56,27 @@ def test_property_calculation_profiles_bind_numeric_and_exact_string_policies() 
                 assert profile["normalization"] == "exact"
 
 
+@pytest.mark.parametrize("partial_score", [True, -0.1, 1.0])
+def test_exact_string_partial_scores_reject_invalid_values(
+    tmp_path, partial_score: object
+) -> None:
+    scoring_resource = package_resource("property_calculation_advanced", "scoring.yaml")
+    scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
+    profile = scoring["scoring_profiles"][
+        "property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2"
+    ]
+    profile["partial_scores"] = {"1:2": partial_score}
+    scoring_path = tmp_path / "scoring.yaml"
+    scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
+
+    with pytest.raises(ValueError, match=r"partial_scores|partial scores"):
+        load_task_pack(
+            package_resource("property_calculation_advanced", "tasks.yaml"),
+            package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+            scoring_path,
+        )
+
+
 def test_repeated_semantics_reuse_one_profile() -> None:
     rdkit = _load("rdkit")
     logp_profiles = {
