@@ -5,50 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-import yaml
-
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_MANIFEST = ROOT / "data" / "xtb_real_dataset_sources.yaml"
-
-
-def test_xtb_real_dataset_source_manifest_exists() -> None:
-    assert SOURCE_MANIFEST.exists()
-
-
-def test_xtb_real_dataset_source_manifest_defines_required_sources() -> None:
-    with SOURCE_MANIFEST.open() as handle:
-        payload = yaml.safe_load(handle)
-
-    assert payload["version"] == 1
-    sources = payload["sources"]
-    assert {"qm9", "qmugs", "geom_drugs", "tartarus_opv"}.issubset(sources)
-    assert sources["qm9"]["status"] == "required"
-    assert sources["qmugs"]["status"] == "required"
-    assert sources["geom_drugs"]["status"] == "required_for_conformer_subset"
-    assert sources["tartarus_opv"]["status"] == "optional_if_unavailable"
-    for source in sources.values():
-        assert source["url"].startswith("https://")
-        assert source["cache_path"].startswith(".cache/xtb_real_datasets/")
-        assert "license_note" in source
-
-
-def test_xtb_real_dataset_source_manifest_records_machine_access_paths() -> None:
-    with SOURCE_MANIFEST.open() as handle:
-        payload = yaml.safe_load(handle)
-
-    sources = payload["sources"]
-    qmugs = sources["qmugs"]
-    assert qmugs["access"]["type"] == "nextcloud_public_webdav"
-    assert qmugs["access"]["webdav_url"].endswith("/public.php/webdav/")
-    assert "structures.tar.gz" in qmugs["access"]["files"]
-
-    geom = sources["geom_drugs"]
-    assert geom["access"]["type"] == "harvard_dataverse"
-    assert geom["access"]["persistent_id"] == "doi:10.7910/DVN/JNGTDF"
-    assert "censo.tar.gz" in geom["access"]["small_validation_files"]
-
-    opv = sources["tartarus_opv"]
-    assert opv["access"]["status"] == "manual_or_generated_geometry_required"
 
 
 def test_prepare_xtb_real_dataset_sample_help() -> None:

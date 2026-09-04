@@ -13,12 +13,16 @@ from typing import Any
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = ROOT / "data" / "xtb_real_dataset_sources.yaml"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source-manifest", type=Path, default=DEFAULT_MANIFEST)
+    parser.add_argument(
+        "--source-manifest",
+        type=Path,
+        required=True,
+        help="Path to a local dataset source manifest.",
+    )
     parser.add_argument("--output-json", type=Path, default=None)
     parser.add_argument("--check-remote", action="store_true")
     parser.add_argument("--remote-timeout", type=float, default=10.0)
