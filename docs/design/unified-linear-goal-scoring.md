@@ -753,7 +753,6 @@ releases/
   v<version>/
     manifest.json
     task-inventory.json
-    scoring-profiles.json
     SHA256SUMS
 ```
 
@@ -1370,7 +1369,7 @@ Task packs 作为 `verifier_grounded_benchmark.task.packs` package data 发布�
 - wheel/sdist payload digest；
 - task inventory。
 
-`scoring-profiles.json` 至少列出每个 profile 的 full-score region、decay widths、unit 和 provenance hash。
+`task-inventory.json` 中的 `scoring_profiles` 至少列出每个 profile 的 full-score region、decay widths、unit 和 provenance hash。
 
 ### 22.3 版本规则
 

@@ -112,17 +112,10 @@ def test_current_release_manifest_binds_v2_artifacts_profiles_and_openclaw() -> 
     inventory = json.loads(
         (CURRENT_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8")
     )
-    profiles = json.loads(
-        (CURRENT_RELEASE_DIR / "scoring-profiles.json").read_text(encoding="utf-8")
-    )
-
     assert manifest["version"] == inventory["package_version"] == "0.2.0"
     assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
     assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v1"
-    # v0.2.0 remains an immutable linear_goal_v1 release. The checkout now
-    # contains the unreleased v2 shadow profiles and must not be compared to
-    # this historical inventory.
-    assert profiles["scoring_version"] == "linear_goal_v1"
+    assert inventory["scoring_version"] == "linear_goal_v1"
 
     tagged_commit = subprocess.run(
         ["git", "rev-list", "-n", "1", manifest["tag"]],
@@ -150,13 +143,10 @@ def test_current_release_manifest_binds_v2_artifacts_profiles_and_openclaw() -> 
 def test_v2_release_manifest_binds_formal_profiles_and_openclaw_sync() -> None:
     manifest = json.loads((V2_RELEASE_DIR / "manifest.json").read_text(encoding="utf-8"))
     inventory = json.loads((V2_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8"))
-    profiles = json.loads((V2_RELEASE_DIR / "scoring-profiles.json").read_text(encoding="utf-8"))
-
     assert manifest["version"] == inventory["package_version"] == "0.3.0"
     assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
     assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
-    assert profiles["package_version"] == "0.3.0"
-    assert profiles["scoring_version"] == "linear_goal_v2"
+    assert inventory["package_version"] == "0.3.0"
 
     tagged_commit = subprocess.run(
         ["git", "rev-list", "-n", "1", manifest["tag"]],
@@ -186,14 +176,10 @@ def test_v4_release_manifest_binds_expert_tasks_and_artifacts() -> None:
     inventory = json.loads(
         (V4_RELEASE_DIR / "task-inventory.json").read_text(encoding="utf-8")
     )
-    profiles = json.loads(
-        (V4_RELEASE_DIR / "scoring-profiles.json").read_text(encoding="utf-8")
-    )
-
     assert manifest["version"] == inventory["package_version"] == "0.4.0"
     assert manifest["result_schema_version"] == inventory["result_schema_version"] == "2"
     assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
-    assert profiles["package_version"] == "0.4.0"
+    assert inventory["package_version"] == "0.4.0"
     assert {name: value["count"] for name, value in inventory["tracks"].items()} == {
         "property_calculation": 2,
         "rdkit": 14,
@@ -204,7 +190,7 @@ def test_v4_release_manifest_binds_expert_tasks_and_artifacts() -> None:
         "rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2",
         "xtb_odd_element_gap_maximize_3p6_11p9_v2",
         "xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2",
-    }.issubset(profiles["profiles"])
+    }.issubset(inventory["scoring_profiles"])
 
     tagged_commit = subprocess.run(
         ["git", "rev-list", "-n", "1", manifest["tag"]],

@@ -207,20 +207,10 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         "artifacts": artifacts,
         "verified_payload": payload,
         "task_inventory": "task-inventory.json",
-        "scoring_profiles": "scoring-profiles.json",
     }
     metadata_dir.mkdir(parents=True, exist_ok=True)
     _write_json(metadata_dir / "manifest.json", manifest)
     _write_json(metadata_dir / "task-inventory.json", inventory)
-    _write_json(
-        metadata_dir / "scoring-profiles.json",
-        {
-            "schema_version": 1,
-            "package_version": version,
-            "scoring_version": inventory["scoring_version"],
-            "profiles": inventory["scoring_profiles"],
-        },
-    )
     (metadata_dir / "SHA256SUMS").write_text(
         "".join(f"{item['sha256']}  {item['filename']}\n" for item in artifacts),
         encoding="ascii",

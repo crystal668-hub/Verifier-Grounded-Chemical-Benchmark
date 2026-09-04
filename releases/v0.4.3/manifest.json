@@ -40,7 +40,6 @@
   "package": "verifier-grounded-benchmark",
   "result_schema_version": "2",
   "schema_version": 1,
-  "scoring_profiles": "scoring-profiles.json",
   "scoring_version": "linear_goal_v2",
   "tag": "v0.4.3",
   "task_inventory": "task-inventory.json",

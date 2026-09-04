@@ -11,8 +11,8 @@
 
 ## 1. 核对口径
 
-- 发行版以 `releases/v0.4.2/manifest.json`、`task-inventory.json` 和
-  `scoring-profiles.json` 为准。
+- 发行版以 `releases/v0.4.2/manifest.json` 和 `task-inventory.json` 为准；
+  scoring profile 定义和 hash 保存在 inventory 的 `scoring_profiles` 字段中。
 - `v0.4.2` 的 canonical source commit 是 `c3cad26`，三个发行 track 的
   task pack version 都是 `0.4.2`，统一使用 `linear_goal_v2`。
 - 正式 track 以 `src/verifier_grounded_benchmark/task/registry.py` 中的
