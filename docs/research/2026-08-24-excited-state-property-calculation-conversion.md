@@ -23,12 +23,12 @@
 
 | task_id | 出题核心 | 冻结答案与单位 | 数值容错宽度 |
 |---|---|---:|---:|
-| `property_calc_015_formaldehyde_socme` | 气相 formaldehyde 的 T1-S0 SOCME，并以 `eV` 报告 | `0.00734 eV` | `0.0001 eV` |
-| `property_calc_016_anthracene_isc_rate` | Kasha 规则下气相 anthracene 在 77 K 的 S1 ISC 速率 | `1.17e8 s^-1` | `1e7 s^-1` |
-| `property_calc_017_biacetyl_phosphorescence_rate` | biacetyl 在乙醇 CPCM 模型和 298 K 下的磷光速率 | `98 s^-1` | `1 s^-1` |
-| `property_calc_018_anthracene_ht_contribution` | 气相 anthracene 在 77 K 的 S1-to-T1 ISC 速率中 HT 项占比 | `100 percent` | `1 percent` |
-| `property_calc_019_acetophenone_isc_rate` | 气相 acetophenone 在 77 K、包含 HT 效应的 S1-to-T1 ISC 速率 | `2.84e10 s^-1` | `1e8 s^-1` |
-| `property_calc_020_azulene_internal_conversion_rate` | azulene 在甲醇 CPCM 模型和 298.15 K 下的 S1-to-S0 IC 速率 | `3.82e8 s^-1` | `1e7 s^-1` |
+| `property_calculation_advanced_015_formaldehyde_socme` | 气相 formaldehyde 的 T1-S0 SOCME，并以 `eV` 报告 | `0.00734 eV` | `0.0001 eV` |
+| `property_calculation_advanced_016_anthracene_isc_rate` | Kasha 规则下气相 anthracene 在 77 K 的 S1 ISC 速率 | `1.17e8 s^-1` | `1e7 s^-1` |
+| `property_calculation_advanced_017_biacetyl_phosphorescence_rate` | biacetyl 在乙醇 CPCM 模型和 298 K 下的磷光速率 | `98 s^-1` | `1 s^-1` |
+| `property_calculation_advanced_018_anthracene_ht_contribution` | 气相 anthracene 在 77 K 的 S1-to-T1 ISC 速率中 HT 项占比 | `100 percent` | `1 percent` |
+| `property_calculation_advanced_019_acetophenone_isc_rate` | 气相 acetophenone 在 77 K、包含 HT 效应的 S1-to-T1 ISC 速率 | `2.84e10 s^-1` | `1e8 s^-1` |
+| `property_calculation_advanced_020_azulene_internal_conversion_rate` | azulene 在甲醇 CPCM 模型和 298.15 K 下的 S1-to-S0 IC 速率 | `3.82e8 s^-1` | `1e7 s^-1` |
 
 容错宽度按专家答案的报告精度冻结，是 `linear_goal_v2` 中从 gold 线性衰减到零分的
 宽度，不是满分区间。

@@ -7,7 +7,7 @@ from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatc
 )
 
 TASK_7 = {
-    "task_id": "property_calc_001_free_energy",
+    "task_id": "property_calculation_advanced_001_free_energy",
     "task_type": "property_calculation",
     "answer_schema": {
         "format": "final_answer_line",
@@ -19,7 +19,7 @@ TASK_7 = {
 
 TASK_8 = {
     **TASK_7,
-    "task_id": "property_calc_002_crystal_phase",
+    "task_id": "property_calculation_advanced_002_crystal_phase",
 }
 
 

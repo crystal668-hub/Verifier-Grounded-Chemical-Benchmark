@@ -21,8 +21,8 @@ command is included in a model-visible prompt or in the package runtime requirem
 
 ## Track Boundary
 
-The new track uses task ids `property_calc_easy_001_*` through
-`property_calc_easy_051_*`. It reuses the existing `task_type: property_calculation` schema,
+The new track uses task ids `property_calculation_basic_001_*` through
+`property_calculation_basic_051_*`. It reuses the existing `task_type: property_calculation` schema,
 parser, and gold-comparison evaluator, but has its own task pack, scoring profiles, sample answers,
 and empty verifier specification. This preserves global task-id uniqueness when all formal tracks
 are loaded as one suite.

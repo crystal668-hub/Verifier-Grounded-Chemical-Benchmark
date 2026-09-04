@@ -48,7 +48,7 @@ Property calculation tracks 不提供内置 `sample_answers()`；RDKit 和 xTB �
 ## Answer format
 
 ```json
-{"task_id":"property_calc_001_free_energy","answer":0.258031679,"unit":"kJ/mol"}
+{"task_id":"property_calculation_advanced_001_free_energy","answer":0.258031679,"unit":"kJ/mol"}
 ```
 
 也可以提交包含 `FINAL ANSWER:` 行的原始模型 response。

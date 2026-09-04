@@ -53,10 +53,10 @@ def test_load_suite_defaults_to_formal_tracks_only() -> None:
 
     assert "rdkit_qed_max_001" in task_ids
     assert "xtb_gap_window_001" in task_ids
-    assert "property_calc_001_free_energy" in task_ids
-    assert "property_calc_002_crystal_phase" in task_ids
-    assert "property_calc_easy_001_toluene_aqueous_solvation_free_energy" in task_ids
-    assert "property_calc_easy_051_formaldehyde_t1_vertical_excitation_energy" in task_ids
+    assert "property_calculation_advanced_001_free_energy" in task_ids
+    assert "property_calculation_advanced_002_crystal_phase" in task_ids
+    assert "property_calculation_basic_001_toluene_aqueous_solvation_free_energy" in task_ids
+    assert "property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy" in task_ids
     assert not any(task_id.startswith("matgl_") for task_id in task_ids)
     assert not any(task_id.startswith("mace_") for task_id in task_ids)
     assert not any(task_id.startswith("atomistic" + "skills_") for task_id in task_ids)

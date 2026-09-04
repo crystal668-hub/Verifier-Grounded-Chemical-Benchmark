@@ -349,7 +349,7 @@ scoring_profiles:
       review_date: '2026-08-24'
       review_owner: benchmark_maintainers
 tasks:
-- task_id: property_calc_001_free_energy
+- task_id: property_calculation_advanced_001_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -368,7 +368,7 @@ tasks:
     scoring_profile: property_calculation_advanced_free_energy_difference_numeric_gold_v2
   gold_provenance:
     disclosure: withheld_initial_release
-- task_id: property_calc_002_crystal_phase
+- task_id: property_calculation_advanced_002_crystal_phase
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -395,7 +395,7 @@ tasks:
     scoring_profile: property_calculation_advanced_high_pressure_phase_exact_string_v2
   gold_provenance:
     disclosure: withheld_initial_release
-- task_id: property_calc_003_hbond_count
+- task_id: property_calculation_advanced_003_hbond_count
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -415,7 +415,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: T2_paper_expert_answer
-- task_id: property_calc_004_ir_top3_frequencies
+- task_id: property_calculation_advanced_004_ir_top3_frequencies
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -439,7 +439,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: resveratrol_gaussian_output_expert_answer
-- task_id: property_calc_005_crystal_density
+- task_id: property_calculation_advanced_005_crystal_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -459,7 +459,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: CCDC_caffeine_monohydrate_expert_answer
-- task_id: property_calc_006_cocrystal_ratio
+- task_id: property_calculation_advanced_006_cocrystal_ratio
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -478,7 +478,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: crystal_structure_prediction_blind_test_expert_answer
-- task_id: property_calc_007_polymorph_free_energy_crossover
+- task_id: property_calculation_advanced_007_polymorph_free_energy_crossover
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -501,7 +501,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: polymorph_free_energy_expert_answer
-- task_id: property_calc_008_interaction_binding_energy
+- task_id: property_calculation_advanced_008_interaction_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -525,7 +525,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_gaussian_counterpoise_answer
-- task_id: property_calc_009_homo_lumo_gap
+- task_id: property_calculation_advanced_009_homo_lumo_gap
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -545,7 +545,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_homolumo_calculation
-- task_id: property_calc_010_hbond_distances
+- task_id: property_calculation_advanced_010_hbond_distances
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -569,7 +569,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: CRBAMP01_optimized_geometry_expert_answer
-- task_id: property_calc_011_accessible_pore_volume_ratio
+- task_id: property_calculation_advanced_011_accessible_pore_volume_ratio
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -589,7 +589,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: zeo_plus_plus_probe_1p2_angstrom_expert_answer
-- task_id: property_calc_012_carboxyl_hydrogen_distance
+- task_id: property_calculation_advanced_012_carboxyl_hydrogen_distance
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -609,7 +609,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: crest_conformer_expert_answer
-- task_id: property_calc_013_halogen_bond_energy
+- task_id: property_calculation_advanced_013_halogen_bond_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -629,7 +629,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: halogen_bonding_expert_answer
-- task_id: property_calc_014_bay069_pka
+- task_id: property_calculation_advanced_014_bay069_pka
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -649,7 +649,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: BAY069_JMedChem_2022_expert_answer
-- task_id: property_calc_015_formaldehyde_socme
+- task_id: property_calculation_advanced_015_formaldehyde_socme
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -669,7 +669,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1_SOC_tutorial_formaldehyde
-- task_id: property_calc_016_anthracene_isc_rate
+- task_id: property_calculation_advanced_016_anthracene_isc_rate
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -689,7 +689,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.1_manual_section_5.5.4.2
-- task_id: property_calc_017_biacetyl_phosphorescence_rate
+- task_id: property_calculation_advanced_017_biacetyl_phosphorescence_rate
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -709,7 +709,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.1_manual_section_5.5.3.2
-- task_id: property_calc_018_anthracene_ht_contribution
+- task_id: property_calculation_advanced_018_anthracene_ht_contribution
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -729,7 +729,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.0_ESD_anthracene_expert_output
-- task_id: property_calc_019_acetophenone_isc_rate
+- task_id: property_calculation_advanced_019_acetophenone_isc_rate
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -749,7 +749,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: ORCA_6.1.0_ESD_acetophenone_expert_output
-- task_id: property_calc_020_azulene_internal_conversion_rate
+- task_id: property_calculation_advanced_020_azulene_internal_conversion_rate
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:

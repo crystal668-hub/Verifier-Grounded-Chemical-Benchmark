@@ -595,7 +595,7 @@ scoring_profiles:
       reference_lower: -15.3
       reference_upper: -15.3
 tasks:
-- task_id: property_calc_easy_001_toluene_aqueous_solvation_free_energy
+- task_id: property_calculation_basic_001_toluene_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -615,7 +615,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_FreeSolv_v0.52
-- task_id: property_calc_easy_002_ethanol_aqueous_solvation_free_energy
+- task_id: property_calculation_basic_002_ethanol_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -635,7 +635,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_FreeSolv_v0.52
-- task_id: property_calc_easy_003_diethyl_ether_aqueous_solvation_free_energy
+- task_id: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -655,7 +655,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_FreeSolv_v0.52
-- task_id: property_calc_easy_004_anisole_aqueous_solvation_free_energy
+- task_id: property_calculation_basic_004_anisole_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -675,7 +675,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_FreeSolv_v0.52
-- task_id: property_calc_easy_005_nitrobenzene_reduction_potential
+- task_id: property_calculation_basic_005_nitrobenzene_reduction_potential
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -695,7 +695,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
-- task_id: property_calc_easy_006_tetracyanoethylene_reduction_potential
+- task_id: property_calculation_basic_006_tetracyanoethylene_reduction_potential
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -715,7 +715,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
-- task_id: property_calc_easy_007_dimethylaniline_oxidation_potential
+- task_id: property_calculation_basic_007_dimethylaniline_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -735,7 +735,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
-- task_id: property_calc_easy_008_triphenylamine_oxidation_potential
+- task_id: property_calculation_basic_008_triphenylamine_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -755,7 +755,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
-- task_id: property_calc_easy_009_thianthrene_oxidation_potential
+- task_id: property_calculation_basic_009_thianthrene_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -775,7 +775,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
-- task_id: property_calc_easy_010_water_dimer_binding_energy
+- task_id: property_calculation_basic_010_water_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -795,7 +795,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_S22_CCSDT_CBS
-- task_id: property_calc_easy_011_ammonia_dimer_binding_energy
+- task_id: property_calculation_basic_011_ammonia_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -815,7 +815,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_S22_CCSDT_CBS
-- task_id: property_calc_easy_012_benzene_t_dimer_binding_energy
+- task_id: property_calculation_basic_012_benzene_t_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -835,7 +835,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_CCSDT_CBS_OSTI_1958183
-- task_id: property_calc_easy_013_adenine_thymine_wc_pair_binding_energy
+- task_id: property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -855,7 +855,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_S22_CCSDT_CBS
-- task_id: property_calc_easy_014_water_methanol_complex_binding_energy
+- task_id: property_calculation_basic_014_water_methanol_complex_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -875,7 +875,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_S66_CCSDT_CBS
-- task_id: property_calc_easy_015_ethene_ethyne_t_complex_binding_energy
+- task_id: property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -895,7 +895,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_S22_CCSDT_CBS
-- task_id: property_calc_easy_016_thiophene_polarizability
+- task_id: property_calculation_basic_016_thiophene_polarizability
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -915,7 +915,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_017_benzene_polarizability
+- task_id: property_calculation_basic_017_benzene_polarizability
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -935,7 +935,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_018_octatetraene_polarizability
+- task_id: property_calculation_basic_018_octatetraene_polarizability
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -955,7 +955,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_019_dimethyl_sulfoxide_water_dipole_moment
+- task_id: property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -975,7 +975,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_020_cis_dichloroethene_dipole_moment
+- task_id: property_calculation_basic_020_cis_dichloroethene_dipole_moment
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -995,7 +995,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_021_acetonitrile_dipole_moment
+- task_id: property_calculation_basic_021_acetonitrile_dipole_moment
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1015,7 +1015,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_022_naphthalene_bridge_bond_order
+- task_id: property_calculation_basic_022_naphthalene_bridge_bond_order
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1035,7 +1035,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_023_dimethyl_sulfone_so_bond_order
+- task_id: property_calculation_basic_023_dimethyl_sulfone_so_bond_order
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1055,7 +1055,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_024_methyl_nitrate_no_bond_order
+- task_id: property_calculation_basic_024_methyl_nitrate_no_bond_order
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1075,7 +1075,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_025_phenol_surface_esp_minimum
+- task_id: property_calculation_basic_025_phenol_surface_esp_minimum
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1095,7 +1095,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_026_nitrobenzene_vdw_surface_area
+- task_id: property_calculation_basic_026_nitrobenzene_vdw_surface_area
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1115,7 +1115,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_027_pyrrole_surface_esp_variance
+- task_id: property_calculation_basic_027_pyrrole_surface_esp_variance
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1135,7 +1135,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_028_urea_crystal_density
+- task_id: property_calculation_basic_028_urea_crystal_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1155,7 +1155,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_029_tnt_crystal_density
+- task_id: property_calculation_basic_029_tnt_crystal_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1175,7 +1175,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_030_picric_acid_crystal_density
+- task_id: property_calculation_basic_030_picric_acid_crystal_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1195,7 +1195,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_031_allyl_radical_c1_spin_density
+- task_id: property_calculation_basic_031_allyl_radical_c1_spin_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1215,7 +1215,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_032_benzyl_radical_para_c_spin_density
+- task_id: property_calculation_basic_032_benzyl_radical_para_c_spin_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1235,7 +1235,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_033_phenoxy_radical_o_spin_density
+- task_id: property_calculation_basic_033_phenoxy_radical_o_spin_density
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1255,7 +1255,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_034_indole_c3_fukui_minus
+- task_id: property_calculation_basic_034_indole_c3_fukui_minus
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1275,7 +1275,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_035_chloronitrobenzene_c_fukui_plus
+- task_id: property_calculation_basic_035_chloronitrobenzene_c_fukui_plus
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1295,7 +1295,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_036_furfural_carbonyl_c_fukui_plus
+- task_id: property_calculation_basic_036_furfural_carbonyl_c_fukui_plus
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1315,7 +1315,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_037_benzene_standard_entropy
+- task_id: property_calculation_basic_037_benzene_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1335,7 +1335,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_038_acetonitrile_standard_entropy
+- task_id: property_calculation_basic_038_acetonitrile_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1355,7 +1355,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_039_neopentane_standard_entropy
+- task_id: property_calculation_basic_039_neopentane_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1375,7 +1375,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_040_methane_standard_entropy
+- task_id: property_calculation_basic_040_methane_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1395,7 +1395,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_041_ammonia_standard_entropy
+- task_id: property_calculation_basic_041_ammonia_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1415,7 +1415,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_042_carbon_dioxide_standard_entropy
+- task_id: property_calculation_basic_042_carbon_dioxide_standard_entropy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1435,7 +1435,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_NIST_gas_phase_data
-- task_id: property_calc_easy_043_acetic_acid_dimerization_enthalpy
+- task_id: property_calculation_basic_043_acetic_acid_dimerization_enthalpy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1455,7 +1455,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_reported_reference_value
-- task_id: property_calc_easy_044_caffeine_most_negative_mulliken_atom
+- task_id: property_calculation_basic_044_caffeine_most_negative_mulliken_atom
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1474,7 +1474,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_045_trifluoroacetic_acid_hydrogen_charge
+- task_id: property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1494,7 +1494,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_046_methyl_azide_most_negative_mulliken_atom
+- task_id: property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1513,7 +1513,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_047_formaldehyde_s1_vertical_excitation_energy
+- task_id: property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1533,7 +1533,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_048_acetaldehyde_s1_vertical_excitation_energy
+- task_id: property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1553,7 +1553,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_049_acetone_s1_vertical_excitation_energy
+- task_id: property_calculation_basic_049_acetone_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1573,7 +1573,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_050_pyrazine_s1_vertical_excitation_energy
+- task_id: property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1593,7 +1593,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calc_easy_051_formaldehyde_t1_vertical_excitation_energy
+- task_id: property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:

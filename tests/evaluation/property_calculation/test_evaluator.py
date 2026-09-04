@@ -52,7 +52,7 @@ def _evaluate(task_id: str, answer: dict):
 )
 def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: float) -> None:
     result = _evaluate(
-        "property_calc_001_free_energy",
+        "property_calculation_advanced_001_free_energy",
         {"answer": answer, "unit": "kJ/mol"},
     )
 
@@ -62,7 +62,7 @@ def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: floa
 
 def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
     result = _evaluate(
-        "property_calc_002_crystal_phase",
+        "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.579, "unit": "eV"},
@@ -79,7 +79,7 @@ def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
 
 def test_exact_string_is_case_sensitive() -> None:
     result = _evaluate(
-        "property_calc_002_crystal_phase",
+        "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
@@ -98,7 +98,7 @@ def test_exact_string_is_case_sensitive() -> None:
 
 
 def test_missing_requested_field_scores_zero_without_infrastructure_error() -> None:
-    result = _evaluate("property_calc_002_crystal_phase", {"answers": []})
+    result = _evaluate("property_calculation_advanced_002_crystal_phase", {"answers": []})
 
     assert result["status"] == "scored"
     assert result["failure_scope"] is None
@@ -107,7 +107,7 @@ def test_missing_requested_field_scores_zero_without_infrastructure_error() -> N
 
 def test_wrong_numeric_unit_scores_zero() -> None:
     result = _evaluate(
-        "property_calc_001_free_energy",
+        "property_calculation_advanced_001_free_energy",
         {"answer": 0.258031679, "unit": "eV"},
     )
 
@@ -116,7 +116,7 @@ def test_wrong_numeric_unit_scores_zero() -> None:
 
 def test_unknown_property_is_ignored_and_recorded() -> None:
     result = _evaluate(
-        "property_calc_002_crystal_phase",
+        "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
                 {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
@@ -149,7 +149,7 @@ def test_unknown_property_is_ignored_and_recorded() -> None:
 def test_known_task_parse_failure_is_submission_zero(
     answer: dict, message: str
 ) -> None:
-    result = _evaluate("property_calc_002_crystal_phase", answer)
+    result = _evaluate("property_calculation_advanced_002_crystal_phase", answer)
 
     assert result["status"] == "scored"
     assert result["failure_scope"] == "submission"
@@ -160,7 +160,7 @@ def test_known_task_parse_failure_is_submission_zero(
 
 def test_result_has_v2_schema_and_constraint_provenance() -> None:
     result = _evaluate(
-        "property_calc_001_free_energy",
+        "property_calculation_advanced_001_free_energy",
         {"answer": 0.258031679, "unit": "kJ/mol"},
     )
 
@@ -208,7 +208,7 @@ def test_unordered_numeric_group_uses_best_assignment() -> None:
 
 def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
     result = _evaluate(
-        "property_calc_004_ir_top3_frequencies",
+        "property_calculation_advanced_004_ir_top3_frequencies",
         {
             "answers": [
                 {"property": "frequency_1", "value": 1685.56, "unit": "cm^-1"},
@@ -229,14 +229,14 @@ def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
     [("1:1", 1.0), ("1:2", 0.5), ("2:1", 0.5), ("1:3", 0.0)],
 )
 def test_cocrystal_ratio_has_explicit_partial_credit(answer: str, expected: float) -> None:
-    result = _evaluate("property_calc_006_cocrystal_ratio", {"answer": answer})
+    result = _evaluate("property_calculation_advanced_006_cocrystal_ratio", {"answer": answer})
 
     assert result["scores"]["score"] == pytest.approx(expected)
 
 
 def test_absolute_value_scoring_compares_answer_and_gold_magnitudes() -> None:
     result = _evaluate(
-        "property_calc_013_halogen_bond_energy",
+        "property_calculation_advanced_013_halogen_bond_energy",
         {"answer": 17.11, "unit": "kcal/mol"},
     )
 
@@ -258,7 +258,7 @@ def test_log10_scoring_uses_order_of_magnitude_distance(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calc_016_anthracene_isc_rate",
+        "property_calculation_advanced_016_anthracene_isc_rate",
         {"answer": answer, "unit": "s^-1"},
     )
 
@@ -273,7 +273,7 @@ def test_asymmetric_log10_scoring_uses_separate_side_widths(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calc_017_biacetyl_phosphorescence_rate",
+        "property_calculation_advanced_017_biacetyl_phosphorescence_rate",
         {"answer": answer, "unit": "s^-1"},
     )
 
@@ -285,7 +285,7 @@ def test_asymmetric_linear_scoring_uses_separate_side_widths(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calc_018_anthracene_ht_contribution",
+        "property_calculation_advanced_018_anthracene_ht_contribution",
         {"answer": answer, "unit": "percent"},
     )
 
