@@ -1,599 +1,820 @@
 schema_version: 1
 scoring_config:
   task_pack_id: property_calculation_basic
-  task_pack_version: 0.9.0
+  task_pack_version: 0.9.1
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:
-  property_calculation_basic_static_mean_polarizability_numeric_gold_v2:
+  property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v3:
+    property: aqueous_solvation_free_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v3:
+    property: aqueous_solvation_free_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v3:
+    property: aqueous_solvation_free_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v3:
+    property: aqueous_solvation_free_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v3:
+    property: first_reduction_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.6
+    upper_tolerance: 0.6
+    error_mode: absolute
+    error_parameter: 0.6
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v3:
+    property: first_reduction_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.6
+    upper_tolerance: 0.6
+    error_mode: absolute
+    error_parameter: 0.6
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v3:
+    property: first_oxidation_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.6
+    upper_tolerance: 0.6
+    error_mode: absolute
+    error_parameter: 0.6
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v3:
+    property: first_oxidation_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.6
+    upper_tolerance: 0.6
+    error_mode: absolute
+    error_parameter: 0.6
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v3:
+    property: first_oxidation_potential_vs_sce
+    type: numeric_gold
+    unit: V
+    lower_tolerance: 0.6
+    upper_tolerance: 0.6
+    error_mode: absolute
+    error_parameter: 0.6
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v3:
+    property: binding_energy
+    type: numeric_gold
+    unit: kcal/mol
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_016_thiophene_polarizability_numeric_gold_v3:
     property: static_mean_polarizability
     type: numeric_gold
     unit: a.u.
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 16.2525
+    upper_tolerance: 16.2525
+    error_mode: relative
+    error_parameter: 0.25
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-  property_calculation_basic_dipole_moment_numeric_gold_v2:
+  property_calculation_basic_017_benzene_polarizability_numeric_gold_v3:
+    property: static_mean_polarizability
+    type: numeric_gold
+    unit: a.u.
+    lower_tolerance: 16.9675
+    upper_tolerance: 16.9675
+    error_mode: relative
+    error_parameter: 0.25
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_018_octatetraene_polarizability_numeric_gold_v3:
+    property: static_mean_polarizability
+    type: numeric_gold
+    unit: a.u.
+    lower_tolerance: 23.8775
+    upper_tolerance: 23.8775
+    error_mode: relative
+    error_parameter: 0.25
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment_numeric_gold_v3:
     property: dipole_moment
     type: numeric_gold
     unit: Debye
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
+    lower_tolerance: 1.9004999999999999
+    upper_tolerance: 1.9004999999999999
+    error_mode: relative
+    error_parameter: 0.35
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-  property_calculation_basic_wiberg_bond_order_numeric_gold_v2:
+  property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v3:
+    property: dipole_moment
+    type: numeric_gold
+    unit: Debye
+    lower_tolerance: 0.6579999999999999
+    upper_tolerance: 0.6579999999999999
+    error_mode: relative
+    error_parameter: 0.35
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v3:
+    property: dipole_moment
+    type: numeric_gold
+    unit: Debye
+    lower_tolerance: 1.3475
+    upper_tolerance: 1.3475
+    error_mode: relative
+    error_parameter: 0.35
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_022_naphthalene_bridge_bond_order_numeric_gold_v3:
     property: wiberg_bond_order
     type: numeric_gold
     unit: dimensionless
-    lower_tolerance: 0.0001
-    upper_tolerance: 0.0001
+    lower_tolerance: 0.25044
+    upper_tolerance: 0.25044
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-  property_calculation_basic_vdw_surface_area_numeric_gold_v2:
-    property: van_der_waals_surface_area
-    type: numeric_gold
-    unit: angstrom^2
-    lower_tolerance: 0.1
-    upper_tolerance: 0.1
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_surface_esp_variance_numeric_gold_v2:
-    property: surface_electrostatic_potential_total_variance
-    type: numeric_gold
-    unit: (kcal/mol)^2
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_spin_density_numeric_gold_v2:
-    property: spin_density
+  property_calculation_basic_023_dimethyl_sulfone_so_bond_order_numeric_gold_v3:
+    property: wiberg_bond_order
     type: numeric_gold
     unit: dimensionless
-    lower_tolerance: 0.001
-    upper_tolerance: 0.001
+    lower_tolerance: 0.33230000000000004
+    upper_tolerance: 0.33230000000000004
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-  property_calculation_basic_fukui_function_numeric_gold_v2:
-    property: fukui_function
+  property_calculation_basic_024_methyl_nitrate_no_bond_order_numeric_gold_v3:
+    property: wiberg_bond_order
     type: numeric_gold
     unit: dimensionless
-    lower_tolerance: 0.001
-    upper_tolerance: 0.001
+    lower_tolerance: 0.18584
+    upper_tolerance: 0.18584
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-  property_calculation_basic_fukui_function_2dp_numeric_gold_v2:
-    property: fukui_function
-    type: numeric_gold
-    unit: dimensionless
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_most_negative_mulliken_atom_exact_string_v2:
-    property: most_negative_mulliken_atom
-    type: exact_string
-    normalization: exact
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: not_applicable
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_mulliken_charge_numeric_gold_v2:
-    property: mulliken_charge
-    type: numeric_gold
-    unit: e
-    lower_tolerance: 0.001
-    upper_tolerance: 0.001
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_vertical_excitation_energy_numeric_gold_v2:
-    property: vertical_excitation_energy
-    type: numeric_gold
-    unit: eV
-    lower_tolerance: 0.01
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-  property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v2:
-    property: aqueous_solvation_free_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.29
-    upper_tolerance: 0.13
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: -0.90 +/- 0.20
-      reference_lower: -1.1
-      reference_upper: -0.7
-  property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v2:
-    property: aqueous_solvation_free_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.19
-    upper_tolerance: 1.03
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: -5.00 +/- 0.60
-      reference_lower: -5.6
-      reference_upper: -4.4
-  property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v2:
-    property: aqueous_solvation_free_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.09
-    upper_tolerance: 1.13
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: -1.59 +/- 0.60
-      reference_lower: -2.19
-      reference_upper: -0.99
-  property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v2:
-    property: aqueous_solvation_free_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 1.08
-    upper_tolerance: 0.14
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: -2.45 +/- 0.60
-      reference_lower: -3.05
-      reference_upper: -1.85
-  property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v2:
-    property: first_reduction_potential_vs_sce
-    type: numeric_gold
-    unit: V
-    lower_tolerance: 0.01
-    upper_tolerance: 0.1
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-1.15'
-      reference_lower: -1.15
-      reference_upper: -1.15
-  property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v2:
-    property: first_reduction_potential_vs_sce
-    type: numeric_gold
-    unit: V
-    lower_tolerance: 0.01
-    upper_tolerance: 0.04
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '0.24'
-      reference_lower: 0.24
-      reference_upper: 0.24
-  property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v2:
-    property: first_oxidation_potential_vs_sce
-    type: numeric_gold
-    unit: V
-    lower_tolerance: 0.03
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '0.81'
-      reference_lower: 0.81
-      reference_upper: 0.81
-  property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v2:
-    property: first_oxidation_potential_vs_sce
-    type: numeric_gold
-    unit: V
-    lower_tolerance: 0.01
-    upper_tolerance: 0.11
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '0.92'
-      reference_lower: 0.92
-      reference_upper: 0.92
-  property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v2:
-    property: first_oxidation_potential_vs_sce
-    type: numeric_gold
-    unit: V
-    lower_tolerance: 0.01
-    upper_tolerance: 0.13
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '1.23'
-      reference_lower: 1.23
-      reference_upper: 1.23
-  property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.06
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-5.02'
-      reference_lower: -5.02
-      reference_upper: -5.02
-  property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.33
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-3.17'
-      reference_lower: -3.17
-      reference_upper: -3.17
-  property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.3
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: -2.74 +/- 0.03
-      reference_lower: -2.77
-      reference_upper: -2.71
-  property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.25
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-16.37'
-      reference_lower: -16.37
-      reference_upper: -16.37
-  property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.24
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-5.12'
-      reference_lower: -5.12
-      reference_upper: -5.12
-  property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v2:
-    property: binding_energy
-    type: numeric_gold
-    unit: kcal/mol
-    lower_tolerance: 0.21
-    upper_tolerance: 0.01
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '-1.53'
-      reference_lower: -1.53
-      reference_upper: -1.53
-  property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v2:
-    property: dipole_moment
-    type: numeric_gold
-    unit: Debye
-    lower_tolerance: 0.01
-    upper_tolerance: 0.03
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '1.9'
-      reference_lower: 1.9
-      reference_upper: 1.9
-  property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v2:
-    property: dipole_moment
-    type: numeric_gold
-    unit: Debye
-    lower_tolerance: 0.01
-    upper_tolerance: 0.08
-    provenance:
-      target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
-      review_status: approved
-      review_date: '2026-08-25'
-      review_owner: benchmark_maintainers
-      reference_value: '3.92'
-      reference_lower: 3.92
-      reference_upper: 3.92
-  property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v2:
+  property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v3:
     property: surface_electrostatic_potential_minimum
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 0.21
-    upper_tolerance: 0.01
+    lower_tolerance: 10.38
+    upper_tolerance: 10.38
+    error_mode: relative
+    error_parameter: 0.4
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '-26.15'
-      reference_lower: -26.15
-      reference_upper: -26.15
-  property_calculation_basic_028_urea_crystal_density_numeric_gold_v2:
+  property_calculation_basic_026_nitrobenzene_vdw_surface_area_numeric_gold_v3:
+    property: van_der_waals_surface_area
+    type: numeric_gold
+    unit: angstrom^2
+    lower_tolerance: 30.060000000000002
+    upper_tolerance: 30.060000000000002
+    error_mode: relative
+    error_parameter: 0.2
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_027_pyrrole_surface_esp_variance_numeric_gold_v3:
+    property: surface_electrostatic_potential_total_variance
+    type: numeric_gold
+    unit: (kcal/mol)^2
+    lower_tolerance: 62.387499999999996
+    upper_tolerance: 62.387499999999996
+    error_mode: relative
+    error_parameter: 0.35
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_028_urea_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
-    lower_tolerance: 0.014
-    upper_tolerance: 0.001
+    lower_tolerance: 0.2666
+    upper_tolerance: 0.2666
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '1.32'
-      reference_lower: 1.32
-      reference_upper: 1.32
-  property_calculation_basic_029_tnt_crystal_density_numeric_gold_v2:
+  property_calculation_basic_029_tnt_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
-    lower_tolerance: 0.066
-    upper_tolerance: 0.01
+    lower_tolerance: 0.342
+    upper_tolerance: 0.342
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '1.654'
-      reference_lower: 1.654
-      reference_upper: 1.654
-  property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v2:
+  property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
-    lower_tolerance: 0.069
-    upper_tolerance: 0.001
+    lower_tolerance: 0.3662
+    upper_tolerance: 0.3662
+    error_mode: relative
+    error_parameter: 0.2
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '1.763'
-      reference_lower: 1.763
-      reference_upper: 1.763
-  property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_031_allyl_radical_c1_spin_density_numeric_gold_v3:
+    property: spin_density
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.21280000000000002
+    upper_tolerance: 0.21280000000000002
+    error_mode: relative
+    error_parameter: 0.8
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_032_benzyl_radical_para_c_spin_density_numeric_gold_v3:
+    property: spin_density
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.24080000000000001
+    upper_tolerance: 0.24080000000000001
+    error_mode: relative
+    error_parameter: 0.8
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_033_phenoxy_radical_o_spin_density_numeric_gold_v3:
+    property: spin_density
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.332
+    upper_tolerance: 0.332
+    error_mode: relative
+    error_parameter: 0.8
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_034_indole_c3_fukui_minus_numeric_gold_v3:
+    property: fukui_function
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.076
+    upper_tolerance: 0.076
+    error_mode: relative
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_035_chloronitrobenzene_c_fukui_plus_numeric_gold_v3:
+    property: fukui_function
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.055
+    upper_tolerance: 0.055
+    error_mode: relative
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_036_furfural_carbonyl_c_fukui_plus_numeric_gold_v3:
+    property: fukui_function
+    type: numeric_gold
+    unit: dimensionless
+    lower_tolerance: 0.07
+    upper_tolerance: 0.07
+    error_mode: relative
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.34
-    upper_tolerance: 0.01
+    lower_tolerance: 7.7604
+    upper_tolerance: 7.7604
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '64.34'
-      reference_lower: 64.34
-      reference_upper: 64.34
-  property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.01
-    upper_tolerance: 0.32
+    lower_tolerance: 6.9456
+    upper_tolerance: 6.9456
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '58.19'
-      reference_lower: 58.19
-      reference_upper: 58.19
-  property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.69
-    upper_tolerance: 0.01
+    lower_tolerance: 8.865599999999999
+    upper_tolerance: 8.865599999999999
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '73.2'
-      reference_lower: 73.2
-      reference_upper: 73.2
-  property_calculation_basic_040_methane_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_040_methane_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.1
-    upper_tolerance: 0.22
+    lower_tolerance: 5.327999999999999
+    upper_tolerance: 5.327999999999999
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '44.52'
-      reference_lower: 44.52
-      reference_upper: 44.52
-  property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.01
-    upper_tolerance: 0.06
+    lower_tolerance: 5.5104
+    upper_tolerance: 5.5104
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '45.97'
-      reference_lower: 45.97
-      reference_upper: 45.97
-  property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v2:
+  property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 0.12
-    upper_tolerance: 0.01
+    lower_tolerance: 6.1415999999999995
+    upper_tolerance: 6.1415999999999995
+    error_mode: relative
+    error_parameter: 0.12
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: '51.07'
-      reference_lower: 51.07
-      reference_upper: 51.07
-  property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v2:
+  property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v3:
     property: dimerization_enthalpy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 0.01
-    upper_tolerance: 0.75
+    lower_tolerance: 3.0
+    upper_tolerance: 3.0
+    error_mode: absolute
+    error_parameter: 3.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reference_value_range
-      decision_record: docs/research/2026-08-25-batch2-basic-property-calculation-conversion.md
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
       review_status: approved
-      review_date: '2026-08-25'
+      review_date: '2026-09-04'
       review_owner: benchmark_maintainers
-      reference_value: about -15.3
-      reference_lower: -15.3
-      reference_upper: -15.3
+  property_calculation_basic_044_caffeine_most_negative_mulliken_atom_atom_identity_v1:
+    property: most_negative_mulliken_atom
+    type: atom_identity
+    normalization: atom_identity
+    element_partial_score: 0.5
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge_numeric_gold_v3:
+    property: mulliken_charge
+    type: numeric_gold
+    unit: e
+    lower_tolerance: 0.273
+    upper_tolerance: 0.273
+    error_mode: relative
+    error_parameter: 0.75
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom_atom_identity_v1:
+    property: most_negative_mulliken_atom
+    type: atom_identity
+    normalization: atom_identity
+    element_partial_score: 0.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy_numeric_gold_v3:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    error_mode: absolute
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy_numeric_gold_v3:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    error_mode: absolute
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_049_acetone_s1_vertical_excitation_energy_numeric_gold_v3:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    error_mode: absolute
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy_numeric_gold_v3:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    error_mode: absolute
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
+  property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy_numeric_gold_v3:
+    property: vertical_excitation_energy
+    type: numeric_gold
+    unit: eV
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
+    error_mode: absolute
+    error_parameter: 1.0
+    provenance:
+      target_source: expert_gold_answer
+      decay_source: attachment_final_scoring_standard
+      decision_record: 
+        docs/research/2026-09-04-property-calculation-basic-scoring-revision.md
+      review_status: approved
+      review_date: '2026-09-04'
+      review_owner: benchmark_maintainers
 tasks:
 - task_id: property_calculation_basic_001_toluene_aqueous_solvation_free_energy
   scoring:
@@ -610,7 +831,8 @@ tasks:
   gold_answers:
   - property: aqueous_solvation_free_energy
     value: -0.82
-    scoring_profile: property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -630,12 +852,14 @@ tasks:
   gold_answers:
   - property: aqueous_solvation_free_energy
     value: -5.42
-    scoring_profile: property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_checked_against_FreeSolv_v0.52
-- task_id: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
+- task_id: 
+    property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -650,7 +874,8 @@ tasks:
   gold_answers:
   - property: aqueous_solvation_free_energy
     value: -2.11
-    scoring_profile: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -670,7 +895,8 @@ tasks:
   gold_answers:
   - property: aqueous_solvation_free_energy
     value: -1.98
-    scoring_profile: property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -690,7 +916,8 @@ tasks:
   gold_answers:
   - property: first_reduction_potential_vs_sce
     value: -1.24
-    scoring_profile: property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v3
     unit: V
   gold_provenance:
     disclosure: withheld_initial_release
@@ -710,7 +937,8 @@ tasks:
   gold_answers:
   - property: first_reduction_potential_vs_sce
     value: 0.21
-    scoring_profile: property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v3
     unit: V
   gold_provenance:
     disclosure: withheld_initial_release
@@ -730,7 +958,8 @@ tasks:
   gold_answers:
   - property: first_oxidation_potential_vs_sce
     value: 0.83
-    scoring_profile: property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v3
     unit: V
   gold_provenance:
     disclosure: withheld_initial_release
@@ -750,7 +979,8 @@ tasks:
   gold_answers:
   - property: first_oxidation_potential_vs_sce
     value: 0.82
-    scoring_profile: property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v3
     unit: V
   gold_provenance:
     disclosure: withheld_initial_release
@@ -770,7 +1000,8 @@ tasks:
   gold_answers:
   - property: first_oxidation_potential_vs_sce
     value: 1.11
-    scoring_profile: property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v3
     unit: V
   gold_provenance:
     disclosure: withheld_initial_release
@@ -790,7 +1021,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -4.97
-    scoring_profile: property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -810,7 +1042,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -2.85
-    scoring_profile: property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -830,7 +1063,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -2.48
-    scoring_profile: property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -850,7 +1084,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -16.13
-    scoring_profile: property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -870,7 +1105,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -4.89
-    scoring_profile: property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -890,7 +1126,8 @@ tasks:
   gold_answers:
   - property: binding_energy
     value: -1.33
-    scoring_profile: property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -910,7 +1147,8 @@ tasks:
   gold_answers:
   - property: static_mean_polarizability
     value: 65.01
-    scoring_profile: property_calculation_basic_static_mean_polarizability_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_016_thiophene_polarizability_numeric_gold_v3
     unit: a.u.
   gold_provenance:
     disclosure: withheld_initial_release
@@ -930,7 +1168,8 @@ tasks:
   gold_answers:
   - property: static_mean_polarizability
     value: 67.87
-    scoring_profile: property_calculation_basic_static_mean_polarizability_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_017_benzene_polarizability_numeric_gold_v3
     unit: a.u.
   gold_provenance:
     disclosure: withheld_initial_release
@@ -950,7 +1189,8 @@ tasks:
   gold_answers:
   - property: static_mean_polarizability
     value: 95.51
-    scoring_profile: property_calculation_basic_static_mean_polarizability_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_018_octatetraene_polarizability_numeric_gold_v3
     unit: a.u.
   gold_provenance:
     disclosure: withheld_initial_release
@@ -970,7 +1210,8 @@ tasks:
   gold_answers:
   - property: dipole_moment
     value: 5.43
-    scoring_profile: property_calculation_basic_dipole_moment_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment_numeric_gold_v3
     unit: Debye
   gold_provenance:
     disclosure: withheld_initial_release
@@ -990,7 +1231,8 @@ tasks:
   gold_answers:
   - property: dipole_moment
     value: 1.88
-    scoring_profile: property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v3
     unit: Debye
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1010,7 +1252,8 @@ tasks:
   gold_answers:
   - property: dipole_moment
     value: 3.85
-    scoring_profile: property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v3
     unit: Debye
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1030,7 +1273,8 @@ tasks:
   gold_answers:
   - property: wiberg_bond_order
     value: 1.2522
-    scoring_profile: property_calculation_basic_wiberg_bond_order_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_022_naphthalene_bridge_bond_order_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1050,7 +1294,8 @@ tasks:
   gold_answers:
   - property: wiberg_bond_order
     value: 1.6615
-    scoring_profile: property_calculation_basic_wiberg_bond_order_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_023_dimethyl_sulfone_so_bond_order_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1070,7 +1315,8 @@ tasks:
   gold_answers:
   - property: wiberg_bond_order
     value: 0.9292
-    scoring_profile: property_calculation_basic_wiberg_bond_order_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_024_methyl_nitrate_no_bond_order_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1090,7 +1336,8 @@ tasks:
   gold_answers:
   - property: surface_electrostatic_potential_minimum
     value: -25.95
-    scoring_profile: property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1110,7 +1357,8 @@ tasks:
   gold_answers:
   - property: van_der_waals_surface_area
     value: 150.3
-    scoring_profile: property_calculation_basic_vdw_surface_area_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_026_nitrobenzene_vdw_surface_area_numeric_gold_v3
     unit: angstrom^2
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1130,7 +1378,8 @@ tasks:
   gold_answers:
   - property: surface_electrostatic_potential_total_variance
     value: 178.25
-    scoring_profile: property_calculation_basic_surface_esp_variance_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_027_pyrrole_surface_esp_variance_numeric_gold_v3
     unit: (kcal/mol)^2
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1150,7 +1399,8 @@ tasks:
   gold_answers:
   - property: crystal_density
     value: 1.333
-    scoring_profile: property_calculation_basic_028_urea_crystal_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_028_urea_crystal_density_numeric_gold_v3
     unit: g/cm^3
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1170,7 +1420,8 @@ tasks:
   gold_answers:
   - property: crystal_density
     value: 1.71
-    scoring_profile: property_calculation_basic_029_tnt_crystal_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_029_tnt_crystal_density_numeric_gold_v3
     unit: g/cm^3
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1190,7 +1441,8 @@ tasks:
   gold_answers:
   - property: crystal_density
     value: 1.831
-    scoring_profile: property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v3
     unit: g/cm^3
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1210,7 +1462,8 @@ tasks:
   gold_answers:
   - property: spin_density
     value: -0.266
-    scoring_profile: property_calculation_basic_spin_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_031_allyl_radical_c1_spin_density_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1230,7 +1483,8 @@ tasks:
   gold_answers:
   - property: spin_density
     value: 0.301
-    scoring_profile: property_calculation_basic_spin_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_032_benzyl_radical_para_c_spin_density_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1250,7 +1504,8 @@ tasks:
   gold_answers:
   - property: spin_density
     value: 0.415
-    scoring_profile: property_calculation_basic_spin_density_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_033_phenoxy_radical_o_spin_density_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1270,7 +1525,8 @@ tasks:
   gold_answers:
   - property: fukui_function
     value: 0.076
-    scoring_profile: property_calculation_basic_fukui_function_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_034_indole_c3_fukui_minus_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1290,7 +1546,8 @@ tasks:
   gold_answers:
   - property: fukui_function
     value: 0.055
-    scoring_profile: property_calculation_basic_fukui_function_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_035_chloronitrobenzene_c_fukui_plus_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1310,7 +1567,8 @@ tasks:
   gold_answers:
   - property: fukui_function
     value: 0.07
-    scoring_profile: property_calculation_basic_fukui_function_2dp_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_036_furfural_carbonyl_c_fukui_plus_numeric_gold_v3
     unit: dimensionless
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1330,7 +1588,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 64.67
-    scoring_profile: property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1350,7 +1609,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 57.88
-    scoring_profile: property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1370,7 +1630,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 73.88
-    scoring_profile: property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1390,7 +1651,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 44.4
-    scoring_profile: property_calculation_basic_040_methane_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_040_methane_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1410,7 +1672,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 45.92
-    scoring_profile: property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1430,7 +1693,8 @@ tasks:
   gold_answers:
   - property: standard_entropy
     value: 51.18
-    scoring_profile: property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1450,7 +1714,8 @@ tasks:
   gold_answers:
   - property: dimerization_enthalpy
     value: -16.04
-    scoring_profile: property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v3
     unit: kcal/mol
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1470,7 +1735,8 @@ tasks:
   gold_answers:
   - property: most_negative_mulliken_atom
     value: 11 O
-    scoring_profile: property_calculation_basic_most_negative_mulliken_atom_exact_string_v2
+    scoring_profile: 
+      property_calculation_basic_044_caffeine_most_negative_mulliken_atom_atom_identity_v1
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
@@ -1489,12 +1755,14 @@ tasks:
   gold_answers:
   - property: mulliken_charge
     value: 0.364
-    scoring_profile: property_calculation_basic_mulliken_charge_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge_numeric_gold_v3
     unit: e
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
+- task_id: 
+    property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1509,11 +1777,13 @@ tasks:
   gold_answers:
   - property: most_negative_mulliken_atom
     value: 3 N
-    scoring_profile: property_calculation_basic_most_negative_mulliken_atom_exact_string_v2
+    scoring_profile: 
+      property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom_atom_identity_v1
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1528,12 +1798,14 @@ tasks:
   gold_answers:
   - property: vertical_excitation_energy
     value: 4.12
-    scoring_profile: property_calculation_basic_vertical_excitation_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1548,7 +1820,8 @@ tasks:
   gold_answers:
   - property: vertical_excitation_energy
     value: 4.42
-    scoring_profile: property_calculation_basic_vertical_excitation_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1568,7 +1841,8 @@ tasks:
   gold_answers:
   - property: vertical_excitation_energy
     value: 4.51
-    scoring_profile: property_calculation_basic_vertical_excitation_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_049_acetone_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
   gold_provenance:
     disclosure: withheld_initial_release
@@ -1588,12 +1862,14 @@ tasks:
   gold_answers:
   - property: vertical_excitation_energy
     value: 4.04
-    scoring_profile: property_calculation_basic_vertical_excitation_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
   gold_provenance:
     disclosure: withheld_initial_release
     source: expert_calculation_output
-- task_id: property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:
@@ -1608,7 +1884,8 @@ tasks:
   gold_answers:
   - property: vertical_excitation_energy
     value: 3.39
-    scoring_profile: property_calculation_basic_vertical_excitation_energy_numeric_gold_v2
+    scoring_profile: 
+      property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
   gold_provenance:
     disclosure: withheld_initial_release

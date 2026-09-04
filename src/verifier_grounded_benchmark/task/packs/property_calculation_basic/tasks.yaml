@@ -65,7 +65,8 @@ tasks:
     value_type: number
     comparison_group: aqueous_solvation_free_energy
     unit: kcal/mol
-- task_id: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
+- task_id: 
+    property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_solvation_property
@@ -666,7 +667,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for naphthalene (SMILES: c1ccc2ccccc2c1), report the Wiberg bond order of the bridgehead C-C bond between zero-based atom indices 3 and 8.
+    At the GFN2-xTB level, for naphthalene (SMILES: c1ccc2ccccc2c1), report the Wiberg bond order of the bridgehead C-C bond.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -697,7 +698,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for dimethyl sulfone (SMILES: CS(C)(=O)=O), report the Wiberg bond order of the S-O bond between zero-based atom indices 1 and 3.
+    At the GFN2-xTB level, for dimethyl sulfone (SMILES: CS(C)(=O)=O), report the Wiberg bond order of an S-O bond.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -728,7 +729,7 @@ tasks:
   - bond_order
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for methyl nitrate (SMILES: CO[N+](=O)[O-]), report the Wiberg bond order of the N-O single bond between zero-based atom indices 1 and 2.
+    At the GFN2-xTB level, for methyl nitrate (SMILES: CO[N+](=O)[O-]), report the Wiberg bond order of the N-O single bond.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -945,7 +946,7 @@ tasks:
   - spin_density
   - UB3LYP
   prompt: |
-    At the UB3LYP/6-31G* level, for the allyl radical (SMILES: [CH2]C=C), report the spin density at zero-based atom index 1.
+    At the UB3LYP/6-31G* level, for the allyl radical (SMILES: [CH2]C=C), report the spin density at the radical-center carbon atom.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -976,7 +977,7 @@ tasks:
   - spin_density
   - UB3LYP
   prompt: |
-    At the UB3LYP/6-31G* level, for the benzyl radical (SMILES: [CH2]c1ccccc1), report the spin density at zero-based atom index 4.
+    At the UB3LYP/6-31G* level, for the benzyl radical (SMILES: [CH2]c1ccccc1), report the spin density at the carbon atom para to the benzylic radical center.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1007,7 +1008,7 @@ tasks:
   - spin_density
   - UB3LYP
   prompt: |
-    At the UB3LYP/6-31G* level, for the phenoxy radical (SMILES: [O]c1ccccc1), report the spin density at zero-based atom index 0.
+    At the UB3LYP/6-31G* level, for the phenoxy radical (SMILES: [O]c1ccccc1), report the spin density at the oxygen atom.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1038,7 +1039,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for indole (SMILES: c1ccc2[nH]ccc2c1), report the f- Fukui function at zero-based atom index 6.
+    At the GFN2-xTB level, for indole (SMILES: c1ccc2[nH]ccc2c1), report the f- Fukui function at the C3 carbon atom.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1069,7 +1070,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for chloronitrobenzene (SMILES: Clc1ccc(cc1)[N+](=O)[O-]), report the f+ Fukui function at zero-based atom index 1.
+    At the GFN2-xTB level, for chloronitrobenzene (SMILES: Clc1ccc(cc1)[N+](=O)[O-]), report the f+ Fukui function at the carbon atom bearing chlorine.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1100,7 +1101,7 @@ tasks:
   - fukui_function
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for furfural (SMILES: O=Cc1ccco1), report the f+ Fukui function at zero-based atom index 1.
+    At the GFN2-xTB level, for furfural (SMILES: O=Cc1ccco1), report the f+ Fukui function at the carbonyl carbon atom.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"dimensionless"}
@@ -1378,7 +1379,7 @@ tasks:
   - atomic_charge
   - GFN2
   prompt: |
-    At the GFN2-xTB level, for trifluoroacetic acid (SMILES: OC(=O)C(F)(F)F), report the Mulliken charge of the carboxylic hydrogen at zero-based atom index 7 in e.
+    At the GFN2-xTB level, for trifluoroacetic acid (SMILES: OC(=O)C(F)(F)F), report the Mulliken charge of the carboxylic hydrogen atom in e.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"e"}
@@ -1397,7 +1398,8 @@ tasks:
     value_type: number
     comparison_group: mulliken_charge
     unit: e
-- task_id: property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
+- task_id: 
+    property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
   version: 1
   task_type: property_calculation
   object_type: molecular_atomic_property
@@ -1427,7 +1429,8 @@ tasks:
   - name: most_negative_mulliken_atom
     value_type: string
     comparison_group: most_negative_mulliken_atom
-- task_id: property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_property
@@ -1458,7 +1461,8 @@ tasks:
     value_type: number
     comparison_group: vertical_excitation_energy
     unit: eV
-- task_id: property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_property
@@ -1551,7 +1555,8 @@ tasks:
     value_type: number
     comparison_group: vertical_excitation_energy
     unit: eV
-- task_id: property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
+- task_id: 
+    property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_property

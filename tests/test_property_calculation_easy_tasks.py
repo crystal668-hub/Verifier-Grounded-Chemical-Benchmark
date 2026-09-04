@@ -85,35 +85,24 @@ ORIGINAL_PROPERTY_TASK_IDS = [
     "property_calculation_advanced_020_azulene_internal_conversion_rate",
 ]
 
-REFERENCE_PROFILE_TOLERANCES = {
-    1: (-1.1, -0.7, 0.29, 0.13),
-    2: (-5.6, -4.4, 0.19, 1.03),
-    3: (-2.19, -0.99, 0.09, 1.13),
-    4: (-3.05, -1.85, 1.08, 0.14),
-    5: (-1.15, -1.15, 0.01, 0.1),
-    6: (0.24, 0.24, 0.01, 0.04),
-    7: (0.81, 0.81, 0.03, 0.01),
-    8: (0.92, 0.92, 0.01, 0.11),
-    9: (1.23, 1.23, 0.01, 0.13),
-    10: (-5.02, -5.02, 0.06, 0.01),
-    11: (-3.17, -3.17, 0.33, 0.01),
-    12: (-2.77, -2.71, 0.3, 0.01),
-    13: (-16.37, -16.37, 0.25, 0.01),
-    14: (-5.12, -5.12, 0.24, 0.01),
-    15: (-1.53, -1.53, 0.21, 0.01),
-    20: (1.9, 1.9, 0.01, 0.03),
-    21: (3.92, 3.92, 0.01, 0.08),
-    25: (-26.15, -26.15, 0.21, 0.01),
-    28: (1.32, 1.32, 0.014, 0.001),
-    29: (1.654, 1.654, 0.066, 0.01),
-    30: (1.763, 1.763, 0.069, 0.001),
-    37: (64.34, 64.34, 0.34, 0.01),
-    38: (58.19, 58.19, 0.01, 0.32),
-    39: (73.2, 73.2, 0.69, 0.01),
-    40: (44.52, 44.52, 0.1, 0.22),
-    41: (45.97, 45.97, 0.01, 0.06),
-    42: (51.07, 51.07, 0.12, 0.01),
-    43: (-15.3, -15.3, 0.01, 0.75),
+ABSOLUTE_WIDTHS = {
+    **dict.fromkeys((*range(1, 5), *range(10, 16), 43), 3.0),
+    **dict.fromkeys(range(5, 10), 0.6),
+    **dict.fromkeys(range(47, 52), 1.0),
+}
+
+RELATIVE_WIDTHS = {
+    **dict.fromkeys(range(16, 19), 0.25),
+    **dict.fromkeys(range(19, 22), 0.35),
+    **dict.fromkeys(range(22, 25), 0.20),
+    25: 0.40,
+    26: 0.20,
+    27: 0.35,
+    **dict.fromkeys(range(28, 31), 0.20),
+    **dict.fromkeys(range(31, 34), 0.80),
+    **dict.fromkeys(range(34, 37), 1.00),
+    **dict.fromkeys(range(37, 43), 0.12),
+    45: 0.75,
 }
 
 
@@ -165,80 +154,47 @@ def test_easy_pack_gold_is_frozen_and_samples_are_removed() -> None:
         assert gold.get("unit") == expected_unit
 
 
-def test_easy_profiles_without_references_keep_reported_precision() -> None:
-    profiles = load_pack().scoring_profiles
-
-    expected_tolerances = {
-        "property_calculation_basic_wiberg_bond_order_numeric_gold_v2": 0.0001,
-        "property_calculation_basic_fukui_function_numeric_gold_v2": 0.001,
-        "property_calculation_basic_fukui_function_2dp_numeric_gold_v2": 0.01,
-        "property_calculation_basic_vdw_surface_area_numeric_gold_v2": 0.1,
-    }
-    for profile_id, tolerance in expected_tolerances.items():
-        profile = profiles[profile_id]
-        assert profile["lower_tolerance"] == tolerance
-        assert profile["upper_tolerance"] == tolerance
-        assert profile["provenance"]["review_status"] == "approved"
-
-
-def test_easy_reference_profiles_define_scoreable_asymmetric_ranges() -> None:
+def test_easy_numeric_profiles_use_reviewed_symmetric_widths() -> None:
     pack = load_pack()
-    tasks = list(pack.tasks_by_id.values())
+    assert len(ABSOLUTE_WIDTHS) == 21
+    assert len(RELATIVE_WIDTHS) == 28
 
-    assert len(REFERENCE_PROFILE_TOLERANCES) == 28
-    for number, (
-        reference_lower,
-        reference_upper,
-        lower_tolerance,
-        upper_tolerance,
-    ) in REFERENCE_PROFILE_TOLERANCES.items():
-        task = pack.tasks_by_id[tasks[number - 1]["task_id"]]
+    for number, task in enumerate(pack.tasks_by_id.values(), start=1):
+        if number in {44, 46}:
+            continue
         profile_id = task["gold_answers"][0]["scoring_profile"]
         profile = pack.scoring_profiles[profile_id]
-        assert profile_id.startswith(
-            task["task_id"].replace(
-                "property_calculation_basic_", "property_calculation_basic_", 1
-            )
-        )
-        assert profile["lower_tolerance"] == pytest.approx(lower_tolerance)
-        assert profile["upper_tolerance"] == pytest.approx(upper_tolerance)
-        assert profile["provenance"]["decay_source"] == (
-            "expert_reference_value_range"
-        )
-        assert profile["provenance"]["reference_lower"] == reference_lower
-        assert profile["provenance"]["reference_upper"] == reference_upper
+        gold = float(task["gold_answers"][0]["value"])
+        if number in ABSOLUTE_WIDTHS:
+            mode, parameter, width = "absolute", ABSOLUTE_WIDTHS[number], ABSOLUTE_WIDTHS[number]
+        else:
+            mode, parameter = "relative", RELATIVE_WIDTHS[number]
+            width = abs(gold) * parameter
+        assert profile["lower_tolerance"] == pytest.approx(width)
+        assert profile["upper_tolerance"] == pytest.approx(width)
+        assert profile["error_mode"] == mode
+        assert profile["error_parameter"] == parameter
+        assert profile["provenance"]["decay_source"] == "attachment_final_scoring_standard"
 
 
-def test_easy_reference_boundaries_receive_score_but_outer_boundaries_do_not() -> None:
+def test_easy_numeric_profiles_score_gold_midpoints_and_boundaries() -> None:
     track = vgb.load_track("property_calculation_basic")
     pack = load_pack()
-    tasks = track.tasks()
-
-    for number, (reference_lower, reference_upper, _, _) in (
-        REFERENCE_PROFILE_TOLERANCES.items()
-    ):
-        task = tasks[number - 1]
-        scored_task = pack.tasks_by_id[task["task_id"]]
-        gold = scored_task["gold_answers"][0]
+    for number, task in enumerate(track.tasks(), start=1):
+        if number in {44, 46}:
+            continue
+        gold = pack.tasks_by_id[task["task_id"]]["gold_answers"][0]
         profile = pack.scoring_profiles[gold["scoring_profile"]]
-        for reference in {reference_lower, reference_upper}:
-            result = track.evaluate_one(
-                {"task_id": task["task_id"], "answer": reference, "unit": gold["unit"]}
-            )
-            assert result["scores"]["score"] > 0.0
-
-        for outer_boundary in (
-            gold["value"] - profile["lower_tolerance"],
-            gold["value"] + profile["upper_tolerance"],
-        ):
+        width = profile["lower_tolerance"]
+        for offset, expected in ((0.0, 1.0), (-width / 2, 0.5), (width / 2, 0.5), (-width, 0.0), (width, 0.0)):
             result = track.evaluate_one(
                 {
                     "task_id": task["task_id"],
-                    "answer": outer_boundary,
+                    "answer": gold["value"] + offset,
                     "unit": gold["unit"],
                 }
             )
-            assert result["scores"]["score"] == pytest.approx(0.0, abs=1e-12)
+            assert result["scores"]["score"] == pytest.approx(expected, abs=1e-12)
 
 
 def test_easy_prompts_are_self_contained_and_exclude_source_commands() -> None:
@@ -274,12 +230,25 @@ def test_easy_atom_and_condition_contracts_are_explicit() -> None:
     assert "relative to SCE" in tasks[
         "property_calculation_basic_005_nitrobenzene_reduction_potential"
     ]["prompt"]
-    assert "zero-based atom indices 3 and 8" in tasks[
+    assert "bridgehead C-C bond" in tasks[
         "property_calculation_basic_022_naphthalene_bridge_bond_order"
     ]["prompt"]
-    assert "zero-based atom index 7" in tasks[
+    assert "carboxylic hydrogen atom" in tasks[
         "property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge"
     ]["prompt"]
+    for task_id in (
+        "property_calculation_basic_022_naphthalene_bridge_bond_order",
+        "property_calculation_basic_023_dimethyl_sulfone_so_bond_order",
+        "property_calculation_basic_024_methyl_nitrate_no_bond_order",
+        "property_calculation_basic_031_allyl_radical_c1_spin_density",
+        "property_calculation_basic_032_benzyl_radical_para_c_spin_density",
+        "property_calculation_basic_033_phenoxy_radical_o_spin_density",
+        "property_calculation_basic_034_indole_c3_fukui_minus",
+        "property_calculation_basic_035_chloronitrobenzene_c_fukui_plus",
+        "property_calculation_basic_036_furfural_carbonyl_c_fukui_plus",
+        "property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge",
+    ):
+        assert "zero-based atom index" not in tasks[task_id]["prompt"]
     for task_id in (
         "property_calculation_basic_044_caffeine_most_negative_mulliken_atom",
         "property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom",
