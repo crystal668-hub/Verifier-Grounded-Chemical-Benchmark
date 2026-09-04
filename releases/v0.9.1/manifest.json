@@ -2,19 +2,19 @@
   "artifacts": [
     {
       "filename": "verifier_grounded_benchmark-0.9.1-py3-none-any.whl",
-      "sha256": "bc932944bb84e5666ce4b5b8ffd50b2ebb1e337bc94beee30a970c4e4835fa86",
+      "sha256": "d061e3c002076ee93f4a2f8b195df91b95f8fc1fb2eceded97b71791dc8611e9",
       "size": 185193
     },
     {
       "filename": "verifier_grounded_benchmark-0.9.1.tar.gz",
-      "sha256": "993950bf3878016eaaccba6423d1b61b5ee379c94490543e5d5349b30b9ec0c9",
-      "size": 784771
+      "sha256": "166b0a2f82d79a24864d0b0e801aad2c7368951d356519625cc829e15485a374",
+      "size": 784836
     }
   ],
   "canonical_source": {
-    "commit": "8c634b94692aa2aba9e2f6af20912a6680900463",
-    "source_date_epoch": 1788511817,
-    "tree": "ee69a418ef986418b6ee874125bcdd4858b40309"
+    "commit": "a651ff5124e81a516419295e708b1b15f32fd3b9",
+    "source_date_epoch": 1788513277,
+    "tree": "74f99e78349f22e67c4feb58df3e05889f36539e"
   },
   "package": "verifier-grounded-benchmark",
   "result_schema_version": "2",
