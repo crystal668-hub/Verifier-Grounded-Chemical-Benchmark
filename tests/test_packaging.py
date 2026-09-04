@@ -38,6 +38,12 @@ FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
 }
+FORMAL_TRACK_PACKS = {
+    "property_calculation_advanced",
+    "property_calculation_basic",
+    "rdkit",
+    "xtb",
+}
 FORMAL_EXPERT_XTB_TASK_IDS = {
     "xtb_formula_dipole_min_014",
     "xtb_two_fluorine_gap_min_015",
@@ -89,8 +95,18 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert {f"src/{path}" for path in FORMAL_V2_TASK_FILES}.issubset(sdist_members)
     assert not any("/task/calibration/" in path for path in wheel_members)
     assert not any("/task/calibration/" in path for path in sdist_members)
-    assert not any("/task/packs/experimental/" in path for path in wheel_members)
-    assert not any("/task/packs/experimental/" in path for path in sdist_members)
+    assert {
+        Path(path).parts[3]
+        for path in wheel_members
+        if path.startswith("verifier_grounded_benchmark/task/packs/")
+        and len(Path(path).parts) > 4
+    } == FORMAL_TRACK_PACKS
+    assert {
+        Path(path).parts[4]
+        for path in sdist_members
+        if path.startswith("src/verifier_grounded_benchmark/task/packs/")
+        and len(Path(path).parts) > 5
+    } == FORMAL_TRACK_PACKS
     assert FORMAL_EXPERT_XTB_TASK_IDS.issubset(
         {task["task_id"] for task in wheel_tasks["tasks"]}
     )

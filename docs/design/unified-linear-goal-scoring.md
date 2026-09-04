@@ -719,18 +719,22 @@ src/
       packs/
         rdkit/
           tasks.yaml
+          scoring.yaml
           verifier_specs.yaml
           sample_answers.jsonl
         xtb/
           tasks.yaml
+          scoring.yaml
           verifier_specs.yaml
           sample_answers.jsonl
-        property_calculation/
+        property_calculation_advanced/
           tasks.yaml
+          scoring.yaml
           verifier_specs.yaml
-          sample_answers.jsonl
-        experimental/
-          rdkit_forcefield/
+        property_calculation_basic/
+          tasks.yaml
+          scoring.yaml
+          verifier_specs.yaml
 
       calibration/
         xtb/
@@ -1350,7 +1354,7 @@ src/verifier_grounded_benchmark
 src/vgb
 ```
 
-Task packs 作为 `verifier_grounded_benchmark.task.packs` package data 发布。使用 `importlib.resources` 定位，不再通过向上搜索仓库根的 `tasks/` 目录工作。只有 registry 标记为 formal 的 packs 和其 sample answers 进入正式 wheel；`task/calibration` 和 `task/packs/experimental` 默认由 build exclusion 排除，除非某个 release 显式提升其状态。
+Task packs 作为 `verifier_grounded_benchmark.task.packs` package data 发布。使用 `importlib.resources` 定位，不再通过向上搜索仓库根的 `tasks/` 目录工作。v0.9.1 wheel 只发布 `rdkit`、`xtb`、`property_calculation_advanced` 和 `property_calculation_basic` 四个内置正式 pack；`task/calibration` 由 build exclusion 排除。
 
 ### 22.2 Release manifest
 

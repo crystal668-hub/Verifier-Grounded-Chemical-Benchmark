@@ -71,7 +71,6 @@ package = true
 exclude = [
     "/releases/",
     "/src/verifier_grounded_benchmark/task/calibration/",
-    "/src/verifier_grounded_benchmark/task/packs/experimental/",
 ]
 
 [tool.hatch.build.targets.wheel]
