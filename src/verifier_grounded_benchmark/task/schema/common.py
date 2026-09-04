@@ -12,7 +12,15 @@ from verifier_grounded_benchmark.task.models import LinearGoalSpec
 SCORING_VERSION = "linear_goal_v1"
 SUPPORTED_SCORING_VERSIONS = frozenset({"linear_goal_v1", "linear_goal_v2"})
 SUPPORTED_SCORING_STATUSES = frozenset({"formal", "shadow_pending_research"})
-PROFILE_TYPES = {"target", "window", "maximize", "minimize", "numeric_gold", "exact_string"}
+PROFILE_TYPES = {
+    "target",
+    "window",
+    "maximize",
+    "minimize",
+    "numeric_gold",
+    "exact_string",
+    "atom_identity",
+}
 
 
 def require_mapping(value: Any, label: str) -> Mapping[str, Any]:
@@ -93,6 +101,20 @@ def validate_profiles(
                     raise ValueError(f"exact string profile {profile_id} partial_scores must map strings to numbers")
                 if not 0.0 <= float(partial_score) < 1.0:
                     raise ValueError(f"exact string profile {profile_id} partial scores must be in [0, 1)")
+        elif profile_type == "atom_identity":
+            if profile.get("normalization") != "atom_identity":
+                raise ValueError(
+                    f"atom identity profile {profile_id} must use atom_identity normalization"
+                )
+            partial_score = profile.get("element_partial_score", 0.0)
+            if (
+                isinstance(partial_score, bool)
+                or not isinstance(partial_score, Real)
+                or not 0.0 <= float(partial_score) < 1.0
+            ):
+                raise ValueError(
+                    f"atom identity profile {profile_id} element_partial_score must be in [0, 1)"
+                )
         else:
             require_string(profile.get("unit"), f"scoring profile {profile_id} unit")
             transform = profile.get("value_transform", "identity")

@@ -13,6 +13,9 @@ from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatc
 from verifier_grounded_benchmark.evaluation.property_calculation.parsing.multi_property import (
     PropertyAnswerParseError,
 )
+from verifier_grounded_benchmark.evaluation.property_calculation.scoring.atom_identity import (
+    score_atom_identity,
+)
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
     score_comparison_group,
     score_unordered_numeric_group,
@@ -54,8 +57,10 @@ class PropertyCalculationEvaluator:
             profile = scoring_profiles[profile_id]
             if definition["value_type"] == "number":
                 field_score = score_numeric_gold(submitted.get(name), gold_definition, profile)
-            else:
+            elif profile["type"] == "exact_string":
                 field_score = score_exact_string(submitted.get(name), gold_definition, profile)
+            else:
+                field_score = score_atom_identity(submitted.get(name), gold_definition, profile)
             field_scores[name] = field_score
             constraint_scores.append(
                 {

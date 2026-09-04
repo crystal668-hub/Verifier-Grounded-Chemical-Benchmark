@@ -63,8 +63,8 @@ def validate_property_calculation_task(
             raise ValueError(f"unknown scoring profile: {profile_id}") from exc
         if profile["property"] != property_name:
             raise ValueError(f"gold/profile property mismatch for {profile_id}")
-        expected_type = "numeric_gold" if value_type == "number" else "exact_string"
-        if profile["type"] != expected_type:
+        expected_types = {"numeric_gold"} if value_type == "number" else {"exact_string", "atom_identity"}
+        if profile["type"] not in expected_types:
             raise ValueError(f"gold/profile type mismatch for {profile_id}")
         if value_type == "number":
             unit = require_string(definition.get("unit"), f"numeric property {property_name} unit")
