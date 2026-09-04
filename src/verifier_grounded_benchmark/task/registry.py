@@ -82,14 +82,14 @@ class Registry:
 def builtin_definitions() -> list[TrackDefinition]:
     return [
         TrackDefinition(
-            name="rdkit", version="0.9.0", display_name="RDKit baseline small-molecule tasks",
+            name="rdkit", version="0.9.1", display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
         ),
         TrackDefinition(
-            name="xtb", version="0.9.0", display_name="xTB molecular optimization tasks",
+            name="xtb", version="0.9.1", display_name="xTB molecular optimization tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
@@ -97,7 +97,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="xtb",
         ),
         TrackDefinition(
-            name="property_calculation_advanced", version="0.9.0", display_name="Advanced fixed-input property calculation tasks",
+            name="property_calculation_advanced", version="0.9.1", display_name="Advanced fixed-input property calculation tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
@@ -105,7 +105,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             resource_pack="property_calculation_advanced",
         ),
         TrackDefinition(
-            name="property_calculation_basic", version="0.9.0",
+            name="property_calculation_basic", version="0.9.1",
             display_name="Basic fixed-input property calculation tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",

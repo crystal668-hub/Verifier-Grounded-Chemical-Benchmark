@@ -1,7 +1,7 @@
 # Batch 2 Basic Questions: Property Calculation Easy Conversion
 
 Date: 2026-08-25
-Status: implemented
+Status: superseded by the 2026-09-04 reviewed scoring revision
 
 ## Scope
 
@@ -51,7 +51,11 @@ property. Script names and local environment setup are excluded.
 | 44-46 | 3 | Mulliken charge or most-negative atom |
 | 47-51 | 5 | Vertical excitation energy |
 
-## Scoring Decisions
+## Historical Scoring Decisions
+
+The rules below describe the original v0.9.0 implementation and are retained for provenance. They
+are no longer the formal scoring rules after the 2026-09-04 review; see
+`docs/research/2026-09-04-property-calculation-basic-scoring-revision.md`.
 
 Numeric tasks use `numeric_gold` profiles. The expert `answer` remains the unique full-score gold.
 When a source row has a numeric `reference value`, the interval from the gold through that reference

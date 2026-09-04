@@ -1,7 +1,7 @@
 schema_version: 1
 scoring_config:
   task_pack_id: xtb
-  task_pack_version: 0.9.0
+  task_pack_version: 0.9.1
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:

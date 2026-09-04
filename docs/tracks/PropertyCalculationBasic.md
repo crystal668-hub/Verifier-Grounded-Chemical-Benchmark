@@ -1,6 +1,6 @@
 # Property Calculation Basic Track
 
-Updated: 2026-08-25
+Updated: 2026-09-04
 
 ## Positioning
 
@@ -16,7 +16,7 @@ charges, and vertical excitation energies.
 ## Runtime Contract
 
 The track reuses `task_type: property_calculation`. Its evaluator parses a single JSON answer from
-the `FINAL ANSWER:` line and compares it with the task's numeric or exact-string gold. It does not
+the `FINAL ANSWER:` line and compares it with the task's numeric or atom-identity gold. It does not
 run a property verifier, reproduce the source calculation, or require an external quantum
 chemistry executable.
 
@@ -28,17 +28,25 @@ task_type: property_calculation
 ```
 
 `verifier_specs.yaml` therefore contains an empty `verifiers` list. Numeric scores use the same
-`linear_goal_v2` implementation as the original property-calculation track. When provided, source
-reference values widen the scoreable interval between the reference and expert gold; otherwise,
-track-local profile widths follow the expert answer's reported precision.
+`linear_goal_v2` implementation as the original property-calculation track. Each numeric task has a
+single full-score gold and symmetric linear decay on both sides. The configured absolute width is
+either the fixed absolute error from the reviewed standard or the reviewed percentage multiplied by
+`abs(gold)`. There is no full-score interval and reference values do not widen the scoreable range.
+
+Tasks 044 and 046 use deterministic atom-identity scoring. Task 044 gives 1.0 only to `11 O`, 0.5
+to an oxygen symbol with a missing or incorrect index, and 0 otherwise. Task 046 gives 1.0 only to
+`3 N` and 0 otherwise.
 
 ## Input And Gold Policy
 
 Every task embeds its molecule, molecular pair, condition, target property, and unit directly in an
-English prompt. Atom-specific tasks explicitly state zero-based indices where needed. Source CSV
+English prompt. Property tasks that require chemical localization describe the target atom or bond
+by its chemical role, so the respondent must identify it before calculating the value. The two atom-
+identity tasks explicitly define zero-based SMILES indexing because the index is part of the answer.
+Source CSV
 commands and local environment paths are maintenance evidence only and are never executed by the
 benchmark or shown to the model.
 
-The expert `answer` value is the frozen gold. Experimental or higher-level reference values define
-scoreable tolerance ranges but are not substituted for the expert result. This track does not ship
-sample answers; use test fixtures or model outputs for local scoring.
+The expert `answer` value is the frozen gold. Experimental or higher-level reference values are
+provenance only and do not affect scoring. This track does not ship sample answers; use test fixtures
+or model outputs for local scoring.

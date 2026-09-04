@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: xtb
-  version: 0.9.0
+  version: 0.9.1
 tasks:
 - task_id: xtb_gap_window_001
   version: 2

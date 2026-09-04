@@ -129,7 +129,7 @@ EXPECTED_TASK_IDS = {
 def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     version = project["project"]["version"]
-    assert version == "0.9.0"
+    assert version == "0.9.1"
 
     inventory = task_inventory(version)
     assert inventory["schema_version"] == 2
@@ -146,7 +146,7 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
 
 
 def test_release_inventory_rejects_shadow_scoring_tracks() -> None:
-    inventory = task_inventory("0.9.0")
+    inventory = task_inventory("0.9.1")
     inventory["tracks"]["xtb"]["scoring_status"] = "shadow_pending_research"
 
     with pytest.raises(RuntimeError, match="xtb"):
@@ -157,5 +157,5 @@ def test_package_readme_uses_current_release_version() -> None:
     readme = (ROOT / "src" / "verifier_grounded_benchmark" / "README.md").read_text(
         encoding="utf-8"
     )
-    assert "Verifier-Grounded Benchmark (v0.9)" in readme
+    assert "Verifier-Grounded Benchmark (v0.9.1)" in readme
     assert "verifier_grounded_benchmark-0.1.0" not in readme
