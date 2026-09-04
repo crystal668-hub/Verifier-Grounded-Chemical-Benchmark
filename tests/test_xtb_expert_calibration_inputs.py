@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from importlib.resources import files
 
+import pytest
 import yaml
 
 from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher import (
@@ -33,6 +34,8 @@ TASK_IDS = {
 
 
 def load_answers() -> list[dict]:
+    if not ANSWERS_PATH.is_file():
+        pytest.skip("private expert calibration answers are not tracked")
     with ANSWERS_PATH.open() as handle:
         return [json.loads(line) for line in handle if line.strip()]
 

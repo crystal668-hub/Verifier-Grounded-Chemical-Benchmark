@@ -80,7 +80,7 @@ direct-XYZ 路径解析坐标、推断连通性并应用 task-level structural d
 
 ## 5. 数据与发布边界
 
-`sample_answers.jsonl` 只包含公开 showcase examples，用于展示两种 answer schema 和验证 pipeline；当前 9 条样例不覆盖全部 20 个正式任务，也不代表 benchmark 或校准分布。冻结校准记录可以公开协议和锚点证据，但 private calibration answers/manifest 不进入发行包。
+`sample_answers.jsonl` 只包含公开 showcase examples，用于展示两种 answer schema 和验证 pipeline；当前 9 条样例不覆盖全部 20 个正式任务，也不代表 benchmark 或校准分布。校准 raw answers（包括 XYZ 候选和 legacy answers）属于私有数据，不进入公开 Git 或发行包；公开仓库只保留脱敏的 `manifest.yaml`、校准 task/spec 定义、校准脚本和研究报告，用于审计校准协议，不公开候选坐标。需要运行校准时，必须通过 `--answers` 显式传入仓库外的私有 JSONL 文件。
 
 发行包必须同时包含 20 个 task definitions、15 个 verifier specs、公开样例及 SMILES/XYZ routing 所需代码。任务 020 的 CREST/xTB 可执行环境是外部运行时依赖，缺失时不得把候选计为零分。
 

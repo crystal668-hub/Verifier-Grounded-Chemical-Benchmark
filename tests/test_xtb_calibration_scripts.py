@@ -19,7 +19,7 @@ def test_run_xtb_calibration_reports_missing_executable(tmp_path) -> None:
             sys.executable,
             str(SCRIPT),
             "--answers",
-            "src/verifier_grounded_benchmark/task/calibration/xtb/legacy_answers.jsonl",
+            str(tmp_path / "private-calibration-answers.jsonl"),
             "--output",
             str(tmp_path / "calibration-results.json"),
         ],

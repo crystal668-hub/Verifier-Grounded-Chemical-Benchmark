@@ -28,7 +28,12 @@ CALIBRATION_DIR = files("verifier_grounded_benchmark.task.calibration.xtb")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--answers", type=Path, default=Path(str(CALIBRATION_DIR / "answers.jsonl")))
+    parser.add_argument(
+        "--answers",
+        type=Path,
+        required=True,
+        help="Path to a private calibration answers JSONL file.",
+    )
     parser.add_argument("--tasks", type=Path, default=Path(str(CALIBRATION_DIR / "tasks.yaml")))
     parser.add_argument("--specs", type=Path, default=Path(str(CALIBRATION_DIR / "verifier_specs.yaml")))
     parser.add_argument("--output", type=Path, required=True)

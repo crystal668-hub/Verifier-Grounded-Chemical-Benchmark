@@ -1,10 +1,23 @@
 data/
 artifacts/
 /build/
+/dist/
 .cache/
 .venv/
 __pycache__/
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+*.egg-info/
 AGENTS.md
 .vscode/
+.DS_Store
+
+# Private calibration answers are kept outside the public repository.
+/src/verifier_grounded_benchmark/task/calibration/**/answers.jsonl
+/src/verifier_grounded_benchmark/task/calibration/**/legacy_answers.jsonl

@@ -11,7 +11,6 @@ import yaml
 from scripts.release.build_release import (
     normalized_release_payloads,
     payload_digest,
-    verify_archive_payloads,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +23,36 @@ V42_RELEASE_DIR = ROOT / "releases" / "v0.4.2"
 V43_RELEASE_DIR = ROOT / "releases" / "v0.4.3"
 V50_RELEASE_DIR = ROOT / "releases" / "v0.5.0"
 V60_RELEASE_DIR = ROOT / "releases" / "v0.6.0"
+
+
+def assert_release_artifacts_if_present(
+    manifest: dict,
+    wheel_path: Path,
+    sdist_path: Path,
+    *,
+    archive_packages: tuple[str, ...] = ("verifier_grounded_benchmark", "vgb"),
+) -> None:
+    """Validate local release files without requiring them in a source checkout."""
+    if not wheel_path.is_file() or not sdist_path.is_file():
+        return
+
+    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
+    for path in (wheel_path, sdist_path):
+        content = path.read_bytes()
+        assert path.name in artifacts
+        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
+        assert len(content) == artifacts[path.name]["size"]
+
+    wheel_payloads, sdist_payloads = normalized_release_payloads(
+        wheel_path,
+        sdist_path,
+        archive_packages=archive_packages,
+    )
+    assert wheel_payloads == sdist_payloads
+    assert {
+        "file_count": len(wheel_payloads),
+        "sha256": payload_digest(wheel_payloads),
+    } == manifest["verified_payload"]
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
@@ -53,24 +82,14 @@ def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
         "verifier_grounded_xtb_xyz": 18,
     }
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.1.1-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.1.1.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-
-    wheel_payloads, sdist_payloads = normalized_release_payloads(
+    assert_release_artifacts_if_present(
+        manifest,
         wheel_path,
         sdist_path,
         archive_packages=("benchmark", "verifiers", "verifier_grounded_benchmark", "vgb"),
     )
-    assert wheel_payloads == sdist_payloads
-    assert {
-        "file_count": len(wheel_payloads),
-        "sha256": payload_digest(wheel_payloads),
-    } == manifest["verified_payload"]
 
 
 def test_release_manifest_records_canonical_source_tree() -> None:
@@ -114,14 +133,9 @@ def test_current_release_manifest_binds_v2_artifacts_profiles_and_openclaw() -> 
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.2.0-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.2.0.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "75d6966e9a2ab39c184823abeefd28bddbfa56aa"
@@ -153,14 +167,9 @@ def test_v2_release_manifest_binds_formal_profiles_and_openclaw_sync() -> None:
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.3.0-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.3.0.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "d3ed045c1e2ca38ed0d188ffb45116c4a712ecb1"
@@ -206,14 +215,9 @@ def test_v4_release_manifest_binds_expert_tasks_and_artifacts() -> None:
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.0-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.0.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "741903305f158a7b9e4ca3f5118afbc2546d21fe"
@@ -249,14 +253,9 @@ def test_v41_release_manifest_binds_clarified_prompt_and_artifacts() -> None:
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.1-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.1.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "ae24a6079f50e2d4a0fd81dbada8fa64d20e78c3"
@@ -292,32 +291,28 @@ def test_v42_release_manifest_binds_dependency_preflight_artifacts() -> None:
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.2-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.2.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
-    with zipfile.ZipFile(wheel_path) as wheel:
-        assert (
-            "verifier_grounded_benchmark/evaluation/external_dependencies.py"
-            in wheel.namelist()
-        )
-        specs = yaml.safe_load(
-            wheel.read(
-                "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml"
+    if wheel_path.is_file() and sdist_path.is_file():
+        with zipfile.ZipFile(wheel_path) as wheel:
+            assert (
+                "verifier_grounded_benchmark/evaluation/external_dependencies.py"
+                in wheel.namelist()
             )
-        )["verifiers"]
-    pyrene = next(
-        spec for spec in specs if spec["verifier_id"] == "xtb_pyrene_crest_energy_v1"
-    )
-    assert {
-        dependency["executable"]: dependency["version"]
-        for dependency in pyrene["external_dependencies"]
-    } == {"crest": "2.12", "xtb": "6.7.1"}
+            specs = yaml.safe_load(
+                wheel.read(
+                    "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml"
+                )
+            )["verifiers"]
+        pyrene = next(
+            spec for spec in specs if spec["verifier_id"] == "xtb_pyrene_crest_energy_v1"
+        )
+        assert {
+            dependency["executable"]: dependency["version"]
+            for dependency in pyrene["external_dependencies"]
+        } == {"crest": "2.12", "xtb": "6.7.1"}
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "d65536873e4d83b904a03abf19374c3ea4c7a6d4"
@@ -353,14 +348,9 @@ def test_v43_release_manifest_binds_recalibrated_artifacts_and_openclaw_runtime(
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.3-py3-none-any.whl"
     sdist_path = ROOT / "dist" / "verifier_grounded_benchmark-0.4.3.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "820b15ae97706cfb76710b02873a85335b9d8607"
@@ -405,14 +395,9 @@ def test_v50_release_manifest_binds_property_calculation_expansion_and_openclaw_
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.5.0-py3-none-any.whl"
     sdist_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.5.0.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "dca714c3ab5c89500b80854dac0a4a53b0c85b9a"
@@ -461,14 +446,9 @@ def test_v60_release_manifest_binds_standardized_property_calculation_tasks() ->
     ).stdout.strip()
     assert tagged_commit == manifest["canonical_source"]["commit"]
 
-    artifacts = {item["filename"]: item for item in manifest["artifacts"]}
     wheel_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.6.0-py3-none-any.whl"
     sdist_path = ROOT / "build" / "release-dist" / "verifier_grounded_benchmark-0.6.0.tar.gz"
-    for path in (wheel_path, sdist_path):
-        content = path.read_bytes()
-        assert hashlib.sha256(content).hexdigest() == artifacts[path.name]["sha256"]
-        assert len(content) == artifacts[path.name]["size"]
-    assert verify_archive_payloads(wheel_path, sdist_path) == manifest["verified_payload"]
+    assert_release_artifacts_if_present(manifest, wheel_path, sdist_path)
 
     openclaw = manifest["integrations"]["openclaw"]
     assert openclaw["commit"] == "390ba0ff077248083ab32a3111e2e99036c6ed83"
