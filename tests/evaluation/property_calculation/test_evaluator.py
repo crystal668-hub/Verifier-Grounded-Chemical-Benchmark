@@ -208,7 +208,7 @@ def test_unordered_numeric_group_uses_best_assignment() -> None:
 
 def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
     result = _evaluate(
-        "property_calculation_advanced_004_ir_top3_frequencies",
+        "property_calculation_advanced_004_ir_top2_frequencies",
         {
             "answers": [
                 {"property": "frequency_1", "value": 1685.56, "unit": "cm^-1"},

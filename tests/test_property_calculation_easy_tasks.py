@@ -66,7 +66,7 @@ ORIGINAL_PROPERTY_TASK_IDS = [
     "property_calculation_advanced_001_free_energy",
     "property_calculation_advanced_002_crystal_phase",
     "property_calculation_advanced_003_hbond_count",
-    "property_calculation_advanced_004_ir_top3_frequencies",
+    "property_calculation_advanced_004_ir_top2_frequencies",
     "property_calculation_advanced_005_crystal_density",
     "property_calculation_advanced_006_cocrystal_ratio",
     "property_calculation_advanced_007_polymorph_free_energy_crossover",

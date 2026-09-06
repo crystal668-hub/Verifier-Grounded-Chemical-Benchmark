@@ -415,7 +415,7 @@ tasks:
   gold_provenance:
     disclosure: withheld_initial_release
     source: T2_paper_expert_answer
-- task_id: property_calculation_advanced_004_ir_top3_frequencies
+- task_id: property_calculation_advanced_004_ir_top2_frequencies
   scoring:
     aggregation: arithmetic_mean
     comparison_groups:

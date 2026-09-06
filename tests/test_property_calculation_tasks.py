@@ -63,7 +63,7 @@ EXPECTED_TASK_IDS = {
     "property_calculation_advanced_001_free_energy",
     "property_calculation_advanced_002_crystal_phase",
     "property_calculation_advanced_003_hbond_count",
-    "property_calculation_advanced_004_ir_top3_frequencies",
+    "property_calculation_advanced_004_ir_top2_frequencies",
     "property_calculation_advanced_005_crystal_density",
     "property_calculation_advanced_006_cocrystal_ratio",
     "property_calculation_advanced_007_polymorph_free_energy_crossover",
@@ -262,7 +262,7 @@ def test_task_8_contract_and_gold() -> None:
 def test_expert_task_special_contracts_are_frozen() -> None:
     tasks = load_tasks()
 
-    task_15 = tasks["property_calculation_advanced_004_ir_top3_frequencies"]
+    task_15 = tasks["property_calculation_advanced_004_ir_top2_frequencies"]
     assert task_15["scoring"]["comparison_groups"] == [
         {"id": "top_two_frequencies", "mode": "unordered_numeric"}
     ]
@@ -283,7 +283,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
     assert [item["type"] for item in task_21["input_objects"]] == ["xyz"]
 
     for task_id in (
-        "property_calculation_advanced_004_ir_top3_frequencies",
+        "property_calculation_advanced_004_ir_top2_frequencies",
         "property_calculation_advanced_008_interaction_binding_energy",
         "property_calculation_advanced_009_homo_lumo_gap",
         "property_calculation_advanced_010_hbond_distances",

@@ -1056,7 +1056,7 @@ tasks:
     value_type: number
     unit: count
     comparison_group: hydrogen_bond_count
-- task_id: property_calculation_advanced_004_ir_top3_frequencies
+- task_id: property_calculation_advanced_004_ir_top2_frequencies
   version: 1
   task_type: property_calculation
   object_type: molecular_vibration_calculation

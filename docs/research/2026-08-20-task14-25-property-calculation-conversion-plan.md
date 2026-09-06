@@ -129,7 +129,7 @@ scoring:
 
 ### 15. Resveratrol 频率和 IR 强度前三
 
-- 暂定 task id：`property_calculation_advanced_004_ir_top3_frequencies`
+- 暂定 task id：`property_calculation_advanced_004_ir_top2_frequencies`
 - 题型：三个数值字段；建议 `frequency_1`、`frequency_2`、`frequency_3`，unit
   `cm^-1`，同属一个 comparison group。
 - 拟题面：说明 M06-2X/cc-pVTZ 优化与频率计算背景，要求报告 IR intensity 最大的三个
