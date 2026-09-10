@@ -1,7 +1,7 @@
 schema_version: 1
 scoring_config:
   task_pack_id: property_calculation_advanced
-  task_pack_version: 0.9.1
+  task_pack_version: 0.9.2
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:
@@ -352,9 +352,6 @@ tasks:
 - task_id: property_calculation_advanced_001_free_energy
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: free_energy_difference
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -371,11 +368,6 @@ tasks:
 - task_id: property_calculation_advanced_002_crystal_phase
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: potential_energy_difference
-      mode: all
-    - id: pressure_phase_assignment
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -398,9 +390,6 @@ tasks:
 - task_id: property_calculation_advanced_003_hbond_count
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: hydrogen_bond_count
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -418,9 +407,7 @@ tasks:
 - task_id: property_calculation_advanced_004_ir_top2_frequencies
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: top_two_frequencies
-      mode: unordered_numeric
+    answer_matching: unordered_numeric
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -442,9 +429,6 @@ tasks:
 - task_id: property_calculation_advanced_005_crystal_density
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: crystal_density
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -462,9 +446,6 @@ tasks:
 - task_id: property_calculation_advanced_006_cocrystal_ratio
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: cocrystal_ratio
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -481,9 +462,6 @@ tasks:
 - task_id: property_calculation_advanced_007_polymorph_free_energy_crossover
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: polymorph_free_energy
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -504,9 +482,6 @@ tasks:
 - task_id: property_calculation_advanced_008_interaction_binding_energy
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: interaction_binding_energy
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -528,9 +503,6 @@ tasks:
 - task_id: property_calculation_advanced_009_homo_lumo_gap
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: homo_lumo_gap
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -548,9 +520,6 @@ tasks:
 - task_id: property_calculation_advanced_010_hbond_distances
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: hbond_distances
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -572,9 +541,6 @@ tasks:
 - task_id: property_calculation_advanced_011_accessible_pore_volume_ratio
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: pore_volume_ratio
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -592,9 +558,6 @@ tasks:
 - task_id: property_calculation_advanced_012_carboxyl_hydrogen_distance
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: carboxyl_hydrogen_distance
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -612,9 +575,6 @@ tasks:
 - task_id: property_calculation_advanced_013_halogen_bond_energy
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: halogen_bond_energy
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -632,9 +592,6 @@ tasks:
 - task_id: property_calculation_advanced_014_bay069_pka
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: pka
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -652,9 +609,6 @@ tasks:
 - task_id: property_calculation_advanced_015_formaldehyde_socme
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: spin_orbit_coupling_matrix_element
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -672,9 +626,6 @@ tasks:
 - task_id: property_calculation_advanced_016_anthracene_isc_rate
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: intersystem_crossing_rate
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -692,9 +643,6 @@ tasks:
 - task_id: property_calculation_advanced_017_biacetyl_phosphorescence_rate
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: phosphorescence_rate
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -712,9 +660,6 @@ tasks:
 - task_id: property_calculation_advanced_018_anthracene_ht_contribution
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: herzberg_teller_contribution
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -732,9 +677,6 @@ tasks:
 - task_id: property_calculation_advanced_019_acetophenone_isc_rate
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: intersystem_crossing_rate
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error
@@ -752,9 +694,6 @@ tasks:
 - task_id: property_calculation_advanced_020_azulene_internal_conversion_rate
   scoring:
     aggregation: arithmetic_mean
-    comparison_groups:
-    - id: internal_conversion_rate
-      mode: all
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error

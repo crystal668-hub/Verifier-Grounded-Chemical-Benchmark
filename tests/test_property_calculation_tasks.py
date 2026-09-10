@@ -179,7 +179,6 @@ def test_task_7_contract_and_gold() -> None:
             "name": "free_energy_difference",
             "value_type": "number",
             "unit": "kJ/mol",
-            "comparison_group": "free_energy_difference",
         }
     ]
     assert task["gold_answers"] == [
@@ -194,9 +193,10 @@ def test_task_7_contract_and_gold() -> None:
     assert profile["lower_tolerance"] == 10.0
     assert profile["upper_tolerance"] == 10.0
     assert profile["provenance"]["review_status"] == "approved"
-    assert task["scoring"]["comparison_groups"] == [
-        {"id": "free_energy_difference", "mode": "all"}
-    ]
+    assert task["scoring"] == {
+        "aggregation": "arithmetic_mean",
+        "version": "linear_goal_v2",
+    }
     assert "300 K" in task["prompt"]
     assert "kJ/mol" in task["prompt"]
     assert "meV" not in task["prompt"]
@@ -216,17 +216,14 @@ def test_task_8_contract_and_gold() -> None:
             "name": "potential_energy_difference",
             "value_type": "number",
             "unit": "eV",
-            "comparison_group": "potential_energy_difference",
         },
         {
             "name": "ambient_pressure_phase",
             "value_type": "string",
-            "comparison_group": "pressure_phase_assignment",
         },
         {
             "name": "high_pressure_phase",
             "value_type": "string",
-            "comparison_group": "pressure_phase_assignment",
         },
     ]
     assert task["gold_answers"] == [
@@ -247,10 +244,10 @@ def test_task_8_contract_and_gold() -> None:
             "scoring_profile": "property_calculation_advanced_high_pressure_phase_exact_string_v2",
         },
     ]
-    assert task["scoring"]["comparison_groups"] == [
-        {"id": "potential_energy_difference", "mode": "all"},
-        {"id": "pressure_phase_assignment", "mode": "all"},
-    ]
+    assert task["scoring"] == {
+        "aggregation": "arithmetic_mean",
+        "version": "linear_goal_v2",
+    }
     assert "0.079" not in task["prompt"]
     assert "alpha is" not in task["prompt"].lower()
     assert "beta is" not in task["prompt"].lower()
@@ -263,9 +260,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
     tasks = load_tasks()
 
     task_15 = tasks["property_calculation_advanced_004_ir_top2_frequencies"]
-    assert task_15["scoring"]["comparison_groups"] == [
-        {"id": "top_two_frequencies", "mode": "unordered_numeric"}
-    ]
+    assert task_15["scoring"]["answer_matching"] == "unordered_numeric"
     assert [item["name"] for item in task_15["requested_properties"]] == [
         "frequency_1",
         "frequency_2",
@@ -289,7 +284,9 @@ def test_expert_task_special_contracts_are_frozen() -> None:
         "property_calculation_advanced_010_hbond_distances",
     ):
         task = tasks[task_id]
-        assert all(item["type"] != "gaussian_output_excerpt" for item in task["input_objects"])
+        assert all(
+            item["type"] != "gaussian_output_excerpt" for item in task["input_objects"]
+        )
         assert "gaussian" not in task["prompt"].lower()
 
     task_24 = tasks["property_calculation_advanced_013_halogen_bond_energy"]
@@ -371,7 +368,6 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
                 "name": property_name,
                 "value_type": "number",
                 "unit": unit,
-                "comparison_group": property_name,
             }
         ]
         assert task["gold_answers"] == [
@@ -382,9 +378,10 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
                 "scoring_profile": profile_id,
             }
         ]
-        assert task["scoring"]["comparison_groups"] == [
-            {"id": property_name, "mode": "all"}
-        ]
+        assert task["scoring"] == {
+            "aggregation": "arithmetic_mean",
+            "version": "linear_goal_v2",
+        }
         assert [item["type"] for item in task["input_objects"]] == ["smiles"]
         assert all(suffix not in task["prompt"] for suffix in (".out", ".inp", ".hess"))
         assert "ORCA" not in task["prompt"]
@@ -411,7 +408,9 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
     )
     for task_id in expected:
         prompt = pack.tasks_by_id[task_id]["prompt"].lower()
-        assert all(fragment.lower() not in prompt for fragment in source_protocol_fragments)
+        assert all(
+            fragment.lower() not in prompt for fragment in source_protocol_fragments
+        )
 
 
 def test_prompts_are_english_tool_neutral_and_have_no_attachment_paths() -> None:

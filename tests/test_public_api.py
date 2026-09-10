@@ -105,13 +105,14 @@ def test_load_track_rejects_unknown_track() -> None:
         vgb.load_track("missing")
 
 
-def test_track_evaluate_answers_uses_v2_result_and_scoring_contract() -> None:
+def test_track_evaluate_answers_uses_v3_result_and_scoring_contract() -> None:
     track = vgb.load_track("rdkit")
     report = track.evaluate_answers(track.sample_answers())
 
     assert report["summary"]["coverage"]["complete"] is True
-    assert all(row["schema_version"] == 2 for row in report["rows"])
+    assert all(row["schema_version"] == 3 for row in report["rows"])
     assert all(row["status"] == "scored" for row in report["rows"])
+    assert all(row["versions"]["package"] == "0.9.2" for row in report["rows"])
     assert all(
         item["scoring_version"] == "linear_goal_v2"
         for row in report["rows"]

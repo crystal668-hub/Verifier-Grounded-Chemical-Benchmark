@@ -32,6 +32,8 @@ task_type: property_calculation
 single full-score gold and symmetric linear decay on both sides. The configured absolute width is
 either the fixed absolute error from the reviewed standard or the reviewed percentage multiplied by
 `abs(gold)`. There is no full-score interval and reference values do not widen the scoreable range.
+Property-calculation task scores are the arithmetic mean of all requested field scores. Every basic
+task currently requests one field, so this aggregation rule does not change its numeric result.
 
 Tasks 044 and 046 use deterministic atom-identity scoring. Task 044 gives 1.0 only to `11 O`, 0.5
 to an oxygen symbol with a missing or incorrect index, and 0 otherwise. Task 046 gives 1.0 only to

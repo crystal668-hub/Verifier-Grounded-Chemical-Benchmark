@@ -5,5 +5,5 @@ from verifier_grounded_benchmark.evaluation.common.scoring.aggregation import (
 )
 
 
-def score_task(group_scores: list[float]) -> float:
-    return arithmetic_mean(group_scores)
+def score_task(field_scores: list[float]) -> float:
+    return arithmetic_mean(field_scores)

@@ -136,9 +136,6 @@ def test_easy_pack_has_frozen_ids_and_common_property_envelope() -> None:
         assert task["gold_provenance"]["source"]
         assert task["scoring"] == {
             "aggregation": "arithmetic_mean",
-            "comparison_groups": [
-                {"id": task["requested_properties"][0]["name"], "mode": "all"}
-            ],
             "version": "linear_goal_v2",
         }
         assert "parse_error" in set(task["failure_policy"].values())

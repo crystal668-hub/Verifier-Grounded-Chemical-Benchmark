@@ -6,7 +6,7 @@ from typing import Any
 
 from verifier_grounded_benchmark.evaluation.common.failures import FailureScope
 
-RESULT_SCHEMA_VERSION = "2"
+RESULT_SCHEMA_VERSION = "3"
 
 
 def scored_result(
@@ -23,7 +23,7 @@ def scored_result(
     if not isinstance(score, (int, float)) or isinstance(score, bool) or not 0.0 <= float(score) <= 1.0:
         raise ValueError("scored result requires a score in [0, 1]")
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "task_id": task_id,
         "status": "scored",
         "failure_scope": failure_scope,
@@ -45,7 +45,7 @@ def error_result(
     versions: dict[str, Any],
 ) -> dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "task_id": task_id,
         "status": "error",
         "failure_scope": failure_scope,

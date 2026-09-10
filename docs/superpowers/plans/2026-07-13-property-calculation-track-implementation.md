@@ -1,5 +1,7 @@
 # Property-Calculation Track Implementation Plan
 
+> Historical note: this plan describes the original implementation. Since v0.9.2, Property Calculation scores all requested fields with an equal-weight arithmetic mean and no longer uses comparison groups.
+
 > **For implementers:** Execute one task at a time, use red-green tests, run
 > the full suite before every commit, and preserve the existing
 > open-generation path byte-for-byte unless a step explicitly changes a shared

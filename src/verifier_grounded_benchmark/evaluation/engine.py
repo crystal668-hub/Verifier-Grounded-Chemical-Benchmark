@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from importlib.metadata import version as distribution_version
 from typing import Any
 
 from verifier_grounded_benchmark.evaluation.common.results import (
@@ -78,7 +79,9 @@ class EvaluationEngine:
             )
         elif isinstance(task, PropertyCalculationTaskSpec):
             try:
-                normalized, raw_answer, extracted = _normalize_property_answer(answer, task.raw)
+                normalized, raw_answer, extracted = _normalize_property_answer(
+                    answer, task.raw
+                )
             except ValueError as exc:
                 result = _property_parse_failure(task_id, str(exc), self._versions())
             else:
@@ -106,7 +109,7 @@ class EvaluationEngine:
 
     def _versions(self) -> dict[str, Any]:
         return {
-            "package": "0.7.0",
+            "package": distribution_version("verifier-grounded-benchmark"),
             "task_pack": self.task_pack.version,
             "scoring": self.task_pack.scoring_version,
             "verifiers": {},
@@ -122,7 +125,10 @@ def _normalize_property_answer(
     if not isinstance(raw_answer, str):
         raise ValueError("property answer must be structured or a raw response string")
     schema = task.get("answer_schema")
-    if schema.get("format") != "final_answer_line" or schema.get("value_type") != "json":
+    if (
+        schema.get("format") != "final_answer_line"
+        or schema.get("value_type") != "json"
+    ):
         raise ValueError("property answer schema must use a JSON final answer line")
     candidate, extracted = parse_final_answer_line(raw_answer, schema)
     payload = candidate["json"]
@@ -142,7 +148,6 @@ def _property_parse_failure(
             "domain_gate": 0.0,
             "identity_gate": 0.0,
             "constraint_scores": [],
-            "comparison_group_scores": [],
             "property_score": 0.0,
             "geometry_quality_score": 0.0,
             "score": 0.0,

@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: property_calculation_advanced
-  version: 0.9.1
+  version: 0.9.2
 tasks:
 - task_id: property_calculation_advanced_001_free_energy
   version: 1
@@ -217,7 +217,6 @@ tasks:
   - name: free_energy_difference
     value_type: number
     unit: kJ/mol
-    comparison_group: free_energy_difference
 - task_id: property_calculation_advanced_002_crystal_phase
   version: 1
   task_type: property_calculation
@@ -789,13 +788,10 @@ tasks:
   - name: potential_energy_difference
     value_type: number
     unit: eV
-    comparison_group: potential_energy_difference
   - name: ambient_pressure_phase
     value_type: string
-    comparison_group: pressure_phase_assignment
   - name: high_pressure_phase
     value_type: string
-    comparison_group: pressure_phase_assignment
 - task_id: property_calculation_advanced_003_hbond_count
   version: 1
   task_type: property_calculation
@@ -1055,7 +1051,6 @@ tasks:
   - name: hydrogen_bond_count
     value_type: number
     unit: count
-    comparison_group: hydrogen_bond_count
 - task_id: property_calculation_advanced_004_ir_top2_frequencies
   version: 1
   task_type: property_calculation
@@ -1081,11 +1076,9 @@ tasks:
   - name: frequency_1
     value_type: number
     unit: cm^-1
-    comparison_group: top_two_frequencies
   - name: frequency_2
     value_type: number
     unit: cm^-1
-    comparison_group: top_two_frequencies
 - task_id: property_calculation_advanced_005_crystal_density
   version: 1
   task_type: property_calculation
@@ -1112,7 +1105,6 @@ tasks:
   - name: crystal_density
     value_type: number
     unit: g/cm^3
-    comparison_group: crystal_density
 - task_id: property_calculation_advanced_006_cocrystal_ratio
   version: 1
   task_type: property_calculation
@@ -1137,7 +1129,6 @@ tasks:
   requested_properties:
   - name: cocrystal_molar_ratio
     value_type: string
-    comparison_group: cocrystal_ratio
 - task_id: property_calculation_advanced_007_polymorph_free_energy_crossover
   version: 1
   task_type: property_calculation
@@ -1472,11 +1463,9 @@ tasks:
   requested_properties:
   - name: lower_free_energy_at_0k
     value_type: string
-    comparison_group: polymorph_free_energy
   - name: crossover_temperature
     value_type: number
     unit: K
-    comparison_group: polymorph_free_energy
 - task_id: property_calculation_advanced_008_interaction_binding_energy
   version: 1
   task_type: property_calculation
@@ -1507,11 +1496,9 @@ tasks:
   - name: interaction_energy
     value_type: number
     unit: kcal/mol
-    comparison_group: interaction_binding_energy
   - name: binding_energy
     value_type: number
     unit: kcal/mol
-    comparison_group: interaction_binding_energy
 - task_id: property_calculation_advanced_009_homo_lumo_gap
   version: 1
   task_type: property_calculation
@@ -1542,7 +1529,6 @@ tasks:
   - name: homo_lumo_gap
     value_type: number
     unit: eV
-    comparison_group: homo_lumo_gap
 - task_id: property_calculation_advanced_010_hbond_distances
   version: 1
   task_type: property_calculation
@@ -1613,11 +1599,9 @@ tasks:
   - name: oh_bond_distance
     value_type: number
     unit: angstrom
-    comparison_group: hbond_distances
   - name: h_o_contact_distance
     value_type: number
     unit: angstrom
-    comparison_group: hbond_distances
 - task_id: property_calculation_advanced_011_accessible_pore_volume_ratio
   version: 1
   task_type: property_calculation
@@ -2033,7 +2017,6 @@ tasks:
   - name: accessible_to_inaccessible_volume_ratio
     value_type: number
     unit: ratio
-    comparison_group: pore_volume_ratio
 - task_id: property_calculation_advanced_012_carboxyl_hydrogen_distance
   version: 1
   task_type: property_calculation
@@ -2060,7 +2043,6 @@ tasks:
   - name: carboxyl_hydrogen_distance
     value_type: number
     unit: angstrom
-    comparison_group: carboxyl_hydrogen_distance
 - task_id: property_calculation_advanced_013_halogen_bond_energy
   version: 1
   task_type: property_calculation
@@ -2086,7 +2068,6 @@ tasks:
   - name: halogen_bond_interaction_energy
     value_type: number
     unit: kcal/mol
-    comparison_group: halogen_bond_energy
 - task_id: property_calculation_advanced_014_bay069_pka
   version: 1
   task_type: property_calculation
@@ -2120,7 +2101,6 @@ tasks:
   - name: pka
     value_type: number
     unit: pKa
-    comparison_group: pka
 - task_id: property_calculation_advanced_015_formaldehyde_socme
   version: 1
   task_type: property_calculation
@@ -2151,7 +2131,6 @@ tasks:
   - name: spin_orbit_coupling_matrix_element
     value_type: number
     unit: eV
-    comparison_group: spin_orbit_coupling_matrix_element
 - task_id: property_calculation_advanced_016_anthracene_isc_rate
   version: 1
   task_type: property_calculation
@@ -2182,7 +2161,6 @@ tasks:
   - name: intersystem_crossing_rate
     value_type: number
     unit: s^-1
-    comparison_group: intersystem_crossing_rate
 - task_id: property_calculation_advanced_017_biacetyl_phosphorescence_rate
   version: 1
   task_type: property_calculation
@@ -2213,7 +2191,6 @@ tasks:
   - name: phosphorescence_rate
     value_type: number
     unit: s^-1
-    comparison_group: phosphorescence_rate
 - task_id: property_calculation_advanced_018_anthracene_ht_contribution
   version: 1
   task_type: property_calculation
@@ -2245,7 +2222,6 @@ tasks:
   - name: herzberg_teller_contribution
     value_type: number
     unit: percent
-    comparison_group: herzberg_teller_contribution
 - task_id: property_calculation_advanced_019_acetophenone_isc_rate
   version: 1
   task_type: property_calculation
@@ -2277,7 +2253,6 @@ tasks:
   - name: intersystem_crossing_rate
     value_type: number
     unit: s^-1
-    comparison_group: intersystem_crossing_rate
 - task_id: property_calculation_advanced_020_azulene_internal_conversion_rate
   version: 1
   task_type: property_calculation
@@ -2308,4 +2283,3 @@ tasks:
   - name: internal_conversion_rate
     value_type: number
     unit: s^-1
-    comparison_group: internal_conversion_rate

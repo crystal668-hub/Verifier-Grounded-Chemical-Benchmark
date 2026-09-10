@@ -73,7 +73,7 @@ def task_inventory(version: str) -> dict[str, Any]:
     return {
         "schema_version": 2,
         "package_version": version,
-        "result_schema_version": "2",
+        "result_schema_version": "3",
         "scoring_version": scoring_versions.pop(),
         "tracks": tracks,
         "scoring_profiles": scoring_profiles,
@@ -196,7 +196,7 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
         "schema_version": 1,
         "package": PACKAGE_NAME,
         "version": version,
-        "result_schema_version": "2",
+        "result_schema_version": "3",
         "scoring_version": inventory["scoring_version"],
         "tag": f"v{version}",
         "canonical_source": {

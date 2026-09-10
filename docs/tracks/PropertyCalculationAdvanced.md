@@ -1,6 +1,6 @@
 # Property Calculation Advanced Track
 
-更新日期：2026-08-24
+更新日期：2026-09-10
 
 ## 1. 定位
 
@@ -58,12 +58,16 @@ Task 8 的规范化 JSONL：
 
 Task 7 的公开 gold 为 `0.258031679 kJ/mol`，绝对容差为 `0.001 kJ/mol`。版本 1 只接受精确单位字符串 `kJ/mol`，不进行 meV 或其他单位换算。
 
-Task 8 有两个等权比较组：
+Task 8 的三个字段等权评分：
 
-1. `potential_energy_difference`：gold `0.079 eV`，绝对容差 `0.001 eV`。
-2. `pressure_phase_assignment`：常压相必须为 `alpha` 且高压相必须为 `beta`，两项全对时该组才得 1。
+1. `potential_energy_difference`：连续数值分。
+2. `ambient_pressure_phase`：精确字符串分。
+3. `high_pressure_phase`：精确字符串分。
 
-最终分数是比较组的算术平均，因此 Task 8 只可能得到 `0`、`0.5` 或 `1`。
+所有 Property Calculation 题均对请求字段分数取等权算术平均。一个字段错误不会抹去其他字段已经获得的分数。
+
+`property_calculation_advanced_004_ir_top2_frequencies` 使用
+`answer_matching: unordered_numeric`。两个提交频率与两个 gold 频率采用使字段平均分最高的一一匹配，输出顺序不影响分数；匹配后的两个字段仍各自等权计分。
 
 格式正确但数值、单位或相位错误的答案返回 `status: ok` 和相应低分；它不是 evaluator 故障。
 
@@ -72,8 +76,9 @@ Task 8 有两个等权比较组：
 结果复用其他 tracks 的外层字段：
 
 ```yaml
+schema_version: 3
 task_id: string
-status: ok | error
+status: scored | error
 canonical_smiles: null
 properties:
   submitted_answers: mapping
@@ -89,7 +94,7 @@ message: string | null
 versions: mapping
 ```
 
-`constraint_scores` 在这里记录比较组结果，不代表运行了 verifier script。
+`constraint_scores` 在这里逐字段记录评分结果，不代表运行了 verifier script。
 
 ## 6. Gold Policy
 

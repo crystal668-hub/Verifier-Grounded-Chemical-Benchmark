@@ -20,7 +20,7 @@
 - 统一 `target`、`window`、`maximize`、`minimize` 和数值 Property Calculation 的评分内核；
 - 明确窗口内、超过单向优化目标后以及 hard gate 通过后的满分语义；
 - 明确 Property Calculation 在 gold 附近连续衰减，而不是 tolerance 内二元通过；
-- 明确多约束、quality gate、stability gate 和 Property Calculation comparison group 的聚合方式；
+- 明确多约束、quality gate、stability gate 和 Property Calculation 字段的聚合方式；
 - 为当前四个 task pack 中的 33 道题给出逐题迁移规则。
 - 定义 `evaluation`、`task`、`scripts` 和 `releases` 四个责任域及其依赖边界；
 - 将 open-generation verifier 从独立顶层包收归 `evaluation/open_generation`；
@@ -311,26 +311,26 @@ task_score = property_score * quality_gate_score
 
 本规格不引入约束权重。未来如需加权，必须升级 scoring version 并在 task metadata 中显式公布。
 
-### 6.2 Property Calculation comparison group
+### 6.2 Property Calculation 字段聚合
 
 先为每个请求字段计算 field score：
 
 - 数值字段使用 `score_numeric_gold`；
 - 字符串字段使用 `score_exact_string`。
 
-当前 comparison group 均为 `mode: all`。为了保留“组内全部正确”的语义并允许数值字段连续得分，group score 定义为组内最小值：
+所有请求字段等权参与任务分数：
 
 ```text
-group_score = min(field_scores_in_group)
+task_score = arithmetic_mean(field_scores)
 ```
 
-任务分数继续使用 comparison group 的等权算术平均：
+默认按 property name 将提交字段与 gold 对应。对于不要求顺序的同类数值字段，任务可以声明 `answer_matching: unordered_numeric`；评分器选择字段平均分最高的一一匹配，再按相同字段分计算任务分：
 
 ```text
-task_score = arithmetic_mean(group_scores)
+task_score = max_over_assignments(arithmetic_mean(matched_field_scores))
 ```
 
-因此一个组中的错误字符串会使该组为 0，但不会自动抹去其他独立 comparison group 的得分。
+缺失字段记 0 分，其他字段仍按各自结果得分。Property Calculation 不支持字段权重或全对门槛。
 
 ### 6.3 Benchmark 总分
 
@@ -700,7 +700,7 @@ src/
         scoring/
           numeric_gold.py
           exact_string.py
-          comparison_group.py
+          answer_matching.py
           task_score.py
 
     task/
@@ -960,8 +960,9 @@ Unknown property 可以忽略并记录 diagnostic，但 duplicate requested prop
 | --- | --- |
 | `numeric_gold` | `L=U=gold`，左右 tolerance 为 decay width |
 | `exact_string` | normalized exact match 为 1，否则为 0 |
-| `comparison_group/all` | group field score 的最小值 |
-| `task_score` | group score 的算术平均 |
+| `answer_matching/by_property` | 按 property name 对应提交值与 gold |
+| `answer_matching/unordered_numeric` | 选择字段平均分最高的一一匹配 |
+| `task_score` | 所有字段分数的算术平均 |
 
 Numeric Gold 必须调用 common linear kernel。Property Calculation 不得维护第二份三角形公式。
 
@@ -1409,7 +1410,7 @@ Task packs 作为 `verifier_grounded_benchmark.task.packs` package data 发布�
 
 - 拆分 parsing 和 scoring；
 - 接入 Numeric Gold 线性评分；
-- comparison group 改为 minimum；
+- Property Calculation 字段直接使用算术平均；
 - 引入 result schema v2 的 failure scope；
 - 更新 task pack scoring version。
 

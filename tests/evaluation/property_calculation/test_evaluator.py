@@ -5,8 +5,8 @@ import pytest
 from verifier_grounded_benchmark.evaluation.property_calculation import (
     PropertyCalculationEvaluator,
 )
-from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
-    score_unordered_numeric_group,
+from verifier_grounded_benchmark.evaluation.property_calculation.scoring.answer_matching import (
+    match_unordered_numeric_answers,
 )
 from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
@@ -50,7 +50,9 @@ def _evaluate(task_id: str, answer: dict):
         (11.0, 0.0),
     ],
 )
-def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: float) -> None:
+def test_numeric_gold_uses_continuous_linear_decay(
+    answer: float, expected: float
+) -> None:
     result = _evaluate(
         "property_calculation_advanced_001_free_energy",
         {"answer": answer, "unit": "kJ/mol"},
@@ -60,21 +62,26 @@ def test_numeric_gold_uses_continuous_linear_decay(answer: float, expected: floa
     assert result["scores"]["score"] == pytest.approx(expected, abs=1e-12)
 
 
-def test_comparison_group_uses_minimum_and_task_uses_arithmetic_mean() -> None:
+def test_task_uses_arithmetic_mean_across_all_fields() -> None:
     result = _evaluate(
         "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
-                {"property": "potential_energy_difference", "value": 0.579, "unit": "eV"},
+                {
+                    "property": "potential_energy_difference",
+                    "value": 0.579,
+                    "unit": "eV",
+                },
                 {"property": "ambient_pressure_phase", "value": "wrong"},
                 {"property": "high_pressure_phase", "value": "beta"},
             ]
         },
     )
 
-    groups = result["scores"]["comparison_group_scores"]
-    assert [group["score"] for group in groups] == pytest.approx([0.5, 0.0])
-    assert result["scores"]["score"] == pytest.approx(0.25)
+    assert [
+        item["score"] for item in result["scores"]["constraint_scores"]
+    ] == pytest.approx([0.5, 0.0, 1.0])
+    assert result["scores"]["score"] == pytest.approx(0.5)
 
 
 def test_exact_string_is_case_sensitive() -> None:
@@ -82,7 +89,11 @@ def test_exact_string_is_case_sensitive() -> None:
         "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
-                {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
+                {
+                    "property": "potential_energy_difference",
+                    "value": 0.079,
+                    "unit": "eV",
+                },
                 {"property": "ambient_pressure_phase", "value": "Alpha"},
                 {"property": "high_pressure_phase", "value": "beta"},
             ]
@@ -90,15 +101,18 @@ def test_exact_string_is_case_sensitive() -> None:
     )
 
     ambient = next(
-        item for item in result["scores"]["constraint_scores"]
+        item
+        for item in result["scores"]["constraint_scores"]
         if item["property"] == "ambient_pressure_phase"
     )
     assert ambient["score"] == 0.0
-    assert result["scores"]["score"] == 0.5
+    assert result["scores"]["score"] == pytest.approx(2.0 / 3.0)
 
 
 def test_missing_requested_field_scores_zero_without_infrastructure_error() -> None:
-    result = _evaluate("property_calculation_advanced_002_crystal_phase", {"answers": []})
+    result = _evaluate(
+        "property_calculation_advanced_002_crystal_phase", {"answers": []}
+    )
 
     assert result["status"] == "scored"
     assert result["failure_scope"] is None
@@ -119,7 +133,11 @@ def test_unknown_property_is_ignored_and_recorded() -> None:
         "property_calculation_advanced_002_crystal_phase",
         {
             "answers": [
-                {"property": "potential_energy_difference", "value": 0.079, "unit": "eV"},
+                {
+                    "property": "potential_energy_difference",
+                    "value": 0.079,
+                    "unit": "eV",
+                },
                 {"property": "ambient_pressure_phase", "value": "alpha"},
                 {"property": "high_pressure_phase", "value": "beta"},
                 {"property": "not_requested", "value": 1},
@@ -128,7 +146,9 @@ def test_unknown_property_is_ignored_and_recorded() -> None:
     )
 
     assert result["scores"]["score"] == 1.0
-    assert result["properties"]["diagnostics"]["unknown_properties"] == ["not_requested"]
+    assert result["properties"]["diagnostics"]["unknown_properties"] == [
+        "not_requested"
+    ]
 
 
 @pytest.mark.parametrize(
@@ -158,14 +178,15 @@ def test_known_task_parse_failure_is_submission_zero(
     assert result["scores"]["score"] == 0.0
 
 
-def test_result_has_v2_schema_and_constraint_provenance() -> None:
+def test_result_has_v3_schema_and_constraint_provenance() -> None:
     result = _evaluate(
         "property_calculation_advanced_001_free_energy",
         {"answer": 0.258031679, "unit": "kJ/mol"},
     )
 
-    assert result["schema_version"] == 2
-    assert result["versions"] == {**VERSIONS, "result_schema": "2"}
+    assert result["schema_version"] == 3
+    assert result["versions"] == {**VERSIONS, "result_schema": "3"}
+    assert "comparison_group_scores" not in result["scores"]
     assert result["scores"]["constraint_scores"] == [
         {
             "property": "free_energy_difference",
@@ -173,13 +194,13 @@ def test_result_has_v2_schema_and_constraint_provenance() -> None:
             "role": "main",
             "value": 0.258031679,
             "score": 1.0,
-                "scoring_profile": "property_calculation_advanced_free_energy_difference_numeric_gold_v2",
+            "scoring_profile": "property_calculation_advanced_free_energy_difference_numeric_gold_v2",
             "scoring_version": "linear_goal_v2",
         }
     ]
 
 
-def test_unordered_numeric_group_uses_best_assignment() -> None:
+def test_unordered_numeric_matching_uses_best_assignment() -> None:
     members = ["frequency_1", "frequency_2", "frequency_3"]
     submitted = {
         "frequency_1": {"value": 1685.5562, "unit": "cm^-1"},
@@ -188,9 +209,7 @@ def test_unordered_numeric_group_uses_best_assignment() -> None:
     }
     gold = {
         name: {"value": value, "unit": "cm^-1", "scoring_profile": name}
-        for name, value in zip(
-            members, [1208.1036, 1674.0688, 1685.5562], strict=True
-        )
+        for name, value in zip(members, [1208.1036, 1674.0688, 1685.5562], strict=True)
     }
     profiles = {
         name: {
@@ -203,7 +222,13 @@ def test_unordered_numeric_group_uses_best_assignment() -> None:
         for name in members
     }
 
-    assert score_unordered_numeric_group(submitted, members, gold, profiles) == pytest.approx(1.0)
+    matched = match_unordered_numeric_answers(submitted, members, gold, profiles)
+
+    assert matched == {
+        "frequency_1": submitted["frequency_2"],
+        "frequency_2": submitted["frequency_3"],
+        "frequency_3": submitted["frequency_1"],
+    }
 
 
 def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
@@ -218,18 +243,41 @@ def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
     )
 
     assert result["scores"]["score"] == pytest.approx(1.0)
-    assert result["scores"]["comparison_group_scores"][0]["members"] == [
-        "frequency_1",
-        "frequency_2",
-    ]
+    assert [
+        item["value"] for item in result["scores"]["constraint_scores"]
+    ] == pytest.approx([1208.10, 1685.56])
+    assert [
+        item["score"] for item in result["scores"]["constraint_scores"]
+    ] == pytest.approx([1.0, 1.0])
+
+
+def test_ir_top_two_frequencies_average_partial_credit_after_matching() -> None:
+    result = _evaluate(
+        "property_calculation_advanced_004_ir_top2_frequencies",
+        {
+            "answers": [
+                {"property": "frequency_1", "value": 1785.56, "unit": "cm^-1"},
+                {"property": "frequency_2", "value": 1208.10, "unit": "cm^-1"},
+            ]
+        },
+    )
+
+    assert [
+        item["score"] for item in result["scores"]["constraint_scores"]
+    ] == pytest.approx([1.0, 0.0])
+    assert result["scores"]["score"] == pytest.approx(0.5)
 
 
 @pytest.mark.parametrize(
     ("answer", "expected"),
     [("1:1", 1.0), ("1:2", 0.5), ("2:1", 0.5), ("1:3", 0.0)],
 )
-def test_cocrystal_ratio_has_explicit_partial_credit(answer: str, expected: float) -> None:
-    result = _evaluate("property_calculation_advanced_006_cocrystal_ratio", {"answer": answer})
+def test_cocrystal_ratio_has_explicit_partial_credit(
+    answer: str, expected: float
+) -> None:
+    result = _evaluate(
+        "property_calculation_advanced_006_cocrystal_ratio", {"answer": answer}
+    )
 
     assert result["scores"]["score"] == pytest.approx(expected)
 
@@ -280,7 +328,9 @@ def test_asymmetric_log10_scoring_uses_separate_side_widths(
     assert result["scores"]["score"] == pytest.approx(expected)
 
 
-@pytest.mark.parametrize(("answer", "expected"), [(95.0, 0.5), (100.0, 1.0), (100.5, 0.5)])
+@pytest.mark.parametrize(
+    ("answer", "expected"), [(95.0, 0.5), (100.0, 1.0), (100.5, 0.5)]
+)
 def test_asymmetric_linear_scoring_uses_separate_side_widths(
     answer: float, expected: float
 ) -> None:

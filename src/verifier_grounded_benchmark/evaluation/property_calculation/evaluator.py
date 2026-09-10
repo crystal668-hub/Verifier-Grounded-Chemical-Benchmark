@@ -13,12 +13,11 @@ from verifier_grounded_benchmark.evaluation.property_calculation.parsing.dispatc
 from verifier_grounded_benchmark.evaluation.property_calculation.parsing.multi_property import (
     PropertyAnswerParseError,
 )
+from verifier_grounded_benchmark.evaluation.property_calculation.scoring.answer_matching import (
+    match_unordered_numeric_answers,
+)
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.atom_identity import (
     score_atom_identity,
-)
-from verifier_grounded_benchmark.evaluation.property_calculation.scoring.comparison_group import (
-    score_comparison_group,
-    score_unordered_numeric_group,
 )
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.exact_string import (
     score_exact_string,
@@ -49,6 +48,18 @@ class PropertyCalculationEvaluator:
         except PropertyAnswerParseError as exc:
             return _submission_failure(task.task_id, str(exc), versions)
 
+        scoring = raw["scoring"]
+        scoring_submitted = (
+            match_unordered_numeric_answers(
+                submitted,
+                list(requested),
+                gold,
+                scoring_profiles,
+            )
+            if scoring.get("answer_matching") == "unordered_numeric"
+            else submitted
+        )
+
         field_scores: dict[str, float] = {}
         constraint_scores: list[dict[str, Any]] = []
         for name, definition in requested.items():
@@ -56,46 +67,36 @@ class PropertyCalculationEvaluator:
             profile_id = gold_definition["scoring_profile"]
             profile = scoring_profiles[profile_id]
             if definition["value_type"] == "number":
-                field_score = score_numeric_gold(submitted.get(name), gold_definition, profile)
+                field_score = score_numeric_gold(
+                    scoring_submitted.get(name), gold_definition, profile
+                )
             elif profile["type"] == "exact_string":
-                field_score = score_exact_string(submitted.get(name), gold_definition, profile)
+                field_score = score_exact_string(
+                    scoring_submitted.get(name), gold_definition, profile
+                )
             else:
-                field_score = score_atom_identity(submitted.get(name), gold_definition, profile)
+                field_score = score_atom_identity(
+                    scoring_submitted.get(name), gold_definition, profile
+                )
             field_scores[name] = field_score
+            scored_submission = scoring_submitted.get(name)
             constraint_scores.append(
                 {
                     "property": name,
                     "type": profile["type"],
                     "role": "main",
-                    "value": None if submitted.get(name) is None else submitted[name].get("value"),
+                    "value": (
+                        None
+                        if scored_submission is None
+                        else scored_submission.get("value")
+                    ),
                     "score": field_score,
                     "scoring_profile": profile_id,
                     "scoring_version": versions["scoring"],
                 }
             )
 
-        group_scores: list[dict[str, Any]] = []
-        for group in raw["scoring"]["comparison_groups"]:
-            group_id = group["id"]
-            members = [
-                name for name, definition in requested.items()
-                if definition["comparison_group"] == group_id
-            ]
-            mode = group["mode"]
-            group_score = (
-                score_unordered_numeric_group(submitted, members, gold, scoring_profiles)
-                if mode == "unordered_numeric"
-                else score_comparison_group([field_scores[name] for name in members])
-            )
-            group_scores.append(
-                {
-                    "group": group_id,
-                    "mode": mode,
-                    "members": members,
-                    "score": group_score,
-                }
-            )
-        task_score = score_task([item["score"] for item in group_scores])
+        task_score = score_task(list(field_scores.values()))
         return scored_result(
             task_id=task.task_id,
             properties={
@@ -107,7 +108,6 @@ class PropertyCalculationEvaluator:
                 "domain_gate": 1.0,
                 "identity_gate": 1.0,
                 "constraint_scores": constraint_scores,
-                "comparison_group_scores": group_scores,
                 "property_score": task_score,
                 "geometry_quality_score": 1.0,
                 "score": task_score,
@@ -127,7 +127,6 @@ def _submission_failure(
             "domain_gate": 0.0,
             "identity_gate": 0.0,
             "constraint_scores": [],
-            "comparison_group_scores": [],
             "property_score": 0.0,
             "geometry_quality_score": 0.0,
             "score": 0.0,

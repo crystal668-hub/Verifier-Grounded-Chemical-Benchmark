@@ -1,5 +1,7 @@
 # Expert Sample Task Integration Design
 
+> Historical note: this design records the original task contract. Since v0.9.2, Property Calculation scores all requested fields with an equal-weight arithmetic mean and no longer uses comparison groups.
+
 **Date:** 2026-07-13
 
 ## Purpose
