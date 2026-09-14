@@ -22,6 +22,8 @@ unset REVIEW_ADMIN_PASSWORD REVIEW_SECRET_KEY
 附件正文只在右侧附件栏展示；中栏只显示附件元信息和跳转入口。完整部署、恢复和故障处理见
 [`../docs/design/2026-09-14-local-sealtun-deployment-plan.md`](../docs/design/2026-09-14-local-sealtun-deployment-plan.md)。
 
+登录页支持自助注册。注册账号默认创建为启用的 `collaborator`，注册成功后会直接建立登录会话；只有已有开发者才能通过用户管理接口创建开发者账号。
+
 在宿主机创建协作者账号时，使用环境变量传递初始密码，避免进入 shell history：
 
 ```bash
