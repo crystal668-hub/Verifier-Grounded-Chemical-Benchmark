@@ -162,7 +162,7 @@ services:
 ```yaml
 version: v1
 tunnels:
-  - name: vgb-review
+  - name: realchem-review-panel
     localPort: 8000
     protocol: https
     basicAuth:
@@ -255,13 +255,13 @@ unset SEALTUN_BASIC_AUTH_PASSWORD
 
 ```bash
 sealtun list --check
-sealtun inspect vgb-review --remote
-sealtun logs vgb-review --tail 100
+sealtun inspect realchem-review-panel --remote
+sealtun logs realchem-review-panel --tail 100
 ```
 
 记录以下非秘密信息：
 
-- tunnel ID：`vgb-review`；
+- tunnel ID：`realchem-review-panel`；
 - 生成的 HTTPS 地址；
 - Sealtun region；
 - 应用镜像版本；
@@ -308,7 +308,7 @@ Compose 的 `restart: unless-stopped` 负责恢复应用容器。Sealtun daemon 
 隧道；如果 session 未恢复，执行：
 
 ```bash
-sealtun resume vgb-review
+sealtun resume realchem-review-panel
 ```
 
 不得通过 macOS 自动登录换取无人值守恢复，因为它会降低本机账号安全。计划内系统重启应安排
@@ -320,7 +320,7 @@ sealtun resume vgb-review
 docker compose -f review_system/compose.production.yml ps
 docker compose -f review_system/compose.production.yml logs --tail 100 review-system
 sealtun list --check
-sealtun metrics vgb-review
+sealtun metrics realchem-review-panel
 ```
 
 配置一个位于本机网络之外的 HTTPS 可用性监控，每 5 分钟访问一次入口，连续 3 次失败后通知
@@ -345,14 +345,14 @@ sealtun metrics vgb-review
 
 ### 7.2 恢复流程
 
-1. 暂停公网入口：`sealtun stop vgb-review`。
+1. 暂停公网入口：`sealtun stop realchem-review-panel`。
 2. 停止应用容器。
 3. 将当前损坏数据目录复制到隔离位置用于调查，不直接覆盖。
 4. 校验待恢复备份的摘要并解密。
 5. 恢复数据库和附件到新的空目录。
 6. 启动容器并执行 schema 迁移和完整性检查。
 7. 验证登录、题库、批注、草稿和附件。
-8. 恢复隧道：`sealtun start vgb-review`。
+8. 恢复隧道：`sealtun start realchem-review-panel`。
 9. 从外部网络执行一次完整验收。
 
 每季度至少在临时目录完成一次恢复演练。只有实际恢复成功的备份才视为有效备份。
@@ -394,12 +394,12 @@ docker compose -f review_system/compose.production.yml logs --tail 200 review-sy
 ```bash
 sealtun status --json
 sealtun list --check
-sealtun inspect vgb-review --remote
-sealtun logs vgb-review --tail 200
+sealtun inspect realchem-review-panel --remote
+sealtun logs realchem-review-panel --tail 200
 sealtun doctor --json
 ```
 
-确认应用正常后，可执行 `sealtun resume vgb-review`。不要创建同名之外的临时隧道绕过既有
+确认应用正常后，可执行 `sealtun resume realchem-review-panel`。不要创建同名之外的临时隧道绕过既有
 入口策略，以免产生未受管理的公网地址。
 
 ### 本地断网或断电
