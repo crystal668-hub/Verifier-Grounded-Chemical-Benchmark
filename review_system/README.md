@@ -8,12 +8,14 @@
 ```bash
 cd review_system
 ./scripts/generate-secrets.sh
+set -a && . ./.env.production && set +a
 docker compose -f compose.production.yml up --build -d
 set -a && . ./.env.sealtun && set +a
 sealtun apply -f sealtun.yaml --dry-run
 sealtun diff -f sealtun.yaml
 sealtun apply -f sealtun.yaml
 unset SEALTUN_BASIC_AUTH_PASSWORD
+unset REVIEW_ADMIN_PASSWORD REVIEW_SECRET_KEY
 ```
 
 生产容器只绑定 `127.0.0.1:8000`，公网访问只允许经过 Sealtun HTTPS 和 Basic Auth。

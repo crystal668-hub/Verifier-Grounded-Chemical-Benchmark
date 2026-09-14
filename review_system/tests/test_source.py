@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).parents[1] / "backend"))
 sys.path.insert(0, str(Path(__file__).parents[2] / "src"))
 
-from review_system.source import load_catalog, schema_view, split_attachments
+from review_system.source import load_catalog, schema_view, source_revision, split_attachments
 
 def test_catalog_contains_formal_tracks_and_hides_long_inputs():
     catalog = load_catalog()
@@ -23,6 +23,11 @@ def test_attachment_split_replaces_body_with_reference():
     view, attachments = split_attachments({"task_id":"demo", "prompt":"Input:\n```xyz\n" + "C 0 0 0\n" * 30 + "```"})
     assert "[附件：demo-1.xyz]" in view["prompt"]
     assert attachments[0]["content"].startswith("C 0 0 0")
+
+
+def test_source_revision_prefers_deployment_commit(monkeypatch):
+    monkeypatch.setenv("REVIEW_SOURCE_COMMIT", "abc1234")
+    assert source_revision() == "abc1234"
 
 
 def test_schema_view_uses_attachment_reference_from_sanitized_task():

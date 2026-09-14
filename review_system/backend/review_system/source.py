@@ -1,4 +1,4 @@
-import hashlib, json, re, subprocess
+import hashlib, json, os, re, subprocess
 from collections.abc import Mapping
 from copy import deepcopy
 from pathlib import Path
@@ -12,6 +12,9 @@ from .config import SOURCE_ROOT
 CODE_FENCE = re.compile(r"```(cif|xyz|pdb|sdf|mol|json)\s*\n([\s\S]*?)```", re.I)
 
 def source_revision() -> str:
+    configured = os.getenv("REVIEW_SOURCE_COMMIT")
+    if configured:
+        return configured
     try:
         return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=SOURCE_ROOT.parents[1], text=True).strip()
     except Exception:

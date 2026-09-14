@@ -4,6 +4,8 @@ services:
     build:
       context: ..
       dockerfile: review_system/Dockerfile
+      args:
+        REVIEW_SOURCE_COMMIT: ${REVIEW_IMAGE_TAG:-working-tree}
     restart: unless-stopped
     env_file:
       - .env.production
