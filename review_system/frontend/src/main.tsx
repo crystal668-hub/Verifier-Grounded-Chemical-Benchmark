@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, ChevronDown, FileText, MessageCircle, PanelRight, RefreshCw, Search, Send, ShieldCheck, X } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, FileText, MessageCircle, PanelRight, RefreshCw, Search, Send, ShieldCheck, Trash2, X } from 'lucide-react';
 import './styles.css';
 
 type Track = { name: string; display_name: string; task_count: number };
@@ -127,6 +127,8 @@ function App() {
   const [comments, setComments] = useState<any[]>([]);
   const [comment, setComment] = useState('');
   const [commentSending, setCommentSending] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
+  const [deletingComment, setDeletingComment] = useState<number | null>(null);
   const [query, setQuery] = useState('');
   const [activeTab, setActiveTab] = useState<Tab>('content');
   const [refreshing, setRefreshing] = useState(false);
@@ -224,6 +226,21 @@ function App() {
     }
   };
 
+  const deleteComment = async (commentId: number) => {
+    if (deletingComment !== null) return;
+    setDeletingComment(commentId);
+    try {
+      await api(`/api/v1/comments/${commentId}`, { method: 'DELETE', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' } });
+      setComments(current => current.filter(item => item.id !== commentId));
+      setConfirmingDelete(null);
+      notify('评论已删除');
+    } catch (requestError) {
+      notify(apiErrorMessage(requestError, '评论删除失败，请重试'));
+    } finally {
+      setDeletingComment(null);
+    }
+  };
+
   const beginResize = (target: ResizeTarget, event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
     resizeState.current = { target, startX: event.clientX, startWidth: target === 'sidebar' ? sidebarWidth : attachmentWidth };
@@ -297,7 +314,7 @@ function App() {
             {activeTab === 'content' && <div className="prompt-card"><div className="section-label">题目说明</div><p className="prompt">{promptParts.map((part, index) => <React.Fragment key={index}>{part}{index < promptParts.length - 1 && <button className="attachment-ref" onClick={() => openAttachment(detail.attachments?.[index])}><FileText size={14} />{attachmentLoading === detail.attachments?.[index]?.name ? '加载中…' : '在右栏查看附件'}</button>}</React.Fragment>)}</p></div>}
             {activeTab === 'scoring' && <div className="scoring-panel"><div className="scoring-overview"><div><p className="eyebrow">SCORING POLICY</p><h2>评分细则</h2></div><div className="scoring-chips"><span>{scoring?.field_count || 0} 个评分字段</span><span>{scoring?.aggregation || '独立评分'}</span></div></div>{scoring?.is_multi_field && <div className="multi-field-note"><strong>多字段题目</strong><span>每个字段分别按下列规则评分，再按聚合方式合并。</span></div>}<div className="scoring-rules">{scoring?.rules?.map((rule: any) => <section className="scoring-rule" key={rule.property}><div className="scoring-rule-head"><strong>{rule.property}</strong><div><span className="rule-role">{rule.role || 'main'}</span><span className="rule-type">{typeLabel(rule.type || rule.profile?.type)}</span></div></div><div className="scoring-rule-grid"><div><small>标准答案</small><b>{answerLabel(rule)}</b></div><div><small>满分条件</small><b>{fullScoreLabel(rule)}</b></div><div><small>得分区间（得分 &gt; 0）</small><b>{scoreRangeLabel(rule)}</b></div></div><div className="rule-extra"><small>单位</small><span>{rule.unit || rule.profile?.unit || '—'}</span></div>{rule.scoring_profile && <div className="rule-extra"><small>评分配置</small><span>{rule.scoring_profile}</span></div>}</section>)}</div>{!scoring?.rules?.length && <div className="scoring-empty">本题没有可展示的评分规则。</div>}{scoring?.failure_policy && Object.keys(scoring.failure_policy).length > 0 && <details className="failure-policy"><summary>失败处理规则</summary><div>{Object.entries(scoring.failure_policy).map(([key, value]) => <span key={key}><b>{key}</b>{displayValue(value)}</span>)}</div></details>}</div>}
             {activeTab === 'schema' && <div className="meta-card"><div className="section-label">Schema 元数据</div><pre>{JSON.stringify(schema, null, 2)}</pre></div>}
-            {activeTab === 'discussion' && <div className="discussion"><div className="section-label"><MessageCircle size={15} />题目讨论</div>{comments.map(item => <div className="comment" key={item.id}><b>{item.author}</b><span>{item.body}</span></div>)}<div className="comment-box"><input value={comment} onChange={event => setComment(event.target.value)} placeholder="写下审核备注…" onKeyDown={event => { if (event.key === 'Enter') void sendComment(); }} /><button onClick={() => void sendComment()} disabled={commentSending || !comment.trim()} aria-label="发布批注"><Send size={15} /></button></div></div>}
+            {activeTab === 'discussion' && <div className="discussion"><div className="section-label"><MessageCircle size={15} />题目讨论</div>{comments.map(item => <div className="comment" key={item.id}><b>{item.author}</b><span>{item.body}</span>{item.can_delete && (confirmingDelete === item.id ? <div className="comment-confirm"><button className="confirm-delete" onClick={() => void deleteComment(item.id)} disabled={deletingComment === item.id} title="确认删除"><Check size={14} />{deletingComment === item.id ? '删除中' : '确认'}</button><button onClick={() => setConfirmingDelete(null)} disabled={deletingComment === item.id} aria-label="取消删除" title="取消"><X size={14} /></button></div> : <button className="comment-delete" onClick={() => setConfirmingDelete(item.id)} aria-label="删除评论" title="删除评论"><Trash2 size={14} /></button>)}</div>)}<div className="comment-box"><input value={comment} onChange={event => setComment(event.target.value)} placeholder="写下审核备注…" onKeyDown={event => { if (event.key === 'Enter') void sendComment(); }} /><button onClick={() => void sendComment()} disabled={commentSending || !comment.trim()} aria-label="发布批注"><Send size={15} /></button></div></div>}
           </article>
         </> : <div className="empty"><ShieldCheck size={30} /><h2>选择一道题目开始审核</h2></div>}
       </section>

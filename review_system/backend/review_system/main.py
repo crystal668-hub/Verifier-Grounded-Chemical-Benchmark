@@ -218,11 +218,20 @@ def task_attachment(track: str, task_id: str, name: str, database: DBSession=Dep
 
 @app.get("/api/v1/tasks/{task_id}/comments")
 def comments(task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)):
-    rows=database.scalars(select(Comment).where(Comment.target_id==task_id).order_by(Comment.created_at)).all(); return [{"id":x.id,"body":x.body,"author":x.author.username,"resolved":x.resolved,"parent_id":x.parent_id,"created_at":x.created_at} for x in rows]
+    rows=database.scalars(select(Comment).where(Comment.target_type=="task",Comment.target_id==task_id).order_by(Comment.created_at)).all(); return [{"id":x.id,"body":x.body,"author":x.author.username,"resolved":x.resolved,"parent_id":x.parent_id,"created_at":x.created_at,"can_delete":x.author_id==user.id or user.role=="developer"} for x in rows]
 
 @app.post("/api/v1/tasks/{task_id}/comments")
 def add_comment(task_id: str, payload: CommentIn, database: DBSession=Depends(db), user: User=Depends(auth)):
     row=Comment(target_type="task",target_id=task_id,author_id=user.id,body=payload.body,parent_id=payload.parent_id); database.add(row); database.commit(); database.refresh(row); return {"id":row.id,"body":row.body}
+
+@app.delete("/api/v1/comments/{comment_id}")
+def delete_comment(comment_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
+    row=database.get(Comment,comment_id)
+    if not row: raise HTTPException(404,"评论不存在")
+    if row.author_id!=user.id and user.role!="developer": raise HTTPException(403,"只能删除自己的评论")
+    for child in database.scalars(select(Comment).where(Comment.parent_id==row.id)).all():
+        child.parent_id=None
+    database.delete(row); database.commit(); return {"ok":True,"id":comment_id}
 
 @app.post("/api/v1/comments/{comment_id}/resolve")
 def resolve_comment(comment_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
