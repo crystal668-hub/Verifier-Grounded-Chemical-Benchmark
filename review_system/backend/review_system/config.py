@@ -12,6 +12,7 @@ COOKIE_SECURE = os.getenv("REVIEW_COOKIE_SECURE", "false").lower() in {"1", "tru
 AUTO_CREATE_DB = os.getenv("REVIEW_AUTO_CREATE_DB", "true").lower() in {"1", "true", "yes"}
 LOGIN_FAILURE_LIMIT = int(os.getenv("REVIEW_LOGIN_FAILURE_LIMIT", "5"))
 LOGIN_WINDOW_MINUTES = int(os.getenv("REVIEW_LOGIN_WINDOW_MINUTES", "15"))
+PASSWORD_MIN_LENGTH = 6
 ALLOWED_ORIGINS = [item.strip() for item in os.getenv("REVIEW_ALLOWED_ORIGINS", "http://localhost:5173").split(",") if item.strip()]
 SOURCE_ROOT = Path(os.getenv("REVIEW_SOURCE_ROOT", ROOT / "src" / "verifier_grounded_benchmark"))
 MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024
@@ -19,12 +20,12 @@ MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024
 
 def validate_production_config(*, database_is_empty: bool) -> None:
     if ENVIRONMENT != "production":
-        if database_is_empty and not ADMIN_PASSWORD:
-            raise RuntimeError("REVIEW_ADMIN_PASSWORD is required to initialize the database")
+        if database_is_empty and (not ADMIN_PASSWORD or len(ADMIN_PASSWORD) < PASSWORD_MIN_LENGTH):
+            raise RuntimeError(f"REVIEW_ADMIN_PASSWORD must contain at least {PASSWORD_MIN_LENGTH} characters")
         return
     if len(SECRET_KEY.encode()) < 32 or SECRET_KEY == "dev-only-change-me":
         raise RuntimeError("production REVIEW_SECRET_KEY must contain at least 32 bytes")
     if not COOKIE_SECURE:
         raise RuntimeError("production requires REVIEW_COOKIE_SECURE=true")
-    if database_is_empty and (not ADMIN_PASSWORD or len(ADMIN_PASSWORD) < 16):
-        raise RuntimeError("production REVIEW_ADMIN_PASSWORD must contain at least 16 characters")
+    if database_is_empty and (not ADMIN_PASSWORD or len(ADMIN_PASSWORD) < PASSWORD_MIN_LENGTH):
+        raise RuntimeError(f"production REVIEW_ADMIN_PASSWORD must contain at least {PASSWORD_MIN_LENGTH} characters")

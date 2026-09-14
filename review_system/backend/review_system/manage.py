@@ -3,6 +3,7 @@ import os
 
 from sqlalchemy import delete, select
 
+from .config import PASSWORD_MIN_LENGTH
 from .db import SessionLocal
 from .models import Session, User
 from .security import hash_password
@@ -45,8 +46,8 @@ def main() -> None:
         return
 
     password = os.getenv(args.password_env)
-    if not password or len(password) < 12:
-        raise SystemExit(f"{args.password_env} must contain at least 12 characters")
+    if not password or len(password) < PASSWORD_MIN_LENGTH:
+        raise SystemExit(f"{args.password_env} must contain at least {PASSWORD_MIN_LENGTH} characters")
 
     with SessionLocal() as database:
         if args.command == "create-user":

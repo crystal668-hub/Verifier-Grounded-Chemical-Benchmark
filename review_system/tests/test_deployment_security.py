@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+import sys
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -8,11 +9,11 @@ from pydantic import ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session as DBSession
 
-from review_system import config
+from review_system import config, manage
 from review_system.db import Base
 from review_system.models import Session, User
 from review_system.main import register
-from review_system.schemas import RegisterIn
+from review_system.schemas import PasswordChangeIn, PasswordResetIn, RegisterIn, UserIn
 from review_system.security import create_session, hash_password, revoke_user_sessions, session_token_hash, verify_password
 
 
@@ -31,6 +32,23 @@ def test_production_config_accepts_secure_existing_database(monkeypatch):
     monkeypatch.setattr(config, "COOKIE_SECURE", True)
     monkeypatch.setattr(config, "ADMIN_PASSWORD", None)
     config.validate_production_config(database_is_empty=False)
+
+
+def test_production_config_accepts_six_character_initial_admin_password(monkeypatch):
+    monkeypatch.setattr(config, "ENVIRONMENT", "production")
+    monkeypatch.setattr(config, "SECRET_KEY", "x" * 32)
+    monkeypatch.setattr(config, "COOKIE_SECURE", True)
+    monkeypatch.setattr(config, "ADMIN_PASSWORD", "123456")
+    config.validate_production_config(database_is_empty=True)
+
+
+def test_development_config_enforces_six_character_initial_admin_password(monkeypatch):
+    monkeypatch.setattr(config, "ENVIRONMENT", "development")
+    monkeypatch.setattr(config, "ADMIN_PASSWORD", "12345")
+    with pytest.raises(RuntimeError, match="at least 6"):
+        config.validate_production_config(database_is_empty=True)
+    monkeypatch.setattr(config, "ADMIN_PASSWORD", "123456")
+    config.validate_production_config(database_is_empty=True)
 
 
 def test_password_and_session_lifecycle():
@@ -66,9 +84,42 @@ def test_self_service_registration_creates_collaborator_and_session():
         assert response.headers.get("set-cookie", "").startswith("review_session=")
 
 
-def test_self_service_registration_rejects_password_shorter_than_six_characters():
+@pytest.mark.parametrize(
+    ("schema", "payload"),
+    [
+        (RegisterIn, {"username": "reviewer", "password": "123456"}),
+        (UserIn, {"username": "reviewer", "password": "123456"}),
+        (PasswordChangeIn, {"current_password": "current", "new_password": "123456"}),
+        (PasswordResetIn, {"new_password": "123456"}),
+    ],
+)
+def test_all_account_password_operations_accept_six_characters(schema, payload):
+    assert schema(**payload)
+
+
+@pytest.mark.parametrize(
+    ("schema", "payload"),
+    [
+        (RegisterIn, {"username": "reviewer", "password": "12345"}),
+        (UserIn, {"username": "reviewer", "password": "12345"}),
+        (PasswordChangeIn, {"current_password": "current", "new_password": "12345"}),
+        (PasswordResetIn, {"new_password": "12345"}),
+    ],
+)
+def test_all_account_password_operations_reject_five_characters(schema, payload):
     with pytest.raises(ValidationError):
-        RegisterIn(username="reviewer", password="12345")
+        schema(**payload)
+
+
+def test_user_management_cli_accepts_six_character_password(monkeypatch):
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    monkeypatch.setattr(manage, "SessionLocal", lambda: DBSession(engine, expire_on_commit=False))
+    monkeypatch.setenv("REVIEW_NEW_USER_PASSWORD", "123456")
+    monkeypatch.setattr(sys, "argv", ["review-system-manage", "create-user", "cli-reviewer"])
+    manage.main()
+    with DBSession(engine) as database:
+        assert database.scalar(select(User).where(User.username == "cli-reviewer")) is not None
 
 
 def test_self_service_registration_rejects_duplicate_username():
