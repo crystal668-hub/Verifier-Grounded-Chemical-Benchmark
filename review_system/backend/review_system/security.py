@@ -32,11 +32,14 @@ def revoke_user_sessions(db: DBSession, user_id: int) -> None:
 def client_ip(request: Request) -> str:
     peer = request.client.host if request.client else "unknown"
     try:
-        trusted_peer = ipaddress.ip_address(peer).is_loopback
+        address = ipaddress.ip_address(peer)
+        trusted_peer = address.is_loopback or address.is_private
     except ValueError:
         trusted_peer = False
     if trusted_peer:
-        forwarded = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        forwarded = request.headers.get("x-real-ip", "").strip()
+        if not forwarded:
+            forwarded = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
         try:
             return str(ipaddress.ip_address(forwarded)) if forwarded else peer
         except ValueError:

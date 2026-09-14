@@ -5,7 +5,7 @@ services:
       dockerfile: review_system/Dockerfile
     ports: ["8000:8000"]
     environment:
-      REVIEW_ADMIN_PASSWORD: ${REVIEW_ADMIN_PASSWORD:-change-me-now}
+      REVIEW_ADMIN_PASSWORD: ${REVIEW_ADMIN_PASSWORD:?Set REVIEW_ADMIN_PASSWORD}
       REVIEW_SECRET_KEY: ${REVIEW_SECRET_KEY:-replace-this-secret}
     volumes:
       - review-data:/app/review_system/data
