@@ -15,6 +15,9 @@ def test_catalog_contains_formal_tracks_and_hides_long_inputs():
         for task in track["tasks"]:
             assert task["fingerprint"]
             assert "content" not in task["view"].get("attachments", {})
+            for input_object in task["schema"].get("input_objects", []):
+                value = input_object.get("value")
+                assert not isinstance(value, str) or len(value.strip()) < 80
 
 def test_attachment_split_replaces_body_with_reference():
     view, attachments = split_attachments({"task_id":"demo", "prompt":"Input:\n```xyz\n" + "C 0 0 0\n" * 30 + "```"})

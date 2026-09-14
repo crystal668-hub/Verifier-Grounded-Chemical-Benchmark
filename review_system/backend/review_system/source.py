@@ -132,7 +132,7 @@ def load_catalog() -> dict[str, Any]:
             view, attachments=split_attachments(raw)
             public=public_task_dict(view)
             full=deepcopy(raw); full.pop("scoring_profiles", None)
-            tasks.append({"task_id": raw["task_id"], "version": raw.get("version",1), "data": full, "view": public, "scoring": scoring_view(raw, track._task_pack.scoring_profiles), "schema": schema_view(raw), "attachments": attachments, "fingerprint": _fingerprint(full)})
+            tasks.append({"task_id": raw["task_id"], "version": raw.get("version",1), "data": full, "view": public, "scoring": scoring_view(raw, track._task_pack.scoring_profiles), "schema": schema_view(view), "attachments": attachments, "fingerprint": _fingerprint(full)})
         tracks.append({"name": definition.name, "version": definition.version, "display_name": definition.display_name, "tasks": tasks})
     payload={"commit":source_revision(), "tracks":tracks}
     return {"commit": payload["commit"], "fingerprint": _fingerprint(payload), "tracks": tracks}
