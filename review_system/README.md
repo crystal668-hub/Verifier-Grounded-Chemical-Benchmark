@@ -34,3 +34,15 @@ docker compose -f compose.production.yml exec -T \
   --password-env REVIEW_NEW_USER_PASSWORD
 unset REVIEW_NEW_USER_PASSWORD
 ```
+
+## 标准发布流程
+
+使用 `scripts/pipeline.sh` 固化测试、镜像构建、部署和验收。默认镜像标签为当前 commit 的短 SHA；生产发布必须显式传入版本或 SHA：
+
+```bash
+./scripts/pipeline.sh test
+./scripts/pipeline.sh release --tag 2026.09.14-<commit>
+./scripts/pipeline.sh verify
+```
+
+发布脚本要求工作区干净、存在 `.env.production`，先执行加密备份，再构建并启动版本化镜像，最后检查健康接口和回环端口。失败时不会继续后续阶段；回滚使用 `REVIEW_ROLLBACK_TAG=<previous-tag> ./scripts/pipeline.sh rollback`。Sealtun 的 `dry-run`、`diff`、`apply` 仍由管理员在本机验证通过后显式执行。

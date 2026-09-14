@@ -1,6 +1,6 @@
 services:
   review-system:
-    image: vgb-review-system:${REVIEW_IMAGE_TAG:-local}
+    image: vgb-review-system:${REVIEW_IMAGE_TAG:?Set REVIEW_IMAGE_TAG}
     build:
       context: ..
       dockerfile: review_system/Dockerfile
