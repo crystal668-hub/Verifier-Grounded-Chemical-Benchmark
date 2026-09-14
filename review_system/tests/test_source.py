@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import sys
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "backend"))
 sys.path.insert(0, str(Path(__file__).parents[2] / "src"))
@@ -52,7 +53,14 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
     assert answers["ambient_pressure_phase"]["standard_answer"] == "alpha"
     assert answers["ambient_pressure_phase"]["full_score_region"]["kind"] == "exact"
     assert answers["potential_energy_difference"]["full_score_region"]["kind"] == "point"
-    assert answers["potential_energy_difference"]["score_range"] == {"kind": "得分区间", "min": 0.0, "max": 1.0}
+    assert answers["potential_energy_difference"]["score_range"] == {
+        "kind": "interval",
+        "min": -0.921,
+        "max": 1.079,
+        "min_exclusive": True,
+        "max_exclusive": True,
+        "unit": "eV",
+    }
 
     rdkit = next(track for track in catalog["tracks"] if track["name"] == "rdkit")
     qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_qed_max_001")
@@ -70,4 +78,26 @@ def test_full_score_intervals_are_limited_to_window_profiles():
     ]
     assert interval_rules
     assert all(rule["type"] == "window" for rule in interval_rules)
-    assert all(rule["score_range"] == {"kind": "得分区间", "min": 0.0, "max": 1.0} for rule in interval_rules)
+    assert all(rule["score_range"]["kind"] == "interval" for rule in interval_rules)
+    assert all(rule["score_range"]["min_exclusive"] and rule["score_range"]["max_exclusive"] for rule in interval_rules)
+
+
+def test_score_ranges_represent_nonzero_submitted_values():
+    catalog = load_catalog()
+    tasks = {
+        task["task_id"]: task
+        for track in catalog["tracks"]
+        for task in track["tasks"]
+    }
+    qed = tasks["rdkit_qed_max_001"]["scoring"]["rules"][0]["score_range"]
+    assert qed == {"kind": "lower_bounded", "min": 0.0, "min_exclusive": True, "unit": "dimensionless"}
+
+    interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
+    assert interaction["kind"] == "absolute_interval"
+    assert interaction["min"] == pytest.approx(49.04)
+    assert interaction["max"] == pytest.approx(89.04)
+
+    log_score = tasks["property_calculation_advanced_015_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
+    assert log_score["transform"] == "log10"
+    assert log_score["min"] == 0.0007340000000000001
+    assert log_score["max"] == 0.0734

@@ -1,4 +1,4 @@
-import hashlib, json, os, re, subprocess
+import hashlib, json, math, os, re, subprocess
 from collections.abc import Mapping
 from copy import deepcopy
 from pathlib import Path
@@ -72,6 +72,43 @@ def _full_score_region(profile: Mapping[str, Any], gold: Mapping[str, Any] | Non
     return None
 
 
+def _scoreable_results(profile: Mapping[str, Any], gold: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    """Return submitted values that receive a score strictly greater than zero."""
+    profile_type = profile.get("type")
+    unit = (gold or {}).get("unit") or profile.get("unit")
+    if profile_type in {"window", "target", "maximize", "minimize", "numeric_gold"}:
+        scoring_gold = (gold or {}).get("value")
+        transform = profile.get("value_transform", "identity")
+        if profile_type == "numeric_gold" and isinstance(scoring_gold, (int, float)):
+            if transform == "absolute":
+                scoring_gold = abs(float(scoring_gold))
+            elif transform == "log10":
+                scoring_gold = math.log10(float(scoring_gold))
+        try:
+            goal = linear_goal_from_profile(profile, gold=scoring_gold)
+        except (KeyError, TypeError, ValueError):
+            return None
+        lower = goal.lower - goal.lower_width if goal.lower is not None and goal.lower_width is not None else None
+        upper = goal.upper + goal.upper_width if goal.upper is not None and goal.upper_width is not None else None
+        if profile_type == "numeric_gold" and transform == "absolute":
+            lower_abs = max(0.0, lower) if lower is not None else 0.0
+            return {"kind": "absolute_interval", "min": lower_abs, "max": upper, "min_exclusive": bool(lower and lower > 0), "max_exclusive": True, "unit": unit}
+        if profile_type == "numeric_gold" and transform == "log10":
+            return {"kind": "interval", "min": 10 ** lower if lower is not None else 0.0, "max": 10 ** upper if upper is not None else None, "min_exclusive": True, "max_exclusive": True, "unit": unit, "transform": "log10"}
+        if lower is None:
+            return {"kind": "upper_bounded", "max": upper, "max_exclusive": True, "unit": unit}
+        if upper is None:
+            return {"kind": "lower_bounded", "min": lower, "min_exclusive": True, "unit": unit}
+        return {"kind": "interval", "min": lower, "max": upper, "min_exclusive": True, "max_exclusive": True, "unit": unit}
+    if profile_type == "exact_string" and gold is not None:
+        values = [gold.get("value")]
+        values.extend(value for value, score in profile.get("partial_scores", {}).items() if float(score) > 0)
+        return {"kind": "values", "values": values}
+    if profile_type == "atom_identity" and gold is not None:
+        return {"kind": "atom_identity", "value": gold.get("value"), "same_element_scores": float(profile.get("element_partial_score", 0)) > 0}
+    return None
+
+
 def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]] | None = None) -> dict[str, Any]:
     scoring = deepcopy(task.get("scoring", {})); constraints = task.get("constraints", []) or []
     profile_map = profiles or task.get("scoring_profiles", {}) or {}
@@ -86,7 +123,7 @@ def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]]
         item["standard_answer"] = gold.get("value") if gold else None
         item["unit"] = (gold or {}).get("unit") or profile.get("unit") or item.get("unit")
         item["full_score_region"] = _full_score_region(profile, gold)
-        item["score_range"] = {"kind": "得分区间", "min": 0.0, "max": 1.0}
+        item["score_range"] = _scoreable_results(profile, gold)
         try:
             if profile.get("type") in {"target", "window", "maximize", "minimize", "numeric_gold"}:
                 goal = linear_goal_from_profile(profile, gold=(gold or {}).get("value"))
@@ -110,7 +147,7 @@ def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]]
             "standard_answer": gold.get("value"),
             "unit": gold.get("unit") or profile.get("unit"),
             "full_score_region": _full_score_region(profile, gold),
-            "score_range": {"kind": "得分区间", "min": 0.0, "max": 1.0},
+            "score_range": _scoreable_results(profile, gold),
         })
     return {
         "aggregation": scoring.get("aggregation"),
