@@ -27,7 +27,10 @@
  .module-nav { display:flex; gap:8px; margin-left:auto; margin-right:24px; }
 .module-nav button { border:0; background:transparent; padding:8px 12px; color:#64748b; cursor:pointer; }
 .module-nav button.selected { color:#111827; font-weight:600; border-bottom:2px solid #111827; }
-.results-layout { display:grid; grid-template-columns: minmax(0,1fr) minmax(360px,45%); gap:24px; padding:32px; height:calc(100vh - 80px); box-sizing:border-box; }
+.results-layout { display:grid; grid-template-columns: 42fr 8px 58fr; gap:12px; padding:32px; height:calc(100vh - 80px); box-sizing:border-box; }
+.results-layout > section { min-width:0; overflow:auto; }
+.results-divider { cursor:col-resize; background:#e5e7eb; border-radius:8px; transition:background .15s; }
+.results-divider:hover { background:#94a3b8; }
 .upload-button { background:#111827; color:#fff; padding:10px 16px; border-radius:8px; cursor:pointer; }
 .results-list { display:flex; flex-direction:column; gap:8px; margin-top:24px; }
 .result-row { display:flex; justify-content:space-between; text-align:left; padding:16px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; }
