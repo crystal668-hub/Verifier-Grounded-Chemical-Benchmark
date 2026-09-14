@@ -179,6 +179,6 @@ def export_draft(draft_id:int,database:DBSession=Depends(db),user:User=Depends(d
         archive.writestr("draft.json",payload); archive.writestr("README.txt","由 VGB 题目审核系统导出，请开发者补全并合入题库。\n")
     content.seek(0); return StreamingResponse(content,media_type="application/zip",headers={"Content-Disposition":f'attachment; filename="draft-{draft_id}.zip"'})
 
-_frontend_dist = Path(__file__).resolve().parents[3] / "frontend" / "dist"
+_frontend_dist = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 if _frontend_dist.is_dir():
     app.mount("/", StaticFiles(directory=_frontend_dist, html=True), name="frontend")
