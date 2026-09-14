@@ -8,7 +8,7 @@ compose_file="$review_dir/compose.production.yml"
 tag=${REVIEW_IMAGE_TAG:-}
 python_bin=${PYTHON_BIN:-}
 [ -n "$python_bin" ] || { [ -x "$root_dir/.venv/bin/python" ] && python_bin="$root_dir/.venv/bin/python" || python_bin=python3; }
-compose() { docker compose --project-directory "$root_dir" -f "$compose_file" "$@"; }
+compose() { docker compose --project-directory "$review_dir" -f "$compose_file" "$@"; }
 die() { echo "pipeline: $*" >&2; exit 1; }
 
 current_tag() { git -C "$root_dir" rev-parse --short=12 HEAD; }
