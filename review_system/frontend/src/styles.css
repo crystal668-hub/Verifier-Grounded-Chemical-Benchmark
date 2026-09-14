@@ -24,3 +24,13 @@
 .auth-modes{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin:22px 0 16px;padding:3px;background:#ededf0;border-radius:8px}.login .auth-modes button{margin:0;padding:7px;border-radius:6px;background:transparent;color:#6d6d72;font-size:12px}.login .auth-modes button.selected{background:#fff;color:#1d1d1f;box-shadow:0 1px 4px #1d1d1f18}.login button:disabled{cursor:default;opacity:.62}
 .login-card{width:min(380px,calc(100vw - 32px))}
 .comment>span{flex:1;min-width:0;overflow-wrap:anywhere}.comment-delete,.comment-confirm button{display:grid;place-items:center;flex:0 0 auto;border:0;background:transparent;color:#98999f;cursor:pointer;border-radius:6px;height:28px}.comment-delete{width:28px;opacity:0;transition:opacity .15s,background .15s,color .15s}.comment:hover .comment-delete,.comment-delete:focus-visible{opacity:1}.comment-delete:hover{background:#fff0ef;color:#c9342c}.comment-confirm{display:flex;align-items:center;gap:4px}.comment-confirm button{width:28px}.comment-confirm .confirm-delete{display:flex;width:auto;gap:4px;padding:0 8px;background:#fff0ef;color:#c9342c;font-size:10px}.comment-confirm button:hover{background:#ededf0}.comment-confirm .confirm-delete:hover{background:#ffe4e1}.comment-confirm button:disabled{cursor:default;opacity:.55}@media(hover:none){.comment-delete{opacity:1}}
+ .module-nav { display:flex; gap:8px; margin-left:auto; margin-right:24px; }
+.module-nav button { border:0; background:transparent; padding:8px 12px; color:#64748b; cursor:pointer; }
+.module-nav button.selected { color:#111827; font-weight:600; border-bottom:2px solid #111827; }
+.results-layout { display:grid; grid-template-columns: minmax(0,1fr) minmax(360px,45%); gap:24px; padding:32px; height:calc(100vh - 80px); box-sizing:border-box; }
+.upload-button { background:#111827; color:#fff; padding:10px 16px; border-radius:8px; cursor:pointer; }
+.results-list { display:flex; flex-direction:column; gap:8px; margin-top:24px; }
+.result-row { display:flex; justify-content:space-between; text-align:left; padding:16px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; }
+.result-row span { display:flex; flex-direction:column; gap:4px; } .result-row small { color:#64748b; }
+.result-preview { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:20px; overflow:auto; }
+.result-preview iframe { width:100%; height:calc(100% - 40px); border:0; }

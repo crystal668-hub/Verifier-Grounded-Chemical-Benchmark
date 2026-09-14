@@ -127,3 +127,19 @@ class Attachment(Base):
     storage_path: Mapped[str] = mapped_column(String(500))
     content: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+class SharedFile(Base):
+    __tablename__ = "shared_files"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+    media_type: Mapped[str] = mapped_column(String(120))
+    size: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64), index=True)
+    storage_path: Mapped[str] = mapped_column(String(500))
+    preview_html: Mapped[str | None] = mapped_column(Text)
+    preview_error: Mapped[str | None] = mapped_column(Text)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    track: Mapped[str | None] = mapped_column(String(120))
+    task_id: Mapped[str | None] = mapped_column(String(180))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    owner = relationship("User")

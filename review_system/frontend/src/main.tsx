@@ -112,7 +112,17 @@ function Login({ onLogin }: { onLogin: () => void }) {
   return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><div className="auth-modes" role="tablist" aria-label="账号入口"><button type="button" role="tab" aria-selected={!registering} className={!registering ? 'selected' : ''} onClick={() => switchMode('login')}>登录</button><button type="button" role="tab" aria-selected={registering} className={registering ? 'selected' : ''} onClick={() => switchMode('register')}>注册</button></div><p className="muted">{registering ? '创建协作者账号，加入题目审核。' : '登录后查看题目、评分规则与协作批注。'}</p><form onSubmit={event => { event.preventDefault(); void submit(); }}><input value={username} onChange={event => setUsername(event.target.value)} placeholder="用户名" aria-label="用户名" autoComplete="username" required/><input value={password} onChange={event => setPassword(event.target.value)} placeholder={registering ? '密码（至少 6 位）' : '密码'} aria-label="密码" type="password" autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 6 : undefined} required/>{registering && <input value={passwordConfirmation} onChange={event => setPasswordConfirmation(event.target.value)} placeholder="再次输入密码" aria-label="再次输入密码" type="password" autoComplete="new-password" minLength={6} required/>}<button type="submit" disabled={submitting}>{submitting ? '请稍候…' : registering ? '注册并进入工作台' : '进入工作台'}</button></form>{error && <p className="error" role="alert">{error}</p>}</div></main>;
 }
 
+function ResultsModule({ onBack }: { onBack: () => void }) {
+  const [files, setFiles] = useState<any[]>([]); const [selected, setSelected] = useState<any>(null); const [busy, setBusy] = useState(false);
+  const load = () => api('/api/v1/shared-files').then(setFiles).catch(() => {});
+  useEffect(() => { void load(); }, []);
+  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file) return; setBusy(true); const body = new FormData(); body.append('file', file); try { await api('/api/v1/shared-files', { method: 'POST', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' }, body }); await load(); } finally { setBusy(false); event.target.value = ''; } };
+  const open = async (item: any) => setSelected(await api(`/api/v1/shared-files/${item.id}`));
+  return <main className="app results-module"><header><div className="brand"><div className="mark small">VGB</div><div><strong>测试结果预览</strong><span>共享评估资料</span></div></div><nav className="module-nav"><button onClick={onBack}>题目审核</button><button className="selected">测试结果预览</button></nav></header><div className="results-layout"><section><div className="content-head"><div><p className="eyebrow">SHARED MATERIALS</p><h1>测试结果预览</h1></div><label className="upload-button">{busy ? '上传中…' : '上传资料'}<input type="file" accept=".md,.pdf,.xlsx" onChange={upload} disabled={busy} hidden /></label></div><div className="results-list">{files.map(item => <button key={item.id} onClick={() => open(item)} className="result-row"><span><b>{item.name}</b><small>{item.media_type} · {Math.ceil(item.size / 1024)} KB · {item.owner}</small></span><em>{item.preview ? '可预览' : '仅下载'}</em></button>)}{!files.length && <div className="empty"><h2>暂无共享资料</h2><p>上传 Markdown、PDF 或 Excel 结果文件。</p></div>}</div></section><aside className="result-preview">{selected ? <><div className="preview-title">{selected.name}<a href={`/api/v1/shared-files/${selected.id}/download`}>下载原文件</a></div>{selected.media_type === 'application/pdf' ? <iframe title={selected.name} src={`/api/v1/shared-files/${selected.id}/content`} /> : <div dangerouslySetInnerHTML={{ __html: selected.preview_html || `<p>${selected.preview_error || '暂无预览'}</p>` }} />}</> : <div className="empty"><h2>选择资料查看预览</h2></div>}</aside></div></main>;
+}
+
 function App() {
+  const [module, setModule] = useState<'review'|'results'>('review');
   const [logged, setLogged] = useState(false);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [track, setTrack] = useState('');
@@ -286,6 +296,7 @@ function App() {
   }, [selected, track]);
 
   if (!logged) return <Login onLogin={() => setLogged(true)} />;
+  if (module === 'results') return <ResultsModule onBack={() => setModule('review')} />;
 
   const workspaceStyle = {
     '--sidebar-width': `${sidebarWidth}px`,
@@ -296,6 +307,7 @@ function App() {
   return <main className="app">
     <header>
       <div className="brand"><div className="mark small">VGB</div><div><strong>题目审核</strong><span>Verifier Grounded Benchmark</span></div></div>
+      <nav className="module-nav"><button className="selected">题目审核</button><button onClick={() => setModule('results')}>测试结果预览</button></nav>
       <div className="header-actions"><span className="live"><i />源码快照同步</span><button className="icon" aria-label="刷新题库" title="刷新题库" onClick={refreshData} disabled={refreshing}><RefreshCw size={16} className={refreshing ? 'spin' : ''} /></button><button className="avatar" aria-label="用户管理" title="用户管理" onClick={openUsers}>A</button></div>
     </header>
     <div className="workspace" style={workspaceStyle}>

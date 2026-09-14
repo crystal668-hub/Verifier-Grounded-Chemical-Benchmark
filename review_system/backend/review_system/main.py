@@ -1,7 +1,7 @@
-import io, json, zipfile
+import io, json, zipfile, hashlib, mimetypes, uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -11,11 +11,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DBSession
 from .config import ADMIN_PASSWORD, ADMIN_USER, ALLOWED_ORIGINS, AUTO_CREATE_DB, COOKIE_SECURE, LOGIN_FAILURE_LIMIT, LOGIN_WINDOW_MINUTES, MAX_ATTACHMENT_BYTES, DATA_DIR, validate_production_config
 from .db import SessionLocal, init_db
-from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User
+from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User, SharedFile
 from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, RegisterIn, UserIn, UserUpdateIn
 from .security import client_ip, create_session, current_user, hash_password, require_developer, revoke_user_sessions, session_token_hash, verify_password
 from .source import load_catalog, schema_view, scoring_view, split_attachments
 from verifier_grounded_benchmark import load_track
+import markdown, bleach
+from openpyxl import load_workbook
 
 app=FastAPI(title="VGB Task Review API", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -215,6 +217,73 @@ def task_attachment(track: str, task_id: str, name: str, database: DBSession=Dep
     item=next((x for x in json.loads(find_task(track,task_id,database).attachments_json) if x.get("name")==name),None)
     if not item: raise HTTPException(404,"附件不存在")
     return Response(item.get("content","") if isinstance(item.get("content"),str) else "", media_type=item.get("media_type","text/plain"), headers={"Content-Disposition": f'inline; filename="{name}"'})
+
+ALLOWED_SHARED = {".md": "text/markdown", ".pdf": "application/pdf", ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+def shared_preview(data: bytes, suffix: str) -> str:
+    if suffix == ".md":
+        html = markdown.markdown(data.decode("utf-8", errors="replace"), extensions=["tables", "fenced_code"])
+        return bleach.clean(html, tags=["p","br","h1","h2","h3","h4","ul","ol","li","strong","em","code","pre","table","thead","tbody","tr","th","td","blockquote"], attributes={}, strip=True)
+    if suffix == ".xlsx":
+        wb = load_workbook(io.BytesIO(data), read_only=True, data_only=True)
+        out = ["<div class='xlsx-preview'>"]
+        for ws in wb.worksheets:
+            out.append(f"<h3>{bleach.clean(ws.title)}</h3><table><tbody>")
+            for idx, row in enumerate(ws.iter_rows(values_only=True)):
+                if idx >= 1000: break
+                out.append("<tr>" + "".join(f"<td>{bleach.clean(str(v)) if v is not None else ''}</td>" for v in row[:50]) + "</tr>")
+            out.append("</tbody></table>")
+        out.append("</div>"); return "".join(out)
+    return ""
+
+@app.get("/api/v1/shared-files")
+def shared_files(database: DBSession=Depends(db), user: User=Depends(auth), q: str|None=None, media_type: str|None=None):
+    rows = database.scalars(select(SharedFile).order_by(SharedFile.created_at.desc())).all()
+    if q: rows = [r for r in rows if q.lower() in r.name.lower()]
+    if media_type: rows = [r for r in rows if r.media_type == media_type]
+    return [{"id":r.id,"name":r.name,"media_type":r.media_type,"size":r.size,"owner":r.owner.username,"track":r.track,"task_id":r.task_id,"created_at":r.created_at,"preview":bool(r.preview_html),"preview_error":r.preview_error,"can_delete":r.owner_id==user.id or user.role=="developer"} for r in rows]
+
+@app.post("/api/v1/shared-files", status_code=201)
+async def upload_shared_file(file: UploadFile=File(...), track: str|None=Form(None), task_id: str|None=Form(None), database: DBSession=Depends(db), user: User=Depends(auth)):
+    name = Path(file.filename or "").name; suffix = Path(name).suffix.lower()
+    if not name or suffix not in ALLOWED_SHARED: raise HTTPException(415, "仅支持 .md、.pdf、.xlsx 文件")
+    data = await file.read(MAX_ATTACHMENT_BYTES + 1)
+    if not data or len(data) > MAX_ATTACHMENT_BYTES: raise HTTPException(413, "文件为空或超过 20 MB 限制")
+    if suffix == ".pdf" and not data.startswith(b"%PDF"): raise HTTPException(415, "PDF 文件内容无效")
+    digest = hashlib.sha256(data).hexdigest(); existing = database.scalar(select(SharedFile).where(SharedFile.sha256==digest))
+    if existing: return {"id": existing.id, "duplicate": True}
+    target = DATA_DIR / "shared-files"; target.mkdir(parents=True, exist_ok=True); path = target / f"{uuid.uuid4().hex}{suffix}"; path.write_bytes(data)
+    row = SharedFile(name=name, media_type=ALLOWED_SHARED[suffix], size=len(data), sha256=digest, storage_path=str(path), owner_id=user.id, track=track, task_id=task_id)
+    try: row.preview_html = shared_preview(data, suffix)
+    except Exception as exc: row.preview_error = str(exc)
+    database.add(row); database.commit(); database.refresh(row)
+    return {"id": row.id, "name": row.name}
+
+@app.get("/api/v1/shared-files/{file_id}")
+def shared_file_detail(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
+    row = database.get(SharedFile, file_id)
+    if not row: raise HTTPException(404, "资料不存在")
+    return {"id":row.id,"name":row.name,"media_type":row.media_type,"size":row.size,"owner":row.owner.username,"track":row.track,"task_id":row.task_id,"preview_html":row.preview_html,"preview_error":row.preview_error}
+
+@app.get("/api/v1/shared-files/{file_id}/content")
+def shared_file_content(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
+    row = database.get(SharedFile, file_id)
+    if not row: raise HTTPException(404, "资料不存在")
+    if row.media_type == "application/pdf": return Response(content=Path(row.storage_path).read_bytes(), media_type=row.media_type, headers={"Content-Disposition": f'inline; filename="{row.name}"'})
+    return Response(row.preview_html or "", media_type="text/html")
+
+@app.get("/api/v1/shared-files/{file_id}/download")
+def shared_file_download(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
+    row = database.get(SharedFile, file_id)
+    if not row: raise HTTPException(404, "资料不存在")
+    return StreamingResponse(open(row.storage_path, "rb"), media_type=row.media_type, headers={"Content-Disposition": f'attachment; filename="{row.name}"'})
+
+@app.delete("/api/v1/shared-files/{file_id}")
+def delete_shared_file(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
+    row = database.get(SharedFile, file_id)
+    if not row: raise HTTPException(404, "资料不存在")
+    if row.owner_id != user.id and user.role != "developer": raise HTTPException(403, "只能删除自己上传的资料")
+    Path(row.storage_path).unlink(missing_ok=True); database.delete(row); database.commit(); return {"ok": True}
 
 @app.get("/api/v1/tasks/{task_id}/comments")
 def comments(task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)):
