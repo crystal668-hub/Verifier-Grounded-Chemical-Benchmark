@@ -6,6 +6,8 @@ review_dir=$(dirname "$script_dir")
 root_dir=$(dirname "$review_dir")
 compose_file="$review_dir/compose.production.yml"
 tag=${REVIEW_IMAGE_TAG:-}
+python_bin=${PYTHON_BIN:-}
+[ -n "$python_bin" ] || { [ -x "$root_dir/.venv/bin/python" ] && python_bin="$root_dir/.venv/bin/python" || python_bin=python3; }
 compose() { docker compose --project-directory "$root_dir" -f "$compose_file" "$@"; }
 die() { echo "pipeline: $*" >&2; exit 1; }
 
@@ -15,7 +17,8 @@ clean_tree() { [ -z "$(git -C "$root_dir" status --porcelain)" ] || die "worktre
 
 test_pipeline() {
   cd "$root_dir"
-  PYTHONPATH="$review_dir/backend${PYTHONPATH:+:$PYTHONPATH}" python -m pytest review_system/tests
+  command -v "$python_bin" >/dev/null 2>&1 || die "Python executable not found: $python_bin"
+  PYTHONPATH="$review_dir/backend${PYTHONPATH:+:$PYTHONPATH}" "$python_bin" -m pytest review_system/tests
   if [ -d "$review_dir/frontend/node_modules" ]; then (cd "$review_dir/frontend" && npm run build); else echo "pipeline: frontend dependencies absent; skipping frontend build"; fi
 }
 build_image() { require_tag; echo "pipeline: building vgb-review-system:$REVIEW_IMAGE_TAG (commit $(git -C "$root_dir" rev-parse HEAD))"; compose build --pull review-system; }
