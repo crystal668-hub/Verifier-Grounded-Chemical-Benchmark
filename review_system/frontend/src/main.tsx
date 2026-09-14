@@ -16,6 +16,15 @@ const api = async (path: string, options: RequestInit = {}) => {
   return response.json();
 };
 
+const apiErrorMessage = (error: unknown, fallback: string) => {
+  if (!(error instanceof Error)) return fallback;
+  try {
+    return JSON.parse(error.message).detail || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const displayValue = (value: any) => {
   if (value === null || value === undefined || value === '') return '—';
   if (typeof value === 'object') return JSON.stringify(value);
@@ -49,11 +58,43 @@ const answerLabel = (rule: any) => rule.standard_answer === null || rule.standar
   : displayValue(rule.standard_answer);
 
 function Login({ onLogin }: { onLogin: () => void }) {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><p className="muted">登录后查看题目、评分规则与协作批注。</p><input value={username} onChange={e => setUsername(e.target.value)} placeholder="用户名"/><input value={password} onChange={e => setPassword(e.target.value)} placeholder="密码" type="password"/><button onClick={async () => { try { const result = await api('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) }); localStorage.setItem('csrf', result.csrf_token); onLogin(); } catch { setError('登录失败，请检查账号。'); } }}>进入工作台</button>{error && <p className="error">{error}</p>}</div></main>;
+  const registering = mode === 'register';
+  const switchMode = (nextMode: 'login' | 'register') => {
+    setMode(nextMode);
+    setPassword('');
+    setPasswordConfirmation('');
+    setError('');
+  };
+  const submit = async () => {
+    setError('');
+    if (registering && password !== passwordConfirmation) {
+      setError('两次输入的密码不一致');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const result = await api(registering ? '/api/v1/auth/register' : '/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      localStorage.setItem('csrf', result.csrf_token);
+      onLogin();
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError, registering ? '注册失败，请稍后重试' : '登录失败，请检查账号'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><div className="auth-modes" role="tablist" aria-label="账号入口"><button type="button" role="tab" aria-selected={!registering} className={!registering ? 'selected' : ''} onClick={() => switchMode('login')}>登录</button><button type="button" role="tab" aria-selected={registering} className={registering ? 'selected' : ''} onClick={() => switchMode('register')}>注册</button></div><p className="muted">{registering ? '创建协作者账号，加入题目审核。' : '登录后查看题目、评分规则与协作批注。'}</p><form onSubmit={event => { event.preventDefault(); void submit(); }}><input value={username} onChange={event => setUsername(event.target.value)} placeholder="用户名" aria-label="用户名" autoComplete="username" required/><input value={password} onChange={event => setPassword(event.target.value)} placeholder={registering ? '密码（至少 12 位）' : '密码'} aria-label="密码" type="password" autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 12 : undefined} required/>{registering && <input value={passwordConfirmation} onChange={event => setPasswordConfirmation(event.target.value)} placeholder="再次输入密码" aria-label="再次输入密码" type="password" autoComplete="new-password" minLength={12} required/>}<button type="submit" disabled={submitting}>{submitting ? '请稍候…' : registering ? '注册并进入工作台' : '进入工作台'}</button></form>{error && <p className="error" role="alert">{error}</p>}</div></main>;
 }
 
 function App() {
