@@ -16,6 +16,34 @@ const api = async (path: string, options: RequestInit = {}) => {
   return response.json();
 };
 
+const displayValue = (value: any) => {
+  if (value === null || value === undefined || value === '') return '—';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+};
+
+const rangeLabel = (rule: any) => {
+  const range = rule.score_range;
+  if (!range) return '按配置评分';
+  const unit = range.unit ? ` ${range.unit}` : '';
+  if (range.kind === '满分区间') return `${displayValue(range.min)} – ${displayValue(range.max)}${unit} 满分`;
+  if (range.kind === '误差范围') return `${displayValue(range.min)} – ${displayValue(range.max)}${unit} 满分`;
+  if (range.kind === '越高越好') return `≥ ${displayValue(range.full_score_target)}${unit} 满分；≤ ${displayValue(range.zero_score_anchor)}${unit} 0 分`;
+  if (range.kind === '越低越好') return `≤ ${displayValue(range.full_score_target)}${unit} 满分；≥ ${displayValue(range.zero_score_anchor)}${unit} 0 分`;
+  if (range.kind === '目标值') return `目标 ${displayValue(range.target)}${unit}`;
+  if (range.kind === '精确匹配') return `精确匹配：${displayValue(range.expected)}`;
+  if (range.kind === '结构身份匹配') return '按结构身份匹配';
+  return '按配置评分';
+};
+
+const typeLabel = (type: string | undefined) => ({
+  maximize: '最大化', minimize: '最小化', window: '区间', target: '目标值', numeric_gold: '数值答案', exact_string: '精确文本', atom_identity: '结构身份', gold_answer: '标准答案',
+}[type || ''] || type || '评分规则');
+
+const answerLabel = (rule: any) => rule.standard_answer === null || rule.standard_answer === undefined
+  ? (rule.type === 'gold_answer' ? '未提供' : '无固定答案（按目标评分）')
+  : displayValue(rule.standard_answer);
+
 function Login({ onLogin }: { onLogin: () => void }) {
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('change-me-now');
@@ -188,7 +216,6 @@ function App() {
   } as React.CSSProperties;
   const promptParts = String(detail?.prompt || '').split(/\[附件：[^\]]+\]/);
 
- return <main className="app"><header><div className="brand"><div className="mark small">VGB</div><div><strong>题目审核</strong><span>Verifier Grounded Benchmark</span></div></div><div className="header-actions"><span className="live"><i />源码快照同步</span><button className="icon" aria-label="刷新题库" title="刷新题库" onClick={refreshData} disabled={refreshing}><RefreshCw size={16} className={refreshing ? 'spin' : ''} /></button><button className="avatar" aria-label="用户管理" title="用户管理" onClick={openUsers}>A</button></div></header><div className="workspace" style={workspaceStyle}><aside className="sidebar"><div className="side-title"><span>目录</span><span className="count">{tracks.length} tracks</span></div><label className="search"><Search size={16} /><input value={query} onChange={e => setQuery(e.target.value)} placeholder="搜索题目 ID" /></label>{tracks.map(item => { const expanded = expandedTrack === item.name; return <div className="track" key={item.name}><button className="track-button" aria-expanded={expanded} onClick={() => { setExpandedTrack(expanded ? '' : item.name); if (!expanded && track !== item.name) { setTrack(item.name); setSelected(''); setTasks([]); } }}><BookOpen size={16} /><span>{item.display_name}</span><ChevronDown size={14} className={expanded ? 'chevron-open' : ''} /></button>{expanded && <div className="task-list">{track === item.name && tasks.map(task => <button className={`task ${selected === task.task_id ? 'active' : ''}`} onClick={() => setSelected(task.task_id)} key={task.task_id}><span>{task.task_id}</span><em>{task.status === 'pending' ? '待审核' : '已同步'}</em></button>)}</div>}</div>; })}<div className="sidebar-bottom"><button className="draft" onClick={() => notify('草稿提交功能即将开放')}><span>＋</span>提交 task 草稿</button><p>V1 · {new Date().getFullYear()}</p></div></aside><div className={`resize-handle ${resizeTarget === 'sidebar' ? 'resizing' : ''}`} role="separator" aria-label="调整目录栏宽度" onPointerDown={event => beginResize('sidebar', event)} /><section className="main-panel">{detail ? <><div className="content-head"><div><p className="eyebrow">{track} · v{detail.version}</p><h1>{selected}</h1></div><span className="status"><i />{detail.review_status === 'pending' ? '待审核' : '已同步'}</span></div><div className="tabs"><button className={activeTab === 'content' ? 'selected' : ''} onClick={() => setActiveTab('content')}>题目内容</button><button className={activeTab === 'scoring' ? 'selected' : ''} onClick={() => setActiveTab('scoring')}>评分细则</button><button className={activeTab === 'schema' ? 'selected' : ''} onClick={() => setActiveTab('schema')}>Schema</button><button className={activeTab === 'discussion' ? 'selected' : ''} onClick={() => setActiveTab('discussion')}>讨论 <span>{comments.length}</span></button></div><article>{activeTab === 'content' && <div className="prompt-card"><div className="section-label">题目说明</div><p className="prompt">{promptParts.map((part, index) => <React.Fragment key={index}>{part}{index < promptParts.length - 1 && <button className="attachment-ref" onClick={() => openAttachment(detail.attachments?.[index])}><FileText size={14} />{attachmentLoading === detail.attachments?.[index]?.name ? '加载中…' : '查看附件'}</button>}</React.Fragment>)}</p></div>}{activeTab === 'scoring' && <div className="rule-card"><div className="section-label">评分规则</div><div className="rules">{scoring?.rules?.map((rule: any) => <div className="rule" key={rule.property}><strong>{rule.property}</strong><span>{rule.type || rule.profile?.type}</span><small>{rule.profile?.unit || '—'}</small></div>)}</div></div>}{activeTab === 'schema' && <div className="meta-card"><div className="section-label">Schema 元数据</div><pre>{JSON.stringify(schema, null, 2)}</pre></div>}{activeTab === 'discussion' && <div className="discussion"><div className="section-label"><MessageCircle size={15} />题目讨论</div>{comments.map(item => <div className="comment" key={item.id}><b>{item.author}</b><span>{item.body}</span></div>)}<div className="comment-box"><input value={comment} onChange={e => setComment(e.target.value)} placeholder="写下审核备注…" onKeyDown={event => { if (event.key === 'Enter') void sendComment(); }} /><button onClick={() => void sendComment()} disabled={commentSending || !comment.trim()} aria-label="发布批注"><Send size={15} /></button></div></div>}</article></> : <div className="empty"><ShieldCheck size={30} /><h2>选择一道题目开始审核</h2></div>}</section><div className={`resize-handle attachment-resize ${resizeTarget === 'attachments' ? 'resizing' : ''}`} role="separator" aria-label="调整附件栏宽度" onPointerDown={event => beginResize('attachments', event)}><button className="collapse-handle" aria-label={attachmentCollapsed ? '展开附件栏' : '折叠附件栏'} title={attachmentCollapsed ? '展开附件栏' : '折叠附件栏'} onClick={() => setAttachmentCollapsed(collapsed => !collapsed)}><PanelRight size={14} /></button></div><aside className={`attachments ${attachmentCollapsed ? 'collapsed' : ''}`}><div className="attachment-head"><div><p className="eyebrow">辅助资料</p><h2>附件</h2></div><button className="collapse-button" aria-label="折叠附件栏" title="折叠附件栏" onClick={() => setAttachmentCollapsed(true)}><PanelRight size={18} /></button></div>{detail?.attachments?.length ? <>{detail.attachments.map((item: any) => <button className={`attachment-item ${attachment?.name === item.name ? 'active' : ''}`} onClick={() => void openAttachment(item)} key={item.name}><FileText size={17} /><span><b>{item.name}</b><small>{item.media_type} · 右栏预览</small></span></button>)}{attachment && <div className="preview"><div className="preview-title">{attachment.name}<span>仅右栏显示</span></div><pre>{attachment.content}</pre></div>}</> : <div className="no-attachment">本题没有附件</div>}</aside></div>{notice && <div className="toast" role="status">{notice}</div>}{userDialog && <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setUserDialog(false); }}><section className="user-dialog" role="dialog" aria-modal="true" aria-labelledby="user-dialog-title"><div className="user-dialog-head"><h2 id="user-dialog-title">用户管理</h2><button className="close-button" aria-label="关闭用户管理" onClick={() => setUserDialog(false)}><X size={17} /></button></div>{usersLoading ? <p className="muted">正在加载用户…</p> : <div className="user-list">{users.map(user => <div className="user-row" key={user.id}><span><b>{user.username}</b><small>{user.role}</small></span><em className={user.active ? 'active' : ''}>{user.active ? '启用' : '停用'}</em></div>)}</div>}</section></div>}</main>;
 }
 
 createRoot(document.getElementById('root')!).render(<App />);

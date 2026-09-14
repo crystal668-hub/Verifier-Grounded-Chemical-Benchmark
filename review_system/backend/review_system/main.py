@@ -12,7 +12,8 @@ from .db import SessionLocal, init_db
 from .models import Attachment, Comment, Draft, DraftRevision, ReviewEvent, SnapshotTask, SnapshotTrack, SourceSnapshot, User
 from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, UserIn
 from .security import create_session, current_user, hash_password, require_developer, verify_password
-from .source import load_catalog
+from .source import load_catalog, scoring_view
+from verifier_grounded_benchmark import load_track
 
 app=FastAPI(title="VGB Task Review API", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -96,7 +97,16 @@ def task_detail(track: str, task_id: str, database: DBSession=Depends(db), user:
     task=find_task(track,task_id,database); view=json.loads(task.view_json); view["task_id"]=task.task_id; view["review_status"]=task.review_status; view["source_fingerprint"]=task.fingerprint; view["attachments"]=[{k:v for k,v in a.items() if k not in {"content"}} for a in json.loads(task.attachments_json)]; return view
 
 @app.get("/api/v1/tracks/{track}/tasks/{task_id}/scoring")
-def task_scoring(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)): return json.loads(find_task(track,task_id,database).scoring_json)
+def task_scoring(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)):
+    task = find_task(track, task_id, database)
+    stored = json.loads(task.scoring_json)
+    # Older snapshots predate profile-aware scoring displays. Rebuild this read-only
+    # view from the immutable task payload so existing databases gain the richer UI
+    # without mutating or replacing their audit snapshot.
+    if not stored.get("rules") or any(not rule.get("profile") for rule in stored.get("rules", [])):
+        raw = json.loads(task.data_json)
+        stored = scoring_view(raw, load_track(track)._task_pack.scoring_profiles)
+    return stored
 @app.get("/api/v1/tracks/{track}/tasks/{task_id}/schema")
 def task_schema(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)): return json.loads(find_task(track,task_id,database).schema_json)
 @app.get("/api/v1/tracks/{track}/tasks/{task_id}/attachments")

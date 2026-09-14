@@ -20,3 +20,20 @@ def test_attachment_split_replaces_body_with_reference():
     view, attachments = split_attachments({"task_id":"demo", "prompt":"Input:\n```xyz\n" + "C 0 0 0\n" * 30 + "```"})
     assert "[附件：demo-1.xyz]" in view["prompt"]
     assert attachments[0]["content"].startswith("C 0 0 0")
+
+
+def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
+    catalog = load_catalog()
+    advanced = next(track for track in catalog["tracks"] if track["name"] == "property_calculation_advanced")
+    phase_task = next(task for task in advanced["tasks"] if task["task_id"].endswith("002_crystal_phase"))
+    scoring = phase_task["scoring"]
+    assert scoring["is_multi_field"] is True
+    assert scoring["field_count"] == 3
+    answers = {rule["property"]: rule for rule in scoring["rules"]}
+    assert answers["ambient_pressure_phase"]["standard_answer"] == "alpha"
+    assert answers["ambient_pressure_phase"]["score_range"]["kind"] == "精确匹配"
+    assert answers["potential_energy_difference"]["score_range"]["min"] == -0.921
+
+    rdkit = next(track for track in catalog["tracks"] if track["name"] == "rdkit")
+    qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_qed_max_001")
+    assert qed["scoring"]["rules"][0]["profile"]["full_score_target"] == 1.0
