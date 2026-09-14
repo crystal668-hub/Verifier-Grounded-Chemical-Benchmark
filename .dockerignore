@@ -1,0 +1,9 @@
+.git/
+.venv/
+**/__pycache__/
+**/*.pyc
+review_system/.env*
+review_system/backups/
+review_system/data/
+review_system/frontend/node_modules/
+review_system/frontend/dist/

@@ -1,0 +1,21 @@
+services:
+  review-system:
+    image: vgb-review-system:${REVIEW_IMAGE_TAG:-local}
+    build:
+      context: ..
+      dockerfile: review_system/Dockerfile
+      args:
+        REVIEW_SOURCE_COMMIT: ${REVIEW_IMAGE_TAG:-working-tree}
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/review_system/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

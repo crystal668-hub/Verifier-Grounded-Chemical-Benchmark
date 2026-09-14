@@ -1,0 +1,9 @@
+version: v1
+tunnels:
+  - name: vgb-review
+    localPort: 8000
+    protocol: https
+    basicAuth:
+      username: vgb-review
+      passwordEnv: SEALTUN_BASIC_AUTH_PASSWORD
+    readyTimeout: 90s

@@ -1,0 +1,10 @@
+data/
+backups/
+.env.production
+.env.sealtun
+com.vgb.review-backup.plist
+com.vgb.review-awake.plist
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
