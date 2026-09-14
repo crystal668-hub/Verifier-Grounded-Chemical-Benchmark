@@ -1,22 +1,33 @@
-import io, json, os, secrets, zipfile
+import io, json, zipfile
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request, Response
-from sqlalchemy import select
+from sqlalchemy import delete, func, or_, select, text
 from sqlalchemy.orm import Session as DBSession
-from .config import MAX_ATTACHMENT_BYTES, DATA_DIR
+from .config import ADMIN_PASSWORD, ADMIN_USER, ALLOWED_ORIGINS, AUTO_CREATE_DB, COOKIE_SECURE, LOGIN_FAILURE_LIMIT, LOGIN_WINDOW_MINUTES, MAX_ATTACHMENT_BYTES, DATA_DIR, validate_production_config
 from .db import SessionLocal, init_db
-from .models import Attachment, Comment, Draft, DraftRevision, ReviewEvent, SnapshotTask, SnapshotTrack, SourceSnapshot, User
-from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, UserIn
-from .security import create_session, current_user, hash_password, require_developer, verify_password
+from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User
+from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, UserIn, UserUpdateIn
+from .security import client_ip, create_session, current_user, hash_password, require_developer, revoke_user_sessions, session_token_hash, verify_password
 from .source import load_catalog, scoring_view
 from verifier_grounded_benchmark import load_track
 
 app=FastAPI(title="VGB Task Review API", version="0.1.0")
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "same-origin"
+    if COOKIE_SECURE:
+        response.headers["Strict-Transport-Security"] = "max-age=31536000"
+    return response
 
 def db():
     session=SessionLocal()
@@ -28,11 +39,13 @@ def developer(user: User = Depends(auth)) -> User: return require_developer(user
 
 @app.on_event("startup")
 def startup():
-    init_db()
+    if AUTO_CREATE_DB:
+        init_db()
     with SessionLocal() as database:
-        if database.scalar(select(User).limit(1)) is None:
-            username=os.getenv("REVIEW_ADMIN_USER", "admin"); password=os.getenv("REVIEW_ADMIN_PASSWORD", "change-me-now")
-            database.add(User(username=username,password_hash=hash_password(password),role="developer")); database.commit()
+        database_is_empty = database.scalar(select(User.id).limit(1)) is None
+        validate_production_config(database_is_empty=database_is_empty)
+        if database_is_empty:
+            database.add(User(username=ADMIN_USER,password_hash=hash_password(ADMIN_PASSWORD or ""),role="developer")); database.commit()
         if database.scalar(select(SourceSnapshot).where(SourceSnapshot.status=="active")) is None:
             sync_catalog(database)
 
@@ -52,18 +65,50 @@ def active_snapshot(database: DBSession) -> SourceSnapshot:
     if not snapshot: raise HTTPException(503,"题库尚未同步")
     return snapshot
 
+@app.get("/healthz")
+def healthz(database: DBSession = Depends(db)):
+    database.execute(text("SELECT 1"))
+    if database.scalar(select(SourceSnapshot.id).where(SourceSnapshot.status == "active").limit(1)) is None:
+        raise HTTPException(503, "not ready")
+    return {"status": "ok"}
+
+def login_rate_limited(database: DBSession, username: str, source_ip: str) -> bool:
+    cutoff = datetime.now(timezone.utc) - timedelta(minutes=LOGIN_WINDOW_MINUTES)
+    count = database.scalar(select(func.count(LoginAttempt.id)).where(LoginAttempt.successful.is_(False), LoginAttempt.created_at >= cutoff, or_(LoginAttempt.username == username, LoginAttempt.source_ip == source_ip))) or 0
+    return count >= LOGIN_FAILURE_LIMIT
+
 @app.post("/api/v1/auth/login")
-def login(payload: LoginIn, response: Response, database: DBSession = Depends(db)):
+def login(payload: LoginIn, request: Request, response: Response, database: DBSession = Depends(db)):
+    source_ip = client_ip(request)
+    if login_rate_limited(database, payload.username, source_ip):
+        raise HTTPException(429, "登录尝试过多，请稍后重试")
     user=database.scalar(select(User).where(User.username==payload.username))
-    if not user or not user.active or not verify_password(payload.password,user.password_hash): raise HTTPException(401,"用户名或密码错误")
-    token,csrf=create_session(database,user); response.set_cookie("review_session",token,httponly=True,samesite="lax",secure=False,max_age=604800); return {"user":{"id":user.id,"username":user.username,"role":user.role},"csrf_token":csrf}
+    successful = bool(user and user.active and verify_password(payload.password,user.password_hash))
+    database.add(LoginAttempt(username=payload.username, source_ip=source_ip, successful=successful))
+    database.commit()
+    if not successful: raise HTTPException(401,"用户名或密码错误")
+    token,csrf=create_session(database,user); response.set_cookie("review_session",token,httponly=True,samesite="lax",secure=COOKIE_SECURE,max_age=604800,path="/"); return {"user":{"id":user.id,"username":user.username,"role":user.role},"csrf_token":csrf}
 
 @app.post("/api/v1/auth/logout")
 def logout(response: Response, request: Request, database: DBSession = Depends(db), user: User = Depends(auth)):
-    response.delete_cookie("review_session"); return {"ok":True}
+    token = request.cookies.get("review_session")
+    if token:
+        session = database.get(UserSession, session_token_hash(token))
+        if session:
+            database.delete(session); database.commit()
+    response.delete_cookie("review_session", path="/", secure=COOKIE_SECURE, httponly=True, samesite="lax"); return {"ok":True}
 
 @app.get("/api/v1/auth/me")
 def me(user: User = Depends(auth)): return {"id":user.id,"username":user.username,"role":user.role}
+
+@app.post("/api/v1/auth/password")
+def change_password(payload: PasswordChangeIn, response: Response, database: DBSession=Depends(db), user: User=Depends(auth)):
+    if not verify_password(payload.current_password, user.password_hash):
+        raise HTTPException(400, "当前密码错误")
+    user.password_hash = hash_password(payload.new_password)
+    revoke_user_sessions(database, user.id); database.commit()
+    response.delete_cookie("review_session", path="/", secure=COOKIE_SECURE, httponly=True, samesite="lax")
+    return {"ok": True, "login_required": True}
 
 @app.get("/api/v1/users")
 def users(database: DBSession=Depends(db), user: User=Depends(developer)):
@@ -74,6 +119,35 @@ def create_user(payload: UserIn, database: DBSession=Depends(db), user: User=Dep
     if database.scalar(select(User).where(User.username==payload.username)):
         raise HTTPException(409,"用户名已存在")
     row=User(username=payload.username,password_hash=hash_password(payload.password),role=payload.role); database.add(row); database.commit(); database.refresh(row); return {"id":row.id,"username":row.username,"role":row.role}
+
+def ensure_another_developer(database: DBSession, target: User, *, active: bool | None = None, role: str | None = None) -> None:
+    removes_developer = target.role == "developer" and (active is False or role == "collaborator")
+    if removes_developer:
+        count = database.scalar(select(func.count(User.id)).where(User.role == "developer", User.active.is_(True))) or 0
+        if count <= 1:
+            raise HTTPException(409, "不能停用或降级最后一个开发者")
+
+@app.patch("/api/v1/users/{user_id}")
+def update_user(user_id: int, payload: UserUpdateIn, database: DBSession=Depends(db), actor: User=Depends(developer)):
+    target = database.get(User, user_id)
+    if not target: raise HTTPException(404, "用户不存在")
+    ensure_another_developer(database, target, active=payload.active, role=payload.role)
+    if payload.active is not None: target.active = payload.active
+    if payload.role is not None: target.role = payload.role
+    if not target.active: revoke_user_sessions(database, target.id)
+    database.commit(); return {"id":target.id,"username":target.username,"role":target.role,"active":target.active}
+
+@app.post("/api/v1/users/{user_id}/password")
+def reset_password(user_id: int, payload: PasswordResetIn, database: DBSession=Depends(db), actor: User=Depends(developer)):
+    target = database.get(User, user_id)
+    if not target: raise HTTPException(404, "用户不存在")
+    target.password_hash = hash_password(payload.new_password); revoke_user_sessions(database, target.id); database.commit()
+    return {"ok": True, "sessions_revoked": True}
+
+@app.delete("/api/v1/users/{user_id}/sessions")
+def revoke_sessions(user_id: int, database: DBSession=Depends(db), actor: User=Depends(developer)):
+    if not database.get(User, user_id): raise HTTPException(404, "用户不存在")
+    revoke_user_sessions(database, user_id); database.commit(); return {"ok": True}
 
 @app.get("/api/v1/tracks")
 def tracks(database: DBSession=Depends(db), user: User=Depends(auth)):

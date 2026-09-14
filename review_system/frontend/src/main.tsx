@@ -45,8 +45,8 @@ const answerLabel = (rule: any) => rule.standard_answer === null || rule.standar
   : displayValue(rule.standard_answer);
 
 function Login({ onLogin }: { onLogin: () => void }) {
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('change-me-now');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><p className="muted">登录后查看题目、评分规则与协作批注。</p><input value={username} onChange={e => setUsername(e.target.value)} placeholder="用户名"/><input value={password} onChange={e => setPassword(e.target.value)} placeholder="密码" type="password"/><button onClick={async () => { try { const result = await api('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) }); localStorage.setItem('csrf', result.csrf_token); onLogin(); } catch { setError('登录失败，请检查账号。'); } }}>进入工作台</button>{error && <p className="error">{error}</p>}</div></main>;

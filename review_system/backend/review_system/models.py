@@ -23,6 +23,14 @@ class Session(Base):
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     user = relationship("User")
 
+class LoginAttempt(Base):
+    __tablename__ = "login_attempts"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(120), index=True)
+    source_ip: Mapped[str] = mapped_column(String(64), index=True)
+    successful: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+
 class SourceSnapshot(Base):
     __tablename__ = "source_snapshots"
     id: Mapped[int] = mapped_column(primary_key=True)
