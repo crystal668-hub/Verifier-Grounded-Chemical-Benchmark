@@ -1,17 +1,18 @@
 import io, json, zipfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import Request, Response
 from sqlalchemy import delete, func, or_, select, text
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DBSession
 from .config import ADMIN_PASSWORD, ADMIN_USER, ALLOWED_ORIGINS, AUTO_CREATE_DB, COOKIE_SECURE, LOGIN_FAILURE_LIMIT, LOGIN_WINDOW_MINUTES, MAX_ATTACHMENT_BYTES, DATA_DIR, validate_production_config
 from .db import SessionLocal, init_db
 from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User
-from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, UserIn, UserUpdateIn
+from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, RegisterIn, UserIn, UserUpdateIn
 from .security import client_ip, create_session, current_user, hash_password, require_developer, revoke_user_sessions, session_token_hash, verify_password
 from .source import load_catalog, schema_view, scoring_view, split_attachments
 from verifier_grounded_benchmark import load_track
@@ -88,6 +89,23 @@ def login(payload: LoginIn, request: Request, response: Response, database: DBSe
     database.commit()
     if not successful: raise HTTPException(401,"用户名或密码错误")
     token,csrf=create_session(database,user); response.set_cookie("review_session",token,httponly=True,samesite="lax",secure=COOKIE_SECURE,max_age=604800,path="/"); return {"user":{"id":user.id,"username":user.username,"role":user.role},"csrf_token":csrf}
+
+@app.post("/api/v1/auth/register", status_code=status.HTTP_201_CREATED)
+def register(payload: RegisterIn, request: Request, response: Response, database: DBSession = Depends(db)):
+    username = payload.username.strip()
+    if not username:
+        raise HTTPException(422, "用户名不能为空")
+    user = User(username=username, password_hash=hash_password(payload.password), role="collaborator", active=True)
+    database.add(user)
+    try:
+        database.commit()
+    except IntegrityError:
+        database.rollback()
+        raise HTTPException(409, "用户名已存在") from None
+    database.refresh(user)
+    token, csrf = create_session(database, user)
+    response.set_cookie("review_session", token, httponly=True, samesite="lax", secure=COOKIE_SECURE, max_age=604800, path="/")
+    return {"user": {"id": user.id, "username": user.username, "role": user.role}, "csrf_token": csrf}
 
 @app.post("/api/v1/auth/logout")
 def logout(response: Response, request: Request, database: DBSession = Depends(db), user: User = Depends(auth)):
