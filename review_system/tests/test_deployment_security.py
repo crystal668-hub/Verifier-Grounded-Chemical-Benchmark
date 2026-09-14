@@ -4,6 +4,7 @@ from starlette.responses import Response
 
 import pytest
 from fastapi import HTTPException
+from pydantic import ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session as DBSession
 
@@ -56,13 +57,18 @@ def test_self_service_registration_creates_collaborator_and_session():
     request = Request({"type": "http", "method": "POST", "path": "/api/v1/auth/register", "headers": [], "client": ("127.0.0.1", 1), "scheme": "http"})
     response = Response()
     with DBSession(engine, expire_on_commit=False) as database:
-        result = register(RegisterIn(username="  new-reviewer  ", password="correct horse battery"), request, response, database)
+        result = register(RegisterIn(username="  new-reviewer  ", password="123456"), request, response, database)
         user = database.scalar(select(User).where(User.username == "new-reviewer"))
         assert result["user"]["role"] == "collaborator"
         assert user is not None
         assert user.active is True
         assert database.query(Session).filter_by(user_id=user.id).count() == 1
         assert response.headers.get("set-cookie", "").startswith("review_session=")
+
+
+def test_self_service_registration_rejects_password_shorter_than_six_characters():
+    with pytest.raises(ValidationError):
+        RegisterIn(username="reviewer", password="12345")
 
 
 def test_self_service_registration_rejects_duplicate_username():

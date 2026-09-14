@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 class LoginIn(BaseModel): username: str; password: str
 class RegisterIn(BaseModel):
     username: str = Field(min_length=1, max_length=120)
-    password: str = Field(min_length=12)
+    password: str = Field(min_length=6)
 class UserIn(BaseModel): username: str = Field(min_length=1, max_length=120); password: str = Field(min_length=12); role: Literal["developer","collaborator"] = "collaborator"
 class PasswordChangeIn(BaseModel): current_password: str; new_password: str = Field(min_length=12)
 class PasswordResetIn(BaseModel): new_password: str = Field(min_length=12)
