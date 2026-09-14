@@ -4,4 +4,4 @@
 
 界面使用目录、题目主面板、附件栏三栏布局。中栏只展示题干、规则、schema 元数据和题目级讨论；附件正文、图片或 PDF 预览只允许在右栏附件查看器中呈现。CIF/XYZ 等长输入通过展示层引用拆分，不改变源码内容。
 
-开发者通过 `POST /api/v1/source-sync` 显式同步源码，草稿审批后由 `GET /api/v1/drafts/{id}/export` 导出 ZIP，开发者再通过 Git 合入并重新部署。默认适合小团队单机部署，使用 `docker compose up --build` 启动。
+开发者通过 `POST /api/v1/source-sync` 显式同步源码，草稿审批后由 `GET /api/v1/drafts/{id}/export` 导出 ZIP，开发者再通过 Git 合入并重新部署。默认适合小团队单机部署。开发、构建和部署统一通过 `review_system/scripts/pipeline.sh` 执行；生产镜像使用 commit/version 标签，Sealtun 更新仍需显式执行。
