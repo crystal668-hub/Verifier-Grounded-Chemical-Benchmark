@@ -1,11 +1,11 @@
-FROM node:22-alpine AS frontend
+FROM node:24-bookworm-slim AS frontend
 WORKDIR /app
 COPY review_system/frontend/package.json review_system/frontend/package-lock.json* ./
 RUN npm ci
 COPY review_system/frontend ./
 RUN npm run build
 
-FROM python:3.12-slim
+FROM python:3.12-slim-bookworm
 WORKDIR /app
 COPY review_system/backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
