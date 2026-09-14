@@ -18,6 +18,10 @@ const api = async (path: string, options: RequestInit = {}) => {
 
 const displayValue = (value: any) => {
   if (value === null || value === undefined || value === '') return '—';
+  if (typeof value === 'number') {
+    if (value !== 0 && (Math.abs(value) >= 1e6 || Math.abs(value) < 1e-4)) return value.toExponential(5);
+    return new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 8 }).format(value);
+  }
   if (typeof value === 'object') return JSON.stringify(value);
   return String(value);
 };
@@ -37,7 +41,18 @@ const fullScoreLabel = (rule: any) => {
 
 const scoreRangeLabel = (rule: any) => {
   const range = rule.score_range;
-  return range ? `${displayValue(range.min)} – ${displayValue(range.max)}` : '0 – 1';
+  if (!range) return '未定义';
+  const unit = range.unit ? ` ${range.unit}` : '';
+  if (range.kind === 'lower_bounded') return `> ${displayValue(range.min)}${unit}`;
+  if (range.kind === 'upper_bounded') return `< ${displayValue(range.max)}${unit}`;
+  if (range.kind === 'interval') return `(${displayValue(range.min)}, ${displayValue(range.max)})${unit}`;
+  if (range.kind === 'absolute_interval') {
+    const lower = range.min_exclusive ? `> ${displayValue(range.min)}` : `≥ ${displayValue(range.min)}`;
+    return `${lower} 且 < ${displayValue(range.max)}${unit}（按绝对值评分）`;
+  }
+  if (range.kind === 'values') return range.values.map(displayValue).join('、');
+  if (range.kind === 'atom_identity') return range.same_element_scores ? `${displayValue(range.value)}，或同元素的有效原子标识` : displayValue(range.value);
+  return '按配置定义';
 };
 
 const typeLabel = (type: string | undefined) => ({
@@ -49,11 +64,32 @@ const answerLabel = (rule: any) => rule.standard_answer === null || rule.standar
   : displayValue(rule.standard_answer);
 
 function Login({ onLogin }: { onLogin: () => void }) {
+  const [registering, setRegistering] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState('');
 
-  return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><p className="muted">登录后查看题目、评分规则与协作批注。</p><input value={username} onChange={e => setUsername(e.target.value)} placeholder="用户名"/><input value={password} onChange={e => setPassword(e.target.value)} placeholder="密码" type="password"/><button onClick={async () => { try { const result = await api('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) }); localStorage.setItem('csrf', result.csrf_token); onLogin(); } catch { setError('登录失败，请检查账号。'); } }}>进入工作台</button>{error && <p className="error">{error}</p>}</div></main>;
+  const submit = async () => {
+    setError('');
+    if (registering && password !== passwordConfirmation) {
+      setError('两次输入的密码不一致。');
+      return;
+    }
+    try {
+      const result = await api(registering ? '/api/v1/auth/register' : '/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      localStorage.setItem('csrf', result.csrf_token);
+      onLogin();
+    } catch (requestError) {
+      setError(registering ? '注册失败，请检查用户名或密码。' : '登录失败，请检查账号。');
+    }
+  };
+
+  return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>{registering ? '创建审核账号' : '题目审核工作台'}</h1><p className="muted">{registering ? '注册后即可加入题目审核协作。' : '登录后查看题目、评分规则与协作批注。'}</p><form onSubmit={event => { event.preventDefault(); void submit(); }}><input value={username} onChange={e => setUsername(e.target.value)} placeholder="用户名" autoComplete={registering ? 'username' : 'username'} required/><input value={password} onChange={e => setPassword(e.target.value)} placeholder="密码（至少 12 位）" type="password" autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 12 : undefined} required/>{registering && <input value={passwordConfirmation} onChange={e => setPasswordConfirmation(e.target.value)} placeholder="再次输入密码" type="password" autoComplete="new-password" minLength={12} required/>}<button type="submit">{registering ? '注册并进入工作台' : '进入工作台'}</button></form>{error && <p className="error">{error}</p>}<button className="login-switch" type="button" onClick={() => { setRegistering(value => !value); setError(''); }}>{registering ? '已有账号？返回登录' : '没有账号？注册账号'}</button></div></main>;
 }
 
 function App() {
@@ -239,7 +275,7 @@ function App() {
           <div className="tabs"><button className={activeTab === 'content' ? 'selected' : ''} onClick={() => setActiveTab('content')}>题目内容</button><button className={activeTab === 'scoring' ? 'selected' : ''} onClick={() => setActiveTab('scoring')}>评分细则</button><button className={activeTab === 'schema' ? 'selected' : ''} onClick={() => setActiveTab('schema')}>Schema</button><button className={activeTab === 'discussion' ? 'selected' : ''} onClick={() => setActiveTab('discussion')}>讨论 <span>{comments.length}</span></button></div>
           <article>
             {activeTab === 'content' && <div className="prompt-card"><div className="section-label">题目说明</div><p className="prompt">{promptParts.map((part, index) => <React.Fragment key={index}>{part}{index < promptParts.length - 1 && <button className="attachment-ref" onClick={() => openAttachment(detail.attachments?.[index])}><FileText size={14} />{attachmentLoading === detail.attachments?.[index]?.name ? '加载中…' : '在右栏查看附件'}</button>}</React.Fragment>)}</p></div>}
-            {activeTab === 'scoring' && <div className="scoring-panel"><div className="scoring-overview"><div><p className="eyebrow">SCORING POLICY</p><h2>评分细则</h2></div><div className="scoring-chips"><span>{scoring?.field_count || 0} 个评分字段</span><span>{scoring?.aggregation || '独立评分'}</span><span>得分区间 0 – 1</span></div></div>{scoring?.is_multi_field && <div className="multi-field-note"><strong>多字段题目</strong><span>每个字段分别按下列规则评分，再按聚合方式合并。</span></div>}<div className="scoring-rules">{scoring?.rules?.map((rule: any) => <section className="scoring-rule" key={rule.property}><div className="scoring-rule-head"><strong>{rule.property}</strong><div><span className="rule-role">{rule.role || 'main'}</span><span className="rule-type">{typeLabel(rule.type || rule.profile?.type)}</span></div></div><div className="scoring-rule-grid"><div><small>标准答案</small><b>{answerLabel(rule)}</b></div><div><small>满分条件</small><b>{fullScoreLabel(rule)}</b></div><div><small>得分区间</small><b>{scoreRangeLabel(rule)}</b></div></div><div className="rule-extra"><small>单位</small><span>{rule.unit || rule.profile?.unit || '—'}</span></div>{rule.scoring_profile && <div className="rule-extra"><small>评分配置</small><span>{rule.scoring_profile}</span></div>}</section>)}</div>{!scoring?.rules?.length && <div className="scoring-empty">本题没有可展示的评分规则。</div>}{scoring?.failure_policy && Object.keys(scoring.failure_policy).length > 0 && <details className="failure-policy"><summary>失败处理规则</summary><div>{Object.entries(scoring.failure_policy).map(([key, value]) => <span key={key}><b>{key}</b>{displayValue(value)}</span>)}</div></details>}</div>}
+            {activeTab === 'scoring' && <div className="scoring-panel"><div className="scoring-overview"><div><p className="eyebrow">SCORING POLICY</p><h2>评分细则</h2></div><div className="scoring-chips"><span>{scoring?.field_count || 0} 个评分字段</span><span>{scoring?.aggregation || '独立评分'}</span></div></div>{scoring?.is_multi_field && <div className="multi-field-note"><strong>多字段题目</strong><span>每个字段分别按下列规则评分，再按聚合方式合并。</span></div>}<div className="scoring-rules">{scoring?.rules?.map((rule: any) => <section className="scoring-rule" key={rule.property}><div className="scoring-rule-head"><strong>{rule.property}</strong><div><span className="rule-role">{rule.role || 'main'}</span><span className="rule-type">{typeLabel(rule.type || rule.profile?.type)}</span></div></div><div className="scoring-rule-grid"><div><small>标准答案</small><b>{answerLabel(rule)}</b></div><div><small>满分条件</small><b>{fullScoreLabel(rule)}</b></div><div><small>得分区间（得分 &gt; 0）</small><b>{scoreRangeLabel(rule)}</b></div></div><div className="rule-extra"><small>单位</small><span>{rule.unit || rule.profile?.unit || '—'}</span></div>{rule.scoring_profile && <div className="rule-extra"><small>评分配置</small><span>{rule.scoring_profile}</span></div>}</section>)}</div>{!scoring?.rules?.length && <div className="scoring-empty">本题没有可展示的评分规则。</div>}{scoring?.failure_policy && Object.keys(scoring.failure_policy).length > 0 && <details className="failure-policy"><summary>失败处理规则</summary><div>{Object.entries(scoring.failure_policy).map(([key, value]) => <span key={key}><b>{key}</b>{displayValue(value)}</span>)}</div></details>}</div>}
             {activeTab === 'schema' && <div className="meta-card"><div className="section-label">Schema 元数据</div><pre>{JSON.stringify(schema, null, 2)}</pre></div>}
             {activeTab === 'discussion' && <div className="discussion"><div className="section-label"><MessageCircle size={15} />题目讨论</div>{comments.map(item => <div className="comment" key={item.id}><b>{item.author}</b><span>{item.body}</span></div>)}<div className="comment-box"><input value={comment} onChange={event => setComment(event.target.value)} placeholder="写下审核备注…" onKeyDown={event => { if (event.key === 'Enter') void sendComment(); }} /><button onClick={() => void sendComment()} disabled={commentSending || !comment.trim()} aria-label="发布批注"><Send size={15} /></button></div></div>}
           </article>
