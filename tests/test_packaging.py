@@ -91,6 +91,8 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert {f"src/{path}" for path in REMOVED_LEGACY_PACKAGES}.isdisjoint(sdist_members)
     assert not any(path.startswith("tasks/") for path in wheel_members)
     assert not any(path.startswith("tasks/") for path in sdist_members)
+    assert not any(path.startswith("review_system/") for path in wheel_members)
+    assert not any(path.startswith("review_system/") for path in sdist_members)
     assert FORMAL_V2_TASK_FILES.issubset(wheel_members)
     assert {f"src/{path}" for path in FORMAL_V2_TASK_FILES}.issubset(sdist_members)
     assert not any("/task/calibration/" in path for path in wheel_members)
