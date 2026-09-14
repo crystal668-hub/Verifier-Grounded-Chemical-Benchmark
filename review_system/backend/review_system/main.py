@@ -122,6 +122,14 @@ def resolve_comment(comment_id: int, database: DBSession=Depends(db), user: User
     if not row: raise HTTPException(404,"批注不存在")
     row.resolved=True; database.commit(); return {"ok":True}
 
+@app.post("/api/v1/tasks/{task_id}/review")
+def review_task(task_id: str, payload: DecisionIn, database: DBSession=Depends(db), user: User=Depends(developer)):
+    task = database.scalar(select(SnapshotTask).where(SnapshotTask.task_id == task_id))
+    if not task: raise HTTPException(404, "题目不存在")
+    previous = task.review_status; task.review_status = payload.status
+    database.add(ReviewEvent(target_type="task", target_id=task_id, from_status=previous, to_status=payload.status, note=payload.note, actor_id=user.id)); database.commit()
+    return {"task_id": task_id, "status": task.review_status}
+
 @app.post("/api/v1/source-sync")
 def source_sync(database: DBSession=Depends(db), user: User=Depends(developer)):
     try: snapshot=sync_catalog(database); return {"ok":True,"snapshot_id":snapshot.id,"fingerprint":snapshot.fingerprint}
