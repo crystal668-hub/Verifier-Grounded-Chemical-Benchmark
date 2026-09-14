@@ -1,10 +1,8 @@
 version: v1
 tunnels:
-  - name: vgb-review
+  - name: realchem-review-panel
     localPort: 8000
     protocol: https
-    domain: realchem-review-panel.com
-    waitDomain: true
     basicAuth:
       username: vgb-review
       passwordEnv: SEALTUN_BASIC_AUTH_PASSWORD
