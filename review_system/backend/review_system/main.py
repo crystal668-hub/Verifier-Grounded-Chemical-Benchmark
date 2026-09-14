@@ -177,7 +177,7 @@ def task_scoring(track: str, task_id: str, database: DBSession=Depends(db), user
     # Older snapshots predate profile-aware scoring displays. Rebuild this read-only
     # view from the immutable task payload so existing databases gain the richer UI
     # without mutating or replacing their audit snapshot.
-    if not stored.get("rules") or any(not rule.get("profile") for rule in stored.get("rules", [])):
+    if not stored.get("rules") or any(not rule.get("profile") or not rule.get("full_score_region") for rule in stored.get("rules", [])):
         raw = json.loads(task.data_json)
         stored = scoring_view(raw, load_track(track)._task_pack.scoring_profiles)
     return stored

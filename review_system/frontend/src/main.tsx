@@ -22,18 +22,22 @@ const displayValue = (value: any) => {
   return String(value);
 };
 
-const rangeLabel = (rule: any) => {
+const fullScoreLabel = (rule: any) => {
+  const region = rule.full_score_region;
+  if (!region) return '未定义';
+  const unit = region.unit ? ` ${region.unit}` : '';
+  if (region.kind === 'interval') return `${displayValue(region.min)} – ${displayValue(region.max)}${unit}`;
+  if (region.kind === 'lower_bounded') return `≥ ${displayValue(region.boundary)}${unit}`;
+  if (region.kind === 'upper_bounded') return `≤ ${displayValue(region.boundary)}${unit}`;
+  if (region.kind === 'point') return `${displayValue(region.value)}${unit}（单点）`;
+  if (region.kind === 'exact') return `精确匹配：${displayValue(region.value)}`;
+  if (region.kind === 'identity') return `${displayValue(region.value)}（结构身份）`;
+  return '按配置定义';
+};
+
+const scoreRangeLabel = (rule: any) => {
   const range = rule.score_range;
-  if (!range) return '按配置评分';
-  const unit = range.unit ? ` ${range.unit}` : '';
-  if (range.kind === '满分区间') return `${displayValue(range.min)} – ${displayValue(range.max)}${unit} 满分`;
-  if (range.kind === '误差范围') return `${displayValue(range.min)} – ${displayValue(range.max)}${unit} 满分`;
-  if (range.kind === '越高越好') return `≥ ${displayValue(range.full_score_target)}${unit} 满分；≤ ${displayValue(range.zero_score_anchor)}${unit} 0 分`;
-  if (range.kind === '越低越好') return `≤ ${displayValue(range.full_score_target)}${unit} 满分；≥ ${displayValue(range.zero_score_anchor)}${unit} 0 分`;
-  if (range.kind === '目标值') return `目标 ${displayValue(range.target)}${unit}`;
-  if (range.kind === '精确匹配') return `精确匹配：${displayValue(range.expected)}`;
-  if (range.kind === '结构身份匹配') return '按结构身份匹配';
-  return '按配置评分';
+  return range ? `${displayValue(range.min)} – ${displayValue(range.max)}` : '0 – 1';
 };
 
 const typeLabel = (type: string | undefined) => ({
@@ -235,7 +239,7 @@ function App() {
           <div className="tabs"><button className={activeTab === 'content' ? 'selected' : ''} onClick={() => setActiveTab('content')}>题目内容</button><button className={activeTab === 'scoring' ? 'selected' : ''} onClick={() => setActiveTab('scoring')}>评分细则</button><button className={activeTab === 'schema' ? 'selected' : ''} onClick={() => setActiveTab('schema')}>Schema</button><button className={activeTab === 'discussion' ? 'selected' : ''} onClick={() => setActiveTab('discussion')}>讨论 <span>{comments.length}</span></button></div>
           <article>
             {activeTab === 'content' && <div className="prompt-card"><div className="section-label">题目说明</div><p className="prompt">{promptParts.map((part, index) => <React.Fragment key={index}>{part}{index < promptParts.length - 1 && <button className="attachment-ref" onClick={() => openAttachment(detail.attachments?.[index])}><FileText size={14} />{attachmentLoading === detail.attachments?.[index]?.name ? '加载中…' : '在右栏查看附件'}</button>}</React.Fragment>)}</p></div>}
-            {activeTab === 'scoring' && <div className="scoring-panel"><div className="scoring-overview"><div><p className="eyebrow">SCORING POLICY</p><h2>评分细则</h2></div><div className="scoring-chips"><span>{scoring?.field_count || 0} 个评分字段</span><span>{scoring?.aggregation || '独立评分'}</span></div></div>{scoring?.is_multi_field && <div className="multi-field-note"><strong>多字段题目</strong><span>每个字段分别按下列规则评分，再按聚合方式合并。</span></div>}<div className="scoring-rules">{scoring?.rules?.map((rule: any) => <section className="scoring-rule" key={rule.property}><div className="scoring-rule-head"><strong>{rule.property}</strong><div><span className="rule-role">{rule.role || 'main'}</span><span className="rule-type">{typeLabel(rule.type || rule.profile?.type)}</span></div></div><div className="scoring-rule-grid"><div><small>标准答案</small><b>{answerLabel(rule)}</b></div><div><small>得分条件</small><b>{rangeLabel(rule)}</b></div><div><small>单位</small><b>{rule.unit || rule.profile?.unit || '—'}</b></div></div>{rule.scoring_profile && <div className="rule-extra"><small>评分配置</small><span>{rule.scoring_profile}</span></div>}</section>)}</div>{!scoring?.rules?.length && <div className="scoring-empty">本题没有可展示的评分规则。</div>}{scoring?.failure_policy && Object.keys(scoring.failure_policy).length > 0 && <details className="failure-policy"><summary>失败处理规则</summary><div>{Object.entries(scoring.failure_policy).map(([key, value]) => <span key={key}><b>{key}</b>{displayValue(value)}</span>)}</div></details>}</div>}
+            {activeTab === 'scoring' && <div className="scoring-panel"><div className="scoring-overview"><div><p className="eyebrow">SCORING POLICY</p><h2>评分细则</h2></div><div className="scoring-chips"><span>{scoring?.field_count || 0} 个评分字段</span><span>{scoring?.aggregation || '独立评分'}</span><span>得分区间 0 – 1</span></div></div>{scoring?.is_multi_field && <div className="multi-field-note"><strong>多字段题目</strong><span>每个字段分别按下列规则评分，再按聚合方式合并。</span></div>}<div className="scoring-rules">{scoring?.rules?.map((rule: any) => <section className="scoring-rule" key={rule.property}><div className="scoring-rule-head"><strong>{rule.property}</strong><div><span className="rule-role">{rule.role || 'main'}</span><span className="rule-type">{typeLabel(rule.type || rule.profile?.type)}</span></div></div><div className="scoring-rule-grid"><div><small>标准答案</small><b>{answerLabel(rule)}</b></div><div><small>满分条件</small><b>{fullScoreLabel(rule)}</b></div><div><small>得分区间</small><b>{scoreRangeLabel(rule)}</b></div></div><div className="rule-extra"><small>单位</small><span>{rule.unit || rule.profile?.unit || '—'}</span></div>{rule.scoring_profile && <div className="rule-extra"><small>评分配置</small><span>{rule.scoring_profile}</span></div>}</section>)}</div>{!scoring?.rules?.length && <div className="scoring-empty">本题没有可展示的评分规则。</div>}{scoring?.failure_policy && Object.keys(scoring.failure_policy).length > 0 && <details className="failure-policy"><summary>失败处理规则</summary><div>{Object.entries(scoring.failure_policy).map(([key, value]) => <span key={key}><b>{key}</b>{displayValue(value)}</span>)}</div></details>}</div>}
             {activeTab === 'schema' && <div className="meta-card"><div className="section-label">Schema 元数据</div><pre>{JSON.stringify(schema, null, 2)}</pre></div>}
             {activeTab === 'discussion' && <div className="discussion"><div className="section-label"><MessageCircle size={15} />题目讨论</div>{comments.map(item => <div className="comment" key={item.id}><b>{item.author}</b><span>{item.body}</span></div>)}<div className="comment-box"><input value={comment} onChange={event => setComment(event.target.value)} placeholder="写下审核备注…" onKeyDown={event => { if (event.key === 'Enter') void sendComment(); }} /><button onClick={() => void sendComment()} disabled={commentSending || !comment.trim()} aria-label="发布批注"><Send size={15} /></button></div></div>}
           </article>

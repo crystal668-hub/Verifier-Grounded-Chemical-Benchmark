@@ -52,26 +52,23 @@ def _plain(value: Any) -> Any:
     return deepcopy(value)
 
 
-def _score_range(profile: Mapping[str, Any], gold: Mapping[str, Any] | None) -> dict[str, Any] | None:
+def _full_score_region(profile: Mapping[str, Any], gold: Mapping[str, Any] | None) -> dict[str, Any] | None:
     profile_type = profile.get("type")
     if profile_type == "window":
         full_score = profile.get("full_score", {})
-        return {"kind": "满分区间", "min": full_score.get("min"), "max": full_score.get("max"), "unit": profile.get("unit")}
+        return {"kind": "interval", "min": full_score.get("min"), "max": full_score.get("max"), "unit": profile.get("unit")}
     if profile_type == "maximize":
-        return {"kind": "越高越好", "full_score_target": profile.get("full_score_target"), "zero_score_anchor": profile.get("zero_score_anchor"), "unit": profile.get("unit")}
+        return {"kind": "lower_bounded", "boundary": profile.get("full_score_target"), "zero_score_anchor": profile.get("zero_score_anchor"), "unit": profile.get("unit")}
     if profile_type == "minimize":
-        return {"kind": "越低越好", "full_score_target": profile.get("full_score_target"), "zero_score_anchor": profile.get("zero_score_anchor"), "unit": profile.get("unit")}
+        return {"kind": "upper_bounded", "boundary": profile.get("full_score_target"), "zero_score_anchor": profile.get("zero_score_anchor"), "unit": profile.get("unit")}
     if profile_type == "target":
-        return {"kind": "目标值", "target": profile.get("full_score_target"), "unit": profile.get("unit")}
+        return {"kind": "point", "value": profile.get("full_score_target"), "unit": profile.get("unit")}
     if profile_type == "numeric_gold" and gold is not None and isinstance(gold.get("value"), (int, float)):
-        value = float(gold["value"])
-        lower = profile.get("lower_tolerance")
-        upper = profile.get("upper_tolerance")
-        return {"kind": "误差范围", "min": value - lower if isinstance(lower, (int, float)) else None, "max": value + upper if isinstance(upper, (int, float)) else None, "tolerance": {"lower": lower, "upper": upper}, "unit": gold.get("unit") or profile.get("unit")}
+        return {"kind": "point", "value": gold.get("value"), "unit": gold.get("unit") or profile.get("unit"), "tolerance": {"lower": profile.get("lower_tolerance"), "upper": profile.get("upper_tolerance")}}
     if profile_type == "exact_string" and gold is not None:
-        return {"kind": "精确匹配", "expected": gold.get("value")}
+        return {"kind": "exact", "value": gold.get("value")}
     if profile_type == "atom_identity":
-        return {"kind": "结构身份匹配", "element_partial_score": profile.get("element_partial_score")}
+        return {"kind": "identity", "value": gold.get("value") if gold else None, "element_partial_score": profile.get("element_partial_score")}
     return None
 
 
@@ -88,7 +85,8 @@ def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]]
         item["profile"] = profile
         item["standard_answer"] = gold.get("value") if gold else None
         item["unit"] = (gold or {}).get("unit") or profile.get("unit") or item.get("unit")
-        item["score_range"] = _score_range(profile, gold)
+        item["full_score_region"] = _full_score_region(profile, gold)
+        item["score_range"] = {"kind": "得分区间", "min": 0.0, "max": 1.0}
         try:
             if profile.get("type") in {"target", "window", "maximize", "minimize", "numeric_gold"}:
                 goal = linear_goal_from_profile(profile, gold=(gold or {}).get("value"))
@@ -111,7 +109,8 @@ def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]]
             "profile": profile,
             "standard_answer": gold.get("value"),
             "unit": gold.get("unit") or profile.get("unit"),
-            "score_range": _score_range(profile, gold),
+            "full_score_region": _full_score_region(profile, gold),
+            "score_range": {"kind": "得分区间", "min": 0.0, "max": 1.0},
         })
     return {
         "aggregation": scoring.get("aggregation"),

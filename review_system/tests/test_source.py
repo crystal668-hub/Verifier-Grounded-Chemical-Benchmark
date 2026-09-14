@@ -50,9 +50,24 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
     assert scoring["field_count"] == 3
     answers = {rule["property"]: rule for rule in scoring["rules"]}
     assert answers["ambient_pressure_phase"]["standard_answer"] == "alpha"
-    assert answers["ambient_pressure_phase"]["score_range"]["kind"] == "精确匹配"
-    assert answers["potential_energy_difference"]["score_range"]["min"] == -0.921
+    assert answers["ambient_pressure_phase"]["full_score_region"]["kind"] == "exact"
+    assert answers["potential_energy_difference"]["full_score_region"]["kind"] == "point"
+    assert answers["potential_energy_difference"]["score_range"] == {"kind": "得分区间", "min": 0.0, "max": 1.0}
 
     rdkit = next(track for track in catalog["tracks"] if track["name"] == "rdkit")
     qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_qed_max_001")
     assert qed["scoring"]["rules"][0]["profile"]["full_score_target"] == 1.0
+
+
+def test_full_score_intervals_are_limited_to_window_profiles():
+    catalog = load_catalog()
+    interval_rules = [
+        rule
+        for track in catalog["tracks"]
+        for task in track["tasks"]
+        for rule in task["scoring"]["rules"]
+        if rule.get("full_score_region", {}).get("kind") == "interval"
+    ]
+    assert interval_rules
+    assert all(rule["type"] == "window" for rule in interval_rules)
+    assert all(rule["score_range"] == {"kind": "得分区间", "min": 0.0, "max": 1.0} for rule in interval_rules)
