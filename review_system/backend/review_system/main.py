@@ -13,7 +13,7 @@ from .db import SessionLocal, init_db
 from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User
 from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, UserIn, UserUpdateIn
 from .security import client_ip, create_session, current_user, hash_password, require_developer, revoke_user_sessions, session_token_hash, verify_password
-from .source import load_catalog, scoring_view
+from .source import load_catalog, schema_view, scoring_view, split_attachments
 from verifier_grounded_benchmark import load_track
 
 app=FastAPI(title="VGB Task Review API", version="0.1.0")
@@ -182,7 +182,13 @@ def task_scoring(track: str, task_id: str, database: DBSession=Depends(db), user
         stored = scoring_view(raw, load_track(track)._task_pack.scoring_profiles)
     return stored
 @app.get("/api/v1/tracks/{track}/tasks/{task_id}/schema")
-def task_schema(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)): return json.loads(find_task(track,task_id,database).schema_json)
+def task_schema(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)):
+    task = find_task(track, task_id, database)
+    stored = json.loads(task.schema_json)
+    if any(isinstance(item.get("value"), str) and len(item["value"].strip()) >= 80 for item in stored.get("input_objects", [])):
+        view, _attachments = split_attachments(json.loads(task.data_json))
+        stored = schema_view(view)
+    return stored
 @app.get("/api/v1/tracks/{track}/tasks/{task_id}/attachments")
 def task_attachments(track: str, task_id: str, database: DBSession=Depends(db), user: User=Depends(auth)): return {"attachments":[{k:v for k,v in a.items() if k not in {"content"}} for a in json.loads(find_task(track,task_id,database).attachments_json)]}
 
