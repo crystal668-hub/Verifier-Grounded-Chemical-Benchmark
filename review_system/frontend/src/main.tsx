@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, Check, ChevronDown, FileText, MessageCircle, PanelRight, RefreshCw, Search, Send, ShieldCheck, Trash2, X } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, FileText, KeyRound, MessageCircle, PanelRight, RefreshCw, Search, Send, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import './styles.css';
 
 type Track = { name: string; display_name: string; task_count: number };
 type Task = { task_id: string; version: number; status: string; summary: string };
 type Detail = Record<string, any>;
-type User = { id: number; username: string; role: string; active: boolean };
+type CurrentUser = { id: number; username: string; role: string };
+type User = CurrentUser & { active: boolean; created_at: string; password_changed_at: string | null };
 type Tab = 'content' | 'scoring' | 'schema' | 'discussion';
 type ResizeTarget = 'sidebar' | 'attachments';
 
@@ -72,7 +73,7 @@ const answerLabel = (rule: any) => rule.standard_answer === null || rule.standar
   ? (rule.type === 'gold_answer' ? '未提供' : '无固定答案（按目标评分）')
   : displayValue(rule.standard_answer);
 
-function Login({ onLogin }: { onLogin: () => void }) {
+function Login({ onLogin }: { onLogin: (user: CurrentUser) => void }) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -101,7 +102,7 @@ function Login({ onLogin }: { onLogin: () => void }) {
         body: JSON.stringify({ username, password }),
       });
       localStorage.setItem('csrf', result.csrf_token);
-      onLogin();
+      onLogin(result.user);
     } catch (requestError) {
       setError(apiErrorMessage(requestError, registering ? '注册失败，请稍后重试' : '登录失败，请检查账号'));
     } finally {
@@ -110,6 +111,48 @@ function Login({ onLogin }: { onLogin: () => void }) {
   };
 
   return <main className="login"><div className="login-card"><div className="mark">VGB</div><p className="eyebrow">VERIFIER GROUNDED BENCHMARK</p><h1>题目审核工作台</h1><div className="auth-modes" role="tablist" aria-label="账号入口"><button type="button" role="tab" aria-selected={!registering} className={!registering ? 'selected' : ''} onClick={() => switchMode('login')}>登录</button><button type="button" role="tab" aria-selected={registering} className={registering ? 'selected' : ''} onClick={() => switchMode('register')}>注册</button></div><p className="muted">{registering ? '创建协作者账号，加入题目审核。' : '登录后查看题目、评分规则与协作批注。'}</p><form onSubmit={event => { event.preventDefault(); void submit(); }}><input value={username} onChange={event => setUsername(event.target.value)} placeholder="用户名" aria-label="用户名" autoComplete="username" required/><input value={password} onChange={event => setPassword(event.target.value)} placeholder={registering ? '密码（至少 6 位）' : '密码'} aria-label="密码" type="password" autoComplete={registering ? 'new-password' : 'current-password'} minLength={registering ? 6 : undefined} required/>{registering && <input value={passwordConfirmation} onChange={event => setPasswordConfirmation(event.target.value)} placeholder="再次输入密码" aria-label="再次输入密码" type="password" autoComplete="new-password" minLength={6} required/>}<button type="submit" disabled={submitting}>{submitting ? '请稍候…' : registering ? '注册并进入工作台' : '进入工作台'}</button></form>{error && <p className="error" role="alert">{error}</p>}</div></main>;
+}
+
+function AccountDialog({ currentUser, onClose }: { currentUser: CurrentUser; onClose: () => void }) {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [usersLoading, setUsersLoading] = useState(currentUser.role === 'developer');
+  const passwordRequestId = useRef('');
+
+  useEffect(() => {
+    if (currentUser.role !== 'developer') return;
+    api('/api/v1/users').then(setUsers).catch(error => setError(apiErrorMessage(error, '注册用户加载失败'))).finally(() => setUsersLoading(false));
+  }, [currentUser.role]);
+
+  const changePassword = async () => {
+    setError('');
+    setSuccess('');
+    if (newPassword !== passwordConfirmation) {
+      setError('两次输入的新密码不一致');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      if (!passwordRequestId.current) passwordRequestId.current = crypto.randomUUID();
+      const result = await api('/api/v1/auth/password', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': localStorage.getItem('csrf') || '', 'Idempotency-Key': passwordRequestId.current }, body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }) });
+      setCurrentPassword('');
+      setNewPassword('');
+      setPasswordConfirmation('');
+      passwordRequestId.current = '';
+      setSuccess(result.changed ? '密码已修改，当前登录会话保持有效。' : '密码已是当前设置，无需重复修改。');
+    } catch (requestError) {
+      setError(apiErrorMessage(requestError, '密码修改失败，请重试'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}><section className="user-dialog account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title"><div className="user-dialog-head"><div><p className="eyebrow">ACCOUNT</p><h2 id="account-dialog-title">账户管理</h2></div><button className="close-button" aria-label="关闭账户管理" onClick={onClose}><X size={17} /></button></div><div className="account-summary"><div className="account-avatar">{currentUser.username.slice(0, 1).toUpperCase()}</div><span><b>{currentUser.username}</b><small>{currentUser.role === 'developer' ? '开发者' : '协作者'} · ID {currentUser.id}</small></span></div><form className="password-form" onSubmit={event => { event.preventDefault(); void changePassword(); }}><div className="section-label"><KeyRound size={14} />修改账户密码</div><label>当前密码<input value={currentPassword} onChange={event => { setCurrentPassword(event.target.value); passwordRequestId.current = ''; }} type="password" autoComplete="current-password" required/></label><label>新密码<input value={newPassword} onChange={event => { setNewPassword(event.target.value); passwordRequestId.current = ''; }} type="password" autoComplete="new-password" minLength={6} placeholder="至少 6 位" required/></label><label>确认新密码<input value={passwordConfirmation} onChange={event => setPasswordConfirmation(event.target.value)} type="password" autoComplete="new-password" minLength={6} required/></label>{error && <p className="error" role="alert">{error}</p>}{success && <p className="password-success" role="status">{success}</p>}<button className="change-password" type="submit" disabled={submitting}><KeyRound size={15} />{submitting ? '正在修改…' : '修改密码'}</button></form>{currentUser.role === 'developer' && <section className="registered-users"><div className="registered-users-head"><div className="section-label"><Users size={14} />全部注册用户</div><span>{users.length} 人</span></div>{usersLoading ? <p className="muted">正在加载用户…</p> : <div className="user-list">{users.map(user => <div className="user-row" key={user.id}><span><b>{user.username}</b><small>ID {user.id} · {user.role === 'developer' ? '开发者' : '协作者'} · 注册 {new Date(user.created_at).toLocaleString('zh-CN')}</small><small>最近改密 {user.password_changed_at ? new Date(user.password_changed_at).toLocaleString('zh-CN') : '未修改'}</small></span><em className={user.active ? 'active' : ''}>{user.active ? '启用' : '停用'}</em></div>)}</div>}</section>}</section></div>;
 }
 
 function ResultsModule({ onBack }: { onBack: () => void }) {
@@ -124,6 +167,7 @@ function ResultsModule({ onBack }: { onBack: () => void }) {
 function App() {
   const [module, setModule] = useState<'review'|'results'>('review');
   const [logged, setLogged] = useState(false);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [tracks, setTracks] = useState<Track[]>([]);
   const [track, setTrack] = useState('');
   const [expandedTrack, setExpandedTrack] = useState('');
@@ -147,9 +191,7 @@ function App() {
   const [attachmentWidth, setAttachmentWidth] = useState(320);
   const [resizeTarget, setResizeTarget] = useState<ResizeTarget | null>(null);
   const [notice, setNotice] = useState('');
-  const [users, setUsers] = useState<User[]>([]);
   const [userDialog, setUserDialog] = useState(false);
-  const [usersLoading, setUsersLoading] = useState(false);
   const noticeTimer = useRef<number | undefined>(undefined);
   const resizeState = useRef<{ target: ResizeTarget; startX: number; startWidth: number } | null>(null);
 
@@ -191,18 +233,6 @@ function App() {
       notify('刷新失败，请稍后重试');
     } finally {
       setRefreshing(false);
-    }
-  };
-
-  const openUsers = async () => {
-    setUserDialog(true);
-    setUsersLoading(true);
-    try {
-      setUsers(await api('/api/v1/users'));
-    } catch {
-      notify('无法加载用户管理');
-    } finally {
-      setUsersLoading(false);
     }
   };
 
@@ -272,7 +302,7 @@ function App() {
     return () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', stop); };
   }, [resizeTarget]);
 
-  useEffect(() => { api('/api/v1/auth/me').then(() => setLogged(true)).catch(() => {}); }, []);
+  useEffect(() => { api('/api/v1/auth/me').then(user => { setCurrentUser(user); setLogged(true); }).catch(() => {}); }, []);
   useEffect(() => {
     if (!logged) return;
     api('/api/v1/tracks').then(result => {
@@ -295,7 +325,7 @@ function App() {
     loadTask(track, selected).catch(() => notify('题目详情加载失败'));
   }, [selected, track]);
 
-  if (!logged) return <Login onLogin={() => setLogged(true)} />;
+  if (!logged || !currentUser) return <Login onLogin={user => { setCurrentUser(user); setLogged(true); }} />;
   if (module === 'results') return <ResultsModule onBack={() => setModule('review')} />;
 
   const workspaceStyle = {
@@ -308,7 +338,7 @@ function App() {
     <header>
       <div className="brand"><div className="mark small">VGB</div><div><strong>题目审核</strong><span>Verifier Grounded Benchmark</span></div></div>
       <nav className="module-nav"><button className="selected">题目审核</button><button onClick={() => setModule('results')}>测试结果预览</button></nav>
-      <div className="header-actions"><span className="live"><i />源码快照同步</span><button className="icon" aria-label="刷新题库" title="刷新题库" onClick={refreshData} disabled={refreshing}><RefreshCw size={16} className={refreshing ? 'spin' : ''} /></button><button className="avatar" aria-label="用户管理" title="用户管理" onClick={openUsers}>A</button></div>
+      <div className="header-actions"><span className="live"><i />源码快照同步</span><button className="icon" aria-label="刷新题库" title="刷新题库" onClick={refreshData} disabled={refreshing}><RefreshCw size={16} className={refreshing ? 'spin' : ''} /></button><button className="avatar" aria-label="账户管理" title="账户管理" onClick={() => setUserDialog(true)}>{currentUser.username.slice(0, 1).toUpperCase()}</button></div>
     </header>
     <div className="workspace" style={workspaceStyle}>
       <aside className="sidebar">
@@ -334,7 +364,7 @@ function App() {
       <aside className={`attachments ${attachmentCollapsed ? 'collapsed' : ''}`}><div className="attachment-head"><div><p className="eyebrow">辅助资料</p><h2>附件</h2></div><button className="collapse-button" aria-label="折叠附件栏" title="折叠附件栏" onClick={() => setAttachmentCollapsed(true)}><PanelRight size={18} /></button></div>{detail?.attachments?.length ? <>{detail.attachments.map((item: any) => <button className={`attachment-item ${attachment?.name === item.name ? 'active' : ''}`} onClick={() => void openAttachment(item)} key={item.name}><FileText size={17} /><span><b>{item.name}</b><small>{item.media_type} · 右栏预览</small></span></button>)}{attachment && <div className="preview"><div className="preview-title">{attachment.name}<span>仅右栏显示</span></div><pre>{attachment.content}</pre></div>}</> : <div className="no-attachment">本题没有附件</div>}</aside>
     </div>
     {notice && <div className="toast" role="status">{notice}</div>}
-    {userDialog && <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) setUserDialog(false); }}><section className="user-dialog" role="dialog" aria-modal="true" aria-labelledby="user-dialog-title"><div className="user-dialog-head"><h2 id="user-dialog-title">用户管理</h2><button className="close-button" aria-label="关闭用户管理" onClick={() => setUserDialog(false)}><X size={17} /></button></div>{usersLoading ? <p className="muted">正在加载用户…</p> : <div className="user-list">{users.map(user => <div className="user-row" key={user.id}><span><b>{user.username}</b><small>{user.role}</small></span><em className={user.active ? 'active' : ''}>{user.active ? '启用' : '停用'}</em></div>)}</div>}</section></div>}
+    {userDialog && <AccountDialog currentUser={currentUser} onClose={() => setUserDialog(false)} />}
   </main>;
 }
 

@@ -1,7 +1,8 @@
 import io, json, zipfile, hashlib, mimetypes, uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile, status
+from typing import Annotated
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -11,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DBSession
 from .config import ADMIN_PASSWORD, ADMIN_USER, ALLOWED_ORIGINS, AUTO_CREATE_DB, COOKIE_SECURE, LOGIN_FAILURE_LIMIT, LOGIN_WINDOW_MINUTES, MAX_ATTACHMENT_BYTES, DATA_DIR, validate_production_config
 from .db import SessionLocal, init_db
-from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User, SharedFile
+from .models import Attachment, Comment, Draft, DraftRevision, LoginAttempt, PasswordChangeEvent, ReviewEvent, Session as UserSession, SnapshotTask, SnapshotTrack, SourceSnapshot, User, SharedFile
 from .schemas import CommentIn, DecisionIn, DraftIn, LoginIn, PasswordChangeIn, PasswordResetIn, RegisterIn, UserIn, UserUpdateIn
 from .security import client_ip, create_session, current_user, hash_password, require_developer, revoke_user_sessions, session_token_hash, verify_password
 from .source import load_catalog, schema_view, scoring_view, split_attachments
@@ -122,17 +123,33 @@ def logout(response: Response, request: Request, database: DBSession = Depends(d
 def me(user: User = Depends(auth)): return {"id":user.id,"username":user.username,"role":user.role}
 
 @app.post("/api/v1/auth/password")
-def change_password(payload: PasswordChangeIn, response: Response, database: DBSession=Depends(db), user: User=Depends(auth)):
-    if not verify_password(payload.current_password, user.password_hash):
-        raise HTTPException(400, "当前密码错误")
-    user.password_hash = hash_password(payload.new_password)
-    revoke_user_sessions(database, user.id); database.commit()
-    response.delete_cookie("review_session", path="/", secure=COOKIE_SECURE, httponly=True, samesite="lax")
-    return {"ok": True, "login_required": True}
+def change_password(payload: PasswordChangeIn, database: DBSession=Depends(db), user: User=Depends(auth), idempotency_key: Annotated[str | None, Header(alias="Idempotency-Key")]=None):
+    request_id=(idempotency_key or "").strip()
+    if len(request_id)>80: raise HTTPException(422,"幂等请求标识过长")
+    if request_id and database.scalar(select(PasswordChangeEvent).where(PasswordChangeEvent.user_id==user.id,PasswordChangeEvent.request_id==request_id)):
+        return {"ok":True,"changed":False,"idempotent_replay":True}
+    if not verify_password(payload.current_password,user.password_hash):
+        if verify_password(payload.new_password,user.password_hash):
+            return {"ok":True,"changed":False,"idempotent_replay":True}
+        raise HTTPException(400,"当前密码错误")
+    if verify_password(payload.new_password,user.password_hash):
+        return {"ok":True,"changed":False,"idempotent_replay":False}
+    user.password_hash=hash_password(payload.new_password)
+    database.add(PasswordChangeEvent(user_id=user.id,request_id=request_id or uuid.uuid4().hex))
+    try:
+        database.commit()
+    except IntegrityError:
+        database.rollback()
+        if request_id and database.scalar(select(PasswordChangeEvent).where(PasswordChangeEvent.user_id==user.id,PasswordChangeEvent.request_id==request_id)):
+            return {"ok":True,"changed":False,"idempotent_replay":True}
+        raise
+    return {"ok":True,"changed":True,"idempotent_replay":False}
 
 @app.get("/api/v1/users")
 def users(database: DBSession=Depends(db), user: User=Depends(developer)):
-    return [{"id":x.id,"username":x.username,"role":x.role,"active":x.active} for x in database.scalars(select(User).order_by(User.username)).all()]
+    last_change=select(func.max(PasswordChangeEvent.created_at)).where(PasswordChangeEvent.user_id==User.id).correlate(User).scalar_subquery()
+    rows=database.execute(select(User,last_change).order_by(User.username)).all()
+    return [{"id":item.id,"username":item.username,"role":item.role,"active":item.active,"created_at":item.created_at,"password_changed_at":changed_at} for item,changed_at in rows]
 
 @app.post("/api/v1/users")
 def create_user(payload: UserIn, database: DBSession=Depends(db), user: User=Depends(developer)):

@@ -31,6 +31,15 @@ class LoginAttempt(Base):
     successful: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
 
+class PasswordChangeEvent(Base):
+    __tablename__ = "password_change_events"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    request_id: Mapped[str] = mapped_column(String(80))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+    user = relationship("User")
+    __table_args__ = (UniqueConstraint("user_id", "request_id"),)
+
 class SourceSnapshot(Base):
     __tablename__ = "source_snapshots"
     id: Mapped[int] = mapped_column(primary_key=True)
