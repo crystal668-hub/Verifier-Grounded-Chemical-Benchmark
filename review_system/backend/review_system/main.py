@@ -258,7 +258,7 @@ def shared_files(database: DBSession=Depends(db), user: User=Depends(auth), q: s
     rows = database.scalars(select(SharedFile).order_by(SharedFile.created_at.desc())).all()
     if q: rows = [r for r in rows if q.lower() in r.name.lower()]
     if media_type: rows = [r for r in rows if r.media_type == media_type]
-    return [{"id":r.id,"name":r.name,"media_type":r.media_type,"size":r.size,"owner":r.owner.username,"track":r.track,"task_id":r.task_id,"created_at":r.created_at,"preview":bool(r.preview_html),"preview_error":r.preview_error,"can_delete":r.owner_id==user.id or user.role=="developer"} for r in rows]
+    return [{"id":r.id,"name":r.name,"media_type":r.media_type,"size":r.size,"owner":r.owner.username,"track":r.track,"task_id":r.task_id,"created_at":(r.created_at if r.created_at.tzinfo else r.created_at.replace(tzinfo=timezone.utc)).isoformat(),"preview":bool(r.preview_html),"preview_error":r.preview_error,"can_delete":r.owner_id==user.id or user.role=="developer"} for r in rows]
 
 @app.post("/api/v1/shared-files", status_code=201)
 async def upload_shared_file(file: UploadFile=File(...), track: str|None=Form(None), task_id: str|None=Form(None), database: DBSession=Depends(db), user: User=Depends(auth)):

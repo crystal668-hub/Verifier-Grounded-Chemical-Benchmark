@@ -32,7 +32,10 @@
 .results-divider { cursor:col-resize; background:#e5e7eb; border-radius:8px; transition:background .15s; }
 .results-divider:hover { background:#94a3b8; }
 .upload-button { background:#111827; color:#fff; padding:10px 16px; border-radius:8px; cursor:pointer; }
-.results-list { display:flex; flex-direction:column; gap:8px; margin-top:24px; }
+.results-list { display:flex; flex-direction:column; gap:20px; margin-top:24px; }
+.result-date-group { display:flex; flex-direction:column; gap:8px; }
+.result-date-heading { margin:0; padding:0 2px 7px; border-bottom:1px solid #e5e7eb; color:#475569; font-size:12px; font-weight:600; letter-spacing:.02em; }
+.result-date-files { display:flex; flex-direction:column; gap:8px; }
 .result-row { display:flex; justify-content:space-between; text-align:left; padding:16px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; }
 .result-row span { display:flex; flex-direction:column; gap:4px; } .result-row small { color:#64748b; }
 .result-preview { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:20px; overflow:auto; }

@@ -155,15 +155,106 @@ function AccountDialog({ currentUser, onClose }: { currentUser: CurrentUser; onC
   return <div className="modal-backdrop" role="presentation" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}><section className="user-dialog account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title"><div className="user-dialog-head"><div><p className="eyebrow">ACCOUNT</p><h2 id="account-dialog-title">账户管理</h2></div><button className="close-button" aria-label="关闭账户管理" onClick={onClose}><X size={17} /></button></div><div className="account-summary"><div className="account-avatar">{currentUser.username.slice(0, 1).toUpperCase()}</div><span><b>{currentUser.username}</b><small>{currentUser.role === 'developer' ? '开发者' : '协作者'} · ID {currentUser.id}</small></span></div><form className="password-form" onSubmit={event => { event.preventDefault(); void changePassword(); }}><div className="section-label"><KeyRound size={14} />修改账户密码</div><label>当前密码<input value={currentPassword} onChange={event => { setCurrentPassword(event.target.value); passwordRequestId.current = ''; }} type="password" autoComplete="current-password" required/></label><label>新密码<input value={newPassword} onChange={event => { setNewPassword(event.target.value); passwordRequestId.current = ''; }} type="password" autoComplete="new-password" minLength={6} placeholder="至少 6 位" required/></label><label>确认新密码<input value={passwordConfirmation} onChange={event => setPasswordConfirmation(event.target.value)} type="password" autoComplete="new-password" minLength={6} required/></label>{error && <p className="error" role="alert">{error}</p>}{success && <p className="password-success" role="status">{success}</p>}<button className="change-password" type="submit" disabled={submitting}><KeyRound size={15} />{submitting ? '正在修改…' : '修改密码'}</button></form>{currentUser.role === 'developer' && <section className="registered-users"><div className="registered-users-head"><div className="section-label"><Users size={14} />全部注册用户</div><span>{users.length} 人</span></div>{usersLoading ? <p className="muted">正在加载用户…</p> : <div className="user-list">{users.map(user => <div className="user-row" key={user.id}><span><b>{user.username}</b><small>ID {user.id} · {user.role === 'developer' ? '开发者' : '协作者'} · 注册 {new Date(user.created_at).toLocaleString('zh-CN')}</small><small>最近改密 {user.password_changed_at ? new Date(user.password_changed_at).toLocaleString('zh-CN') : '未修改'}</small></span><em className={user.active ? 'active' : ''}>{user.active ? '启用' : '停用'}</em></div>)}</div>}</section>}</section></div>;
 }
 
+type SharedFile = { id: number; name: string; media_type: string; size: number; owner: string; created_at: string; preview?: boolean };
+
+const uploadTimestamp = (value: string) => {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return { date: '上传日期未知', time: '上传时间未知' };
+  const pad = (part: number) => String(part).padStart(2, '0');
+  return {
+    date: `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`,
+    time: `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`,
+  };
+};
+
+const groupSharedFilesByUploadDate = (files: SharedFile[]) => {
+  const ordered = [...files].sort((left, right) => {
+    const leftTime = Date.parse(left.created_at);
+    const rightTime = Date.parse(right.created_at);
+    if (!Number.isFinite(leftTime)) return Number.isFinite(rightTime) ? 1 : 0;
+    if (!Number.isFinite(rightTime)) return -1;
+    return rightTime - leftTime;
+  });
+  const groups: { date: string; files: SharedFile[] }[] = [];
+  for (const file of ordered) {
+    const date = uploadTimestamp(file.created_at).date;
+    const current = groups[groups.length - 1];
+    if (current?.date === date) current.files.push(file);
+    else groups.push({ date, files: [file] });
+  }
+  return groups;
+};
+
 function ResultsModule({ onBack }: { onBack: () => void }) {
-  const [files, setFiles] = useState<any[]>([]); const [selected, setSelected] = useState<any>(null); const [busy, setBusy] = useState(false); const [listWidth, setListWidth] = useState(42); const [deleting, setDeleting] = useState(false); const dragging = useRef(false);
+  const [files, setFiles] = useState<SharedFile[]>([]);
+  const [selected, setSelected] = useState<any>(null);
+  const [busy, setBusy] = useState(false);
+  const [listWidth, setListWidth] = useState(42);
+  const [deleting, setDeleting] = useState(false);
+  const dragging = useRef(false);
+  const fileGroups = groupSharedFilesByUploadDate(files);
+
   const load = () => api('/api/v1/shared-files').then(setFiles).catch(() => {});
   useEffect(() => { void load(); }, []);
-  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (!file) return; setBusy(true); const body = new FormData(); body.append('file', file); try { await api('/api/v1/shared-files', { method: 'POST', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' }, body }); await load(); } finally { setBusy(false); event.target.value = ''; } };
-  const open = async (item: any) => setSelected(await api(`/api/v1/shared-files/${item.id}`));
-  const remove = async () => { if (!selected || deleting || !window.confirm(`确认删除“${selected.name}”？`)) return; setDeleting(true); try { await api(`/api/v1/shared-files/${selected.id}`, { method: 'DELETE', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' } }); setSelected(null); await load(); } finally { setDeleting(false); } };
-  useEffect(() => { const move = (e: PointerEvent) => { if (!dragging.current) return; setListWidth(Math.min(58, Math.max(28, e.clientX / window.innerWidth * 100))); }; const up = () => { dragging.current = false; }; window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); return () => { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); }; }, []);
-  return <main className="app results-module"><header><div className="brand"><div className="mark small">VGB</div><div><strong>测试结果预览</strong><span>共享评估资料</span></div></div><nav className="module-nav"><button onClick={onBack}>题目审核</button><button className="selected">测试结果预览</button></nav></header><div className="results-layout" style={{ gridTemplateColumns: `${listWidth}fr 8px ${100-listWidth}fr` }}><section><div className="content-head"><div><p className="eyebrow">SHARED MATERIALS</p><h1>测试结果预览</h1></div><label className="upload-button">{busy ? '上传中…' : '上传资料'}<input type="file" accept=".md,.pdf,.xlsx" onChange={upload} disabled={busy} hidden /></label></div><div className="results-list">{files.map(item => <button key={item.id} onClick={() => open(item)} className="result-row"><span><b>{item.name}</b><small>{item.media_type} · {Math.ceil(item.size / 1024)} KB · {item.owner}</small></span><em>{item.preview ? '可预览' : '仅下载'}</em></button>)}{!files.length && <div className="empty"><h2>暂无共享资料</h2><p>上传 Markdown、PDF 或 Excel 结果文件。</p></div>}</div></section><div className="results-divider" role="separator" aria-label="调整资料与预览宽度" onPointerDown={() => { dragging.current = true; }} /><aside className="result-preview">{selected ? <><div className="preview-title">{selected.name}<span><a href={`/api/v1/shared-files/${selected.id}/download`}>下载原文件</a>{selected.can_delete && <button className="delete-file" onClick={() => void remove()} disabled={deleting}>{deleting ? '删除中…' : '删除资料'}</button>}</span></div>{selected.media_type === 'application/pdf' ? <iframe title={selected.name} src={`/api/v1/shared-files/${selected.id}/content`} /> : <div dangerouslySetInnerHTML={{ __html: selected.preview_html || `<p>${selected.preview_error || '暂无预览'}</p>` }} />}</> : <div className="empty"><h2>选择资料查看预览</h2></div>}</aside></div></main>;
+  const upload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    const body = new FormData();
+    body.append('file', file);
+    try {
+      await api('/api/v1/shared-files', { method: 'POST', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' }, body });
+      await load();
+    } finally {
+      setBusy(false);
+      event.target.value = '';
+    }
+  };
+  const open = async (item: SharedFile) => setSelected(await api(`/api/v1/shared-files/${item.id}`));
+  const remove = async () => {
+    if (!selected || deleting || !window.confirm(`确认删除“${selected.name}”？`)) return;
+    setDeleting(true);
+    try {
+      await api(`/api/v1/shared-files/${selected.id}`, { method: 'DELETE', headers: { 'X-CSRF-Token': localStorage.getItem('csrf') || '' } });
+      setSelected(null);
+      await load();
+    } finally {
+      setDeleting(false);
+    }
+  };
+  useEffect(() => {
+    const move = (event: PointerEvent) => {
+      if (!dragging.current) return;
+      setListWidth(Math.min(58, Math.max(28, event.clientX / window.innerWidth * 100)));
+    };
+    const up = () => { dragging.current = false; };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    return () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+  }, []);
+
+  return <main className="app results-module">
+    <header><div className="brand"><div className="mark small">VGB</div><div><strong>测试结果预览</strong><span>共享评估资料</span></div></div><nav className="module-nav"><button onClick={onBack}>题目审核</button><button className="selected">测试结果预览</button></nav></header>
+    <div className="results-layout" style={{ gridTemplateColumns: `${listWidth}fr 8px ${100-listWidth}fr` }}>
+      <section>
+        <div className="content-head"><div><p className="eyebrow">SHARED MATERIALS</p><h1>测试结果预览</h1></div><label className="upload-button">{busy ? '上传中…' : '上传资料'}<input type="file" accept=".md,.pdf,.xlsx" onChange={upload} disabled={busy} hidden /></label></div>
+        <div className="results-list">
+          {fileGroups.map(group => <section className="result-date-group" key={group.date} aria-label={`上传日期 ${group.date}`}>
+            <h2 className="result-date-heading">{group.date}</h2>
+            <div className="result-date-files">{group.files.map(item => <button key={item.id} onClick={() => void open(item)} className="result-row">
+              <span><b>{item.name}</b><small>{uploadTimestamp(item.created_at).time} · {item.media_type} · {Math.ceil(item.size / 1024)} KB · {item.owner}</small></span><em>{item.preview ? '可预览' : '仅下载'}</em>
+            </button>)}</div>
+          </section>)}
+          {!files.length && <div className="empty"><h2>暂无共享资料</h2><p>上传 Markdown、PDF 或 Excel 结果文件。</p></div>}
+        </div>
+      </section>
+      <div className="results-divider" role="separator" aria-label="调整资料与预览宽度" onPointerDown={() => { dragging.current = true; }} />
+      <aside className="result-preview">{selected ? <><div className="preview-title">{selected.name}<span><a href={`/api/v1/shared-files/${selected.id}/download`}>下载原文件</a>{selected.can_delete && <button className="delete-file" onClick={() => void remove()} disabled={deleting}>{deleting ? '删除中…' : '删除资料'}</button>}</span></div>{selected.media_type === 'application/pdf' ? <iframe title={selected.name} src={`/api/v1/shared-files/${selected.id}/content`} /> : <div dangerouslySetInnerHTML={{ __html: selected.preview_html || `<p>${selected.preview_error || '暂无预览'}</p>` }} />}</> : <div className="empty"><h2>选择资料查看预览</h2></div>}</aside>
+    </div>
+  </main>;
 }
 
 function App() {
