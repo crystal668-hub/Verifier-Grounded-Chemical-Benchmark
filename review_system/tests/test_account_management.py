@@ -4,7 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session as DBSession
 
 from review_system.db import Base
-from review_system.main import change_password, users
+from datetime import datetime, timezone
+
+from review_system.main import beijing_isoformat, change_password, users
 from review_system.models import PasswordChangeEvent, Session, User
 from review_system.schemas import PasswordChangeIn
 from review_system.security import create_session, hash_password, require_developer, verify_password
@@ -72,3 +74,8 @@ def test_developer_user_list_includes_registration_information():
         with pytest.raises(HTTPException) as raised:
             require_developer(collaborator)
         assert raised.value.status_code == 403
+
+
+def test_account_timestamps_are_serialized_as_beijing_time():
+    assert beijing_isoformat(datetime(2026, 9, 15, 8, 4, 11)) == "2026-09-15T16:04:11+08:00"
+    assert beijing_isoformat(datetime(2026, 9, 15, 8, 4, 11, tzinfo=timezone.utc)) == "2026-09-15T16:04:11+08:00"

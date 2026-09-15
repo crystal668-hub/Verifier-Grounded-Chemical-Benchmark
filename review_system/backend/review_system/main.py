@@ -23,6 +23,14 @@ from openpyxl import load_workbook
 app=FastAPI(title="VGB Task Review API", version="0.1.0")
 app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
+BEIJING_TZ = timezone(timedelta(hours=8))
+
+def beijing_isoformat(value: datetime | None) -> str | None:
+    if value is None:
+        return None
+    utc_value = value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+    return utc_value.astimezone(BEIJING_TZ).isoformat()
+
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
@@ -149,7 +157,7 @@ def change_password(payload: PasswordChangeIn, database: DBSession=Depends(db), 
 def users(database: DBSession=Depends(db), user: User=Depends(developer)):
     last_change=select(func.max(PasswordChangeEvent.created_at)).where(PasswordChangeEvent.user_id==User.id).correlate(User).scalar_subquery()
     rows=database.execute(select(User,last_change).order_by(User.username)).all()
-    return [{"id":item.id,"username":item.username,"role":item.role,"active":item.active,"created_at":item.created_at,"password_changed_at":changed_at} for item,changed_at in rows]
+    return [{"id":item.id,"username":item.username,"role":item.role,"active":item.active,"created_at":beijing_isoformat(item.created_at),"password_changed_at":beijing_isoformat(changed_at)} for item,changed_at in rows]
 
 @app.post("/api/v1/users")
 def create_user(payload: UserIn, database: DBSession=Depends(db), user: User=Depends(developer)):
