@@ -280,7 +280,7 @@ async def upload_shared_file(file: UploadFile=File(...), track: str|None=Form(No
 def shared_file_detail(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
     row = database.get(SharedFile, file_id)
     if not row: raise HTTPException(404, "资料不存在")
-    return {"id":row.id,"name":row.name,"media_type":row.media_type,"size":row.size,"owner":row.owner.username,"track":row.track,"task_id":row.task_id,"preview_html":row.preview_html,"preview_error":row.preview_error}
+    return {"id":row.id,"name":row.name,"media_type":row.media_type,"size":row.size,"owner":row.owner.username,"track":row.track,"task_id":row.task_id,"preview_html":row.preview_html,"preview_error":row.preview_error,"can_delete":row.owner_id==user.id or user.role=="developer"}
 
 @app.get("/api/v1/shared-files/{file_id}/content")
 def shared_file_content(file_id: int, database: DBSession=Depends(db), user: User=Depends(auth)):
