@@ -1,0 +1,546 @@
+{
+  "seed": 20260916,
+  "bootstrap_samples": 10000,
+  "source_sha256": {
+    "/Users/xutao/verifier-grounded-benchmark/review_system/data/shared-files/99d73931db2f439c80453dd9adfaecb0.xlsx": "dcaa9402dd5f8db557075545a7d76854c75a6c33565cb2633963b36fcc83d3ff",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml": "7a6cdc401d1705ec437467d0d3226fcd26c54b9ecb6c7019c374f37b0b05178d",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml": "3fc45316a5cefc97b8e8f80eaf948cd70f63b8263365b5b835b55810b04ee811",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml": "14f4c938cc19cf268bd54339cb73b3d938e0d9a92fab36bdb7b8432b2e03904b",
+    "/Users/xutao/verifier-grounded-benchmark/review_system/data/shared-files/f1b6a8d8836e4cbc9f72e5f452feb0bc.xlsx": "3b5646e5c3f7790af8ecfe771ffa0b7cc01cac439a671751c8ffc32cb80d6abd",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml": "bcb9d8c70c2ff09592bc2ec45f1f55bb9e021dd1fc751210370082537210999a",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml": "af693411b3f80d68914d976d5dc96809365605f38b11dd4ca55e05f878e5ae02",
+    "/Users/xutao/verifier-grounded-benchmark/src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/verifier_specs.yaml": "14f4c938cc19cf268bd54339cb73b3d938e0d9a92fab36bdb7b8432b2e03904b"
+  },
+  "tracks": {
+    "property_calculation_basic": {
+      "source_file": "99d73931db2f439c80453dd9adfaecb0.xlsx",
+      "source_sheet": "结果汇总",
+      "baseline_max_absolute_error_0_to_1": 4.989467348170962e-07,
+      "missing_answers": 0,
+      "penalty": 0.03,
+      "baseline": {
+        "groups": {
+          "gpt_sol_skill_on": {
+            "n": 51,
+            "mean": 91.26759738558808,
+            "sd": 15.88424999607723,
+            "median": 96.10000000000002,
+            "q25": 92.33333333333329,
+            "q75": 99.7738128133265,
+            "zero_rate": 0.0,
+            "low_rate": 0.0,
+            "high_rate": 0.8235294117647058,
+            "full_rate": 0.11764705882352941,
+            "mean_ci95": [
+              86.47910665759402,
+              95.21832291191795
+            ]
+          },
+          "gpt_sol_skill_off": {
+            "n": 51,
+            "mean": 91.54564381921872,
+            "sd": 14.49890665968995,
+            "median": 96.0,
+            "q25": 92.33333333333329,
+            "q75": 99.88106094024639,
+            "zero_rate": 0.0,
+            "low_rate": 0.0,
+            "high_rate": 0.7843137254901961,
+            "full_rate": 0.11764705882352941,
+            "mean_ci95": [
+              87.23562899954679,
+              95.03630187813468
+            ]
+          },
+          "qwen_flash_skill_on": {
+            "n": 51,
+            "mean": 90.63912280334458,
+            "sd": 18.683961621935495,
+            "median": 97.27787456445995,
+            "q25": 92.0,
+            "q75": 99.94784760401028,
+            "zero_rate": 0.0,
+            "low_rate": 0.0196078431372549,
+            "high_rate": 0.7843137254901961,
+            "full_rate": 0.19607843137254902,
+            "mean_ci95": [
+              84.9831869842842,
+              95.12487591735885
+            ]
+          },
+          "qwen_flash_skill_off": {
+            "n": 51,
+            "mean": 89.83818636950451,
+            "sd": 20.24121331140844,
+            "median": 96.13421988557295,
+            "q25": 93.94617695248499,
+            "q75": 99.74278885175792,
+            "zero_rate": 0.0196078431372549,
+            "low_rate": 0.0196078431372549,
+            "high_rate": 0.803921568627451,
+            "full_rate": 0.1568627450980392,
+            "mean_ci95": [
+              83.64213313065211,
+              94.65591593609793
+            ]
+          }
+        },
+        "pairs": {
+          "skill_on": {
+            "mean_gap_gpt_minus_qwen": 0.6284745822434863,
+            "mean_absolute_gap": 12.401940134759826,
+            "ci95": [
+              -6.266963785415686,
+              7.594208433199996
+            ],
+            "gpt_wins": 18,
+            "ties": 9,
+            "qwen_wins": 24
+          },
+          "skill_off": {
+            "mean_gap_gpt_minus_qwen": 1.7074574497142059,
+            "mean_absolute_gap": 10.158686670897048,
+            "ci95": [
+              -4.256335927280068,
+              8.443177852866334
+            ],
+            "gpt_wins": 20,
+            "ties": 10,
+            "qwen_wins": 21
+          },
+          "model_average": {
+            "mean_gap_gpt_minus_qwen": 1.167966015978847,
+            "mean_absolute_gap": 9.43434964257054,
+            "ci95": [
+              -3.6901054168338305,
+              6.8241135974331835
+            ],
+            "gpt_wins": 20,
+            "ties": 6,
+            "qwen_wins": 25
+          }
+        },
+        "overall_mean": 90.82263759441398,
+        "mean_within_task_sd": 7.957398716142176,
+        "mean_pairwise_absolute_gap": 10.186391245628409,
+        "all_zero_tasks": 0,
+        "all_high_tasks": 27,
+        "tied_tasks": 4,
+        "near_tied_tasks_under_1pt": 20,
+        "zero_rate": 0.004901960784313725
+      },
+      "candidate": {
+        "groups": {
+          "gpt_sol_skill_on": {
+            "n": 51,
+            "mean": 81.24027722408395,
+            "sd": 30.04340897844323,
+            "median": 91.49528374826043,
+            "q25": 84.75527426160335,
+            "q75": 99.547625626653,
+            "zero_rate": 0.058823529411764705,
+            "low_rate": 0.09803921568627451,
+            "high_rate": 0.5294117647058824,
+            "full_rate": 0.11764705882352941,
+            "mean_ci95": [
+              72.41286464459311,
+              88.86801801424355
+            ]
+          },
+          "gpt_sol_skill_off": {
+            "n": 51,
+            "mean": 78.30811913226789,
+            "sd": 33.32900805926281,
+            "median": 91.64943609022559,
+            "q25": 80.50000000000009,
+            "q75": 99.705056847914,
+            "zero_rate": 0.0784313725490196,
+            "low_rate": 0.11764705882352941,
+            "high_rate": 0.5686274509803921,
+            "full_rate": 0.11764705882352941,
+            "mean_ci95": [
+              68.94907479375941,
+              86.81949954816955
+            ]
+          },
+          "qwen_flash_skill_on": {
+            "n": 51,
+            "mean": 79.34772939575426,
+            "sd": 35.22745849636728,
+            "median": 94.55574912891991,
+            "q25": 84.8314578644661,
+            "q75": 99.89569520802058,
+            "zero_rate": 0.11764705882352941,
+            "low_rate": 0.1568627450980392,
+            "high_rate": 0.6470588235294118,
+            "full_rate": 0.19607843137254902,
+            "mean_ci95": [
+              69.30250499318721,
+              88.4280771884393
+            ]
+          },
+          "qwen_flash_skill_off": {
+            "n": 51,
+            "mean": 80.39458454007506,
+            "sd": 31.833251458577134,
+            "median": 92.26843977114589,
+            "q25": 84.11736541281383,
+            "q75": 99.48557770351584,
+            "zero_rate": 0.11764705882352941,
+            "low_rate": 0.11764705882352941,
+            "high_rate": 0.5686274509803921,
+            "full_rate": 0.1568627450980392,
+            "mean_ci95": [
+              71.07403764367942,
+              88.40898604050162
+            ]
+          }
+        },
+        "pairs": {
+          "skill_on": {
+            "mean_gap_gpt_minus_qwen": 1.8925478283296817,
+            "mean_absolute_gap": 27.74459985999978,
+            "ci95": [
+              -11.660409673137252,
+              15.19509637216547
+            ],
+            "gpt_wins": 18,
+            "ties": 9,
+            "qwen_wins": 24
+          },
+          "skill_off": {
+            "mean_gap_gpt_minus_qwen": -2.0864654078071587,
+            "mean_absolute_gap": 19.79816155462456,
+            "ci95": [
+              -13.17955215320025,
+              9.116372732447264
+            ],
+            "gpt_wins": 19,
+            "ties": 11,
+            "qwen_wins": 21
+          },
+          "model_average": {
+            "mean_gap_gpt_minus_qwen": -0.0969587897387374,
+            "mean_absolute_gap": 20.046470357991176,
+            "ci95": [
+              -9.230838088185854,
+              9.38615089925428
+            ],
+            "gpt_wins": 19,
+            "ties": 6,
+            "qwen_wins": 26
+          }
+        },
+        "overall_mean": 79.82267757304527,
+        "mean_within_task_sd": 17.384248932868147,
+        "mean_pairwise_absolute_gap": 22.044137622877138,
+        "all_zero_tasks": 0,
+        "all_high_tasks": 19,
+        "tied_tasks": 4,
+        "near_tied_tasks_under_1pt": 19,
+        "zero_rate": 0.09313725490196079
+      },
+      "within_task_sd_gain_ci95": [
+        6.14687401643351,
+        12.799067248398334
+      ],
+      "tasks_with_sd_gain_over_1pt": 26,
+      "tasks_with_sd_loss_over_1pt": 0,
+      "holdout": {
+        "fit_on_evaluate_off": {
+          "baseline_absolute_gap": 10.158686670897048,
+          "candidate_absolute_gap": 17.077885645723235,
+          "absolute_gap_gain_ci95": [
+            3.245547848546189,
+            11.035852878337007
+          ],
+          "gpt_mean": 80.56523726088095,
+          "qwen_mean": 80.55157093055507,
+          "signed_gap_ci95": [
+            -9.268465881092272,
+            9.954177753061167
+          ]
+        },
+        "fit_off_evaluate_on": {
+          "baseline_absolute_gap": 12.401940134759826,
+          "candidate_absolute_gap": 21.296240358738665,
+          "absolute_gap_gain_ci95": [
+            4.7325689800279696,
+            13.619209172405363
+          ],
+          "gpt_mean": 83.63130171565241,
+          "qwen_mean": 83.89752115237033,
+          "signed_gap_ci95": [
+            -11.348595038366167,
+            10.426551516744695
+          ]
+        }
+      }
+    },
+    "property_calculation_advanced": {
+      "source_file": "f1b6a8d8836e4cbc9f72e5f452feb0bc.xlsx",
+      "source_sheet": "工作表 1",
+      "baseline_max_absolute_error_0_to_1": 4.999999997368221e-07,
+      "missing_answers": 1,
+      "penalty": 0.003,
+      "baseline": {
+        "groups": {
+          "gpt_sol_skill_on": {
+            "n": 20,
+            "mean": 66.36526634337115,
+            "sd": 41.806814398463395,
+            "median": 87.68840893430965,
+            "q25": 36.502499999999955,
+            "q75": 99.71511539246342,
+            "zero_rate": 0.2,
+            "low_rate": 0.25,
+            "high_rate": 0.5,
+            "full_rate": 0.2,
+            "mean_ci95": [
+              47.90796743570611,
+              83.22503822437167
+            ]
+          },
+          "gpt_sol_skill_off": {
+            "n": 20,
+            "mean": 52.354922976858646,
+            "sd": 40.58350058188385,
+            "median": 62.733333333333306,
+            "q25": 0.05625000000003544,
+            "q75": 94.23598216259323,
+            "zero_rate": 0.25,
+            "low_rate": 0.3,
+            "high_rate": 0.3,
+            "full_rate": 0.1,
+            "mean_ci95": [
+              34.830547782998465,
+              69.35053955612834
+            ]
+          },
+          "qwen_flash_skill_on": {
+            "n": 20,
+            "mean": 66.227234555185,
+            "sd": 39.83741043444962,
+            "median": 85.4790837144112,
+            "q25": 30.460978456345945,
+            "q75": 99.73065189231238,
+            "zero_rate": 0.2,
+            "low_rate": 0.2,
+            "high_rate": 0.4,
+            "full_rate": 0.2,
+            "mean_ci95": [
+              48.31419560949889,
+              82.514476014561
+            ]
+          },
+          "qwen_flash_skill_off": {
+            "n": 20,
+            "mean": 51.541075477971575,
+            "sd": 33.890113486804886,
+            "median": 56.10151572302941,
+            "q25": 29.090000000000018,
+            "q75": 79.4723471662747,
+            "zero_rate": 0.2,
+            "low_rate": 0.2,
+            "high_rate": 0.1,
+            "full_rate": 0.05,
+            "mean_ci95": [
+              37.12058941237265,
+              66.00692368869029
+            ]
+          }
+        },
+        "pairs": {
+          "skill_on": {
+            "mean_gap_gpt_minus_qwen": 0.13803178818614228,
+            "mean_absolute_gap": 19.226183113679827,
+            "ci95": [
+              -14.621992488242165,
+              15.293750402182873
+            ],
+            "gpt_wins": 6,
+            "ties": 7,
+            "qwen_wins": 7
+          },
+          "skill_off": {
+            "mean_gap_gpt_minus_qwen": 0.8138474988870701,
+            "mean_absolute_gap": 34.10341247385263,
+            "ci95": [
+              -19.970969627985443,
+              20.845129679618797
+            ],
+            "gpt_wins": 9,
+            "ties": 4,
+            "qwen_wins": 7
+          },
+          "model_average": {
+            "mean_gap_gpt_minus_qwen": 0.4759396435366067,
+            "mean_absolute_gap": 20.510349930035392,
+            "ci95": [
+              -11.953631203728946,
+              13.920419664710566
+            ],
+            "gpt_wins": 7,
+            "ties": 3,
+            "qwen_wins": 10
+          }
+        },
+        "overall_mean": 59.1221248383466,
+        "mean_within_task_sd": 20.56504017516275,
+        "mean_pairwise_absolute_gap": 26.27524648623861,
+        "all_zero_tasks": 2,
+        "all_high_tasks": 1,
+        "tied_tasks": 3,
+        "near_tied_tasks_under_1pt": 5,
+        "zero_rate": 0.2125
+      },
+      "candidate": {
+        "groups": {
+          "gpt_sol_skill_on": {
+            "n": 20,
+            "mean": 62.0264697756554,
+            "sd": 43.56733098421548,
+            "median": 84.37453393430965,
+            "q25": 14.562355072463767,
+            "q75": 99.57255444055335,
+            "zero_rate": 0.2,
+            "low_rate": 0.25,
+            "high_rate": 0.45,
+            "full_rate": 0.2,
+            "mean_ci95": [
+              43.30545029928623,
+              80.15526869191234
+            ]
+          },
+          "gpt_sol_skill_off": {
+            "n": 20,
+            "mean": 44.63258815985229,
+            "sd": 43.623613766786285,
+            "median": 35.371014492753616,
+            "q25": 0.0,
+            "q75": 88.89469747102365,
+            "zero_rate": 0.35,
+            "low_rate": 0.4,
+            "high_rate": 0.25,
+            "full_rate": 0.1,
+            "mean_ci95": [
+              26.09091091717407,
+              63.1934898527475
+            ]
+          },
+          "qwen_flash_skill_on": {
+            "n": 20,
+            "mean": 60.91660867970812,
+            "sd": 42.53163758928617,
+            "median": 78.8136775630079,
+            "q25": 15.340110708963163,
+            "q75": 99.28615611580622,
+            "zero_rate": 0.2,
+            "low_rate": 0.25,
+            "high_rate": 0.35,
+            "full_rate": 0.2,
+            "mean_ci95": [
+              41.992863832845465,
+              78.87457249786202
+            ]
+          },
+          "qwen_flash_skill_off": {
+            "n": 20,
+            "mean": 36.324907608271445,
+            "sd": 36.95617234418328,
+            "median": 22.740247655251217,
+            "q25": 0.0,
+            "q75": 71.91983925549916,
+            "zero_rate": 0.4,
+            "low_rate": 0.4,
+            "high_rate": 0.05,
+            "full_rate": 0.05,
+            "mean_ci95": [
+              20.71571550611592,
+              52.54355852110478
+            ]
+          }
+        },
+        "pairs": {
+          "skill_on": {
+            "mean_gap_gpt_minus_qwen": 1.1098610959472879,
+            "mean_absolute_gap": 28.770358736404802,
+            "ci95": [
+              -20.814599740137908,
+              23.745441115146697
+            ],
+            "gpt_wins": 6,
+            "ties": 4,
+            "qwen_wins": 10
+          },
+          "skill_off": {
+            "mean_gap_gpt_minus_qwen": 8.307680551580845,
+            "mean_absolute_gap": 39.254298692374796,
+            "ci95": [
+              -16.22966599459558,
+              33.144558683580435
+            ],
+            "gpt_wins": 8,
+            "ties": 4,
+            "qwen_wins": 8
+          },
+          "model_average": {
+            "mean_gap_gpt_minus_qwen": 4.708770823764067,
+            "mean_absolute_gap": 28.749009993378344,
+            "ci95": [
+              -11.441227649116236,
+              21.50399805488912
+            ],
+            "gpt_wins": 8,
+            "ties": 0,
+            "qwen_wins": 12
+          }
+        },
+        "overall_mean": 50.97514355587182,
+        "mean_within_task_sd": 28.27544518116085,
+        "mean_pairwise_absolute_gap": 34.9736583617626,
+        "all_zero_tasks": 0,
+        "all_high_tasks": 0,
+        "tied_tasks": 0,
+        "near_tied_tasks_under_1pt": 3,
+        "zero_rate": 0.2875
+      },
+      "within_task_sd_gain_ci95": [
+        3.7058565102028598,
+        12.377653866848659
+      ],
+      "tasks_with_sd_gain_over_1pt": 11,
+      "tasks_with_sd_loss_over_1pt": 0,
+      "holdout": {
+        "fit_on_evaluate_off": {
+          "baseline_absolute_gap": 34.10341247385263,
+          "candidate_absolute_gap": 34.980085351074976,
+          "absolute_gap_gain_ci95": [
+            -9.33609363814752,
+            10.157934354131502
+          ],
+          "gpt_mean": 46.176559415945285,
+          "qwen_mean": 39.049950721097396,
+          "signed_gap_ci95": [
+            -14.774118213189013,
+            29.561803457036465
+          ]
+        },
+        "fit_off_evaluate_on": {
+          "baseline_absolute_gap": 19.226183113679827,
+          "candidate_absolute_gap": 16.87511341072436,
+          "absolute_gap_gain_ci95": [
+            -13.129394537491871,
+            7.018828483763486
+          ],
+          "gpt_mean": 68.54644134553666,
+          "qwen_mean": 65.07417695713144,
+          "signed_gap_ci95": [
+            -9.639901331303768,
+            17.09664428613089
+          ]
+        }
+      }
+    }
+  }
+}
