@@ -45,8 +45,8 @@ def _evaluate(task_id: str, answer: dict):
         (-9.741968321, 0.0),
         (-4.741968321, 0.0),
         (0.258031679, 1.0),
-        (5.258031679, 0.5),
-        (10.258031679, 0.0),
+        (4.258031679, 0.5),
+        (8.258031679, 0.0),
         (11.0, 0.0),
     ],
 )
@@ -69,7 +69,7 @@ def test_task_uses_arithmetic_mean_across_all_fields() -> None:
             "answers": [
                 {
                     "property": "potential_energy_difference",
-                    "value": 0.579,
+                    "value": 0.479,
                     "unit": "eV",
                 },
                 {"property": "ambient_pressure_phase", "value": "wrong"},
@@ -297,7 +297,7 @@ def test_absolute_value_scoring_compares_answer_and_gold_magnitudes() -> None:
         (117000000.0, 1.0),
         (117000.0, 0.0),
         (117000000000.0, 0.0),
-        (11700000.0, 2.0 / 3.0),
+        (11700000.0, 0.5),
         (0.0, 0.0),
         (-117000000.0, 0.0),
     ],
@@ -315,9 +315,9 @@ def test_log10_scoring_uses_order_of_magnitude_distance(
 
 @pytest.mark.parametrize(
     ("answer", "expected"),
-    [(9.8, 0.5), (98.0, 1.0), (98.0 * 10**1.5, 0.5)],
+    [(9.8, 0.5), (98.0, 1.0), (980.0, 0.5)],
 )
-def test_asymmetric_log10_scoring_uses_separate_side_widths(
+def test_rate_log10_scoring_uses_symmetric_two_decade_widths(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(

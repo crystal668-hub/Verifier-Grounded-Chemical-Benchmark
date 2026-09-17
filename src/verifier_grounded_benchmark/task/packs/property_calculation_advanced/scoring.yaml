@@ -1,7 +1,7 @@
 schema_version: 1
 scoring_config:
   task_pack_id: property_calculation_advanced
-  task_pack_version: 0.9.2
+  task_pack_version: 0.9.3
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:
@@ -10,31 +10,43 @@ scoring_profiles:
     type: numeric_gold
     unit: kJ/mol
     minimum_value: 0.0
-    lower_tolerance: 10.0
-    upper_tolerance: 10.0
+    lower_tolerance: 8.0
+    upper_tolerance: 8.0
     provenance:
       target_source: task_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-07-21'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: crystal_free_energy_difference
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 8.0
   property_calculation_advanced_potential_energy_difference_numeric_gold_v2:
     property: potential_energy_difference
     type: numeric_gold
     unit: eV
     minimum_value: 0.0
-    lower_tolerance: 1.0
-    upper_tolerance: 1.0
+    lower_tolerance: 0.8
+    upper_tolerance: 0.8
     provenance:
       target_source: task_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-07-21'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: crystal_potential_energy_difference
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 0.8
   property_calculation_advanced_ambient_pressure_phase_exact_string_v2:
     property: ambient_pressure_phase
     type: exact_string
@@ -61,15 +73,21 @@ scoring_profiles:
     property: hydrogen_bond_count
     type: numeric_gold
     unit: count
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: hydrogen_bond_count
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 2.0
   property_calculation_advanced_ir_frequency_1_numeric_gold_v2:
     property: frequency_1
     type: numeric_gold
@@ -78,11 +96,17 @@ scoring_profiles:
     upper_tolerance: 100.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: harmonic_ir_frequency
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 100.0
   property_calculation_advanced_ir_frequency_2_numeric_gold_v2:
     property: frequency_2
     type: numeric_gold
@@ -91,24 +115,36 @@ scoring_profiles:
     upper_tolerance: 100.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: harmonic_ir_frequency
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 100.0
   property_calculation_advanced_crystal_density_numeric_gold_v2:
     property: crystal_density
     type: numeric_gold
     unit: g/cm^3
-    lower_tolerance: 0.2
-    upper_tolerance: 0.2
+    lower_tolerance: 0.144728
+    upper_tolerance: 0.144728
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: density
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: relative
+    error_parameter: 0.1
   property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2:
     property: cocrystal_molar_ratio
     type: exact_string
@@ -138,88 +174,124 @@ scoring_profiles:
     property: crossover_temperature
     type: numeric_gold
     unit: K
-    lower_tolerance: 200.0
-    upper_tolerance: 200.0
+    lower_tolerance: 100.0
+    upper_tolerance: 100.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: crossover_temperature
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 100.0
   property_calculation_advanced_interaction_energy_numeric_gold_v2:
     property: interaction_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 20.0
-    upper_tolerance: 20.0
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: noncovalent_energy
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 1.0
   property_calculation_advanced_binding_energy_numeric_gold_v2:
     property: binding_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 20.0
-    upper_tolerance: 20.0
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: noncovalent_energy
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 1.0
   property_calculation_advanced_homo_lumo_gap_numeric_gold_v2:
     property: homo_lumo_gap
     type: numeric_gold
     unit: eV
-    lower_tolerance: 2.0
-    upper_tolerance: 2.0
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: orbital_gap
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 1.0
   property_calculation_advanced_oh_bond_distance_numeric_gold_v2:
     property: oh_bond_distance
     type: numeric_gold
     unit: angstrom
     minimum_value: 0.0
-    lower_tolerance: 0.3
-    upper_tolerance: 0.3
+    lower_tolerance: 0.2
+    upper_tolerance: 0.2
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: geometric_distance
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 0.2
   property_calculation_advanced_h_o_contact_distance_numeric_gold_v2:
     property: h_o_contact_distance
     type: numeric_gold
     unit: angstrom
     minimum_value: 0.0
-    lower_tolerance: 0.3
-    upper_tolerance: 0.3
+    lower_tolerance: 0.2
+    upper_tolerance: 0.2
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: geometric_distance
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 0.2
   property_calculation_advanced_pore_volume_ratio_numeric_gold_v2:
     property: accessible_to_inaccessible_volume_ratio
     type: numeric_gold
@@ -230,41 +302,59 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: pore_volume_ratio
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 0.5
   property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2:
     property: carboxyl_hydrogen_distance
     type: numeric_gold
     unit: angstrom
     minimum_value: 0.0
-    lower_tolerance: 0.5
-    upper_tolerance: 0.5
+    lower_tolerance: 0.2
+    upper_tolerance: 0.2
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: geometric_distance
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 0.2
   property_calculation_advanced_halogen_bond_energy_numeric_gold_v2:
     property: halogen_bond_interaction_energy
     type: numeric_gold
     unit: kcal/mol
-    lower_tolerance: 5.0
-    upper_tolerance: 5.0
+    lower_tolerance: 1.0
+    upper_tolerance: 1.0
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: noncovalent_energy
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 1.0
   property_calculation_advanced_pka_numeric_gold_v2:
     property: pka
     type: numeric_gold
@@ -273,11 +363,17 @@ scoring_profiles:
     upper_tolerance: 2.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: gold_to_zero_rule
-      decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-20'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: pka
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 2.0
   property_calculation_advanced_socme_numeric_gold_v2:
     property: spin_orbit_coupling_matrix_element
     type: numeric_gold
@@ -287,39 +383,57 @@ scoring_profiles:
     value_transform: log10
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: spin_orbit_coupling
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: log10
+    error_parameter: 1.0
   property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     value_transform: log10
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: excited_state_rate
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: log10
+    error_parameter: 2.0
   property_calculation_advanced_phosphorescence_rate_numeric_gold_v2:
     property: phosphorescence_rate
     type: numeric_gold
     unit: s^-1
     lower_tolerance: 2.0
-    upper_tolerance: 3.0
+    upper_tolerance: 2.0
     value_transform: log10
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: excited_state_rate
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: log10
+    error_parameter: 2.0
   property_calculation_advanced_ht_contribution_numeric_gold_v2:
     property: herzberg_teller_contribution
     type: numeric_gold
@@ -328,39 +442,58 @@ scoring_profiles:
     upper_tolerance: 1.0
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: ht_contribution
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: retained_pending_target_definition
+      approval_source: benchmark_owner_release_decision
+    error_mode: absolute
+    error_parameter: 10.0
+    upper_error_parameter: 1.0
   property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2:
     property: intersystem_crossing_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     value_transform: log10
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: excited_state_rate
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: log10
+    error_parameter: 2.0
   property_calculation_advanced_internal_conversion_rate_numeric_gold_v2:
     property: internal_conversion_rate
     type: numeric_gold
     unit: s^-1
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
+    lower_tolerance: 2.0
+    upper_tolerance: 2.0
     value_transform: log10
     provenance:
       target_source: expert_gold_answer
-      decay_source: expert_reported_precision
-      decision_record: docs/research/2026-08-24-excited-state-property-calculation-conversion.md
+      decay_source: predeclared_property_family_score_anchors
+      decision_record: docs/design/property-calculation-r2-scoring.md
       review_status: approved
-      review_date: '2026-08-24'
+      review_date: '2026-09-17'
       review_owner: benchmark_maintainers
+      tolerance_family: excited_state_rate
+      tolerance_policy: property_family_anchors_2026_09_17_r2
+      calibration_status: pending_independent_calibration
+      approval_source: benchmark_owner_release_decision
+    error_mode: log10
+    error_parameter: 2.0
 tasks:
 - task_id: property_calculation_advanced_001_free_energy
   scoring:

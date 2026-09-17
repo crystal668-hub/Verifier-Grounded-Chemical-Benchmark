@@ -86,23 +86,23 @@ ORIGINAL_PROPERTY_TASK_IDS = [
 ]
 
 ABSOLUTE_WIDTHS = {
-    **dict.fromkeys((*range(1, 5), *range(10, 16), 43), 3.0),
-    **dict.fromkeys(range(5, 10), 0.6),
-    **dict.fromkeys(range(47, 52), 1.0),
+    **dict.fromkeys((*range(1, 5), 43), 3.0),
+    **dict.fromkeys(range(5, 10), 0.5),
+    **dict.fromkeys(range(10, 16), 1.0),
+    **dict.fromkeys(range(22, 25), 0.2),
+    25: 5.0,
+    **dict.fromkeys(range(31, 34), 0.2),
+    **dict.fromkeys(range(34, 37), 0.05),
+    45: 0.15,
+    **dict.fromkeys(range(47, 52), 0.5),
 }
 
 RELATIVE_WIDTHS = {
-    **dict.fromkeys(range(16, 19), 0.25),
-    **dict.fromkeys(range(19, 22), 0.35),
-    **dict.fromkeys(range(22, 25), 0.20),
-    25: 0.40,
-    26: 0.20,
-    27: 0.35,
-    **dict.fromkeys(range(28, 31), 0.20),
-    **dict.fromkeys(range(31, 34), 0.80),
-    **dict.fromkeys(range(34, 37), 1.00),
-    **dict.fromkeys(range(37, 43), 0.12),
-    45: 0.75,
+    **dict.fromkeys(range(16, 22), 0.20),
+    26: 0.10,
+    27: 0.30,
+    **dict.fromkeys(range(28, 31), 0.10),
+    **dict.fromkeys(range(37, 43), 0.10),
 }
 
 
@@ -153,8 +153,8 @@ def test_easy_pack_gold_is_frozen_and_samples_are_removed() -> None:
 
 def test_easy_numeric_profiles_use_reviewed_symmetric_widths() -> None:
     pack = load_pack()
-    assert len(ABSOLUTE_WIDTHS) == 21
-    assert len(RELATIVE_WIDTHS) == 28
+    assert len(ABSOLUTE_WIDTHS) == 32
+    assert len(RELATIVE_WIDTHS) == 17
 
     for number, task in enumerate(pack.tasks_by_id.values(), start=1):
         if number in {44, 46}:
@@ -171,7 +171,7 @@ def test_easy_numeric_profiles_use_reviewed_symmetric_widths() -> None:
         assert profile["upper_tolerance"] == pytest.approx(width)
         assert profile["error_mode"] == mode
         assert profile["error_parameter"] == parameter
-        assert profile["provenance"]["decay_source"] == "attachment_final_scoring_standard"
+        assert profile["provenance"]["decay_source"] == "predeclared_property_family_score_anchors"
 
 
 def test_easy_numeric_profiles_score_gold_midpoints_and_boundaries() -> None:

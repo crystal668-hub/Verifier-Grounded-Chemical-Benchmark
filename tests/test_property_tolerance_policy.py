@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import csv
 import importlib.util
 import sys
 from copy import deepcopy
@@ -29,14 +30,7 @@ POLICY = yaml.safe_load((DIRECTORY / "family_policy.yaml").read_text(encoding="u
 @pytest.fixture(scope="module")
 def sources():
     return {
-        track: yaml.safe_load(
-            (
-                ROOT
-                / "src/verifier_grounded_benchmark/task/packs"
-                / track
-                / "scoring.yaml"
-            ).read_text()
-        )
+        track: projection.baseline_scoring(track)
         for track in projection.original.SOURCES
     }
 
@@ -200,3 +194,50 @@ def test_committed_candidate_configs_match_the_frozen_family_policy(sources):
     for track, source in sources.items():
         stored = yaml.safe_load((DIRECTORY / f"{track}.scoring.yaml").read_text())
         assert stored == projection.candidate_scoring(source, POLICY)
+
+
+@pytest.mark.parametrize("track", projection.original.SOURCES)
+def test_formal_release_preserves_every_approved_r2_scoring_field(track):
+    directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
+    formal = yaml.safe_load((directory / "scoring.yaml").read_text())
+    frozen = yaml.safe_load((DIRECTORY / f"{track}.scoring.yaml").read_text())
+    assert formal["scoring_config"]["scoring_status"] == "formal"
+    assert formal["scoring_config"]["task_pack_version"] == "0.9.3"
+    assert formal["tasks"] == frozen["tasks"]
+    assert formal["scoring_profiles"].keys() == frozen["scoring_profiles"].keys()
+    for profile_id, approved in frozen["scoring_profiles"].items():
+        released = formal["scoring_profiles"][profile_id]
+        assert {k: v for k, v in released.items() if k != "provenance"} == {
+            k: v for k, v in approved.items() if k != "provenance"
+        }
+        assert released["provenance"]["review_status"] == "approved"
+        if released["type"] == "numeric_gold":
+            assert released["provenance"]["tolerance_policy"] == POLICY["policy_id"]
+            assert (
+                released["provenance"]["calibration_status"]
+                == approved["provenance"]["review_status"]
+            )
+
+
+@pytest.mark.parametrize("track", projection.original.SOURCES)
+def test_formal_release_reproduces_approved_r2_answer_scores(track):
+    workbook = (
+        ROOT / "review_system/data/shared-files" / projection.original.SOURCES[track]
+    )
+    if not workbook.exists():
+        pytest.skip("Private source workbook is not part of the repository")
+    directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
+    pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    with (DIRECTORY / "task_scores.csv").open(
+        encoding="utf-8-sig", newline=""
+    ) as handle:
+        expected = {row["task_id"]: row for row in csv.DictReader(handle)}
+    for observation in projection.original.read_observations(workbook, pack):
+        scores, _ = projection.original.evaluate(pack, observation)
+        assert (scores * 100).tolist() == pytest.approx(
+            [
+                float(expected[observation.task.task_id][f"family_{group}"])
+                for group in projection.original.GROUPS
+            ],
+            abs=1e-10,
+        )

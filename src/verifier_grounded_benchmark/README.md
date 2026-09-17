@@ -1,7 +1,12 @@
-# Verifier-Grounded Benchmark (v0.9.2)
+# Verifier-Grounded Benchmark (v0.9.3)
 
 `verifier_grounded_benchmark` 提供可复现的化学 benchmark task pack、verifier 和评分工具。
 模型调用由用户或 agent runner 负责；本包负责提供题目、解析答案并生成评分报告。
+
+v0.9.3 正式采用 `property_family_anchors_2026_09_17_r2` 性质分组容差：
+Advanced 001/002 使用 8 kJ/mol、0.8 eV 绝对零分宽度，Basic 037–042 统一使用
+10% 相对零分宽度。绝对差、距离及孔体积比的负值判零；Advanced 008/013 接受
+正负能量报告约定并按大小评分。gold 和字段权重不变。
 
 ## QuickStart
 
@@ -25,7 +30,7 @@ print(result["scores"]["score"])
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
 | `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
 
-v0.9.2 仅支持上述 canonical names；旧的 `property_calculation` 和
+v0.9.3 仅支持上述 canonical names；旧的 `property_calculation` 和
 `property_calculation_easy` 名称已移除。
 
 ## Public API

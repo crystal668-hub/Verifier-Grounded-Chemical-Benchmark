@@ -1,9 +1,10 @@
 # 按性质统一的 Property Calculation 容差策略
 
 日期：2026-09-17。基于 [化学评审](2026-09-17-property-tolerance-chemistry-review.md)
-及出题者本轮反馈。状态：**新容差为可运行的离线候选，待独立校准**；数值域和题干
-修复已进入本分支的源代码。没有发布或替换正式容差，没有修改 gold、字段权重或
-分类题规则。
+及出题者本轮反馈。状态：**R2 方案已获出题者确认并纳入 v0.9.3 正式评分规则**。
+采用记录见 [R2 正式评分设计](../design/property-calculation-r2-scoring.md)。本目录中的
+候选 YAML、CSV 和结果保留为采用前的冻结证据；独立科学校准状态不因采用而改变。
+没有修改 gold、字段权重或分类题规则。
 
 当前版本：`property_family_anchors_2026_09_17_r2`。按出题者确认，A001、A002
 恢复绝对误差，分别在原正式宽度 10 kJ/mol、1 eV 上收紧 20% 至 8 kJ/mol、
@@ -179,7 +180,10 @@ PYTHONPATH=src .venv/bin/python docs/research/2026-09-17-property-tolerance-poli
 生成的 `property_calculation_basic.scoring.yaml` 和
 `property_calculation_advanced.scoring.yaml` 可通过现有 CLI 的开发配置覆盖方式加载：
 将 `--tasks`、`--specs` 指向相应源 task pack，将 `--scoring` 指向生成的候选文件。
-它们标记为 `shadow_pending_research`，不冒用正式审核状态。
+这些归档候选文件保留 `shadow_pending_research` 状态；发行包中的正式配置已标记
+为 `formal`，数值参数与 R2 一致。v0.9.3 起，实验脚本从已发布的 v0.9.2 inventory
+读取基线宽度，再结合归档 R2 的数值域约定重建语义修复基线，避免版本升级改变
+原实验对照组。重新生成实验产物时请指定新的 `--output-dir` 以保留冻结结果。
 
 `summary.json` 记录配置、脚本、评分代码和输入表的 SHA-256。
 `task_scores.csv` 分开列出原 v0.9.2 记录分、仅语义修复分、前轮拟合分和新家族规则分。
@@ -198,7 +202,7 @@ PYTHONPATH=src .venv/bin/python docs/research/2026-09-17-property-tolerance-poli
 接口相关测试及修改文件的 Ruff 检查。软件验证保证实现与上述规则一致，不代表
 重新完成了原始量子化学计算、参考来源审计或独立统计校准。
 
-## 发布前仍需解决
+## 后续科学校准
 
 已有答卷来自此前观察过的四组作答，不能称为独立验证集。下述问题不会被本次
 规则统一自动解决：B001–004 的实验/专家目标差异、B013 的结构对应、B031 的原子
@@ -206,6 +210,7 @@ PYTHONPATH=src .venv/bin/python docs/research/2026-09-17-property-tolerance-poli
 相关题目的几何、表面、电荷分析与热力学协议。A018 的定义和 A003 的整数输入语义
 也仍需单独审查。
 
-正式采用前应先补齐对应参考协议及可复核输出，用独立复现误差检查高分锚点，再在
+出题者已接受本版参数和重评分结果并决定正式采用。后续仍应补齐对应参考协议及
+可复核输出，用独立复现误差检查高分锚点，再在
 未用于制定规则的模型/运行上检验区分度。必要调整应面向整类性质，并以科学或
 评分效用证据解释；不得以恢复某组均分或避免某题全零为调整目标。

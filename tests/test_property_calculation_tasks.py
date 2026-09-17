@@ -190,8 +190,8 @@ def test_task_7_contract_and_gold() -> None:
         }
     ]
     profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
-    assert profile["lower_tolerance"] == 10.0
-    assert profile["upper_tolerance"] == 10.0
+    assert profile["lower_tolerance"] == 8.0
+    assert profile["upper_tolerance"] == 8.0
     assert profile["provenance"]["review_status"] == "approved"
     assert task["scoring"] == {
         "aggregation": "arithmetic_mean",
@@ -311,8 +311,8 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             117000000.0,
             "s^-1",
             "property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2",
-            3.0,
-            3.0,
+            2.0,
+            2.0,
             "log10",
         ),
         "property_calculation_advanced_017_biacetyl_phosphorescence_rate": (
@@ -321,7 +321,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             "s^-1",
             "property_calculation_advanced_phosphorescence_rate_numeric_gold_v2",
             2.0,
-            3.0,
+            2.0,
             "log10",
         ),
         "property_calculation_advanced_018_anthracene_ht_contribution": (
@@ -338,8 +338,8 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             28400000000.0,
             "s^-1",
             "property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2",
-            3.0,
-            3.0,
+            2.0,
+            2.0,
             "log10",
         ),
         "property_calculation_advanced_020_azulene_internal_conversion_rate": (
@@ -347,8 +347,8 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             382000000.0,
             "s^-1",
             "property_calculation_advanced_internal_conversion_rate_numeric_gold_v2",
-            3.0,
-            3.0,
+            2.0,
+            2.0,
             "log10",
         ),
     }

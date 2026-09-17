@@ -32,6 +32,29 @@ sys.modules[spec.name] = original
 spec.loader.exec_module(original)
 
 
+def baseline_scoring(track: str) -> dict:
+    """Keep v0.9.2 widths and the R2 domain fixes independent of later releases."""
+    directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
+    source = yaml.safe_load((directory / "scoring.yaml").read_text(encoding="utf-8"))
+    snapshot = yaml.safe_load(
+        (DIRECTORY / f"{track}.scoring.yaml").read_text(encoding="utf-8")
+    )
+    source["scoring_config"].update(task_pack_version="0.9.2", scoring_status="formal")
+    source["scoring_profiles"] = original.baseline_profiles(source["scoring_profiles"])
+    for profile_id, profile in source["scoring_profiles"].items():
+        frozen = snapshot["scoring_profiles"][profile_id]
+        for key in ("minimum_value", "value_transform"):
+            if key in frozen:
+                profile[key] = frozen[key]
+            else:
+                profile.pop(key, None)
+        if "semantic_decision_record" in frozen["provenance"]:
+            profile["provenance"]["semantic_decision_record"] = frozen["provenance"][
+                "semantic_decision_record"
+            ]
+    return source
+
+
 def index_rules(policy: dict) -> dict:
     indexed = {}
     for family, rule in policy["families"].items():
@@ -181,6 +204,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
         PREVIOUS / "project_scores.py",
         PREVIOUS / "candidate_tolerances.csv",
         PREVIOUS / "task_scores.csv",
+        original.BASELINE_INVENTORY,
     ]
     inputs.extend(
         ROOT / "src/verifier_grounded_benchmark" / name
@@ -199,9 +223,8 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             directory / name
             for name in ("tasks.yaml", "scoring.yaml", "verifier_specs.yaml")
         )
-        source = yaml.safe_load(
-            (directory / "scoring.yaml").read_text(encoding="utf-8")
-        )
+        inputs.append(DIRECTORY / f"{track}.scoring.yaml")
+        source = baseline_scoring(track)
         sources[track] = source
         candidates[track] = candidate_scoring(source, policy)
     if source_dir is not None:
@@ -239,8 +262,12 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
                 [original.evaluate(pack, item)[0] for item in observations]
             )
             recorded = np.array([item.recorded for item in observations])
+            baseline_path = Path(temporary) / f"{track}.baseline.scoring.yaml"
+            baseline_path.write_text(yaml.safe_dump(sources[track]), encoding="utf-8")
             current_pack = load_task_pack(
-                directory / "tasks.yaml", directory / "verifier_specs.yaml"
+                directory / "tasks.yaml",
+                directory / "verifier_specs.yaml",
+                baseline_path,
             )
             corrected = np.array(
                 [original.evaluate(current_pack, item)[0] for item in observations]

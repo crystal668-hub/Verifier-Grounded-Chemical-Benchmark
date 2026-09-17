@@ -11,7 +11,7 @@ import csv
 import hashlib
 import json
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import numpy as np
@@ -26,6 +26,7 @@ from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.models import (
     PropertyCalculationTaskSpec,
     TaskPack,
+    freeze_mapping,
 )
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -41,6 +42,24 @@ SOURCES = {
 }
 PENALTIES = {"property_calculation_basic": 0.03, "property_calculation_advanced": 0.003}
 SEED = 20260916
+BASELINE_INVENTORY = ROOT / "releases/v0.9.2/task-inventory.json"
+
+
+def baseline_profiles(profile_ids) -> dict:
+    inventory = json.loads(BASELINE_INVENTORY.read_text(encoding="utf-8"))
+    return {
+        key: inventory["scoring_profiles"][key]["definition"] for key in profile_ids
+    }
+
+
+def load_baseline_pack(track: str) -> TaskPack:
+    directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
+    pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    return replace(
+        pack,
+        version="0.9.2",
+        scoring_profiles=freeze_mapping(baseline_profiles(pack.scoring_profiles)),
+    )
 
 
 @dataclass
@@ -254,7 +273,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 
 def run(source_dir: Path, output_dir: Path, bootstrap_samples: int = 10000) -> dict:
-    source_hashes = {}
+    source_hashes = {str(BASELINE_INVENTORY): sha256(BASELINE_INVENTORY)}
     packs = {}
     observations_by_track = {}
     for track, filename in SOURCES.items():
@@ -268,7 +287,7 @@ def run(source_dir: Path, output_dir: Path, bootstrap_samples: int = 10000) -> d
         ]
         for path in inputs:
             source_hashes[str(path)] = sha256(path)
-        pack = load_task_pack(pack_dir / "tasks.yaml", pack_dir / "verifier_specs.yaml")
+        pack = load_baseline_pack(track)
         packs[track] = pack
         observations_by_track[track] = read_observations(source_dir / filename, pack)
     summary = {

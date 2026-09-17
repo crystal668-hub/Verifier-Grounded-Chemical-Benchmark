@@ -1,6 +1,6 @@
 # Property Calculation Advanced Track
 
-更新日期：2026-09-10
+更新日期：2026-09-17（v0.9.3）
 
 ## 1. 定位
 
@@ -56,7 +56,13 @@ Task 8 的规范化 JSONL：
 
 ## 4. Scoring
 
-Task 7 的公开 gold 为 `0.258031679 kJ/mol`，绝对容差为 `0.001 kJ/mol`。版本 1 只接受精确单位字符串 `kJ/mol`，不进行 meV 或其他单位换算。
+Advanced 001 的 gold 为 `0.258031679 kJ/mol`，v0.9.3 采用的绝对零分宽度为
+`8 kJ/mol`；Advanced 002 为 `0.8 eV`。只接受精确单位字符串，不进行单位换算。
+负绝对差直接判该字段零分，合法零值按线性误差规则计分。
+
+v0.9.3 全量采用已确认的 R2 家族容差。Advanced 011 的比值及 010/012 的距离
+也执行非负约束；008/013 按能量大小评分，接受正负报告约定，题面已删除保号要求。
+完整参数与采用记录见 [R2 正式评分设计](../design/property-calculation-r2-scoring.md)。
 
 Task 8 的三个字段等权评分：
 
@@ -69,7 +75,7 @@ Task 8 的三个字段等权评分：
 `property_calculation_advanced_004_ir_top2_frequencies` 使用
 `answer_matching: unordered_numeric`。两个提交频率与两个 gold 频率采用使字段平均分最高的一一匹配，输出顺序不影响分数；匹配后的两个字段仍各自等权计分。
 
-格式正确但数值、单位或相位错误的答案返回 `status: ok` 和相应低分；它不是 evaluator 故障。
+格式正确但数值、单位或相位错误的答案返回 `status: scored` 和相应低分；它不是 evaluator 故障。
 
 ## 5. Result Contract
 

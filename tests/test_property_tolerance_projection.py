@@ -9,8 +9,6 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from verifier_grounded_benchmark.task.loader import load_task_pack
-
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = (
     ROOT / "docs/research/2026-09-16-property-tolerance-projection/project_scores.py"
@@ -23,11 +21,7 @@ spec.loader.exec_module(projection)
 
 @pytest.fixture(scope="module")
 def advanced():
-    directory = (
-        ROOT
-        / "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced"
-    )
-    return load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    return projection.load_baseline_pack("property_calculation_advanced")
 
 
 def observation(pack, prefix, answers):
@@ -111,7 +105,7 @@ def test_supplied_workbooks_reproduce_all_published_scores(track):
     if not source.exists():
         pytest.skip("Private source workbook is not part of the repository")
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
-    pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    pack = projection.load_baseline_pack(track)
     before = projection.sha256(directory / "scoring.yaml")
     items = projection.read_observations(source, pack)
     assert len(items) == (51 if track.endswith("basic") else 20)
