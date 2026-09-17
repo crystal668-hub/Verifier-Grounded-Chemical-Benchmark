@@ -23,6 +23,7 @@ V42_RELEASE_DIR = ROOT / "releases" / "v0.4.2"
 V43_RELEASE_DIR = ROOT / "releases" / "v0.4.3"
 V50_RELEASE_DIR = ROOT / "releases" / "v0.5.0"
 V60_RELEASE_DIR = ROOT / "releases" / "v0.6.0"
+V93_RELEASE_DIR = ROOT / "releases" / "v0.9.3"
 
 
 def assert_release_artifacts_if_present(
@@ -53,6 +54,47 @@ def assert_release_artifacts_if_present(
         "file_count": len(wheel_payloads),
         "sha256": payload_digest(wheel_payloads),
     } == manifest["verified_payload"]
+
+
+def test_v93_release_binds_approved_r2_profiles_source_and_artifacts() -> None:
+    manifest = json.loads((V93_RELEASE_DIR / "manifest.json").read_text())
+    inventory = json.loads((V93_RELEASE_DIR / "task-inventory.json").read_text())
+    assert manifest["version"] == inventory["package_version"] == "0.9.3"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "3"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert {name: track["count"] for name, track in inventory["tracks"].items()} == {
+        "rdkit": 14,
+        "xtb": 20,
+        "property_calculation_basic": 51,
+        "property_calculation_advanced": 20,
+    }
+    assert all(track["scoring_status"] == "formal" for track in inventory["tracks"].values())
+    assert all(track["task_pack_version"] == "0.9.3" for track in inventory["tracks"].values())
+    tagged = subprocess.check_output(
+        ["git", "rev-list", "-n", "1", manifest["tag"]], cwd=ROOT, text=True
+    ).strip()
+    assert tagged == manifest["canonical_source"]["commit"]
+    tree = subprocess.check_output(
+        ["git", "rev-parse", f"{tagged}^{{tree}}"], cwd=ROOT, text=True
+    ).strip()
+    assert tree == manifest["canonical_source"]["tree"]
+    adopted_count = 0
+    for item in inventory["scoring_profiles"].values():
+        definition = item["definition"]
+        encoded = json.dumps(definition, sort_keys=True, separators=(",", ":")).encode()
+        assert hashlib.sha256(encoded).hexdigest() == item["sha256"]
+        if definition["provenance"].get("tolerance_policy") == "property_family_anchors_2026_09_17_r2":
+            assert definition["provenance"]["review_status"] == "approved"
+            adopted_count += 1
+    assert adopted_count == 71
+    assert (V93_RELEASE_DIR / "SHA256SUMS").read_text() == "".join(
+        f"{item['sha256']}  {item['filename']}\n" for item in manifest["artifacts"]
+    )
+    assert_release_artifacts_if_present(
+        manifest,
+        ROOT / "dist/verifier_grounded_benchmark-0.9.3-py3-none-any.whl",
+        ROOT / "dist/verifier_grounded_benchmark-0.9.3.tar.gz",
+    )
 
 
 def test_release_manifest_binds_tag_artifacts_and_inventory() -> None:
