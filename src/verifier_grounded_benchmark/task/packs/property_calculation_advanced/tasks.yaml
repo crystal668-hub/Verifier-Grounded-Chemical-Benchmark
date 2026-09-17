@@ -1478,7 +1478,7 @@ tasks:
   - interaction_energy
   - binding_energy
   prompt: |
-    For the dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1, report the interaction energy and binding energy in kcal/mol, preserving their signs.
+    For the dimer formed by two molecules of NC1=CC=C2C=CC(=O)N=C2N1, report the interaction energy and binding energy in kcal/mol.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answers":[{"property":"interaction_energy","value":<number>,"unit":"kcal/mol"},{"property":"binding_energy","value":<number>,"unit":"kcal/mol"}]}
@@ -2054,7 +2054,7 @@ tasks:
   - fixed_input
   - halogen_bonding
   prompt: |
-    For the FI...NH3 halogen-bond complex, where the iodine atom of FI interacts with NH3, report the interaction energy in kcal/mol and preserve its sign.
+    For the FI...NH3 halogen-bond complex, where the iodine atom of FI interacts with NH3, report the interaction energy in kcal/mol.
 
     Your final answer must appear on its own line exactly in this format:
     FINAL ANSWER: {"answer":<number>,"unit":"kcal/mol"}

@@ -23,6 +23,9 @@ def score_numeric_gold(
         return 0.0
     transform = profile.get("value_transform", "identity")
     numeric_value = float(value)
+    minimum_value = profile.get("minimum_value")
+    if minimum_value is not None and numeric_value < minimum_value:
+        return 0.0
     numeric_gold = gold.get("value")
     if transform == "absolute":
         numeric_value = abs(numeric_value)

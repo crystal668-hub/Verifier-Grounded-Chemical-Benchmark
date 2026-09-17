@@ -68,6 +68,10 @@ def validate_profiles(
         if profile_type not in PROFILE_TYPES:
             raise ValueError(f"unsupported scoring profile type for {profile_id}: {profile_type}")
         require_string(profile.get("property"), f"scoring profile {profile_id} property")
+        if "minimum_value" in profile:
+            if profile_type != "numeric_gold":
+                raise ValueError(f"minimum_value is only supported for numeric_gold: {profile_id}")
+            _finite(profile["minimum_value"], f"scoring profile {profile_id} minimum_value")
         provenance = require_mapping(profile.get("provenance"), f"scoring profile {profile_id} provenance")
         require_string(provenance.get("target_source"), f"scoring profile {profile_id} target_source")
         require_string(provenance.get("decay_source"), f"scoring profile {profile_id} decay_source")

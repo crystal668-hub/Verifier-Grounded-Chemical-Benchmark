@@ -9,10 +9,12 @@ scoring_profiles:
     property: free_energy_difference
     type: numeric_gold
     unit: kJ/mol
+    minimum_value: 0.0
     lower_tolerance: 10.0
     upper_tolerance: 10.0
     provenance:
       target_source: task_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
       review_status: approved
@@ -22,10 +24,12 @@ scoring_profiles:
     property: potential_energy_difference
     type: numeric_gold
     unit: eV
+    minimum_value: 0.0
     lower_tolerance: 1.0
     upper_tolerance: 1.0
     provenance:
       target_source: task_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
       review_status: approved
@@ -152,6 +156,7 @@ scoring_profiles:
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -166,6 +171,7 @@ scoring_profiles:
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -188,11 +194,12 @@ scoring_profiles:
     property: oh_bond_distance
     type: numeric_gold
     unit: angstrom
+    minimum_value: 0.0
     lower_tolerance: 0.3
     upper_tolerance: 0.3
-    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -202,11 +209,12 @@ scoring_profiles:
     property: h_o_contact_distance
     type: numeric_gold
     unit: angstrom
+    minimum_value: 0.0
     lower_tolerance: 0.3
     upper_tolerance: 0.3
-    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -216,10 +224,12 @@ scoring_profiles:
     property: accessible_to_inaccessible_volume_ratio
     type: numeric_gold
     unit: ratio
+    minimum_value: 0.0
     lower_tolerance: 0.5
     upper_tolerance: 0.5
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -229,10 +239,12 @@ scoring_profiles:
     property: carboxyl_hydrogen_distance
     type: numeric_gold
     unit: angstrom
+    minimum_value: 0.0
     lower_tolerance: 0.5
     upper_tolerance: 0.5
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved
@@ -247,6 +259,7 @@ scoring_profiles:
     value_transform: absolute
     provenance:
       target_source: expert_gold_answer
+      semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: gold_to_zero_rule
       decision_record: docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md
       review_status: approved

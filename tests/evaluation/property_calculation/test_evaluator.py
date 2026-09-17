@@ -43,14 +43,14 @@ def _evaluate(task_id: str, answer: dict):
     ("answer", "expected"),
     [
         (-9.741968321, 0.0),
-        (-4.741968321, 0.5),
+        (-4.741968321, 0.0),
         (0.258031679, 1.0),
         (5.258031679, 0.5),
         (10.258031679, 0.0),
         (11.0, 0.0),
     ],
 )
-def test_numeric_gold_uses_continuous_linear_decay(
+def test_numeric_gold_uses_linear_decay_within_its_physical_domain(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(

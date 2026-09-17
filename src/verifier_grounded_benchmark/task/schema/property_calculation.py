@@ -86,5 +86,10 @@ def validate_property_calculation_task(
             if gold_definition.get("unit") != unit or profile.get("unit") != unit:
                 raise ValueError(f"unit mismatch for {property_name}")
             linear_goal_from_profile(profile, gold=gold_definition.get("value"))
+            if (
+                "minimum_value" in profile
+                and gold_definition["value"] < profile["minimum_value"]
+            ):
+                raise ValueError(f"numeric gold {property_name} is below minimum_value")
         elif not isinstance(gold_definition.get("value"), str):
             raise ValueError(f"string gold {property_name} must be a string")
