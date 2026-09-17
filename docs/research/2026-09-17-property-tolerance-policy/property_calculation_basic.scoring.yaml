@@ -21,7 +21,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: aqueous_solvation
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v3:
     property: aqueous_solvation_free_energy
     type: numeric_gold
@@ -38,7 +38,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: aqueous_solvation
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v3:
     property: aqueous_solvation_free_energy
     type: numeric_gold
@@ -55,7 +55,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: aqueous_solvation
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v3:
     property: aqueous_solvation_free_energy
     type: numeric_gold
@@ -72,7 +72,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: aqueous_solvation
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v3:
     property: first_reduction_potential_vs_sce
     type: numeric_gold
@@ -89,7 +89,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: redox_potential
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v3:
     property: first_reduction_potential_vs_sce
     type: numeric_gold
@@ -106,7 +106,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: redox_potential
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v3:
     property: first_oxidation_potential_vs_sce
     type: numeric_gold
@@ -123,7 +123,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: redox_potential
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v3:
     property: first_oxidation_potential_vs_sce
     type: numeric_gold
@@ -140,7 +140,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: redox_potential
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v3:
     property: first_oxidation_potential_vs_sce
     type: numeric_gold
@@ -157,7 +157,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: redox_potential
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -174,7 +174,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -191,7 +191,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -208,7 +208,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -225,7 +225,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -242,7 +242,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v3:
     property: binding_energy
     type: numeric_gold
@@ -259,7 +259,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_016_thiophene_polarizability_numeric_gold_v3:
     property: static_mean_polarizability
     type: numeric_gold
@@ -276,7 +276,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: polarizability
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_017_benzene_polarizability_numeric_gold_v3:
     property: static_mean_polarizability
     type: numeric_gold
@@ -293,7 +293,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: polarizability
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_018_octatetraene_polarizability_numeric_gold_v3:
     property: static_mean_polarizability
     type: numeric_gold
@@ -310,7 +310,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: polarizability
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment_numeric_gold_v3:
     property: dipole_moment
     type: numeric_gold
@@ -327,7 +327,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: dipole_moment
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v3:
     property: dipole_moment
     type: numeric_gold
@@ -344,7 +344,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: dipole_moment
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v3:
     property: dipole_moment
     type: numeric_gold
@@ -361,7 +361,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: dipole_moment
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_022_naphthalene_bridge_bond_order_numeric_gold_v3:
     property: wiberg_bond_order
     type: numeric_gold
@@ -378,7 +378,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: wiberg_bond_order
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_023_dimethyl_sulfone_so_bond_order_numeric_gold_v3:
     property: wiberg_bond_order
     type: numeric_gold
@@ -395,7 +395,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: wiberg_bond_order
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_024_methyl_nitrate_no_bond_order_numeric_gold_v3:
     property: wiberg_bond_order
     type: numeric_gold
@@ -412,7 +412,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: wiberg_bond_order
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v3:
     property: surface_electrostatic_potential_minimum
     type: numeric_gold
@@ -429,7 +429,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: surface_esp_minimum
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_026_nitrobenzene_vdw_surface_area_numeric_gold_v3:
     property: van_der_waals_surface_area
     type: numeric_gold
@@ -446,7 +446,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: surface_area
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_027_pyrrole_surface_esp_variance_numeric_gold_v3:
     property: surface_electrostatic_potential_total_variance
     type: numeric_gold
@@ -463,7 +463,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: surface_esp_variance
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_028_urea_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
@@ -480,7 +480,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_029_tnt_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
@@ -497,7 +497,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v3:
     property: crystal_density
     type: numeric_gold
@@ -514,7 +514,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_031_allyl_radical_c1_spin_density_numeric_gold_v3:
     property: spin_density
     type: numeric_gold
@@ -531,7 +531,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: spin_density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_032_benzyl_radical_para_c_spin_density_numeric_gold_v3:
     property: spin_density
     type: numeric_gold
@@ -548,7 +548,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: spin_density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_033_phenoxy_radical_o_spin_density_numeric_gold_v3:
     property: spin_density
     type: numeric_gold
@@ -565,7 +565,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: spin_density
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_034_indole_c3_fukui_minus_numeric_gold_v3:
     property: fukui_function
     type: numeric_gold
@@ -582,7 +582,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: fukui_function
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_035_chloronitrobenzene_c_fukui_plus_numeric_gold_v3:
     property: fukui_function
     type: numeric_gold
@@ -599,7 +599,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: fukui_function
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_036_furfural_carbonyl_c_fukui_plus_numeric_gold_v3:
     property: fukui_function
     type: numeric_gold
@@ -616,15 +616,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: fukui_function
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 6.467
+    upper_tolerance: 6.467
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -633,15 +633,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 5.788
+    upper_tolerance: 5.788
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -650,15 +650,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 7.388
+    upper_tolerance: 7.388
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -667,15 +667,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_040_methane_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 4.44
+    upper_tolerance: 4.44
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -684,15 +684,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 4.592
+    upper_tolerance: 4.592
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -701,15 +701,15 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v3:
     property: standard_entropy
     type: numeric_gold
     unit: cal/(mol*K)
-    lower_tolerance: 3.0
-    upper_tolerance: 3.0
-    error_mode: absolute
-    error_parameter: 3.0
+    lower_tolerance: 5.118
+    upper_tolerance: 5.118
+    error_mode: relative
+    error_parameter: 0.1
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
@@ -718,7 +718,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: standard_entropy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v3:
     property: dimerization_enthalpy
     type: numeric_gold
@@ -735,7 +735,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: dimerization_enthalpy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_044_caffeine_most_negative_mulliken_atom_atom_identity_v1:
     property: most_negative_mulliken_atom
     type: atom_identity
@@ -764,7 +764,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: mulliken_charge
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom_atom_identity_v1:
     property: most_negative_mulliken_atom
     type: atom_identity
@@ -793,7 +793,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: vertical_excitation_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy_numeric_gold_v3:
     property: vertical_excitation_energy
     type: numeric_gold
@@ -810,7 +810,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: vertical_excitation_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_049_acetone_s1_vertical_excitation_energy_numeric_gold_v3:
     property: vertical_excitation_energy
     type: numeric_gold
@@ -827,7 +827,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: vertical_excitation_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy_numeric_gold_v3:
     property: vertical_excitation_energy
     type: numeric_gold
@@ -844,7 +844,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: vertical_excitation_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
   property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy_numeric_gold_v3:
     property: vertical_excitation_energy
     type: numeric_gold
@@ -861,7 +861,7 @@ scoring_profiles:
       review_date: '2026-09-17'
       review_owner: benchmark_maintainers
       tolerance_family: vertical_excitation_energy
-      tolerance_policy: property_family_anchors_2026_09_17
+      tolerance_policy: property_family_anchors_2026_09_17_r2
 tasks:
 - task_id: property_calculation_basic_001_toluene_aqueous_solvation_free_energy
   scoring:

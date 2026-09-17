@@ -97,14 +97,21 @@ def test_same_family_has_same_scoring_accuracy_across_both_tracks(sources):
                         if profile.get("value_transform") == "log10"
                         else center + error
                     )
+                    domain_expected = (
+                        0
+                        if value < profile.get("minimum_value", -float("inf"))
+                        else expected
+                    )
                     assert score_numeric_gold(
                         {"value": value, "unit": gold["unit"]}, gold, profile
-                    ) == pytest.approx(expected, abs=1e-12)
+                    ) == pytest.approx(domain_expected, abs=1e-12)
     assert observed["noncovalent_energy"] == (1, 1)
     assert observed["density"] == pytest.approx((0.1, 0.1))
     assert observed["vertical_excitation_energy"] == (0.5, 0.5)
     assert observed["wiberg_bond_order"] == (0.2, 0.2)
-    assert observed["standard_entropy"] == (3, 3)
+    assert observed["standard_entropy"] == pytest.approx((0.1, 0.1))
+    assert observed["crystal_free_energy_difference"] == (8, 8)
+    assert observed["crystal_potential_energy_difference"] == (0.8, 0.8)
     assert observed["geometric_distance"] == (0.2, 0.2)
     assert observed["excited_state_rate"] == (2, 2)
 
@@ -132,22 +139,46 @@ def test_policy_fails_closed_for_unknown_properties_and_overlapping_families(sou
         projection.index_rules(overlapping)
 
 
-def test_absolute_differences_do_not_reward_zero_or_negative_answers(sources):
+@pytest.mark.parametrize(
+    ("property_name", "width"),
+    [("free_energy_difference", 8.0), ("potential_energy_difference", 0.8)],
+)
+def test_absolute_differences_score_zero_normally_but_reject_negatives(
+    sources, property_name, width
+):
     candidate = projection.candidate_scoring(
         sources["property_calculation_advanced"], POLICY
     )
-    for gold, profile in numeric_fields(candidate):
-        if (
-            profile["provenance"]["tolerance_family"]
-            == "absolute_crystal_energy_difference"
-        ):
-            for value in (0, -1e-12, -gold["value"], 2 * gold["value"]):
-                assert (
-                    score_numeric_gold(
-                        {"value": value, "unit": gold["unit"]}, gold, profile
-                    )
-                    == 0
-                )
+    gold, profile = next(
+        (gold, profile)
+        for gold, profile in numeric_fields(candidate)
+        if gold["property"] == property_name
+    )
+    assert profile["error_mode"] == "absolute"
+    assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
+    assert profile["minimum_value"] == 0
+    for value in (-1e-12, -gold["value"], -width):
+        assert (
+            score_numeric_gold({"value": value, "unit": gold["unit"]}, gold, profile)
+            == 0
+        )
+    for value in (0, 0.5 * gold["value"], 1.5 * gold["value"]):
+        assert score_numeric_gold(
+            {"value": value, "unit": gold["unit"]}, gold, profile
+        ) == pytest.approx(1 - abs(value - gold["value"]) / width)
+
+
+def test_absolute_difference_widths_are_independent_of_gold_magnitude(sources):
+    source = deepcopy(sources["property_calculation_advanced"])
+    original = projection.candidate_scoring(source, POLICY)
+    for gold, _ in numeric_fields(source):
+        if gold["property"] in {
+            "free_energy_difference",
+            "potential_energy_difference",
+        }:
+            gold["value"] *= 10
+    changed = projection.candidate_scoring(source, POLICY)
+    assert changed["scoring_profiles"] == original["scoring_profiles"]
 
 
 def test_export_needs_no_answer_workbooks_and_loads_as_shadow_scoring(tmp_path):

@@ -1,4 +1,4 @@
-policy_id: property_family_anchors_2026_09_17
+policy_id: property_family_anchors_2026_09_17_r2
 status: pending_independent_calibration
 decision_record: docs/research/2026-09-17-property-tolerance-policy.md
 # Parameters are zero-score distances, not measurement uncertainties.
@@ -67,8 +67,8 @@ families:
   standard_entropy:
     properties: [standard_entropy]
     units: ['cal/(mol*K)']
-    mode: absolute
-    parameter: 3.0
+    mode: relative
+    parameter: 0.1
   dimerization_enthalpy:
     properties: [dimerization_enthalpy]
     units: [kcal/mol]
@@ -84,11 +84,16 @@ families:
     units: [eV]
     mode: absolute
     parameter: 0.5
-  absolute_crystal_energy_difference:
-    properties: [free_energy_difference, potential_energy_difference]
-    units: [kJ/mol, eV]
-    mode: relative
-    parameter: 1.0
+  crystal_free_energy_difference:
+    properties: [free_energy_difference]
+    units: [kJ/mol]
+    mode: absolute
+    parameter: 8.0
+  crystal_potential_energy_difference:
+    properties: [potential_energy_difference]
+    units: [eV]
+    mode: absolute
+    parameter: 0.8
   hydrogen_bond_count:
     properties: [hydrogen_bond_count]
     units: [count]
