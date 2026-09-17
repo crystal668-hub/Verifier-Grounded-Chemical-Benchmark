@@ -1,0 +1,145 @@
+policy_id: property_family_anchors_2026_09_17
+status: pending_independent_calibration
+decision_record: docs/research/2026-09-17-property-tolerance-policy.md
+# Parameters are zero-score distances, not measurement uncertainties.
+# Selectors use property and unit only; task IDs and submitted answers are absent.
+families:
+  aqueous_solvation:
+    properties: [aqueous_solvation_free_energy]
+    units: [kcal/mol]
+    mode: absolute
+    parameter: 3.0
+  redox_potential:
+    properties: [first_reduction_potential_vs_sce, first_oxidation_potential_vs_sce]
+    units: [V]
+    mode: absolute
+    parameter: 0.5
+  noncovalent_energy:
+    properties: [binding_energy, interaction_energy, halogen_bond_interaction_energy]
+    units: [kcal/mol]
+    mode: absolute
+    parameter: 1.0
+  polarizability:
+    properties: [static_mean_polarizability]
+    units: [a.u.]
+    mode: relative
+    parameter: 0.2
+  dipole_moment:
+    properties: [dipole_moment]
+    units: [Debye]
+    mode: relative
+    parameter: 0.2
+  wiberg_bond_order:
+    properties: [wiberg_bond_order]
+    units: [dimensionless]
+    mode: absolute
+    parameter: 0.2
+  surface_esp_minimum:
+    properties: [surface_electrostatic_potential_minimum]
+    units: [kcal/mol]
+    mode: absolute
+    parameter: 5.0
+  surface_area:
+    properties: [van_der_waals_surface_area]
+    units: [angstrom^2]
+    mode: relative
+    parameter: 0.1
+  surface_esp_variance:
+    properties: [surface_electrostatic_potential_total_variance]
+    units: ['(kcal/mol)^2']
+    mode: relative
+    parameter: 0.3
+  density:
+    properties: [crystal_density]
+    units: [g/cm^3]
+    mode: relative
+    parameter: 0.1
+  spin_density:
+    properties: [spin_density]
+    units: [dimensionless]
+    mode: absolute
+    parameter: 0.2
+  fukui_function:
+    properties: [fukui_function]
+    units: [dimensionless]
+    mode: absolute
+    parameter: 0.05
+  standard_entropy:
+    properties: [standard_entropy]
+    units: ['cal/(mol*K)']
+    mode: absolute
+    parameter: 3.0
+  dimerization_enthalpy:
+    properties: [dimerization_enthalpy]
+    units: [kcal/mol]
+    mode: absolute
+    parameter: 3.0
+  mulliken_charge:
+    properties: [mulliken_charge]
+    units: [e]
+    mode: absolute
+    parameter: 0.15
+  vertical_excitation_energy:
+    properties: [vertical_excitation_energy]
+    units: [eV]
+    mode: absolute
+    parameter: 0.5
+  absolute_crystal_energy_difference:
+    properties: [free_energy_difference, potential_energy_difference]
+    units: [kJ/mol, eV]
+    mode: relative
+    parameter: 1.0
+  hydrogen_bond_count:
+    properties: [hydrogen_bond_count]
+    units: [count]
+    mode: absolute
+    parameter: 2.0
+  harmonic_ir_frequency:
+    properties: [frequency_1, frequency_2]
+    units: [cm^-1]
+    mode: absolute
+    parameter: 100.0
+  crossover_temperature:
+    properties: [crossover_temperature]
+    units: [K]
+    mode: absolute
+    parameter: 100.0
+  orbital_gap:
+    properties: [homo_lumo_gap]
+    units: [eV]
+    mode: absolute
+    parameter: 1.0
+  geometric_distance:
+    properties: [oh_bond_distance, h_o_contact_distance, carboxyl_hydrogen_distance]
+    units: [angstrom]
+    mode: absolute
+    parameter: 0.2
+  pore_volume_ratio:
+    properties: [accessible_to_inaccessible_volume_ratio]
+    units: [ratio]
+    mode: absolute
+    parameter: 0.5
+  pka:
+    properties: [pka]
+    units: [pKa]
+    mode: absolute
+    parameter: 2.0
+  spin_orbit_coupling:
+    properties: [spin_orbit_coupling_matrix_element]
+    units: [eV]
+    mode: log10
+    parameter: 1.0
+  excited_state_rate:
+    properties: [intersystem_crossing_rate, phosphorescence_rate, internal_conversion_rate]
+    units: [s^-1]
+    mode: log10
+    parameter: 2.0
+  ht_contribution:
+    properties: [herzberg_teller_contribution]
+    units: [percent]
+    mode: absolute
+    parameter: 10.0
+    upper_parameter: 1.0
+    # Keep the existing rule until the FC/HT partition and interference convention
+    # are specified. This is not an independently validated percentage domain.
+    status: retained_pending_target_definition
