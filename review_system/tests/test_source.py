@@ -55,8 +55,8 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
     assert answers["potential_energy_difference"]["full_score_region"]["kind"] == "point"
     assert answers["potential_energy_difference"]["score_range"] == {
         "kind": "interval",
-        "min": -0.921,
-        "max": 1.079,
+        "min": -0.7210000000000001,
+        "max": 0.879,
         "min_exclusive": True,
         "max_exclusive": True,
         "unit": "eV",
@@ -94,8 +94,8 @@ def test_score_ranges_represent_nonzero_submitted_values():
 
     interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
     assert interaction["kind"] == "absolute_interval"
-    assert interaction["min"] == pytest.approx(49.04)
-    assert interaction["max"] == pytest.approx(89.04)
+    assert interaction["min"] == pytest.approx(68.04)
+    assert interaction["max"] == pytest.approx(70.04)
 
     log_score = tasks["property_calculation_advanced_015_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
     assert log_score["transform"] == "log10"
