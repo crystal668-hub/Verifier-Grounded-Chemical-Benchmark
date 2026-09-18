@@ -96,22 +96,27 @@ class PropertyCalculationEvaluator:
                 }
             )
 
-        task_score = score_task(list(field_scores.values()))
+        task_score, comparison_group_scores = score_task(
+            field_scores, scoring.get("comparison_groups")
+        )
+        scores: dict[str, Any] = {
+            "validity_gate": 1.0,
+            "domain_gate": 1.0,
+            "identity_gate": 1.0,
+            "constraint_scores": constraint_scores,
+            "property_score": task_score,
+            "geometry_quality_score": 1.0,
+            "score": task_score,
+        }
+        if comparison_group_scores:
+            scores["comparison_group_scores"] = comparison_group_scores
         return scored_result(
             task_id=task.task_id,
             properties={
                 "submitted_answers": submitted,
                 "diagnostics": {"unknown_properties": unknown},
             },
-            scores={
-                "validity_gate": 1.0,
-                "domain_gate": 1.0,
-                "identity_gate": 1.0,
-                "constraint_scores": constraint_scores,
-                "property_score": task_score,
-                "geometry_quality_score": 1.0,
-                "score": task_score,
-            },
+            scores=scores,
             versions=versions,
         )
 

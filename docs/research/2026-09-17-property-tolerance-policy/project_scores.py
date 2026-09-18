@@ -40,6 +40,7 @@ def baseline_scoring(track: str) -> dict:
         (DIRECTORY / f"{track}.scoring.yaml").read_text(encoding="utf-8")
     )
     source["scoring_config"].update(task_pack_version="0.9.2", scoring_status="formal")
+    source["tasks"] = deepcopy(snapshot["tasks"])
     source["scoring_profiles"] = original.baseline_profiles(source["scoring_profiles"])
     for profile_id, profile in source["scoring_profiles"].items():
         frozen = snapshot["scoring_profiles"][profile_id]

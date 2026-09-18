@@ -62,7 +62,7 @@ def test_numeric_gold_uses_linear_decay_within_its_physical_domain(
     assert result["scores"]["score"] == pytest.approx(expected, abs=1e-12)
 
 
-def test_task_uses_arithmetic_mean_across_all_fields() -> None:
+def test_crystal_phase_task_averages_energy_and_all_or_nothing_phase_groups() -> None:
     result = _evaluate(
         "property_calculation_advanced_002_crystal_phase",
         {
@@ -81,7 +81,21 @@ def test_task_uses_arithmetic_mean_across_all_fields() -> None:
     assert [
         item["score"] for item in result["scores"]["constraint_scores"]
     ] == pytest.approx([0.5, 0.0, 1.0])
-    assert result["scores"]["score"] == pytest.approx(0.5)
+    assert result["scores"]["comparison_group_scores"] == [
+        {
+            "group": "energy",
+            "aggregation": "arithmetic_mean",
+            "properties": ["potential_energy_difference"],
+            "score": 0.5,
+        },
+        {
+            "group": "phase",
+            "aggregation": "all_correct",
+            "properties": ["ambient_pressure_phase", "high_pressure_phase"],
+            "score": 0.0,
+        },
+    ]
+    assert result["scores"]["score"] == pytest.approx(0.25)
 
 
 def test_exact_string_is_case_sensitive() -> None:
@@ -106,7 +120,37 @@ def test_exact_string_is_case_sensitive() -> None:
         if item["property"] == "ambient_pressure_phase"
     )
     assert ambient["score"] == 0.0
-    assert result["scores"]["score"] == pytest.approx(2.0 / 3.0)
+    assert result["scores"]["score"] == pytest.approx(0.5)
+
+
+@pytest.mark.parametrize(
+    ("ambient", "high_pressure", "expected"),
+    [
+        ("alpha", "beta", 1.0),
+        ("alpha", "wrong", 0.5),
+        ("wrong", "beta", 0.5),
+        ("wrong", "wrong", 0.5),
+    ],
+)
+def test_crystal_phase_mapping_is_scored_as_one_binary_decision(
+    ambient: str, high_pressure: str, expected: float
+) -> None:
+    result = _evaluate(
+        "property_calculation_advanced_002_crystal_phase",
+        {
+            "answers": [
+                {
+                    "property": "potential_energy_difference",
+                    "value": 0.079,
+                    "unit": "eV",
+                },
+                {"property": "ambient_pressure_phase", "value": ambient},
+                {"property": "high_pressure_phase", "value": high_pressure},
+            ]
+        },
+    )
+
+    assert result["scores"]["score"] == pytest.approx(expected)
 
 
 def test_missing_requested_field_scores_zero_without_infrastructure_error() -> None:

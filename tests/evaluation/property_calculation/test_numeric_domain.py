@@ -73,7 +73,7 @@ def test_invalid_crystal_difference_does_not_erase_correct_phase_fields(advanced
         versions={"scoring": advanced.scoring_version},
     )
     assert [item["score"] for item in result["scores"]["constraint_scores"]] == [0, 1, 1]
-    assert result["scores"]["score"] == pytest.approx(2 / 3)
+    assert result["scores"]["score"] == pytest.approx(0.5)
 
 
 @pytest.mark.parametrize("property_name", ["interaction_energy", "binding_energy", "halogen_bond_interaction_energy"])

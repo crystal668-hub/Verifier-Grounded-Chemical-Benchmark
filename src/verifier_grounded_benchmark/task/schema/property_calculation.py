@@ -34,11 +34,44 @@ def validate_property_calculation_task(
     scoring = require_mapping(task.get("scoring"), f"task {task_id} scoring")
     if scoring.get("aggregation") != "arithmetic_mean":
         raise ValueError(f"task {task_id} must use arithmetic_mean")
-    if "comparison_groups" in scoring:
-        raise ValueError(
-            f"task {task_id} comparison_groups is no longer supported; "
-            "all requested properties use arithmetic_mean"
+    comparison_groups = scoring.get("comparison_groups")
+    if comparison_groups is not None:
+        groups = index_unique(
+            require_list(
+                comparison_groups, f"task {task_id} comparison_groups"
+            ),
+            "id",
+            "comparison group",
         )
+        grouped_properties: set[str] = set()
+        for group_id, group in groups.items():
+            if group.get("aggregation") not in {"arithmetic_mean", "all_correct"}:
+                raise ValueError(
+                    f"comparison group {group_id} must use arithmetic_mean or "
+                    "all_correct aggregation"
+                )
+            properties = require_list(
+                group.get("properties"),
+                f"comparison group {group_id} properties",
+            )
+            for property_name in properties:
+                property_name = require_string(
+                    property_name, f"comparison group {group_id} property"
+                )
+                if property_name not in requested:
+                    raise ValueError(
+                        f"comparison group {group_id} has unknown property: "
+                        f"{property_name}"
+                    )
+                if property_name in grouped_properties:
+                    raise ValueError(
+                        f"property {property_name} belongs to multiple comparison groups"
+                    )
+                grouped_properties.add(property_name)
+        if grouped_properties != set(requested):
+            raise ValueError(
+                f"task {task_id} comparison groups must cover all requested properties"
+            )
     answer_matching = scoring.get("answer_matching", "by_property")
     if answer_matching not in {"by_property", "unordered_numeric"}:
         raise ValueError(
@@ -53,10 +86,6 @@ def validate_property_calculation_task(
         if value_type not in {"number", "string"}:
             raise ValueError(
                 f"unsupported value_type for {property_name}: {value_type}"
-            )
-        if "comparison_group" in definition:
-            raise ValueError(
-                f"requested property {property_name} comparison_group is no longer supported"
             )
         if answer_matching == "unordered_numeric" and value_type != "number":
             raise ValueError(

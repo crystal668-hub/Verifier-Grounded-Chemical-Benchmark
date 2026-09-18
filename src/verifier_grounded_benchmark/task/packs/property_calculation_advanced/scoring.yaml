@@ -514,6 +514,16 @@ tasks:
 - task_id: property_calculation_advanced_002_crystal_phase
   scoring:
     aggregation: arithmetic_mean
+    comparison_groups:
+    - id: energy
+      aggregation: arithmetic_mean
+      properties:
+      - potential_energy_difference
+    - id: phase
+      aggregation: all_correct
+      properties:
+      - ambient_pressure_phase
+      - high_pressure_phase
     version: linear_goal_v2
   failure_policy:
     malformed_final_answer: parse_error

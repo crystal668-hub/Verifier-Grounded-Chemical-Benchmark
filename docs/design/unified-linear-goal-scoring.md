@@ -451,7 +451,7 @@ q_relax = score_minimize(relaxation_energy; T_relax, B_relax)
 
 ```text
 s_energy_group = s_potential_energy
-s_phase_group = min(s_ambient_phase, s_high_pressure_phase)
+s_phase_group = 1 if both phase strings exactly match their gold values, else 0
 ```
 
 任一字符串 phase 错误都会令 phase group 为 0；数值能量组仍保留自身连续分数。

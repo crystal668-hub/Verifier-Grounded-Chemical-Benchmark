@@ -55,9 +55,15 @@ def baseline_profiles(profile_ids) -> dict:
 def load_baseline_pack(track: str) -> TaskPack:
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
     pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    historical_tasks = []
+    for task in pack.tasks:
+        raw = task.to_dict()
+        raw["scoring"].pop("comparison_groups", None)
+        historical_tasks.append(replace(task, raw=freeze_mapping(raw)))
     return replace(
         pack,
         version="0.9.2",
+        tasks=tuple(historical_tasks),
         scoring_profiles=freeze_mapping(baseline_profiles(pack.scoring_profiles)),
     )
 

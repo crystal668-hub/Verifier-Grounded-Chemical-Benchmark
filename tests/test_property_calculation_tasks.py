@@ -246,6 +246,21 @@ def test_task_8_contract_and_gold() -> None:
     ]
     assert task["scoring"] == {
         "aggregation": "arithmetic_mean",
+        "comparison_groups": [
+            {
+                "id": "energy",
+                "aggregation": "arithmetic_mean",
+                "properties": ["potential_energy_difference"],
+            },
+            {
+                "id": "phase",
+                "aggregation": "all_correct",
+                "properties": [
+                    "ambient_pressure_phase",
+                    "high_pressure_phase",
+                ],
+            },
+        ],
         "version": "linear_goal_v2",
     }
     assert "0.079" not in task["prompt"]

@@ -25,6 +25,27 @@ projection = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = projection
 spec.loader.exec_module(projection)
 POLICY = yaml.safe_load((DIRECTORY / "family_policy.yaml").read_text(encoding="utf-8"))
+POST_R2_TASK_SCORING_OVERRIDES = {
+    "property_calculation_advanced_002_crystal_phase": {
+        "aggregation": "arithmetic_mean",
+        "comparison_groups": [
+            {
+                "id": "energy",
+                "aggregation": "arithmetic_mean",
+                "properties": ["potential_energy_difference"],
+            },
+            {
+                "id": "phase",
+                "aggregation": "all_correct",
+                "properties": [
+                    "ambient_pressure_phase",
+                    "high_pressure_phase",
+                ],
+            },
+        ],
+        "version": "linear_goal_v2",
+    }
+}
 
 
 @pytest.fixture(scope="module")
@@ -203,7 +224,14 @@ def test_formal_release_preserves_every_approved_r2_scoring_field(track):
     frozen = yaml.safe_load((DIRECTORY / f"{track}.scoring.yaml").read_text())
     assert formal["scoring_config"]["scoring_status"] == "formal"
     assert formal["scoring_config"]["task_pack_version"] == "0.9.3"
-    assert formal["tasks"] == frozen["tasks"]
+    released_tasks = deepcopy(formal["tasks"])
+    frozen_tasks = {task["task_id"]: task for task in frozen["tasks"]}
+    for task in released_tasks:
+        override = POST_R2_TASK_SCORING_OVERRIDES.get(task["task_id"])
+        if override is not None:
+            assert task["scoring"] == override
+            task["scoring"] = frozen_tasks[task["task_id"]]["scoring"]
+    assert released_tasks == frozen["tasks"]
     assert formal["scoring_profiles"].keys() == frozen["scoring_profiles"].keys()
     for profile_id, approved in frozen["scoring_profiles"].items():
         released = formal["scoring_profiles"][profile_id]
@@ -227,7 +255,11 @@ def test_formal_release_reproduces_approved_r2_answer_scores(track):
     if not workbook.exists():
         pytest.skip("Private source workbook is not part of the repository")
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
-    pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    pack = load_task_pack(
+        directory / "tasks.yaml",
+        directory / "verifier_specs.yaml",
+        DIRECTORY / f"{track}.scoring.yaml",
+    )
     with (DIRECTORY / "task_scores.csv").open(
         encoding="utf-8-sig", newline=""
     ) as handle:

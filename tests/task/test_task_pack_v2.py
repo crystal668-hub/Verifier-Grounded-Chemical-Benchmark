@@ -195,17 +195,21 @@ def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
         load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
 
 
-def test_property_calculation_loader_rejects_removed_comparison_groups(tmp_path) -> None:
+def test_property_calculation_loader_rejects_incomplete_comparison_groups(tmp_path) -> None:
     task_resource = package_resource("property_calculation_advanced", "tasks.yaml")
     scoring_resource = package_resource("property_calculation_advanced", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["scoring"]["comparison_groups"] = [
-        {"id": "free_energy_difference", "mode": "all"}
+        {
+            "id": "free_energy_difference",
+            "aggregation": "all_correct",
+            "properties": [],
+        }
     ]
     scoring_path = tmp_path / "scoring.yaml"
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="comparison_groups is no longer supported"):
+    with pytest.raises(ValueError, match="properties must be a non-empty list"):
         load_task_pack(
             task_resource,
             package_resource("property_calculation_advanced", "verifier_specs.yaml"),
@@ -213,22 +217,27 @@ def test_property_calculation_loader_rejects_removed_comparison_groups(tmp_path)
         )
 
 
-def test_property_calculation_loader_rejects_removed_comparison_group_field(
+def test_property_calculation_loader_rejects_unknown_group_property(
     tmp_path,
 ) -> None:
     task_resource = package_resource("property_calculation_advanced", "tasks.yaml")
-    tasks = deepcopy(__import__("yaml").safe_load(task_resource.read_text(encoding="utf-8")))
-    tasks["tasks"][0]["requested_properties"][0]["comparison_group"] = (
-        "free_energy_difference"
-    )
-    tasks_path = tmp_path / "tasks.yaml"
-    tasks_path.write_text(__import__("yaml").safe_dump(tasks), encoding="utf-8")
+    scoring_resource = package_resource("property_calculation_advanced", "scoring.yaml")
+    scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
+    scoring["tasks"][0]["scoring"]["comparison_groups"] = [
+        {
+            "id": "free_energy_difference",
+            "aggregation": "all_correct",
+            "properties": ["unknown_property"],
+        }
+    ]
+    scoring_path = tmp_path / "scoring.yaml"
+    scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="comparison_group is no longer supported"):
+    with pytest.raises(ValueError, match="unknown property: unknown_property"):
         load_task_pack(
-            tasks_path,
+            task_resource,
             package_resource("property_calculation_advanced", "verifier_specs.yaml"),
-            package_resource("property_calculation_advanced", "scoring.yaml"),
+            scoring_path,
         )
 
 
