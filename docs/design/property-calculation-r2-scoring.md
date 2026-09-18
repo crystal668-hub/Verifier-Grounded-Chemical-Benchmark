@@ -9,10 +9,18 @@ R2 scoring fields, with formal release provenance. The archived candidate files
 and results remain under
 `docs/research/2026-09-17-property-tolerance-policy/`.
 
+On 2026-09-18, owner review amended Advanced 002 only: the ambient-pressure and
+high-pressure phase answers are one joint exact-match decision worth half of the
+task score, and the potential-energy difference is the other half. Both phase
+strings must match their respective gold values to receive the phase credit. The
+v0.9.3 artifacts were rebuilt from the amended source; the frozen 2026-09-17 R2
+research outputs remain historical records of the earlier aggregation.
+
 ## Release Contract
 
 - All 71 numeric fields use the approved property-family widths. Gold values,
-  field weights, categorical scoring, and task IDs are unchanged.
+  categorical field matching, and task IDs are unchanged. Advanced 002 uses the
+  post-R2 joint phase weighting described above.
 - Advanced 001 and 002 use absolute zero-score widths of 8 kJ/mol and 0.8 eV.
   Negative values score zero before tolerance evaluation. Zero is a valid answer
   and receives the ordinary linear score based on its absolute error.
