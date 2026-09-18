@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BookOpen, Check, ChevronDown, FileText, KeyRound, MessageCircle, PanelRight, RefreshCw, Search, Send, ShieldCheck, Trash2, Users, X } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, FileText, KeyRound, MessageCircle, Minus, PanelRight, Plus, RefreshCw, Search, Send, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import './styles.css';
 
 type Track = { name: string; display_name: string; task_count: number };
@@ -158,6 +158,8 @@ function AccountDialog({ currentUser, onClose }: { currentUser: CurrentUser; onC
 }
 
 type SharedFile = { id: number; name: string; media_type: string; size: number; owner: string; created_at: string; preview?: boolean };
+const XLSX_MEDIA_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const XLSX_ZOOM_LEVELS = [50, 75, 100, 125, 150, 200];
 
 const uploadTimestamp = (value: string) => {
   const date = new Date(value);
@@ -193,8 +195,10 @@ function ResultsModule({ onBack }: { onBack: () => void }) {
   const [busy, setBusy] = useState(false);
   const [listWidth, setListWidth] = useState(42);
   const [deleting, setDeleting] = useState(false);
+  const [xlsxZoom, setXlsxZoom] = useState(100);
   const dragging = useRef(false);
   const fileGroups = groupSharedFilesByUploadDate(files);
+  const isXlsx = selected?.media_type === XLSX_MEDIA_TYPE;
 
   const load = () => api('/api/v1/shared-files').then(setFiles).catch(() => {});
   useEffect(() => { void load(); }, []);
@@ -212,7 +216,15 @@ function ResultsModule({ onBack }: { onBack: () => void }) {
       event.target.value = '';
     }
   };
-  const open = async (item: SharedFile) => setSelected(await api(`/api/v1/shared-files/${item.id}`));
+  const open = async (item: SharedFile) => {
+    setSelected(await api(`/api/v1/shared-files/${item.id}`));
+    setXlsxZoom(100);
+  };
+  const changeXlsxZoom = (direction: -1 | 1) => {
+    const currentIndex = XLSX_ZOOM_LEVELS.indexOf(xlsxZoom);
+    const nextIndex = Math.min(XLSX_ZOOM_LEVELS.length - 1, Math.max(0, currentIndex + direction));
+    setXlsxZoom(XLSX_ZOOM_LEVELS[nextIndex]);
+  };
   const remove = async () => {
     if (!selected || deleting || !window.confirm(`确认删除“${selected.name}”？`)) return;
     setDeleting(true);
@@ -254,7 +266,7 @@ function ResultsModule({ onBack }: { onBack: () => void }) {
         </div>
       </section>
       <div className="results-divider" role="separator" aria-label="调整资料与预览宽度" onPointerDown={() => { dragging.current = true; }} />
-      <aside className="result-preview">{selected ? <><div className="preview-title">{selected.name}<span><a href={`/api/v1/shared-files/${selected.id}/download`}>下载原文件</a>{selected.can_delete && <button className="delete-file" onClick={() => void remove()} disabled={deleting}>{deleting ? '删除中…' : '删除资料'}</button>}</span></div>{selected.media_type === 'application/pdf' ? <iframe title={selected.name} src={`/api/v1/shared-files/${selected.id}/content`} /> : <div dangerouslySetInnerHTML={{ __html: selected.preview_html || `<p>${selected.preview_error || '暂无预览'}</p>` }} />}</> : <div className="empty"><h2>选择资料查看预览</h2></div>}</aside>
+      <aside className="result-preview">{selected ? <><div className="result-preview-toolbar"><div className="preview-title" title={selected.name}>{selected.name}</div><div className="result-preview-actions">{isXlsx && <div className="xlsx-zoom" role="group" aria-label="表格缩放"><button type="button" aria-label="缩小表格" title="缩小" onClick={() => changeXlsxZoom(-1)} disabled={xlsxZoom === XLSX_ZOOM_LEVELS[0]}><Minus size={14} /></button><select aria-label="表格缩放比例" value={xlsxZoom} onChange={event => setXlsxZoom(Number(event.target.value))}>{XLSX_ZOOM_LEVELS.map(level => <option key={level} value={level}>{level}%</option>)}</select><button type="button" aria-label="放大表格" title="放大" onClick={() => changeXlsxZoom(1)} disabled={xlsxZoom === XLSX_ZOOM_LEVELS[XLSX_ZOOM_LEVELS.length - 1]}><Plus size={14} /></button></div>}<a href={`/api/v1/shared-files/${selected.id}/download`}>下载原文件</a>{selected.can_delete && <button className="delete-file" onClick={() => void remove()} disabled={deleting}>{deleting ? '删除中…' : '删除资料'}</button>}</div></div>{selected.media_type === 'application/pdf' ? <iframe title={selected.name} src={`/api/v1/shared-files/${selected.id}/content`} /> : <div className={`result-preview-content${isXlsx ? ' spreadsheet-preview' : ''}`}><div className={isXlsx ? 'xlsx-zoom-canvas' : undefined} style={isXlsx ? { zoom: `${xlsxZoom}%` } : undefined} dangerouslySetInnerHTML={{ __html: selected.preview_html || `<p>${selected.preview_error || '暂无预览'}</p>` }} /></div>}</> : <div className="empty"><h2>选择资料查看预览</h2></div>}</aside>
     </div>
   </main>;
 }

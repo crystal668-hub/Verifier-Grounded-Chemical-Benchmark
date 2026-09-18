@@ -38,8 +38,29 @@
 .result-date-files { display:flex; flex-direction:column; gap:8px; }
 .result-row { display:flex; justify-content:space-between; text-align:left; padding:16px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; cursor:pointer; }
 .result-row span { display:flex; flex-direction:column; gap:4px; } .result-row small { color:#64748b; }
-.result-preview { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:20px; overflow:auto; }
-.result-preview iframe { width:100%; height:calc(100% - 40px); border:0; }
-.preview-title > span { display:flex; gap:12px; align-items:center; }
+.result-preview { display:flex; flex-direction:column; min-width:0; background:#fff; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+.result-preview-toolbar { min-height:58px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex:0 0 auto; padding:11px 14px 11px 18px; border-bottom:1px solid #dfe3e8; background:#fafbfc; }
+.result-preview-toolbar .preview-title { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+.result-preview-actions { display:flex; align-items:center; gap:12px; flex:0 0 auto; }
+.result-preview-actions>a { color:#2563a9; font-size:11px; text-decoration:none; white-space:nowrap; }
+.result-preview-actions>a:hover { text-decoration:underline; }
+.result-preview iframe { width:100%; flex:1; min-height:0; border:0; }
+.result-preview-content { flex:1; min-height:0; padding:24px; overflow:auto; }
+.spreadsheet-preview { padding:0; background:#eef1f4; }
+.xlsx-zoom { display:grid; grid-template-columns:30px 64px 30px; height:30px; overflow:hidden; border:1px solid #cfd5dc; border-radius:6px; background:#fff; }
+.xlsx-zoom button,.xlsx-zoom select { display:grid; place-items:center; min-width:0; border:0; background:#fff; color:#4b5563; cursor:pointer; }
+.xlsx-zoom button:hover:not(:disabled) { background:#eef2f6; color:#111827; }
+.xlsx-zoom button:disabled { color:#c3c8cf; cursor:default; }
+.xlsx-zoom select { width:64px; border-left:1px solid #dfe3e8; border-right:1px solid #dfe3e8; border-radius:0; outline:0; color:#28313d; font-size:11px; text-align:center; }
+.xlsx-zoom select:focus-visible,.xlsx-zoom button:focus-visible { position:relative; outline:2px solid #4a90d9; outline-offset:-2px; }
+.xlsx-zoom-canvas { width:max-content; min-width:100%; min-height:100%; padding:24px; transform-origin:top left; background:#fff; }
+.xlsx-preview { display:flex; flex-direction:column; align-items:flex-start; gap:28px; width:max-content; min-width:100%; color:#252a31; }
+.xlsx-preview h3 { position:sticky; left:0; margin:0 0 -16px; padding:0 0 8px; color:#374151; font-size:13px; font-weight:650; }
+.xlsx-preview table { border-collapse:collapse; border-spacing:0; background:#fff; box-shadow:0 1px 3px #11182712; font-size:12px; line-height:1.5; }
+.xlsx-preview td { min-width:104px; height:38px; padding:9px 12px; border:1px solid #b8c0ca; vertical-align:top; white-space:pre-wrap; overflow-wrap:anywhere; }
+.xlsx-preview tr:first-child td { background:#f1f4f7; color:#1f2937; font-weight:600; }
+.xlsx-preview tr:hover td { background:#f5f9fd; }
+.xlsx-preview tr:first-child:hover td { background:#e9eef3; }
 .delete-file { border:0; background:#fee2e2; color:#b91c1c; padding:5px 9px; border-radius:6px; cursor:pointer; }
+@media(max-width:800px){.results-layout{grid-template-columns:1fr!important;height:auto;min-height:calc(100vh - 64px);padding:16px}.results-divider{display:none}.result-preview{min-height:65vh}.result-preview-toolbar{align-items:flex-start;flex-direction:column;gap:9px}.result-preview-actions{width:100%;flex-wrap:wrap}.xlsx-zoom{margin-right:auto}.xlsx-zoom-canvas{padding:16px}}
 .account-dialog{width:min(620px,calc(100vw - 32px));max-height:min(760px,calc(100vh - 48px))}.account-summary{display:flex;align-items:center;gap:11px;padding:2px 0 18px;border-bottom:1px solid #ececef}.account-avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#1d1d1f;color:#fff;font-size:13px;font-weight:700}.account-summary span,.account-summary small{display:block}.account-summary b{font-size:13px}.account-summary small{margin-top:3px;color:#86868b;font-size:10px}.password-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.password-form>.section-label,.password-form>label:first-of-type,.password-form>.error,.password-form>.password-success{grid-column:1/-1}.password-form label{display:grid;gap:6px;color:#626269;font-size:11px}.password-form input{width:100%;border:1px solid #d8d8dc;border-radius:8px;padding:9px 10px;background:#fbfbfc;outline:none;font-size:12px}.password-form input:focus{border-color:#79aee8;box-shadow:0 0 0 3px #0071e315}.password-success{margin:0;padding:8px 10px;border-radius:8px;background:#eef8f0;color:#248a3d;font-size:11px}.change-password{display:flex;align-items:center;justify-content:center;gap:6px;grid-column:2;border:0;border-radius:8px;padding:9px 12px;background:#1d1d1f;color:#fff;font-size:12px;cursor:pointer}.change-password:disabled{cursor:default;opacity:.6}.registered-users{margin-top:22px;padding-top:18px;border-top:1px solid #e5e5e8}.registered-users-head{display:flex;align-items:center;justify-content:space-between}.registered-users-head .section-label{margin:0}.registered-users-head>span{color:#92939a;font-size:10px}.registered-users .user-list{margin-top:12px;max-height:260px;overflow:auto}.auth-notice{margin:10px 0 0;padding:9px 10px;border-radius:8px;background:#eef8f0;color:#248a3d;font-size:12px}@media(max-width:600px){.account-dialog{max-height:calc(100vh - 24px);padding:18px}.password-form{grid-template-columns:1fr}.password-form>*{grid-column:1!important}.registered-users .user-row{align-items:flex-start;gap:8px}.registered-users .user-row small{white-space:normal}}
