@@ -2,19 +2,19 @@
   "artifacts": [
     {
       "filename": "verifier_grounded_benchmark-0.10.0-py3-none-any.whl",
-      "sha256": "8246567c708707f334f449d9985f25a9a4687d012e459cef33bc51ef9ebf7633",
-      "size": 195570
+      "sha256": "e416074fa946e84ad7f1ab53a7829133852422c7868fb6453f86442bd688926c",
+      "size": 192896
     },
     {
       "filename": "verifier_grounded_benchmark-0.10.0.tar.gz",
-      "sha256": "10a288f6b62de2b3974e94fbc1622c94259d1f47df888a398c9425e21f27ffda",
-      "size": 1113150
+      "sha256": "b1a5a31412f84a81492da82e4c90003aace278fe85a3e5f03bdc36fda93314c7",
+      "size": 1110317
     }
   ],
   "canonical_source": {
-    "commit": "fe91f4b1dbe5b3113807b41cdcf0c7ebfe07cee5",
-    "source_date_epoch": 1789998688,
-    "tree": "5d34d97196925e1c88abcd1bd4ddec0a1205bcb7"
+    "commit": "f7b21a88c35f8990ecd01a34d38791e24ab39a96",
+    "source_date_epoch": 1790007386,
+    "tree": "9553bdd7cd17da44a37b25c6783af9baa96d9e23"
   },
   "package": "verifier-grounded-benchmark",
   "result_schema_version": "3",
@@ -24,7 +24,7 @@
   "task_inventory": "task-inventory.json",
   "verified_payload": {
     "file_count": 162,
-    "sha256": "125af9c49e23270628ab977531997dc39870a1f747b8d0847f1131ed40cda7d3"
+    "sha256": "7287373894876875d41399d72abd2d2a79ef3e8fdeb98a372b407e2a8c8ac8fe"
   },
   "version": "0.10.0"
 }

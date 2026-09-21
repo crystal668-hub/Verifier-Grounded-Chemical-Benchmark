@@ -5,121 +5,55 @@
   "scoring_profiles": {
     "property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2": {
       "definition": {
-        "error_mode": "log10",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "intersystem_crossing_rate",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "excited_state_rate",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "s^-1",
         "upper_tolerance": 2.0,
         "value_transform": "log10"
       },
-      "sha256": "15c8a5853119db9e22a6e9c6586c32bbd4f0580c935ee34bc8afff6528d16c99"
+      "sha256": "cff98721cc33e7f03fc3f2b9886970fe7acf48f058cf1e27bf3228f8c5a15444"
     },
     "property_calculation_advanced_ambient_pressure_phase_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "ambient_pressure_phase",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_gold_answer"
-        },
         "type": "exact_string"
       },
-      "sha256": "547eaeec7e8264158f568ee012b7591bef412d06ddd1e53a21f5af096d809afa"
+      "sha256": "2cd87e58f2fd0acd9660dc4053a9d04f8458bf55950e619d8dfa7aa882961119"
     },
     "property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2": {
       "definition": {
-        "error_mode": "log10",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "intersystem_crossing_rate",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "excited_state_rate",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "s^-1",
         "upper_tolerance": 2.0,
         "value_transform": "log10"
       },
-      "sha256": "15c8a5853119db9e22a6e9c6586c32bbd4f0580c935ee34bc8afff6528d16c99"
+      "sha256": "cff98721cc33e7f03fc3f2b9886970fe7acf48f058cf1e27bf3228f8c5a15444"
     },
     "property_calculation_advanced_binding_energy_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 10.0,
         "lower_tolerance": 10.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 10.0,
         "value_transform": "absolute"
       },
-      "sha256": "308e97054960c266edb0b23d59a855d3110f2ef241948c625d5519516759d81f"
+      "sha256": "18e1fdc02a764e11a2b48aab2d2ed9e5a40b6d1df9a2c9262e0dc030c7e80e92"
     },
     "property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "minimum_value": 0.0,
         "property": "carboxyl_hydrogen_distance",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-numeric-domain.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "geometric_distance",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "angstrom",
         "upper_tolerance": 0.2
       },
-      "sha256": "a651cb05bf7eaa74ab22aba1896f5bf14b408137624f9b1cc4372887dc5f207e"
+      "sha256": "e596c02f1f190716a435b69530f0a3932a59ac1dcf78814d1a92153cfaf0098b"
     },
     "property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2": {
       "definition": {
@@ -129,1746 +63,743 @@
           "2:1": 0.5
         },
         "property": "cocrystal_molar_ratio",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
         "type": "exact_string"
       },
-      "sha256": "9185c0a3c58b1a8adbb0d48230ac8557c1cbff944c3f44bd9e87220e97edff57"
+      "sha256": "da6cc926047791ffc773eed92d670599930a63f890923c7646e0c9098d13e439"
     },
     "property_calculation_advanced_crossover_temperature_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 100.0,
         "lower_tolerance": 100.0,
         "property": "crossover_temperature",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "crossover_temperature",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "K",
         "upper_tolerance": 100.0
       },
-      "sha256": "f0d91eb4b45bdf6537c0f59fee97b116acaa9015bb59303c9675913924e7b45a"
+      "sha256": "ca7aa1871cf39d3437f632306f590b2797fc405c703eb3bf8b0a76566f193e95"
     },
     "property_calculation_advanced_crystal_density_numeric_gold_v2": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.144728,
         "property": "crystal_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "g/cm^3",
         "upper_tolerance": 0.144728
       },
-      "sha256": "5392b2decab2e62c8f55ebd695bfd0ca4ed9a9a5c8e698a53ad5dbfaa7932769"
+      "sha256": "7a055f490d1688e099b4e207290ffa0e2f459f4b5af24fbaade7f4605b76d37e"
     },
     "property_calculation_advanced_free_energy_difference_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 8.0,
         "lower_tolerance": 8.0,
         "minimum_value": 0.0,
         "property": "free_energy_difference",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-numeric-domain.md",
-          "target_source": "task_gold_answer",
-          "tolerance_family": "crystal_free_energy_difference",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kJ/mol",
         "upper_tolerance": 8.0
       },
-      "sha256": "709b4cfa9a4cc631dbd15a225fb7f1f8cb96b74d13bc7732444d9d93e6163afa"
+      "sha256": "270863c0d994835e948ae2a49563ffb8078d6f559f5115d1657f73d00c281ad8"
     },
     "property_calculation_advanced_h_o_contact_distance_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.1,
         "property": "h_o_contact_distance",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "geometric_distance",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "angstrom",
         "upper_tolerance": 0.1,
         "value_transform": "absolute"
       },
-      "sha256": "964815ad34dbf92b64a9cf99fe6b5c78e801d0e86d6a1bfd28d39d6d79115913"
+      "sha256": "338c1c43a40de330f3ef8084ec5bb49498c56a4afe9b606662ef7142555a6d6b"
     },
     "property_calculation_advanced_halogen_bond_energy_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 5.0,
         "lower_tolerance": 5.0,
         "property": "halogen_bond_interaction_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 5.0,
         "value_transform": "absolute"
       },
-      "sha256": "02550bf953e223bf45c4ec00290211ff5d234b00bee145783491c538a933ae9e"
+      "sha256": "dac855afc9d12a6c17f90c24b7625a53f24d276c59a5edaf3ae2d6f0b0001a70"
     },
     "property_calculation_advanced_high_pressure_phase_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "high_pressure_phase",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_gold_answer"
-        },
         "type": "exact_string"
       },
-      "sha256": "4f70178040baf2c55396ed49a15d8d4a8dacb5ffed6a823f30050a6ac95ceec7"
+      "sha256": "4a9af22ec2def375dc5a347062acd7d06e36e7b27878e9ca2f15cb80d5cc26e0"
     },
     "property_calculation_advanced_homo_lumo_gap_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 1.0,
         "lower_tolerance": 1.0,
         "property": "homo_lumo_gap",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "orbital_gap",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 1.0
       },
-      "sha256": "47897004bce8dfe14501ef3c71d5dd9528f7f988978752c969d13c1ad6de014a"
+      "sha256": "2b0b93a871da14db63bad46a115a0f20e829ad47490810e3b847391496060598"
     },
     "property_calculation_advanced_ht_contribution_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 10.0,
         "lower_tolerance": 10.0,
         "property": "herzberg_teller_contribution",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "retained_pending_target_definition",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "ht_contribution",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "percent",
-        "upper_error_parameter": 1.0,
         "upper_tolerance": 1.0
       },
-      "sha256": "b75f00f2c2875c2481cdb717029cf96cacc475fa1f34cd514d33d88f90e49d7f"
+      "sha256": "496261a6ebd39555cec8e853945c65d049e1e9ddec4f037ac3150128884a939e"
     },
     "property_calculation_advanced_hydrogen_bond_count_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "hydrogen_bond_count",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "hydrogen_bond_count",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "count",
         "upper_tolerance": 2.0
       },
-      "sha256": "c9a3796c42196df182bd76b60aa84688a9175e79536c9ab131928af6532d8775"
+      "sha256": "46fd68de9bf2395adba5f27ca836c06449f8f0963d77d23aa844740469552194"
     },
     "property_calculation_advanced_interaction_energy_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 10.0,
         "lower_tolerance": 10.0,
         "property": "interaction_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 10.0,
         "value_transform": "absolute"
       },
-      "sha256": "bdd059e94d9801acaf731adcc313621ac4fc8b3a20f809c5447d0273928f8762"
+      "sha256": "3bcc8665b33323f534eee79093bd212776ddd0c3b5ca56d3280709b497c2bf35"
     },
     "property_calculation_advanced_internal_conversion_rate_numeric_gold_v2": {
       "definition": {
-        "error_mode": "log10",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "internal_conversion_rate",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "excited_state_rate",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "s^-1",
         "upper_tolerance": 2.0,
         "value_transform": "log10"
       },
-      "sha256": "865f053862507e1ca2216cce0a005405696576ad941a441a125355d6e5d5cf3c"
+      "sha256": "b663f83abadb099cc456872f101d22b175c83002d61f1fa26e49110f6d006ef5"
     },
     "property_calculation_advanced_ir_frequency_1_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 100.0,
         "lower_tolerance": 100.0,
         "property": "frequency_1",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "harmonic_ir_frequency",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cm^-1",
         "upper_tolerance": 100.0
       },
-      "sha256": "acb8df876885459a31d2819261c26894aaa5ebe0a80eb0eeba3884f6dc9595a9"
+      "sha256": "cb9d66cb05011daf907957b80377592a30f88fcc6803e55844b6163d5f82c6ed"
     },
     "property_calculation_advanced_ir_frequency_2_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 100.0,
         "lower_tolerance": 100.0,
         "property": "frequency_2",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "harmonic_ir_frequency",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cm^-1",
         "upper_tolerance": 100.0
       },
-      "sha256": "12ea5fb1dadb220fe625c985c0a35de501e4d5ccd9bf0d15f73506aa1fbe5c37"
+      "sha256": "240f91d6693c65519f5bd736238fcfc607598d8e05689749441b8281ef99b1b6"
     },
     "property_calculation_advanced_lower_free_energy_form_exact_string_v2": {
       "definition": {
         "normalization": "exact",
         "property": "lower_free_energy_at_0k",
-        "provenance": {
-          "decay_source": "not_applicable",
-          "decision_record": "docs/research/2026-08-20-task14-25-property-calculation-conversion-plan.md",
-          "review_date": "2026-08-20",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
         "type": "exact_string"
       },
-      "sha256": "f2360e4209f63144dd7c15f4a8c70766ae97f295bc8aa5a1e9e340d866ac1f7d"
+      "sha256": "f3fa1cae5dbeb3778c399650970c22df19c66eeb6fdc88ebc41ac314f51e12f0"
     },
     "property_calculation_advanced_oh_bond_distance_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.1,
         "property": "oh_bond_distance",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "geometric_distance",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "angstrom",
         "upper_tolerance": 0.1,
         "value_transform": "absolute"
       },
-      "sha256": "fff82cd2c3cc5141810be9dc160325e8c28fef5a6731628380968e783e711f28"
+      "sha256": "61ac2a4e08b376f5e0e74cd8454c20de4ccfe8d10458ddfa31c2b8c4a5070161"
     },
     "property_calculation_advanced_phosphorescence_rate_numeric_gold_v2": {
       "definition": {
-        "error_mode": "log10",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "phosphorescence_rate",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "excited_state_rate",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "s^-1",
         "upper_tolerance": 2.0,
         "value_transform": "log10"
       },
-      "sha256": "a04bcffeb37c8016d99607c38d92844a99b4426cbd04f4bfc2a861f04f3956bf"
+      "sha256": "11e6f536c221d85e3ab4597126021e7efcc5c4efe6cb9506a7ebad0d292f4cfe"
     },
     "property_calculation_advanced_pka_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "pka",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "pka",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "pKa",
         "upper_tolerance": 2.0
       },
-      "sha256": "a5953a25be2974339b956705233715af18fb3a13be7935cfab0466b4a0d679ed"
+      "sha256": "257db5e2d62a8171e857a0751d5f11f4bf8ee41185b04b1f3c4f3eac4d339097"
     },
     "property_calculation_advanced_pore_volume_ratio_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "minimum_value": 0.0,
         "property": "accessible_to_inaccessible_volume_ratio",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-numeric-domain.md",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "pore_volume_ratio",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "ratio",
         "upper_tolerance": 0.5
       },
-      "sha256": "ec4358e729068581c7fe0f1e1c2df08e4a41fd381b7944a5a2f990f879e55040"
+      "sha256": "d7d6d93a080e79f439924a339f74f04837942e0fd808e086ef51f6836a5e1204"
     },
     "property_calculation_advanced_potential_energy_difference_numeric_gold_v2": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.8,
         "lower_tolerance": 0.8,
         "minimum_value": 0.0,
         "property": "potential_energy_difference",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "semantic_decision_record": "docs/design/property-calculation-numeric-domain.md",
-          "target_source": "task_gold_answer",
-          "tolerance_family": "crystal_potential_energy_difference",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.8
       },
-      "sha256": "3a553ebd254abed564c9b61039a916b2db0ede8be10e8d194ad64b58c2173a59"
+      "sha256": "81d6668bd0426afbb7d6b2a3bb3ea7b683782cc49b5d4950a57e4789fe8e1dd9"
     },
     "property_calculation_advanced_socme_numeric_gold_v2": {
       "definition": {
-        "error_mode": "log10",
-        "error_parameter": 1.0,
         "lower_tolerance": 1.0,
         "property": "spin_orbit_coupling_matrix_element",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "spin_orbit_coupling",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 1.0,
         "value_transform": "log10"
       },
-      "sha256": "f73fad1ef6f915041edc5741adb612d44a2156deb2c0573e1f8b8c07c3ce1b6b"
+      "sha256": "30b998c4f21970064fa3b91e82bd094613a33bcef235fdd065e731e4e81e1344"
     },
     "property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "aqueous_solvation_free_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "aqueous_solvation",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "693dc0be6d078b7cd54ef229e99b79668911501a16558b2cb2627be97dfc0fcb"
+      "sha256": "3d3f8f7b222107690d126c9f4919e111f6520e05a4543f413e04a82f644cf0aa"
     },
     "property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "aqueous_solvation_free_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "aqueous_solvation",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "693dc0be6d078b7cd54ef229e99b79668911501a16558b2cb2627be97dfc0fcb"
+      "sha256": "3d3f8f7b222107690d126c9f4919e111f6520e05a4543f413e04a82f644cf0aa"
     },
     "property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "aqueous_solvation_free_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "aqueous_solvation",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "693dc0be6d078b7cd54ef229e99b79668911501a16558b2cb2627be97dfc0fcb"
+      "sha256": "3d3f8f7b222107690d126c9f4919e111f6520e05a4543f413e04a82f644cf0aa"
     },
     "property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "aqueous_solvation_free_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "aqueous_solvation",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "693dc0be6d078b7cd54ef229e99b79668911501a16558b2cb2627be97dfc0fcb"
+      "sha256": "3d3f8f7b222107690d126c9f4919e111f6520e05a4543f413e04a82f644cf0aa"
     },
     "property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "first_reduction_potential_vs_sce",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "redox_potential",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "V",
         "upper_tolerance": 0.5
       },
-      "sha256": "ce5de66615d82ab21d474b61987870fadaa3d8ffcad338207c0847560230a08f"
+      "sha256": "ceb09ba28576edee1c9f9b42124b984180394c23c61d62c21f328617bb962020"
     },
     "property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "first_reduction_potential_vs_sce",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "redox_potential",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "V",
         "upper_tolerance": 0.5
       },
-      "sha256": "ce5de66615d82ab21d474b61987870fadaa3d8ffcad338207c0847560230a08f"
+      "sha256": "ceb09ba28576edee1c9f9b42124b984180394c23c61d62c21f328617bb962020"
     },
     "property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "first_oxidation_potential_vs_sce",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "redox_potential",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "V",
         "upper_tolerance": 0.5
       },
-      "sha256": "2587d2ac05ac5c56ab6e62ce83de2a171e9dd67d8d9627d5d6163fe95a73fe88"
+      "sha256": "18a44dc2967e81a3025e291e62f8ab48f13046b0ee04e9b7fd143eee74112445"
     },
     "property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "first_oxidation_potential_vs_sce",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "redox_potential",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "V",
         "upper_tolerance": 0.5
       },
-      "sha256": "2587d2ac05ac5c56ab6e62ce83de2a171e9dd67d8d9627d5d6163fe95a73fe88"
+      "sha256": "18a44dc2967e81a3025e291e62f8ab48f13046b0ee04e9b7fd143eee74112445"
     },
     "property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "first_oxidation_potential_vs_sce",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "redox_potential",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "V",
         "upper_tolerance": 0.5
       },
-      "sha256": "2587d2ac05ac5c56ab6e62ce83de2a171e9dd67d8d9627d5d6163fe95a73fe88"
+      "sha256": "18a44dc2967e81a3025e291e62f8ab48f13046b0ee04e9b7fd143eee74112445"
     },
     "property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 2.0
       },
-      "sha256": "f971346d65cfb3e578f2c667efd01ed8919d4758303700cafbf8cedeef059731"
+      "sha256": "6f0168e28b29b36451b6cd45175e4101514b1ad4836eebf660323bd752143c5b"
     },
     "property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 2.0
       },
-      "sha256": "f971346d65cfb3e578f2c667efd01ed8919d4758303700cafbf8cedeef059731"
+      "sha256": "6f0168e28b29b36451b6cd45175e4101514b1ad4836eebf660323bd752143c5b"
     },
     "property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 2.0
       },
-      "sha256": "f971346d65cfb3e578f2c667efd01ed8919d4758303700cafbf8cedeef059731"
+      "sha256": "6f0168e28b29b36451b6cd45175e4101514b1ad4836eebf660323bd752143c5b"
     },
     "property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "expert_reviewed_task_specific_score_anchors",
-          "decision_record": "docs/design/property-calculation-v0.10.0-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "task_specific_anchors_v0.10.0"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "d72eee98a2a14aeb6bceed8f1cccbef3b33acb7beceb04442f9d94a26b711185"
+      "sha256": "5ee11a8b7f5b7ca185a1b9894178ca32b2fdd567ca2ac7f5a68a3e0af997b6fe"
     },
     "property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 2.0
       },
-      "sha256": "f971346d65cfb3e578f2c667efd01ed8919d4758303700cafbf8cedeef059731"
+      "sha256": "6f0168e28b29b36451b6cd45175e4101514b1ad4836eebf660323bd752143c5b"
     },
     "property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 2.0,
         "lower_tolerance": 2.0,
         "property": "binding_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "noncovalent_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 2.0
       },
-      "sha256": "f971346d65cfb3e578f2c667efd01ed8919d4758303700cafbf8cedeef059731"
+      "sha256": "6f0168e28b29b36451b6cd45175e4101514b1ad4836eebf660323bd752143c5b"
     },
     "property_calculation_basic_016_thiophene_polarizability_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 13.002,
         "property": "static_mean_polarizability",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "polarizability",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "a.u.",
         "upper_tolerance": 13.002
       },
-      "sha256": "cf59965198ef802040f56621ee9c38d9f6f76781097da64c8d951f5cffc6eb31"
+      "sha256": "37a8c267c885430c04cb6a273a24f679361d70a15dce9a61ebccf5d68abce9f8"
     },
     "property_calculation_basic_017_benzene_polarizability_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 13.574,
         "property": "static_mean_polarizability",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "polarizability",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "a.u.",
         "upper_tolerance": 13.574
       },
-      "sha256": "b1422fe8969269f2dc453657bacd5f9b8007b6afa287aaa5a02bca7e0a7244df"
+      "sha256": "9106575a9fa3e5c063157b647cff14a3eef5a54249332c1d3bf57c6df2db98da"
     },
     "property_calculation_basic_018_octatetraene_polarizability_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 19.102,
         "property": "static_mean_polarizability",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "polarizability",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "a.u.",
         "upper_tolerance": 19.102
       },
-      "sha256": "273a4fe6c8f7983ac0eda20573ccdb1b2dd7bdd7f31be9f87e2dab898432472d"
+      "sha256": "6793e5fcd984702e9a172aa7b6b4baf56de1dbdb4eea83f26e4d678f982235bd"
     },
     "property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 1.086,
         "property": "dipole_moment",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "dipole_moment",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "Debye",
         "upper_tolerance": 1.086
       },
-      "sha256": "69df71483b15be0227f307b32174f9e4bb792b6bc162fd2e8738d0f424f283f9"
+      "sha256": "85e11b07e572b45978152072eb3c17a1fb8b59ab422606d9b26e357d3fc53abf"
     },
     "property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.376,
         "property": "dipole_moment",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "dipole_moment",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "Debye",
         "upper_tolerance": 0.376
       },
-      "sha256": "c7f5c6fdb94f755661e2c08cf7c6ea025db7aefd2dcf41d68591f741482478be"
+      "sha256": "4c2103005e5a1fe6a3e9408989b7bbbbbe83a6c5ccf695d33bd311bc06183bbb"
     },
     "property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.77,
         "property": "dipole_moment",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "dipole_moment",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "Debye",
         "upper_tolerance": 0.77
       },
-      "sha256": "858532bc90ec2dab7202b82baca74c70f93af592bf166c281040d889d70867ac"
+      "sha256": "bcb55595189890a5dadba3413806cc2216f2f7f1e3f64fd73b349d784a3869aa"
     },
     "property_calculation_basic_022_naphthalene_bridge_bond_order_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "wiberg_bond_order",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "wiberg_bond_order",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "9200475656edf5002521e88bb9bbfbbdca7beb3ff006caec6457430b5de5f384"
+      "sha256": "1bbc5ec48d217e810b366b34dc5236ce215e03b3608c6be0d52f0a400323a0a8"
     },
     "property_calculation_basic_023_dimethyl_sulfone_so_bond_order_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "wiberg_bond_order",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "wiberg_bond_order",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "9200475656edf5002521e88bb9bbfbbdca7beb3ff006caec6457430b5de5f384"
+      "sha256": "1bbc5ec48d217e810b366b34dc5236ce215e03b3608c6be0d52f0a400323a0a8"
     },
     "property_calculation_basic_024_methyl_nitrate_no_bond_order_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "wiberg_bond_order",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "wiberg_bond_order",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "9200475656edf5002521e88bb9bbfbbdca7beb3ff006caec6457430b5de5f384"
+      "sha256": "1bbc5ec48d217e810b366b34dc5236ce215e03b3608c6be0d52f0a400323a0a8"
     },
     "property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 5.0,
         "lower_tolerance": 5.0,
         "property": "surface_electrostatic_potential_minimum",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "surface_esp_minimum",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 5.0
       },
-      "sha256": "cbce9a635f89a25906cbe37fb03568dafb36551169b048584f82593833041748"
+      "sha256": "f7ed4cde0022433ec74f027780858c8559d4f37be255d282bfa0f755f78848be"
     },
     "property_calculation_basic_026_nitrobenzene_vdw_surface_area_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 15.03,
         "property": "van_der_waals_surface_area",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "surface_area",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "angstrom^2",
         "upper_tolerance": 15.03
       },
-      "sha256": "7c3c39cd90bb229937c629c79bde272bb711d0b55367e95a2ec98534aeef6208"
+      "sha256": "b3150cde0ed2c8c8560d48b23e741bcdfb7defaa60bf6d08878c5f02706f6f7e"
     },
     "property_calculation_basic_027_pyrrole_surface_esp_variance_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.3,
         "lower_tolerance": 53.475,
         "property": "surface_electrostatic_potential_total_variance",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "surface_esp_variance",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "(kcal/mol)^2",
         "upper_tolerance": 53.475
       },
-      "sha256": "22b17cb6fbd3c98f326cb75f8b2e27ad3e93c2f836c542524bf86a7a41dbbf7e"
+      "sha256": "6a87badbc532a5cbbda130480f9625bf62954da884629b286c19cbabb98e4adf"
     },
     "property_calculation_basic_028_urea_crystal_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.1333,
         "property": "crystal_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "g/cm^3",
         "upper_tolerance": 0.1333
       },
-      "sha256": "e279457a39a01cb7fbb37bd4415d2fb54e301cdccf1191d0841360682012b8bb"
+      "sha256": "f7c79f3e43ca5c74b2e6c143babc107643e99cf91fe445b8d7ddb91d24664bab"
     },
     "property_calculation_basic_029_tnt_crystal_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.171,
         "property": "crystal_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "g/cm^3",
         "upper_tolerance": 0.171
       },
-      "sha256": "f7a9d5ca19dc48ba1c77b53cb855a5a1ce49d3f58f9672795e0c0caa8f80dcb8"
+      "sha256": "6862531ebeda40178f0d2a99620224f4526f89580d27a2983c6aee96a03ad614"
     },
     "property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 0.1831,
         "property": "crystal_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "g/cm^3",
         "upper_tolerance": 0.1831
       },
-      "sha256": "cc405b5f3613d95b117c4d978de4076e9c4f69ee6c14b24d07f234cabbf281ba"
+      "sha256": "65c3864ae8e180b465e2b9f72e7d1df30b6dd1d1659965abdd76f9fcbe52700b"
     },
     "property_calculation_basic_031_allyl_radical_c1_spin_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "spin_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "spin_density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "98af2ce293c3d12d386fe182b9c9488dfb6c723d1e0b41146a5c7602c3f96854"
+      "sha256": "7270e570ae3e98919a92b262ce33d943b51d32023ef12ec739f39c2e5d83acaa"
     },
     "property_calculation_basic_032_benzyl_radical_para_c_spin_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "spin_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "spin_density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "98af2ce293c3d12d386fe182b9c9488dfb6c723d1e0b41146a5c7602c3f96854"
+      "sha256": "7270e570ae3e98919a92b262ce33d943b51d32023ef12ec739f39c2e5d83acaa"
     },
     "property_calculation_basic_033_phenoxy_radical_o_spin_density_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.2,
         "lower_tolerance": 0.2,
         "property": "spin_density",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "spin_density",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.2
       },
-      "sha256": "98af2ce293c3d12d386fe182b9c9488dfb6c723d1e0b41146a5c7602c3f96854"
+      "sha256": "7270e570ae3e98919a92b262ce33d943b51d32023ef12ec739f39c2e5d83acaa"
     },
     "property_calculation_basic_034_indole_c3_fukui_minus_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.05,
         "lower_tolerance": 0.05,
         "property": "fukui_function",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "fukui_function",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.05
       },
-      "sha256": "f2b9645d9d21a78932230ce793f22e268a3d09c8201441879f830e31f7a8551e"
+      "sha256": "258d1b5f65070de7540a32c9de8ee01f42606339c729e7ad7774d79a2c8c90d6"
     },
     "property_calculation_basic_035_chloronitrobenzene_c_fukui_plus_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.05,
         "lower_tolerance": 0.05,
         "property": "fukui_function",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "fukui_function",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.05
       },
-      "sha256": "f2b9645d9d21a78932230ce793f22e268a3d09c8201441879f830e31f7a8551e"
+      "sha256": "258d1b5f65070de7540a32c9de8ee01f42606339c729e7ad7774d79a2c8c90d6"
     },
     "property_calculation_basic_036_furfural_carbonyl_c_fukui_plus_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.05,
         "lower_tolerance": 0.05,
         "property": "fukui_function",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "fukui_function",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "dimensionless",
         "upper_tolerance": 0.05
       },
-      "sha256": "f2b9645d9d21a78932230ce793f22e268a3d09c8201441879f830e31f7a8551e"
+      "sha256": "258d1b5f65070de7540a32c9de8ee01f42606339c729e7ad7774d79a2c8c90d6"
     },
     "property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 6.467,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 6.467
       },
-      "sha256": "b273c54ab346005771afd8ce425521f3f53094a0fb7c53a1b65cecb055554311"
+      "sha256": "740573b38d8162ddef112d83275c8f38c93d8972b20c397035131ef4e64b4ed8"
     },
     "property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 5.788,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 5.788
       },
-      "sha256": "48628d655c5be08aecc2576a14b260f614531f830ba1a36a71a95ff86c3aa6a6"
+      "sha256": "8b68269e817c07a60275e357cc33b70b3734ae707303dfcbd91f4b403936be10"
     },
     "property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 7.388,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 7.388
       },
-      "sha256": "2ff88f7ed8a89580877b8a1aad6648102f8735083867adced79f0c3282c6790e"
+      "sha256": "66a2f8ce2cfcbb98bad6e45a475a2ebccfc0948d46b1c00d9fa18fa15730c8bf"
     },
     "property_calculation_basic_040_methane_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 4.44,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 4.44
       },
-      "sha256": "52dac8c9c7ff4c6a36f2bc065fcef601c73dd4e6d84c8add67d94b12f35201c6"
+      "sha256": "534a5bb29347bfc0ac60fd99275a549ce47f7832f9b8635169e0e4aa69cc9802"
     },
     "property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 4.592,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 4.592
       },
-      "sha256": "505ee1ca605329e91efb5e7115adbd4f2ff24a4fe35e69f73006454a8ba38ed5"
+      "sha256": "f4beb071fc866417c5313c0ac0d6c4115ef30d5a91a116d846dd26cadbfa6985"
     },
     "property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "relative",
-        "error_parameter": 0.1,
         "lower_tolerance": 5.118,
         "property": "standard_entropy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "standard_entropy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "cal/(mol*K)",
         "upper_tolerance": 5.118
       },
-      "sha256": "6ed2ccdc948338f3fa154e04e3d660490078e1620451ec6a8cc642d4cdb31632"
+      "sha256": "28c788c3e9aafa8d6db15f0362ea68ed05eb7077bfbda75d0f64874c88fff808"
     },
     "property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 3.0,
         "lower_tolerance": 3.0,
         "property": "dimerization_enthalpy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "dimerization_enthalpy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "kcal/mol",
         "upper_tolerance": 3.0
       },
-      "sha256": "5edcf430f6defb3094e70856a021e5fdaf97d932527cd063d9cce0b26fb9893a"
+      "sha256": "298cbcdf7eaeafdc9b8f858f200344251b2eb192c1bd3ac0780a8cfc96f16ba4"
     },
     "property_calculation_basic_044_caffeine_most_negative_mulliken_atom_atom_identity_v1": {
       "definition": {
         "element_partial_score": 0.5,
         "normalization": "atom_identity",
         "property": "most_negative_mulliken_atom",
-        "provenance": {
-          "decay_source": "attachment_final_scoring_standard",
-          "decision_record": "docs/research/2026-09-04-property-calculation-basic-scoring-revision.md",
-          "review_date": "2026-09-04",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
         "type": "atom_identity"
       },
-      "sha256": "0e9cde967f046d3e21519e5ea3efcc2bc3e75a791ab27644d7f4376dba43265f"
+      "sha256": "a2553ac01b6bcf50fd99162c30a8865112a681ac632dccac018a755907d141e7"
     },
     "property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.15,
         "lower_tolerance": 0.15,
         "property": "mulliken_charge",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "mulliken_charge",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "e",
         "upper_tolerance": 0.15
       },
-      "sha256": "c7d40a04be77635a7f9dcfedb2492b38ef7a7ecfcc06a9fb19f7d716bbbb0a97"
+      "sha256": "159038fc4ed2d0eab62172c123bd7955dc7e5c95f17e152ac36b00496dfb6406"
     },
     "property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom_atom_identity_v1": {
       "definition": {
         "element_partial_score": 0.0,
         "normalization": "atom_identity",
         "property": "most_negative_mulliken_atom",
-        "provenance": {
-          "decay_source": "attachment_final_scoring_standard",
-          "decision_record": "docs/research/2026-09-04-property-calculation-basic-scoring-revision.md",
-          "review_date": "2026-09-04",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer"
-        },
         "type": "atom_identity"
       },
-      "sha256": "928b490d788f3aee981f70be261d8eb8f1f10bb8c1f9bc04fd0be8eee64e4879"
+      "sha256": "2b5b3b0828e719cd3974b63d83f9c69e1795151396b0306e4f81e836e039dc53"
     },
     "property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "vertical_excitation_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "vertical_excitation_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.5
       },
-      "sha256": "4457822711c4bd99510194cce97f35710841bfc50a49550a5190affe57f8ec73"
+      "sha256": "1e1143f3c1cf1c95f81bfd3a8fa8d34dcaf0f8d46e003160f7a2d92b40866305"
     },
     "property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "vertical_excitation_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "vertical_excitation_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.5
       },
-      "sha256": "4457822711c4bd99510194cce97f35710841bfc50a49550a5190affe57f8ec73"
+      "sha256": "1e1143f3c1cf1c95f81bfd3a8fa8d34dcaf0f8d46e003160f7a2d92b40866305"
     },
     "property_calculation_basic_049_acetone_s1_vertical_excitation_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "vertical_excitation_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "vertical_excitation_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.5
       },
-      "sha256": "4457822711c4bd99510194cce97f35710841bfc50a49550a5190affe57f8ec73"
+      "sha256": "1e1143f3c1cf1c95f81bfd3a8fa8d34dcaf0f8d46e003160f7a2d92b40866305"
     },
     "property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "vertical_excitation_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "vertical_excitation_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.5
       },
-      "sha256": "4457822711c4bd99510194cce97f35710841bfc50a49550a5190affe57f8ec73"
+      "sha256": "1e1143f3c1cf1c95f81bfd3a8fa8d34dcaf0f8d46e003160f7a2d92b40866305"
     },
     "property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy_numeric_gold_v3": {
       "definition": {
-        "error_mode": "absolute",
-        "error_parameter": 0.5,
         "lower_tolerance": 0.5,
         "property": "vertical_excitation_energy",
-        "provenance": {
-          "approval_source": "benchmark_owner_release_decision",
-          "calibration_status": "pending_independent_calibration",
-          "decay_source": "predeclared_property_family_score_anchors",
-          "decision_record": "docs/design/property-calculation-r3-scoring.md",
-          "review_date": "2026-09-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "expert_gold_answer",
-          "tolerance_family": "vertical_excitation_energy",
-          "tolerance_policy": "property_family_anchors_2026_09_21_r3"
-        },
         "type": "numeric_gold",
         "unit": "eV",
         "upper_tolerance": 0.5
       },
-      "sha256": "4457822711c4bd99510194cce97f35710841bfc50a49550a5190affe57f8ec73"
+      "sha256": "1e1143f3c1cf1c95f81bfd3a8fa8d34dcaf0f8d46e003160f7a2d92b40866305"
     },
     "rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2": {
       "definition": {
         "full_score_target": 1.0,
         "property": "caffeine_morgan_tanimoto",
-        "provenance": {
-          "decay_source": "defined_metric_range",
-          "decision_record": "docs/research/2026-07-23-expert-open-generation-009-013-calibration.md",
-          "evidence_id": "expert-open-generation-009-013-calibration-2026-07-23",
-          "review_date": "2026-07-23",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "defined_metric_range"
-        },
         "type": "maximize",
         "unit": "dimensionless",
         "zero_score_anchor": 0.0
       },
-      "sha256": "fec4c7f121b74f31a42014332667fe5340d6c58665e2d0a3bb43143f6a8215db"
+      "sha256": "ba9b5f6be6510591671d67f8726ace47ea56604a31b91c4692b69f12b576ee5d"
     },
     "rdkit_fraction_csp3_maximize_0p0_1p0_v2": {
       "definition": {
         "full_score_target": 1.0,
         "property": "fraction_csp3",
-        "provenance": {
-          "decay_source": "defined_metric_range",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "defined_metric_range"
-        },
         "type": "maximize",
         "unit": "fraction",
         "zero_score_anchor": 0.0
       },
-      "sha256": "74583652d865a75a268fbfb454addf57fb1bbe3c3237de88fc97d08a150d633a"
+      "sha256": "695de25977a4cc2f6abc8ffa35c97cd3ac09a343f46017a19db005a858d11eee"
     },
     "rdkit_hba_window_2_4_2p0_v2": {
       "definition": {
@@ -1881,18 +812,10 @@
           "min": 2
         },
         "property": "hba",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "count"
       },
-      "sha256": "7c77c406d00ac70b5321c63ba2f9d451bd0d57333813c8c05b04424c4df25c69"
+      "sha256": "b82859ade71ce3a0fd2eda78366e80589617d08c3b8331403df0c545758c32d0"
     },
     "rdkit_hbd_window_1_2_1p0_v2": {
       "definition": {
@@ -1905,18 +828,10 @@
           "min": 1
         },
         "property": "hbd",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "count"
       },
-      "sha256": "03ca61fea0b3f4f5c068c70a83dac1874f7f00735ae76a30c0086b0bd557c7e0"
+      "sha256": "2314b4586f61e39a83ceb3da79c30371a5b6abf2c3590b7b8a89a8295afaf07c"
     },
     "rdkit_logp_target_3p0_3p0_v2": {
       "definition": {
@@ -1926,18 +841,10 @@
         },
         "full_score_target": 3.0,
         "property": "logp",
-        "provenance": {
-          "decay_source": "target_to_zero_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "target",
         "unit": "dimensionless"
       },
-      "sha256": "0c10eac944c2e39628e9909e232b15682a16b252e6d70b8d5dc0daeb158023c7"
+      "sha256": "e86dd8483de6ce2ce6f84bdfb8c5749e5028f309c2f423a6b06eecab0c4896b8"
     },
     "rdkit_logp_window_1p0_3p0_2p0_v2": {
       "definition": {
@@ -1950,73 +857,40 @@
           "min": 1.0
         },
         "property": "logp",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "dimensionless"
       },
-      "sha256": "478a022fb261608c83f1b55f0c35b9280bcdb50d2820aceb552daeb58ab49648"
+      "sha256": "4504d883b7328ce7a322ff4d3aa76404068410bce53343c007ed63443a26d7ea"
     },
     "rdkit_qed_maximize_0p0_1p0_v2": {
       "definition": {
         "full_score_target": 1.0,
         "property": "qed",
-        "provenance": {
-          "decay_source": "defined_metric_range",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "defined_metric_range"
-        },
         "type": "maximize",
         "unit": "dimensionless",
         "zero_score_anchor": 0.0
       },
-      "sha256": "31390fa57b37be94e16e25d4d4c11d199c3a23c7b0ad8b7813100a83a50bea62"
+      "sha256": "9bf1c210cb1bfdfdfa870e2b51e44f0bdb602467704852204459ad842fad1759"
     },
     "rdkit_sa_score_minimize_1p0_10p0_v2": {
       "definition": {
         "full_score_target": 1.0,
         "property": "sa_score",
-        "provenance": {
-          "decay_source": "defined_metric_range",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "defined_metric_range"
-        },
         "type": "minimize",
         "unit": "score",
         "zero_score_anchor": 10.0
       },
-      "sha256": "6ebe08b7839cda4220c6cf7b62636104bf99581265fbc31074987776e553628a"
+      "sha256": "51527e47ec8b0d22851fc37edee8641c8534a1d517e22ab3002aa21e0f9c08aa"
     },
     "rdkit_terminal_atom_distance_maximize_6p36_21p68_v2": {
       "definition": {
         "full_score_target": 21.68,
         "property": "terminal_atom_distance",
-        "provenance": {
-          "decay_source": "frozen_calibration_set",
-          "decision_record": "docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md",
-          "evidence_id": "rdkit-013-terminal-atom-distance-calibration-2026-07-30",
-          "review_date": "2026-07-30",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "frozen_calibration_set"
-        },
         "type": "maximize",
         "unit": "angstrom",
         "zero_score_anchor": 6.36
       },
-      "sha256": "47f165a21382256bd2cdd20792b07d719ec868d0bc91a2c19beff1be6f13b50b"
+      "sha256": "51b1a8520526f1c14cba913e93d92f8c4c5aad1126d891c4f3c808b22faff9f2"
     },
     "rdkit_tpsa_window_35p0_75p0_40p0_v2": {
       "definition": {
@@ -2029,75 +903,40 @@
           "min": 35.0
         },
         "property": "tpsa",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "angstrom_squared"
       },
-      "sha256": "0bd3d9be96906fff096230a63dd3b990328b14fbbd3e91d276eb681f6a9c332d"
+      "sha256": "dff99579409b38c0608ac4bc23374cd605cbda017a4538fe9e2ecce7f177f8e0"
     },
     "xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2": {
       "definition": {
         "full_score_target": 0.3953163242456749,
         "property": "alpb_water_hexane_selectivity",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "eV",
         "zero_score_anchor": -0.17228322475548233
       },
-      "sha256": "9e05263b509ba0b6295c70ad07ec5d494444d71458aebe7220eea9b0f5e0aa0d"
+      "sha256": "aa2cd01cb624e706ed0dcf4e8ac26f040fa03bf300f3f5140e7735442bcd18b7"
     },
     "xtb_dipole_moment_maximize_3p0_10p0_v2": {
       "definition": {
         "full_score_target": 13.374,
         "property": "dipole_moment",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
-          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "debye",
         "zero_score_anchor": 3.32
       },
-      "sha256": "54f18c8045d779d7203bbc144d60ebd8e360656d15e7935ee00f7eb676662e30"
+      "sha256": "7d280e0bd8edad717d772b685c78d01fe508bce51a20c379e7805bac74ab5cf8"
     },
     "xtb_dipole_moment_minimize_0p0_20p0_v2": {
       "definition": {
         "full_score_target": 3.042,
         "property": "dipole_moment",
-        "provenance": {
-          "decay_source": "frozen_benchmark_baseline_panel_supported_by_literature",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "frozen_benchmark_reference_panel_supported_by_literature"
-        },
         "type": "minimize",
         "unit": "debye",
         "zero_score_anchor": 9.328
       },
-      "sha256": "91a0e3d5688ac99d6dd916944e21e2bcae3c761f1c625aac5322a8e43f1d9f6e"
+      "sha256": "f5268caa9b4c9964e2a26b4d953936177ddec0e9693fce0500f8356648c77af9"
     },
     "xtb_dipole_moment_window_3p0_5p5_2p5_v2": {
       "definition": {
@@ -2110,18 +949,10 @@
           "min": 3.0
         },
         "property": "dipole_moment",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "debye"
       },
-      "sha256": "e385a9e884c39e0cccfa2f9e88d4334e1cf04be1e6e441bfab98431db45a1f04"
+      "sha256": "56db30401f55363964e6ebbaaf00f516746cc57139d24d185cb66e78835961c6"
     },
     "xtb_dipole_moment_window_3p0_8p0_5p0_v2": {
       "definition": {
@@ -2134,18 +965,10 @@
           "min": 3.0
         },
         "property": "dipole_moment",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "debye"
       },
-      "sha256": "9503a4b5eca5ef332cf35a0b2b87d4e60cd0638059dd6234a7f4f1e7e1c7890f"
+      "sha256": "feb4a7cff5ff0786fa72df5eebdba4d90a2faa307a6ae500f1521cbfdd491df4"
     },
     "xtb_dipole_moment_window_3p5_6p0_2p5_v2": {
       "definition": {
@@ -2158,132 +981,70 @@
           "min": 3.5
         },
         "property": "dipole_moment",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "debye"
       },
-      "sha256": "a845a3f6bc0f29767d430975463fbc56607fa2458f39a6b5d5d324ad86c98201"
+      "sha256": "be2a29cd7fd2089edee1c8de32dcb9a7cc969430c2c8b378e90218f9783987fa"
     },
     "xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2": {
       "definition": {
         "full_score_target": 76.094775,
         "property": "entropy_298_per_heavy_atom",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "J mol-1 K-1 per heavy atom",
         "zero_score_anchor": 40.59789
       },
-      "sha256": "ee5889982fdbaa31de86fd761950aa75202471d1a84a93fa8ed1c058fdb6400c"
+      "sha256": "40c7f3bdfc75ec7418814d34c8aa6d70fb9f3c5703d534731b3e1ce75344f9a0"
     },
     "xtb_f_plus_contrast_maximize_0p0_0p15_v2": {
       "definition": {
         "full_score_target": 0.094,
         "property": "f_plus_contrast",
-        "provenance": {
-          "decay_source": "scientific_tie_boundary",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "dimensionless",
         "zero_score_anchor": 0.0
       },
-      "sha256": "189464eb00772298f3dafe3ccba88a46802caaf87b38bc5f8b4900a2746423a2"
+      "sha256": "15573ebd7cde97a6ca31bf3f52f25e80c6344e3beb871b8aabb3df6f81ad1fd5"
     },
     "xtb_global_electrophilicity_maximize_0p5_3p8_v2": {
       "definition": {
         "full_score_target": 3.1359,
         "property": "global_electrophilicity",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "eV",
         "zero_score_anchor": 0.4862
       },
-      "sha256": "3ff5346db723ee98c7d7375766d5b959ac91167b80248c5ddc967ccaf58f5d69"
+      "sha256": "ef5188c4100d030e581089e32f9672d13d8ac4e6292eb30756594c00a7032794"
     },
     "xtb_homo_lumo_gap_maximize_10p0_12p0_v2": {
       "definition": {
         "full_score_target": 9.749630028571,
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
-          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "eV",
         "zero_score_anchor": 1.389963462368
       },
-      "sha256": "a9c078cf5810e6ab57dc5197233e987a4363abbf5ea04f9f7a4dee37b8c21e61"
+      "sha256": "c93f0d6ac05d757e8b2b45d07ad9d8497803575c65ebcc21e210f81184b655ac"
     },
     "xtb_homo_lumo_gap_minimize_0p0_10p0_v2": {
       "definition": {
         "full_score_target": 1.242666887976,
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "minimize",
         "unit": "eV",
         "zero_score_anchor": 12.358052453139
       },
-      "sha256": "da99839ce0dd1ea705c9065ee61dd401681c36976426f2a5f1f207ef7040ee6c"
+      "sha256": "383095220c767defe94530280cc89c87238a55d630e4817b5d2d34d0acbcaa52"
     },
     "xtb_homo_lumo_gap_minimize_0p0_5p0_v2": {
       "definition": {
         "full_score_target": 1.389963462368,
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md",
-          "evidence_id": "xtb-gap-dipole-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "minimize",
         "unit": "eV",
         "zero_score_anchor": 9.749630028571
       },
-      "sha256": "48c87ed62a5d33b9f8ea266ff33a5182621ee5627e287d3c47e7429424913664"
+      "sha256": "6bfd0aaf80ce24151898f61fd75d91d5c59b80afc58fd02cf167ee0a685bdde1"
     },
     "xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2": {
       "definition": {
@@ -2296,18 +1057,10 @@
           "min": 2.5
         },
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "eV"
       },
-      "sha256": "eb2b8ddbd737643fb875ac72a79d1382421813a29d9f22cd2a3014c11013e8b1"
+      "sha256": "73b21f4e7d407cfc986b4757a7dbed438a9c3f9902f703a159cc7c51e4ae62db"
     },
     "xtb_homo_lumo_gap_window_3p5_5p5_2p0_v2": {
       "definition": {
@@ -2320,169 +1073,90 @@
           "min": 3.5
         },
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "target_window_width_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "task_statement"
-        },
         "type": "window",
         "unit": "eV"
       },
-      "sha256": "0dc205bb28a0ec9100a35821bd75f94c1e824cd37c2c871ac968eb3bab5a3759"
+      "sha256": "40971c3835c8e90b632897b5d6f7331c548aa446b05d013ec0d99b31eb2ea126"
     },
     "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2": {
       "definition": {
         "full_score_target": -10.6883,
         "property": "lumo_energy",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "minimize",
         "unit": "eV",
         "zero_score_anchor": -1.94
       },
-      "sha256": "b492768eb40e079fe5dc3b3fafa3d17cacb1553ed590a89b5354e76c36c398a5"
+      "sha256": "032cdd231c9ea082eb6a351280fff90fcb8ac9d973e9941fafce69d720e60823"
     },
     "xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2": {
       "definition": {
         "full_score_target": 0.276,
         "property": "max_f_plus_on_carbon",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "dimensionless",
         "zero_score_anchor": 0.076
       },
-      "sha256": "9593a0244f0785dcd053b086866e77ad893cc4062a9f0ace36a2d9776017fb04"
+      "sha256": "9bb6547c99945b2b8f1e4dab7f61fd590f94b9c27c3cc6426829733b597201fb"
     },
     "xtb_odd_element_gap_maximize_3p6_11p9_v2": {
       "definition": {
         "full_score_target": 11.9,
         "property": "homo_lumo_gap",
-        "provenance": {
-          "decay_source": "frozen_calibration_set",
-          "decision_record": "docs/research/2026-07-23-expert-open-generation-009-013-calibration.md",
-          "evidence_id": "expert-open-generation-009-013-calibration-2026-07-23",
-          "review_date": "2026-07-23",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "frozen_calibration_set"
-        },
         "type": "maximize",
         "unit": "eV",
         "zero_score_anchor": 3.6
       },
-      "sha256": "8cf86edef7aa2d6dc92e6a366af719f280a9d41dd22cb62d25a01076d91fb091"
+      "sha256": "3a70480beee13b79fec3070934ba89ee6e6c085ce25bcbb052541384a3043931"
     },
     "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2": {
       "definition": {
         "full_score_target": 9.3430346,
         "property": "polarizability_per_heavy_atom",
-        "provenance": {
-          "decay_source": "literature_baseline_reference_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md",
-          "evidence_id": "xtb-advanced-property-dossier-2026-07-21",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "literature_reference_recomputed_with_frozen_verifier"
-        },
         "type": "maximize",
         "unit": "atomic_units_per_heavy_atom",
         "zero_score_anchor": 6.4845643
       },
-      "sha256": "104759a4bb7dc28c6f07d489fd4b54ff2a22ce190d9e6dfa2b66dab8db11d425"
+      "sha256": "e5bb07a522806696b2ba513adb457b52942f6694e54b6d1f723858d30291ec7e"
     },
     "xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2": {
       "definition": {
         "full_score_target": -63.56975,
         "property": "total_energy",
-        "provenance": {
-          "decay_source": "frozen_calibration_set",
-          "decision_record": "docs/research/2026-07-23-expert-open-generation-009-013-calibration.md",
-          "evidence_id": "expert-open-generation-009-013-calibration-2026-07-23",
-          "review_date": "2026-07-23",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "frozen_calibration_set"
-        },
         "type": "minimize",
         "unit": "hartree",
         "zero_score_anchor": -63.5669
       },
-      "sha256": "ba4bec5068abe3daa0c0dbcd90eb93d110402492f521d0e6be04a9abf7cc0ded"
+      "sha256": "eb8999cc04a852107538be0526379ab161c671600e89d912733c355eb716550f"
     },
     "xtb_relaxation_energy_minimize_0p05_0p35_v2": {
       "definition": {
         "full_score_target": 0.05,
         "property": "relaxation_energy",
-        "provenance": {
-          "decay_source": "quality_gate_threshold_rule",
-          "decision_record": "docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md",
-          "review_date": "2026-07-21",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "engineering_task_boundary"
-        },
         "type": "minimize",
         "unit": "eV",
         "zero_score_anchor": 0.35
       },
-      "sha256": "ff1356d7af9558c57982b311f67d8c2e3b4c2011d8cf764884f2e037fd92d6bd"
+      "sha256": "f94beee25696e7b12d612f680418500ce8d1c0f5b74cf150424bfeb08d69982a"
     },
     "xtb_total_energy_minimize_neg_148p2_neg_148p15_v2": {
       "definition": {
         "full_score_target": -148.213721794168,
         "property": "total_energy",
-        "provenance": {
-          "decay_source": "literature_baseline_conformer_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md",
-          "evidence_id": "xtb-total-energy-anchor-recalibration-2026-07-30",
-          "review_date": "2026-07-30",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "independent_crest_candidate_recomputed_with_frozen_verifier"
-        },
         "type": "minimize",
         "unit": "hartree",
         "zero_score_anchor": -148.183476873812
       },
-      "sha256": "9ae250215a30547ec119efa963a1cdc704c473df455577d8fe9e416c7c994324"
+      "sha256": "50324113bc1a5cf6f59fb3260b0f9833b0f727fb1746445df561d8e4e11ac4b6"
     },
     "xtb_total_energy_minimize_neg_50p3_neg_50p25_v2": {
       "definition": {
         "full_score_target": -50.302552312418,
         "property": "total_energy",
-        "provenance": {
-          "decay_source": "literature_baseline_conformer_recomputed_with_frozen_verifier",
-          "decision_record": "docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md",
-          "evidence_id": "xtb-total-energy-anchor-recalibration-2026-07-30",
-          "review_date": "2026-07-30",
-          "review_owner": "benchmark_maintainers",
-          "review_status": "approved",
-          "target_source": "frozen_run_candidate_recomputed_with_frozen_verifier"
-        },
         "type": "minimize",
         "unit": "hartree",
         "zero_score_anchor": -50.287905192962
       },
-      "sha256": "c420410d8f54cadac504f768e3604038cfb11be2e500d41c389fd1e5cbb88495"
+      "sha256": "b6d8e05133125bb7b0c7e813c87ed15907e7600f9c162c5e63c09181918d75f7"
     }
   },
   "scoring_version": "linear_goal_v2",
