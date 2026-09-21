@@ -90,7 +90,7 @@ scoring_profiles:
       review_date: '2026-07-23'
       review_owner: benchmark_maintainers
 tasks:
-- task_id: xtb_formula_dipole_min_014
+- task_id: xtb_014
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -143,7 +143,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_two_fluorine_gap_min_015
+- task_id: xtb_015
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -213,7 +213,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_c10_f2_gap_min_016
+- task_id: xtb_016
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -282,7 +282,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_roy_singlepoint_energy_min_017
+- task_id: xtb_017
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -336,7 +336,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_ritonavir_optimized_energy_min_018
+- task_id: xtb_018
   version: 1
   object_type: small_molecule_3d
   difficulty: expert
@@ -391,7 +391,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_odd_element_counts_gap_max_019
+- task_id: xtb_019
   version: 1
   object_type: small_molecule_3d
   difficulty: expert
@@ -459,7 +459,7 @@ tasks:
     backend_failure: verifier_tool_error
     timeout: verifier_timeout
   task_type: open_generation
-- task_id: xtb_pyrene_substituent_energy_min_020
+- task_id: xtb_020
   version: 1
   object_type: small_molecule
   difficulty: expert

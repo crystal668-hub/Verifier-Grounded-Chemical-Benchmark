@@ -27,7 +27,7 @@ SPEC = {
         "xtb_version": "6.7.1",
     },
 }
-TASK = {"task_id": "xtb_pyrene_substituent_energy_min_020"}
+TASK = {"task_id": "xtb_020"}
 CONSTRAINT = {"property": "total_energy"}
 
 

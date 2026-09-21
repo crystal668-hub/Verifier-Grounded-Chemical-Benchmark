@@ -18,20 +18,20 @@ RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始�
 
 | task_id | 主目标 | 关键约束 |
 |---|---|---|
-| `rdkit_qed_max_001` | maximize QED | 基线 domain |
-| `rdkit_sa_min_002` | minimize SA score | 基线 domain |
-| `rdkit_logp_window_003` | LogP window `[1, 3]` | 基线 domain |
-| `rdkit_tpsa_window_004` | TPSA window `[35, 75]` | 基线 domain |
-| `rdkit_hba_window_005` | HBA window `[2, 4]` | 基线 domain |
-| `rdkit_hbd_window_006` | HBD window `[1, 2]` | 基线 domain |
-| `rdkit_fsp3_max_007` | maximize fraction Csp3 | 基线 domain |
-| `rdkit_qed_sa_008` | QED + SA | multi-objective |
-| `rdkit_logp_tpsa_009` | LogP + TPSA | multi-objective |
-| `rdkit_hba_hbd_010` | HBA + HBD | multi-objective |
-| `rdkit_logp_target_011` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
-| `rdkit_sa_logp_target_012` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
-| `rdkit_chain_end_to_end_max_013` | maximize 末端重原子距离 | 精确六碳饱和链；固定 UFF workflow |
-| `rdkit_caffeine_similarity_max_014` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
+| `rdkit_001` | maximize QED | 基线 domain |
+| `rdkit_002` | minimize SA score | 基线 domain |
+| `rdkit_003` | LogP window `[1, 3]` | 基线 domain |
+| `rdkit_004` | TPSA window `[35, 75]` | 基线 domain |
+| `rdkit_005` | HBA window `[2, 4]` | 基线 domain |
+| `rdkit_006` | HBD window `[1, 2]` | 基线 domain |
+| `rdkit_007` | maximize fraction Csp3 | 基线 domain |
+| `rdkit_008` | QED + SA | multi-objective |
+| `rdkit_009` | LogP + TPSA | multi-objective |
+| `rdkit_010` | HBA + HBD | multi-objective |
+| `rdkit_011` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
+| `rdkit_012` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
+| `rdkit_013` | maximize 末端重原子距离 | 精确六碳饱和链；固定 UFF workflow |
+| `rdkit_014` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
 
 ## 3. 性质与 verifier
 

@@ -1,6 +1,6 @@
 # Property Calculation Numeric Domains
 
-Date: 2026-09-17
+Date: 2026-09-21 (v0.10.0)
 
 Numeric domains describe the requested quantity independently of the scoring
 tolerance. An optional `minimum_value` in a `numeric_gold` profile is an inclusive
@@ -11,8 +11,9 @@ the domain. Missing bounds preserve the existing signed-number behavior.
 
 Advanced 001 and 002 request absolute energy differences; Advanced 011 requests a
 volume ratio. These quantities have `minimum_value: 0.0`. The same bound applies
-to the three distance fields in Advanced 010 and 012. Distances use the identity
-transform: a negative distance is not another convention for a positive length.
+to the distance field in Advanced 012, which uses the identity transform.
+Advanced 010 instead compares absolute values in v0.10.0 and has no original-value
+minimum bound, as required by the expert-reviewed task scoring rule.
 Zero is in the domain; its score still depends on its error from the gold value.
 For multi-field tasks such as Advanced 002, other fields retain their own scores.
 
@@ -23,6 +24,6 @@ magnitudes are both accepted. Their existing `absolute` transform compares
 prompts. This does not extend sign equivalence to other energy tasks or to signed
 charges, spin densities, and electrochemical potentials.
 
-The domain and prompt corrections apply to the source task pack. Tolerance
-calibration is a separate decision; this correction does not change any widths,
-gold values, field weights, or categorical matching rules.
+See [v0.10.0 scoring](property-calculation-v0.10.0-scoring.md) for the current
+task-specific widths. Gold values, field weights, and categorical matching rules
+are unchanged.

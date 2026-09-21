@@ -110,8 +110,10 @@ def test_v94_release_binds_r3_family_policy_and_artifacts() -> None:
     assert inventory["tracks"]["property_calculation_advanced"]["family_policy"] == "../family-policy.yaml"
     tagged = subprocess.check_output(["git", "rev-list", "-n", "1", manifest["tag"]], cwd=ROOT, text=True).strip()
     assert tagged == manifest["canonical_source"]["commit"]
-    policy_path = ROOT / "src/verifier_grounded_benchmark/task/packs/family-policy.yaml"
-    assert policy_path.read_bytes()
+    assert subprocess.check_output(
+        ["git", "show", f"{tagged}:src/verifier_grounded_benchmark/task/packs/family-policy.yaml"],
+        cwd=ROOT,
+    )
     assert any(
         item["definition"]["provenance"].get("tolerance_policy") == "property_family_anchors_2026_09_21_r3"
         for item in inventory["scoring_profiles"].values()

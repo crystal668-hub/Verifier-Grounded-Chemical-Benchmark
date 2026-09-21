@@ -39,8 +39,6 @@ def field(pack, property_name):
     [
         "free_energy_difference",
         "potential_energy_difference",
-        "oh_bond_distance",
-        "h_o_contact_distance",
         "accessible_to_inaccessible_volume_ratio",
         "carboxyl_hydrogen_distance",
     ],
@@ -57,12 +55,6 @@ def test_nonnegative_domains_hold_even_when_tolerances_are_widened(advanced, pro
         assert score_numeric_gold(gold, gold, profile) == 1
 
 
-def test_domain_is_checked_before_signed_distance_scoring(advanced):
-    gold, profile = field(advanced, "oh_bond_distance")
-    assert profile.get("value_transform", "identity") == "identity"
-    assert score_numeric_gold({"value": -gold["value"], "unit": gold["unit"]}, gold, profile) == 0
-
-
 def test_invalid_crystal_difference_does_not_erase_correct_phase_fields(advanced):
     task = advanced.tasks[1]
     answers = [{key: gold[key] for key in ("property", "value", "unit") if key in gold}
@@ -76,20 +68,51 @@ def test_invalid_crystal_difference_does_not_erase_correct_phase_fields(advanced
     assert result["scores"]["score"] == pytest.approx(0.5)
 
 
-@pytest.mark.parametrize("property_name", ["interaction_energy", "binding_energy", "halogen_bond_interaction_energy"])
-def test_energy_sign_conventions_require_signed_values(advanced, property_name):
+@pytest.mark.parametrize(
+    ("property_name", "width"),
+    [
+        ("interaction_energy", 10.0),
+        ("binding_energy", 10.0),
+        ("oh_bond_distance", 0.1),
+        ("h_o_contact_distance", 0.1),
+        ("halogen_bond_interaction_energy", 5.0),
+    ],
+)
+def test_selected_advanced_fields_score_magnitudes_at_new_boundaries(advanced, property_name, width):
     gold, profile = field(advanced, property_name)
-    for offset, expected in ((0, 1), (profile["upper_tolerance"] / 2, 0.5)):
-        magnitude = abs(gold["value"]) + offset
-        assert score_numeric_gold({"value": -magnitude, "unit": gold["unit"]}, gold, profile) == pytest.approx(expected)
-        assert score_numeric_gold({"value": magnitude, "unit": gold["unit"]}, gold, profile) == 0
+    assert profile["value_transform"] == "absolute"
+    assert "minimum_value" not in profile
+    assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
+    assert profile["error_parameter"] == width
+    for side in (-1, 1):
+        for fraction, expected in ((0, 1), (0.5, 0.5), (1, 0), (1.01, 0)):
+            magnitude = abs(gold["value"]) + side * fraction * width
+            for sign in (-1, 1):
+                answer = {"value": sign * magnitude, "unit": gold["unit"]}
+                assert score_numeric_gold(answer, gold, profile) == pytest.approx(expected, abs=1e-12)
 
 
-def test_energy_prompts_require_a_sign(advanced):
+@pytest.mark.parametrize("number", ["008", "010", "013"])
+def test_selected_advanced_tasks_accept_opposite_sign_answers_end_to_end(advanced, number):
+    task = next(task for task in advanced.tasks if task.task_id.split("_")[3] == number)
+    answers = [
+        {"property": gold["property"], "value": -gold["value"], "unit": gold["unit"]}
+        for gold in task.raw["gold_answers"]
+    ]
+    result = PropertyCalculationEvaluator().evaluate(
+        {"answers": answers}, task, advanced.scoring_profiles,
+        versions={"scoring": advanced.scoring_version},
+    )
+    assert result["scores"]["score"] == 1
+
+
+def test_energy_prompts_accept_either_sign_and_pore_prompt_specifies_probe(advanced):
     for task in advanced.tasks:
-        if task.task_id.split("_")[3] in {"008", "013"}:
-            prompt = task.raw["prompt"].lower()
-            assert "preserve the sign of the energy" in prompt
+        number = task.task_id.split("_")[3]
+        if number in {"008", "013"}:
+            assert "preserve the sign of the energy" not in task.raw["prompt"].lower()
+        if number == "011":
+            assert "spherical probe radius of 1.2 angstrom" in task.raw["prompt"]
 
 
 @pytest.mark.parametrize("bound", [True, None, "0", float("nan"), float("inf"), -float("inf")])

@@ -14,7 +14,7 @@ def test_cli_reports_preflight_failure_before_evaluation(
 ) -> None:
     answers_path = tmp_path / "answers.jsonl"
     answers_path.write_text(
-        json.dumps({"task_id": "rdkit_qed_max_001", "response": "FINAL ANSWER: C"})
+        json.dumps({"task_id": "rdkit_001", "response": "FINAL ANSWER: C"})
         + "\n",
         encoding="utf-8",
     )

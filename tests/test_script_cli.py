@@ -80,7 +80,7 @@ def test_run_property_script_returns_standard_mismatch_error(monkeypatch: pytest
 
 def test_run_property_script_calls_evaluator_with_payload_parts(monkeypatch: pytest.MonkeyPatch) -> None:
     payload = {
-        "task": {"task_id": "xtb_gap_window_001"},
+        "task": {"task_id": "xtb_001"},
         "constraint": {"property": "homo_lumo_gap"},
         "verifier_spec": {"verifier_id": "xtb_gap_gfn2_v1", "property_name": "homo_lumo_gap"},
         "candidate": {"xyz": "3\nwater\nO 0 0 0\nH 0 0 1\nH 1 0 0"},
@@ -126,7 +126,7 @@ def test_run_property_script_calls_evaluator_with_payload_parts(monkeypatch: pyt
 
 def test_xtb_cli_outputs_sorted_json_keys(monkeypatch: pytest.MonkeyPatch) -> None:
     payload = {
-        "task": {"task_id": "xtb_gap_window_001"},
+        "task": {"task_id": "xtb_001"},
         "constraint": {"property": "homo_lumo_gap"},
         "verifier_spec": {"verifier_id": "xtb_gap_gfn2_v1", "property_name": "homo_lumo_gap"},
         "candidate": {"xyz": "3\nwater\nO 0 0 0\nH 0 0 1\nH 1 0 0"},

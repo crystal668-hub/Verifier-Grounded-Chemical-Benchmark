@@ -204,7 +204,7 @@ OpenClaw 映射规则：
     "panel_member_id": "single_llm_skills_on",
     "panel_member_label": "单一 LLM + benchmark skills allowlist",
     "model": "openai/gpt-5.5",
-    "task_id": "xtb_gap_window_001",
+    "task_id": "xtb_001",
     "role": None,
     "status": "ok",
     "failure_type": None,
@@ -256,7 +256,7 @@ OpenClaw 映射规则：
 
 ```python
 {
-    "task_id": "xtb_gap_dipole_window_007",
+    "task_id": "xtb_007",
     "candidate_id": "qm9:gdb9_000001",
     "dataset_name": "qm9",
     "score": 0.82,
@@ -286,7 +286,7 @@ OpenClaw 映射规则：
         }
     ],
     "tasks": {
-        "xtb_gap_window_001": {
+        "xtb_001": {
             "declared_difficulty": "basic",
             "decision": "keep_thresholds",
             "severity": "info",

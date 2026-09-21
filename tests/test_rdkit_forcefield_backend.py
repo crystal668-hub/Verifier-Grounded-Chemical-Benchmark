@@ -133,7 +133,7 @@ CHAIN_SPEC = {
 def test_terminal_atom_protocol_scores_n_hexane_with_uff() -> None:
     result = evaluate_forcefield_constraint(
         {"smiles": "CCCCCC"},
-        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"task_id": "rdkit_013"},
         {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )
@@ -160,7 +160,7 @@ def test_terminal_atom_protocol_scores_n_hexane_with_uff() -> None:
 def test_chain_endpoint_domain_rejects_wrong_carbon_skeleton(smiles: str) -> None:
     result = evaluate_forcefield_constraint(
         {"smiles": smiles},
-        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"task_id": "rdkit_013"},
         {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )
@@ -173,7 +173,7 @@ def test_terminal_atom_distance_uses_noncarbon_substituents() -> None:
     smiles = "FCCCCCCCl"
     result = evaluate_forcefield_constraint(
         {"smiles": smiles},
-        {"task_id": "rdkit_chain_end_to_end_max_013"},
+        {"task_id": "rdkit_013"},
         {"property": "terminal_atom_distance"},
         CHAIN_SPEC,
     )

@@ -63,7 +63,7 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
     }
 
     rdkit = next(track for track in catalog["tracks"] if track["name"] == "rdkit")
-    qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_qed_max_001")
+    qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_001")
     assert qed["scoring"]["rules"][0]["profile"]["full_score_target"] == 1.0
 
 
@@ -89,13 +89,13 @@ def test_score_ranges_represent_nonzero_submitted_values():
         for track in catalog["tracks"]
         for task in track["tasks"]
     }
-    qed = tasks["rdkit_qed_max_001"]["scoring"]["rules"][0]["score_range"]
+    qed = tasks["rdkit_001"]["scoring"]["rules"][0]["score_range"]
     assert qed == {"kind": "lower_bounded", "min": 0.0, "min_exclusive": True, "unit": "dimensionless"}
 
     interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
-    assert interaction["kind"] == "interval"
-    assert interaction["min"] == pytest.approx(-71.04)
-    assert interaction["max"] == pytest.approx(-67.04)
+    assert interaction["kind"] == "absolute_interval"
+    assert interaction["min"] == pytest.approx(59.04)
+    assert interaction["max"] == pytest.approx(79.04)
 
     log_score = tasks["property_calculation_advanced_015_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
     assert log_score["transform"] == "log10"
@@ -103,21 +103,25 @@ def test_score_ranges_represent_nonzero_submitted_values():
     assert log_score["max"] == 0.0734
 
 
-def test_v094_catalog_has_signed_energy_and_shared_family_widths():
+def test_v0100_catalog_has_task_specific_widths_and_absolute_scoring():
     catalog = load_catalog()
     count = 0
     for track in catalog["tracks"]:
-        assert track["version"] == "0.9.4"
+        assert track["version"] == "0.10.0"
         for task in track["tasks"]:
             for rule in task["scoring"]["rules"]:
                 profile = rule["profile"]
                 if profile.get("provenance", {}).get("tolerance_family") == "noncovalent_energy":
                     count += 1
-                    assert profile["lower_tolerance"] == profile["upper_tolerance"] == 2.0
-                    assert profile.get("value_transform", "identity") == "identity"
-                    assert rule["score_range"]["kind"] == "interval"
+                    advanced = track["name"] == "property_calculation_advanced"
+                    number = task["task_id"].split("_")[3]
+                    width = ({"008": 10.0, "013": 5.0}[number] if advanced
+                             else 3.0 if number == "013" else 2.0)
+                    assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
+                    assert profile.get("value_transform", "identity") == ("absolute" if advanced else "identity")
+                    assert rule["score_range"]["kind"] == ("absolute_interval" if advanced else "interval")
             if task["task_id"] in {"property_calculation_advanced_008_interaction_binding_energy", "property_calculation_advanced_013_halogen_bond_energy"}:
-                assert "Preserve the sign of the energy." in task["view"]["prompt"]
+                assert "Preserve the sign of the energy." not in task["view"]["prompt"]
             if task["task_id"] == "property_calculation_advanced_002_crystal_phase":
                 assert task["scoring"]["comparison_groups"][1]["aggregation"] == "all_correct"
     assert count == 9

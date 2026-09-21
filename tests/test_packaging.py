@@ -37,7 +37,6 @@ FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/family-policy.yaml",
 }
 FORMAL_TRACK_PACKS = {
     "property_calculation_advanced",
@@ -46,11 +45,11 @@ FORMAL_TRACK_PACKS = {
     "xtb",
 }
 FORMAL_EXPERT_XTB_TASK_IDS = {
-    "xtb_formula_dipole_min_014",
-    "xtb_two_fluorine_gap_min_015",
-    "xtb_c10_f2_gap_min_016",
-    "xtb_roy_singlepoint_energy_min_017",
-    "xtb_ritonavir_optimized_energy_min_018",
+    "xtb_014",
+    "xtb_015",
+    "xtb_016",
+    "xtb_017",
+    "xtb_018",
 }
 
 
@@ -94,6 +93,8 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert not any(path.startswith("tasks/") for path in sdist_members)
     assert not any(path.startswith("review_system/") for path in wheel_members)
     assert not any(path.startswith("review_system/") for path in sdist_members)
+    assert "verifier_grounded_benchmark/task/packs/family-policy.yaml" not in wheel_members
+    assert "src/verifier_grounded_benchmark/task/packs/family-policy.yaml" not in sdist_members
     assert FORMAL_V2_TASK_FILES.issubset(wheel_members)
     assert {f"src/{path}" for path in FORMAL_V2_TASK_FILES}.issubset(sdist_members)
     assert not any("/task/calibration/" in path for path in wheel_members)

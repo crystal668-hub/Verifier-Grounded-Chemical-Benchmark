@@ -87,7 +87,7 @@ def build_candidates() -> tuple[list[dict], dict]:
 
     positive_definitions = [
         (
-            "xtb_formula_dipole_min_014",
+            "xtb_014",
             TASK_2_SMILES,
             [41, 53],
             "task2_symmetric_aminyl",
@@ -95,7 +95,7 @@ def build_candidates() -> tuple[list[dict], dict]:
             True,
         ),
         (
-            "xtb_two_fluorine_gap_min_015",
+            "xtb_015",
             TASK_3_SMILES,
             [19, 31],
             "task3_difluorobenzoquinone",
@@ -103,7 +103,7 @@ def build_candidates() -> tuple[list[dict], dict]:
             False,
         ),
         (
-            "xtb_c10_f2_gap_min_016",
+            "xtb_016",
             TASK_4_SMILES,
             [23, 37],
             "task4_difluoronaphthoquinone",
@@ -111,7 +111,7 @@ def build_candidates() -> tuple[list[dict], dict]:
             False,
         ),
         (
-            "xtb_roy_singlepoint_energy_min_017",
+            "xtb_017",
             ROY_SMILES,
             [7, 11, 17],
             "roy",
@@ -119,7 +119,7 @@ def build_candidates() -> tuple[list[dict], dict]:
             False,
         ),
         (
-            "xtb_ritonavir_optimized_energy_min_018",
+            "xtb_018",
             RITONAVIR_SMILES,
             [7, 13, 19],
             "ritonavir",
@@ -150,11 +150,11 @@ def build_candidates() -> tuple[list[dict], dict]:
             manifest[candidate_id] = metadata
 
     negative_definitions = [
-        ("xtb_formula_dipole_min_014", "O", "task2_negative_water", "negative formula"),
-        ("xtb_two_fluorine_gap_min_015", "O", "task3_negative_water", "missing fluorine"),
-        ("xtb_c10_f2_gap_min_016", "C", "task4_negative_methane", "wrong counts"),
-        ("xtb_roy_singlepoint_energy_min_017", "CC#N", "roy_negative_acetonitrile", "wrong identity"),
-        ("xtb_ritonavir_optimized_energy_min_018", ROY_SMILES, "ritonavir_negative_roy", "wrong identity"),
+        ("xtb_014", "O", "task2_negative_water", "negative formula"),
+        ("xtb_015", "O", "task3_negative_water", "missing fluorine"),
+        ("xtb_016", "C", "task4_negative_methane", "wrong counts"),
+        ("xtb_017", "CC#N", "roy_negative_acetonitrile", "wrong identity"),
+        ("xtb_018", ROY_SMILES, "ritonavir_negative_roy", "wrong identity"),
     ]
     for index, (task_id, smiles, candidate_id, source) in enumerate(
         negative_definitions,
@@ -163,7 +163,7 @@ def build_candidates() -> tuple[list[dict], dict]:
         comment = (
             "charge=0"
             if task_id
-            in {"xtb_two_fluorine_gap_min_015", "xtb_c10_f2_gap_min_016"}
+            in {"xtb_015", "xtb_016"}
             else candidate_id
         )
         xyz = embed_xyz(smiles, seed=100 + index, comment=comment)

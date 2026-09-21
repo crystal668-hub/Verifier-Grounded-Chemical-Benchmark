@@ -17,12 +17,12 @@ ANSWERS_PATH = CALIBRATION_DIR.joinpath("legacy_answers.jsonl")
 MANIFEST_PATH = CALIBRATION_DIR.joinpath("legacy_manifest.yaml")
 EXPERT_ANSWERS_PATH = CALIBRATION_DIR.joinpath("answers.jsonl")
 ADVANCED_TASK_IDS = {
-    "xtb_lumo_min_008",
-    "xtb_polarizability_dipole_opt_009",
-    "xtb_solvation_selectivity_alpb_010",
-    "xtb_electrophilicity_max_011",
-    "xtb_fukui_carbon_site_012",
-    "xtb_hessian_thermo_stability_013",
+    "xtb_008",
+    "xtb_009",
+    "xtb_010",
+    "xtb_011",
+    "xtb_012",
+    "xtb_013",
 }
 
 

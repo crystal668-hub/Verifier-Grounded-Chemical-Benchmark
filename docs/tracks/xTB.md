@@ -21,26 +21,26 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 
 | task_id | 主目标 | 输入/特殊协议 |
 |---|---|---|
-| `xtb_gap_window_001` | gap window | XYZ |
-| `xtb_dipole_window_002` | dipole window | XYZ |
-| `xtb_gap_max_003` | maximize gap | XYZ |
-| `xtb_gap_min_004` | minimize gap | XYZ |
-| `xtb_dipole_max_005` | maximize dipole | XYZ |
-| `xtb_low_gap_high_dipole_opt_006` | gap + dipole | XYZ |
-| `xtb_gap_dipole_window_007` | gap + dipole windows | XYZ |
-| `xtb_lumo_min_008` | minimize LUMO | XYZ |
-| `xtb_polarizability_dipole_opt_009` | polarizability + dipole | XYZ |
-| `xtb_solvation_selectivity_alpb_010` | ALPB selectivity | XYZ |
-| `xtb_electrophilicity_max_011` | electrophilicity | XYZ |
-| `xtb_fukui_carbon_site_012` | carbon Fukui response | XYZ |
-| `xtb_hessian_thermo_stability_013` | maximize entropy, zero-imaginary-frequency hard constraint | XYZ |
-| `xtb_formula_dipole_min_014` | exact-formula dipole | XYZ, neutral doublet |
-| `xtb_two_fluorine_gap_min_015` | minimize gap | XYZ, exact F count |
-| `xtb_c10_f2_gap_min_016` | minimize gap | XYZ, `C10F2` domain |
-| `xtb_roy_singlepoint_energy_min_017` | ROY single-point energy | XYZ, graph identity |
-| `xtb_ritonavir_optimized_energy_min_018` | Ritonavir optimized energy | XYZ, graph/stereo identity |
-| `xtb_odd_element_counts_gap_max_019` | maximize gap | XYZ, odd element counts, dipole `<2 D` |
-| `xtb_pyrene_substituent_energy_min_020` | minimize total energy | SMILES, CREST ensemble + xTB single-point |
+| `xtb_001` | gap window | XYZ |
+| `xtb_002` | dipole window | XYZ |
+| `xtb_003` | maximize gap | XYZ |
+| `xtb_004` | minimize gap | XYZ |
+| `xtb_005` | maximize dipole | XYZ |
+| `xtb_006` | gap + dipole | XYZ |
+| `xtb_007` | gap + dipole windows | XYZ |
+| `xtb_008` | minimize LUMO | XYZ |
+| `xtb_009` | polarizability + dipole | XYZ |
+| `xtb_010` | ALPB selectivity | XYZ |
+| `xtb_011` | electrophilicity | XYZ |
+| `xtb_012` | carbon Fukui response | XYZ |
+| `xtb_013` | maximize entropy, zero-imaginary-frequency hard constraint | XYZ |
+| `xtb_014` | exact-formula dipole | XYZ, neutral doublet |
+| `xtb_015` | minimize gap | XYZ, exact F count |
+| `xtb_016` | minimize gap | XYZ, `C10F2` domain |
+| `xtb_017` | ROY single-point energy | XYZ, graph identity |
+| `xtb_018` | Ritonavir optimized energy | XYZ, graph/stereo identity |
+| `xtb_019` | maximize gap | XYZ, odd element counts, dipole `<2 D` |
+| `xtb_020` | minimize total energy | SMILES, CREST ensemble + xTB single-point |
 
 ## 3. 新增专家协议
 

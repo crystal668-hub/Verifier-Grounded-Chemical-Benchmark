@@ -1,12 +1,15 @@
-# Verifier-Grounded Benchmark (v0.9.4)
+# Verifier-Grounded Benchmark (v0.10.0)
 
 `verifier_grounded_benchmark` 提供可复现的化学 benchmark task pack、verifier 和评分工具。
 模型调用由用户或 agent runner 负责；本包负责提供题目、解析答案并生成评分报告。
 
-v0.9.4 正式采用 `property_family_anchors_2026_09_21_r3` 性质分组容差：
-Advanced 001/002 使用 8 kJ/mol、0.8 eV 绝对零分宽度，Basic 037–042 统一使用
-10% 相对零分宽度。绝对差、距离及孔体积比的负值判零；Advanced 008/013 接受
-正负能量报告要求并按有符号误差评分。gold 和字段权重不变。
+v0.10.0 采用逐题独立容差，不再加载或校验 `family-policy.yaml`。
+Basic 013 的容差为 ±3 kcal/mol；Advanced 008、010、013 分别为
+±10 kcal/mol、±0.1 Å、±5 kcal/mol，并先对答案与 gold 取绝对值再比较。
+容差仍表示线性评分降至零的误差宽度，gold 和字段权重不变。
+Advanced 011 使用半径 1.2 Å 的球形探针。
+RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001`–`rdkit_014`、
+`xtb_001`–`xtb_020`；已有答案记录需同步更新 task-id。
 
 ## QuickStart
 
@@ -30,7 +33,7 @@ print(result["scores"]["score"])
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
 | `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
 
-v0.9.4 仅支持上述 canonical names；旧的 `property_calculation` 和
+v0.10.0 仅支持上述 canonical names；旧的 `property_calculation` 和
 `property_calculation_easy` 名称已移除。
 
 ## Public API

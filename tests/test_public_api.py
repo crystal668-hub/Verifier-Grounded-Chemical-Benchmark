@@ -30,19 +30,19 @@ def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     track = vgb.load_track("rdkit")
 
     task_ids = [task["task_id"] for task in track.tasks()]
-    assert "rdkit_qed_max_001" in task_ids
+    assert "rdkit_001" in task_ids
 
     prompt = next(
         prompt
         for prompt in track.prompts()
-        if prompt["task_id"] == "rdkit_qed_max_001"
+        if prompt["task_id"] == "rdkit_001"
     )
     assert prompt["track"] == "rdkit"
-    assert prompt["task_id"] == "rdkit_qed_max_001"
+    assert prompt["task_id"] == "rdkit_001"
     assert prompt["prompt"].startswith(
         "Propose one valid single-component molecule"
     )
-    assert prompt["answer_schema"] == track.task("rdkit_qed_max_001")["answer_schema"]
+    assert prompt["answer_schema"] == track.task("rdkit_001")["answer_schema"]
     assert set(prompt) == {"track", "task_id", "prompt", "answer_schema"}
     assert len(track.sample_answers()) == 14
 
@@ -51,8 +51,8 @@ def test_load_suite_defaults_to_formal_tracks_only() -> None:
     suite = vgb.load_suite()
     task_ids = [task["task_id"] for task in suite.tasks()]
 
-    assert "rdkit_qed_max_001" in task_ids
-    assert "xtb_gap_window_001" in task_ids
+    assert "rdkit_001" in task_ids
+    assert "xtb_001" in task_ids
     assert "property_calculation_advanced_001_free_energy" in task_ids
     assert "property_calculation_advanced_002_crystal_phase" in task_ids
     assert "property_calculation_basic_001_toluene_aqueous_solvation_free_energy" in task_ids
@@ -112,7 +112,7 @@ def test_track_evaluate_answers_uses_v3_result_and_scoring_contract() -> None:
     assert report["summary"]["coverage"]["complete"] is True
     assert all(row["schema_version"] == 3 for row in report["rows"])
     assert all(row["status"] == "scored" for row in report["rows"])
-    assert all(row["versions"]["package"] == "0.9.4" for row in report["rows"])
+    assert all(row["versions"]["package"] == "0.10.0" for row in report["rows"])
     assert all(
         item["scoring_version"] == "linear_goal_v2"
         for row in report["rows"]
@@ -166,7 +166,7 @@ def test_track_evaluate_answers_coverage_detects_duplicate_and_unknown_task_ids(
     assert coverage["num_rows_submitted"] == 3
     assert coverage["num_task_ids_submitted"] == 2
     assert coverage["num_tasks_answered"] == 1
-    assert coverage["duplicate_task_ids"] == ["rdkit_qed_max_001"]
+    assert coverage["duplicate_task_ids"] == ["rdkit_001"]
     assert coverage["unknown_task_ids"] == ["missing_from_track"]
     assert coverage["complete"] is False
     assert report["summary"]["benchmark_score"] is None
@@ -174,11 +174,11 @@ def test_track_evaluate_answers_coverage_detects_duplicate_and_unknown_task_ids(
 
 def test_track_evaluate_one_returns_structured_xtb_parse_error() -> None:
     result = vgb.load_track("xtb").evaluate_one(
-        {"task_id": "xtb_gap_window_001", "candidates": [{}]}
+        {"task_id": "xtb_001", "candidates": [{}]}
     )
 
     assert result["status"] == "scored"
-    assert result["task_id"] == "xtb_gap_window_001"
+    assert result["task_id"] == "xtb_001"
     assert result["failure_type"] == "parse_error"
     assert result["failure_scope"] == "candidate"
     assert result["message"] == "candidate must include an XYZ string"
@@ -186,10 +186,10 @@ def test_track_evaluate_one_returns_structured_xtb_parse_error() -> None:
 
 def test_suite_evaluate_one_routes_by_task_id() -> None:
     result = vgb.load_suite(["rdkit", "xtb"]).evaluate_one(
-        {"task_id": "rdkit_qed_max_001", "candidates": [{"smiles": "CCO"}]}
+        {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
     )
 
-    assert result["task_id"] == "rdkit_qed_max_001"
+    assert result["task_id"] == "rdkit_001"
     assert result["status"] == "scored"
     assert result["failure_type"] == "domain_error"
     assert result["scores"]["score"] == 0.0

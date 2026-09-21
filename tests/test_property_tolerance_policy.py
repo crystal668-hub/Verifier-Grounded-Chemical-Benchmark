@@ -223,17 +223,19 @@ def test_committed_candidate_configs_match_the_frozen_family_policy(sources):
 
 
 @pytest.mark.parametrize("track", projection.original.SOURCES)
-def test_formal_release_preserves_every_approved_r2_scoring_field(track):
+def test_formal_release_uses_approved_individual_scoring_profiles(track):
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
     formal = yaml.safe_load((directory / "scoring.yaml").read_text())
     assert formal["scoring_config"]["scoring_status"] == "formal"
-    assert formal["scoring_config"]["task_pack_version"] == "0.9.4"
-    assert formal["scoring_config"]["family_policy"] == "../family-policy.yaml"
+    assert formal["scoring_config"]["task_pack_version"] == "0.10.0"
+    assert "family_policy" not in formal["scoring_config"]
     assert formal["scoring_profiles"]
     for _profile_id, released in formal["scoring_profiles"].items():
         assert released["provenance"]["review_status"] == "approved"
         if released["type"] == "numeric_gold":
-            assert released["provenance"]["tolerance_policy"] == "property_family_anchors_2026_09_21_r3"
+            assert released["provenance"]["tolerance_policy"] in {
+                "property_family_anchors_2026_09_21_r3", "task_specific_anchors_v0.10.0",
+            }
 
 
 @pytest.mark.parametrize("track", projection.original.SOURCES)

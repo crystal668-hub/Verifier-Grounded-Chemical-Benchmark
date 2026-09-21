@@ -280,7 +280,7 @@ quality_gate_score = min(q_1, ..., q_n)
 硬性质约束在连续评分前执行，不产生连续门控分数。任一硬约束失败时，候选以
 `hard_constraint_failed` 结束并记 0 分；全部通过后才计算主性质和 quality gate。
 
-`xtb_hessian_thermo_stability_013` 的 `imaginary_frequency_count` 使用严格闭区间：
+`xtb_013` 的 `imaginary_frequency_count` 使用严格闭区间：
 
 ```yaml
 hard_constraints:
@@ -384,17 +384,17 @@ scoring:
 
 | Task | 主约束规则 | 单题计算 |
 | --- | --- | --- |
-| `rdkit_qed_max_001` | QED Maximize：满分目标 `T_qed`，左衰减宽度 `rL_qed` | `s_qed` |
-| `rdkit_sa_min_002` | SA score Minimize：满分目标 `T_sa`，右衰减宽度 `rU_sa` | `s_sa` |
-| `rdkit_logp_window_003` | logP Window：满分 `[1.0, 3.0]`，两侧宽度 `rL_logp/rU_logp` | `s_logp` |
-| `rdkit_tpsa_window_004` | TPSA Window：满分 `[35.0, 75.0]`，两侧宽度 `rL_tpsa/rU_tpsa` | `s_tpsa` |
-| `rdkit_hba_window_005` | HBA Window：满分 `[2, 4]`，整数两侧宽度 `rL_hba/rU_hba` | `s_hba` |
-| `rdkit_hbd_window_006` | HBD Window：满分 `[1, 2]`，整数两侧宽度 `rL_hbd/rU_hbd` | `s_hbd` |
-| `rdkit_fsp3_max_007` | fraction Csp3 Maximize：满分目标 `T_fsp3`，左衰减宽度 `rL_fsp3` | `s_fsp3` |
-| `rdkit_qed_sa_008` | QED Maximize + SA Minimize，各自参数同单性质定义 | `sqrt(s_qed * s_sa)` |
-| `rdkit_logp_tpsa_009` | logP Window + TPSA Window，各自参数同单性质定义 | `sqrt(s_logp * s_tpsa)` |
-| `rdkit_hba_hbd_010` | HBA Window + HBD Window，各自参数同单性质定义 | `sqrt(s_hba * s_hbd)` |
-| `rdkit_logp_target_011` | logP Target：`T_logp = 3.0`，两侧宽度 `rL_target_logp/rU_target_logp` | `s_target_logp` |
+| `rdkit_001` | QED Maximize：满分目标 `T_qed`，左衰减宽度 `rL_qed` | `s_qed` |
+| `rdkit_002` | SA score Minimize：满分目标 `T_sa`，右衰减宽度 `rU_sa` | `s_sa` |
+| `rdkit_003` | logP Window：满分 `[1.0, 3.0]`，两侧宽度 `rL_logp/rU_logp` | `s_logp` |
+| `rdkit_004` | TPSA Window：满分 `[35.0, 75.0]`，两侧宽度 `rL_tpsa/rU_tpsa` | `s_tpsa` |
+| `rdkit_005` | HBA Window：满分 `[2, 4]`，整数两侧宽度 `rL_hba/rU_hba` | `s_hba` |
+| `rdkit_006` | HBD Window：满分 `[1, 2]`，整数两侧宽度 `rL_hbd/rU_hbd` | `s_hbd` |
+| `rdkit_007` | fraction Csp3 Maximize：满分目标 `T_fsp3`，左衰减宽度 `rL_fsp3` | `s_fsp3` |
+| `rdkit_008` | QED Maximize + SA Minimize，各自参数同单性质定义 | `sqrt(s_qed * s_sa)` |
+| `rdkit_009` | logP Window + TPSA Window，各自参数同单性质定义 | `sqrt(s_logp * s_tpsa)` |
+| `rdkit_010` | HBA Window + HBD Window，各自参数同单性质定义 | `sqrt(s_hba * s_hbd)` |
+| `rdkit_011` | logP Target：`T_logp = 3.0`，两侧宽度 `rL_target_logp/rU_target_logp` | `s_target_logp` |
 
 同一 verifier、同一性质、同一目标语义的重复约束应复用同一个冻结参数 profile。例如 003 与 009 的 logP window 不得使用不同衰减宽度。
 
@@ -419,24 +419,24 @@ q_relax = score_minimize(relaxation_energy; T_relax, B_relax)
 
 | Task | 主约束规则 | Gate | 单题计算 |
 | --- | --- | --- | --- |
-| `xtb_gap_window_001` | gap Window `[3.5, 5.5] eV`，两侧宽度 TBD | relaxation quality | `s_gap_window * q_relax` |
-| `xtb_dipole_window_002` | dipole Window `[3.0, 5.5] D`，两侧宽度 TBD | relaxation quality | `s_dipole_window * q_relax` |
-| `xtb_gap_max_003` | gap Maximize，`T_gap_max/B_gap_max` TBD | relaxation quality | `s_gap_max * q_relax` |
-| `xtb_gap_min_004` | gap Minimize，`T_gap_min/B_gap_min` TBD | relaxation quality | `s_gap_min * q_relax` |
-| `xtb_dipole_max_005` | dipole Maximize，`T_dipole_max/B_dipole_max` TBD | relaxation quality | `s_dipole_max * q_relax` |
-| `xtb_low_gap_high_dipole_opt_006` | gap Minimize + dipole Maximize，各自目标和锚点 TBD | relaxation quality | `sqrt(s_gap_min * s_dipole_max) * q_relax` |
-| `xtb_gap_dipole_window_007` | gap Window `[2.5, 4.2] eV` + dipole Window `[3.5, 6.0] D`，宽度 TBD | relaxation quality | `sqrt(s_gap_window * s_dipole_window) * q_relax` |
-| `xtb_lumo_min_008` | LUMO energy Minimize，`T_lumo/B_lumo` TBD，可为负值 | relaxation quality | `s_lumo_min * q_relax` |
-| `xtb_polarizability_dipole_opt_009` | polarizability/heavy atom Maximize + dipole Window `[3.0, 8.0] D` | relaxation quality | `sqrt(s_polarizability_max * s_dipole_window) * q_relax` |
-| `xtb_solvation_selectivity_alpb_010` | ALPB selectivity Maximize，目标和锚点 TBD | relaxation quality | `s_selectivity_max * q_relax` |
-| `xtb_electrophilicity_max_011` | electrophilicity Maximize，目标和锚点 TBD | relaxation quality | `s_electrophilicity_max * q_relax` |
-| `xtb_fukui_carbon_site_012` | max carbon f+ Maximize + f+ contrast Maximize，各自目标和锚点 TBD | relaxation quality | `sqrt(s_fplus_max * s_contrast_max) * q_relax` |
-| `xtb_hessian_thermo_stability_013` | entropy/heavy atom Maximize，目标和锚点 TBD | relaxation quality + imaginary-count stability | `s_entropy_max * q_relax * s_stability` |
-| `xtb_formula_dipole_min_014` | dipole Minimize，目标和锚点 TBD | hard formula/electronic-state gates | `hard_gate * s_dipole_min` |
-| `xtb_two_fluorine_gap_min_015` | gap Minimize，目标和锚点 TBD | hard composition/charge gates | `hard_gate * s_gap_min` |
-| `xtb_c10_f2_gap_min_016` | gap Minimize，目标和锚点 TBD | hard exact-count/charge gates | `hard_gate * s_gap_min` |
-| `xtb_roy_singlepoint_energy_min_017` | same-molecule total energy Minimize，目标和锚点 TBD | hard graph identity | `hard_gate * s_roy_energy_min` |
-| `xtb_ritonavir_optimized_energy_min_018` | same-molecule optimized total energy Minimize，目标和锚点 TBD | hard graph/stereochemistry identity | `hard_gate * s_ritonavir_energy_min` |
+| `xtb_001` | gap Window `[3.5, 5.5] eV`，两侧宽度 TBD | relaxation quality | `s_gap_window * q_relax` |
+| `xtb_002` | dipole Window `[3.0, 5.5] D`，两侧宽度 TBD | relaxation quality | `s_dipole_window * q_relax` |
+| `xtb_003` | gap Maximize，`T_gap_max/B_gap_max` TBD | relaxation quality | `s_gap_max * q_relax` |
+| `xtb_004` | gap Minimize，`T_gap_min/B_gap_min` TBD | relaxation quality | `s_gap_min * q_relax` |
+| `xtb_005` | dipole Maximize，`T_dipole_max/B_dipole_max` TBD | relaxation quality | `s_dipole_max * q_relax` |
+| `xtb_006` | gap Minimize + dipole Maximize，各自目标和锚点 TBD | relaxation quality | `sqrt(s_gap_min * s_dipole_max) * q_relax` |
+| `xtb_007` | gap Window `[2.5, 4.2] eV` + dipole Window `[3.5, 6.0] D`，宽度 TBD | relaxation quality | `sqrt(s_gap_window * s_dipole_window) * q_relax` |
+| `xtb_008` | LUMO energy Minimize，`T_lumo/B_lumo` TBD，可为负值 | relaxation quality | `s_lumo_min * q_relax` |
+| `xtb_009` | polarizability/heavy atom Maximize + dipole Window `[3.0, 8.0] D` | relaxation quality | `sqrt(s_polarizability_max * s_dipole_window) * q_relax` |
+| `xtb_010` | ALPB selectivity Maximize，目标和锚点 TBD | relaxation quality | `s_selectivity_max * q_relax` |
+| `xtb_011` | electrophilicity Maximize，目标和锚点 TBD | relaxation quality | `s_electrophilicity_max * q_relax` |
+| `xtb_012` | max carbon f+ Maximize + f+ contrast Maximize，各自目标和锚点 TBD | relaxation quality | `sqrt(s_fplus_max * s_contrast_max) * q_relax` |
+| `xtb_013` | entropy/heavy atom Maximize，目标和锚点 TBD | relaxation quality + imaginary-count stability | `s_entropy_max * q_relax * s_stability` |
+| `xtb_014` | dipole Minimize，目标和锚点 TBD | hard formula/electronic-state gates | `hard_gate * s_dipole_min` |
+| `xtb_015` | gap Minimize，目标和锚点 TBD | hard composition/charge gates | `hard_gate * s_gap_min` |
+| `xtb_016` | gap Minimize，目标和锚点 TBD | hard exact-count/charge gates | `hard_gate * s_gap_min` |
+| `xtb_017` | same-molecule total energy Minimize，目标和锚点 TBD | hard graph identity | `hard_gate * s_roy_energy_min` |
+| `xtb_018` | same-molecule optimized total energy Minimize，目标和锚点 TBD | hard graph/stereochemistry identity | `hard_gate * s_ritonavir_energy_min` |
 
 017、018 的 `T` 和 `B` 必须来自同一分子、同一电荷/自旋、同一 xTB method 和同一 single-point/optimized protocol。不同分子或不同电子结构方法的绝对总能量不得作为其锚点。
 

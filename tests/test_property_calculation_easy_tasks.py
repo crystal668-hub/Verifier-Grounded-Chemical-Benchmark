@@ -89,6 +89,7 @@ ABSOLUTE_WIDTHS = {
     **dict.fromkeys((*range(1, 5), 43), 3.0),
     **dict.fromkeys(range(5, 10), 0.5),
     **dict.fromkeys(range(10, 16), 2.0),
+    13: 3.0,
     **dict.fromkeys(range(22, 25), 0.2),
     25: 5.0,
     **dict.fromkeys(range(31, 34), 0.2),
@@ -171,7 +172,10 @@ def test_easy_numeric_profiles_use_reviewed_symmetric_widths() -> None:
         assert profile["upper_tolerance"] == pytest.approx(width)
         assert profile["error_mode"] == mode
         assert profile["error_parameter"] == parameter
-        assert profile["provenance"]["decay_source"] == "predeclared_property_family_score_anchors"
+        assert profile["provenance"]["decay_source"] == (
+            "expert_reviewed_task_specific_score_anchors" if number == 13
+            else "predeclared_property_family_score_anchors"
+        )
 
 
 def test_easy_numeric_profiles_score_gold_midpoints_and_boundaries() -> None:

@@ -326,7 +326,7 @@ def test_cocrystal_ratio_has_explicit_partial_credit(
     assert result["scores"]["score"] == pytest.approx(expected)
 
 
-def test_signed_halogen_energy_scoring_requires_the_preserved_sign() -> None:
+def test_halogen_energy_scoring_accepts_either_sign() -> None:
     result = _evaluate(
         "property_calculation_advanced_013_halogen_bond_energy",
         {"answer": -17.11, "unit": "kcal/mol"},
@@ -338,10 +338,10 @@ def test_signed_halogen_energy_scoring_requires_the_preserved_sign() -> None:
         "property_calculation_advanced_013_halogen_bond_energy",
         {"answer": 17.11, "unit": "kcal/mol"},
     )
-    assert opposite_sign["scores"]["score"] == pytest.approx(0.0)
+    assert opposite_sign["scores"]["score"] == pytest.approx(1.0)
 
 
-def test_nonnegative_distance_scoring_is_signed_identity() -> None:
+def test_hbond_distance_scoring_accepts_either_sign() -> None:
     result = _evaluate(
         "property_calculation_advanced_010_hbond_distances",
         {
@@ -361,7 +361,7 @@ def test_nonnegative_distance_scoring_is_signed_identity() -> None:
             ]
         },
     )
-    assert negative["scores"]["score"] == pytest.approx(0.5)
+    assert negative["scores"]["score"] == pytest.approx(1.0)
 
 
 @pytest.mark.parametrize(

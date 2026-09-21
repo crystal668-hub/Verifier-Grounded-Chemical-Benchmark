@@ -2,6 +2,9 @@
 
 Date: 2026-09-21. Release: v0.9.4.
 
+Historical policy: v0.10.0 removes family enforcement and adopts
+[per-task overrides](property-calculation-v0.10.0-scoring.md).
+
 R3 makes `src/verifier_grounded_benchmark/task/packs/family-policy.yaml` the
 machine-readable family scoring policy for the two Property Calculation packs.
 The loader validates every numeric gold profile against its family selector,

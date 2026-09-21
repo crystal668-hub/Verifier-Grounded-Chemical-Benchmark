@@ -12,7 +12,7 @@ def test_rdkit_forcefield_script_outputs_single_constraint_result_json() -> None
         package_resource("rdkit", "tasks.yaml"),
         package_resource("rdkit", "verifier_specs.yaml"),
     )
-    task = pack.tasks_by_id["rdkit_chain_end_to_end_max_013"]
+    task = pack.tasks_by_id["rdkit_013"]
     constraint = task["constraints"][0]
     spec = pack.verifier_specs_by_id[constraint["verifier_id"]]
 
@@ -21,7 +21,7 @@ def test_rdkit_forcefield_script_outputs_single_constraint_result_json() -> None
     ).to_dict()
 
     assert result["outcome"] == "verified"
-    assert result["task_id"] == "rdkit_chain_end_to_end_max_013"
+    assert result["task_id"] == "rdkit_013"
     assert result["verifier_id"] == "rdkit_terminal_atom_distance_uff_v2"
     assert result["canonical_candidate"]["smiles"] == "CCCCCC"
     assert result["properties"]["forcefield_name"] == "UFF"

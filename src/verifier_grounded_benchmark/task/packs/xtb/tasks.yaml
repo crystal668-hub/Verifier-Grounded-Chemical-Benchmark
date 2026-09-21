@@ -1,9 +1,9 @@
 schema_version: 2
 task_pack:
   id: xtb
-  version: 0.9.4
+  version: 0.10.0
 tasks:
-- task_id: xtb_gap_window_001
+- task_id: xtb_001
   version: 2
   object_type: small_molecule_3d
   difficulty: basic
@@ -67,7 +67,7 @@ tasks:
     - C2H4
     - C6H6
   task_type: open_generation
-- task_id: xtb_dipole_window_002
+- task_id: xtb_002
   version: 2
   object_type: small_molecule_3d
   difficulty: basic
@@ -129,7 +129,7 @@ tasks:
     - CH2O
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_gap_max_003
+- task_id: xtb_003
   version: 2
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -196,7 +196,7 @@ tasks:
     - CF4
     - C2F6
   task_type: open_generation
-- task_id: xtb_gap_min_004
+- task_id: xtb_004
   version: 2
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -257,7 +257,7 @@ tasks:
     - C6H6
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_dipole_max_005
+- task_id: xtb_005
   version: 2
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -318,7 +318,7 @@ tasks:
     - CH2O
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_low_gap_high_dipole_opt_006
+- task_id: xtb_006
   version: 2
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -384,7 +384,7 @@ tasks:
     - CH3CN
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_gap_dipole_window_007
+- task_id: xtb_007
   version: 2
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -450,7 +450,7 @@ tasks:
     - CH3CN
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_lumo_min_008
+- task_id: xtb_008
   version: 1
   object_type: small_molecule_3d
   difficulty: intermediate
@@ -511,7 +511,7 @@ tasks:
     - CH2O
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_polarizability_dipole_opt_009
+- task_id: xtb_009
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -571,7 +571,7 @@ tasks:
     hetero_atom_count_min: 2
     heavy_element_diversity_min: 2
   task_type: open_generation
-- task_id: xtb_solvation_selectivity_alpb_010
+- task_id: xtb_010
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -635,7 +635,7 @@ tasks:
     - CH3OH
     - CH3CN
   task_type: open_generation
-- task_id: xtb_electrophilicity_max_011
+- task_id: xtb_011
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -696,7 +696,7 @@ tasks:
     - CH2O
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_fukui_carbon_site_012
+- task_id: xtb_012
   version: 1
   object_type: small_molecule_3d
   difficulty: expert
@@ -758,7 +758,7 @@ tasks:
     - CH2O
     - CH3NO2
   task_type: open_generation
-- task_id: xtb_hessian_thermo_stability_013
+- task_id: xtb_013
   version: 2
   object_type: small_molecule_3d
   difficulty: expert
@@ -820,7 +820,7 @@ tasks:
     hetero_atom_count_min: 1
   timeout_seconds: 600
   task_type: open_generation
-- task_id: xtb_formula_dipole_min_014
+- task_id: xtb_014
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -866,7 +866,7 @@ tasks:
   structural_domain:
     formula: C12H16N3O8
   task_type: open_generation
-- task_id: xtb_two_fluorine_gap_min_015
+- task_id: xtb_015
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -929,7 +929,7 @@ tasks:
     element_count_max:
       C: 10
   task_type: open_generation
-- task_id: xtb_c10_f2_gap_min_016
+- task_id: xtb_016
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -991,7 +991,7 @@ tasks:
       C: 10
       F: 2
   task_type: open_generation
-- task_id: xtb_roy_singlepoint_energy_min_017
+- task_id: xtb_017
   version: 1
   object_type: small_molecule_3d
   difficulty: advanced
@@ -1038,7 +1038,7 @@ tasks:
     reference_smiles: Cc1cc(c(s1)Nc2ccccc2[N+](=O)[O-])C#N
     require_stereochemistry: false
   task_type: open_generation
-- task_id: xtb_ritonavir_optimized_energy_min_018
+- task_id: xtb_018
   version: 1
   object_type: small_molecule_3d
   difficulty: expert
@@ -1087,7 +1087,7 @@ tasks:
     require_stereochemistry: true
     recheck_after_optimization: true
   task_type: open_generation
-- task_id: xtb_odd_element_counts_gap_max_019
+- task_id: xtb_019
   version: 1
   object_type: small_molecule_3d
   difficulty: expert
@@ -1143,7 +1143,7 @@ tasks:
     inferred_components: 1
     all_hydrogens_explicit: true
   task_type: open_generation
-- task_id: xtb_pyrene_substituent_energy_min_020
+- task_id: xtb_020
   version: 1
   object_type: small_molecule
   difficulty: expert
