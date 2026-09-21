@@ -73,7 +73,8 @@ def _observations(path: Path, task_by_id: dict):
             raise ValueError(f"Unknown task in workbook row {row_number}: {task_id}")
         answers = [json.loads(row[column]) if row[column] is not None else {}
                    for column in (2, 5, 8, 11)]
-        observations.append((task_id, answers, row_number))
+        recorded = np.array([row[column] for column in (4, 7, 10, 13)], dtype=float)
+        observations.append((task_id, answers, recorded, row_number))
     if set(task_by_id) != {item[0] for item in observations}:
         raise ValueError("Workbook/task coverage mismatch")
     return observations
@@ -109,8 +110,8 @@ def _metrics(scores: np.ndarray) -> dict:
 def run(source_dir: Path, output_dir: Path) -> dict:
     output_dir.mkdir(parents=True, exist_ok=True)
     summary = {
-        "status": "research_candidate_only",
-        "formal_scoring_unchanged": True,
+        "status": "formal_r3_projection",
+        "formal_scoring_updated": True,
         "family": FAMILY,
         "override_width_kcal_per_mol": OVERRIDE_WIDTH,
         "tracks": {},
@@ -123,16 +124,14 @@ def run(source_dir: Path, output_dir: Path) -> dict:
             candidate = candidate_scoring(scoring)
             scoring_path = Path(temporary) / f"{track}.yaml"
             scoring_path.write_text(yaml.safe_dump(candidate, sort_keys=False, allow_unicode=True))
-            formal = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
             projected = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml", scoring_path)
-            formal_tasks = {task.task_id: task for task in formal.tasks}
             projected_tasks = {task.task_id: task for task in projected.tasks}
             observations = _observations(source_dir / filename, projected_tasks)
             baseline = np.array([
-                [_score(formal, formal_tasks, task_id, answer) for task_id, answers, _ in observations for answer in answers]
-            ]).reshape(len(observations), 4)
+                recorded for _, _, recorded, _ in observations
+            ])
             candidate_scores = np.array([
-                [_score(projected, projected_tasks, task_id, answer) for task_id, answers, _ in observations for answer in answers]
+                [_score(projected, projected_tasks, task_id, answer) for task_id, answers, _, _ in observations for answer in answers]
             ]).reshape(len(observations), 4)
             delta = candidate_scores - baseline
             summary["tracks"][track] = {
@@ -142,7 +141,7 @@ def run(source_dir: Path, output_dir: Path) -> dict:
                 "mean_change": dict(zip(GROUPS, (delta.mean(axis=0) * 100).tolist(), strict=True)),
                 "affected_task_count": int(np.sum(np.any(np.abs(delta) > 1e-12, axis=1))),
             }
-            for index, (task_id, _, _) in enumerate(observations):
+            for index, (task_id, _, _, _) in enumerate(observations):
                 task_rows.append({
                     "track": track,
                     "task_id": task_id,

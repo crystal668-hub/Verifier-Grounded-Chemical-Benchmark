@@ -326,13 +326,42 @@ def test_cocrystal_ratio_has_explicit_partial_credit(
     assert result["scores"]["score"] == pytest.approx(expected)
 
 
-def test_absolute_value_scoring_compares_answer_and_gold_magnitudes() -> None:
+def test_signed_halogen_energy_scoring_requires_the_preserved_sign() -> None:
     result = _evaluate(
         "property_calculation_advanced_013_halogen_bond_energy",
-        {"answer": 17.11, "unit": "kcal/mol"},
+        {"answer": -17.11, "unit": "kcal/mol"},
     )
 
     assert result["scores"]["score"] == pytest.approx(1.0)
+
+    opposite_sign = _evaluate(
+        "property_calculation_advanced_013_halogen_bond_energy",
+        {"answer": 17.11, "unit": "kcal/mol"},
+    )
+    assert opposite_sign["scores"]["score"] == pytest.approx(0.0)
+
+
+def test_nonnegative_distance_scoring_is_signed_identity() -> None:
+    result = _evaluate(
+        "property_calculation_advanced_010_hbond_distances",
+        {
+            "answers": [
+                {"property": "oh_bond_distance", "value": 1.029, "unit": "angstrom"},
+                {"property": "h_o_contact_distance", "value": 1.485, "unit": "angstrom"},
+            ]
+        },
+    )
+    assert result["scores"]["score"] == pytest.approx(1.0)
+    negative = _evaluate(
+        "property_calculation_advanced_010_hbond_distances",
+        {
+            "answers": [
+                {"property": "oh_bond_distance", "value": -1.029, "unit": "angstrom"},
+                {"property": "h_o_contact_distance", "value": 1.485, "unit": "angstrom"},
+            ]
+        },
+    )
+    assert negative["scores"]["score"] == pytest.approx(0.5)
 
 
 @pytest.mark.parametrize(

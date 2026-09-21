@@ -88,7 +88,7 @@ ORIGINAL_PROPERTY_TASK_IDS = [
 ABSOLUTE_WIDTHS = {
     **dict.fromkeys((*range(1, 5), 43), 3.0),
     **dict.fromkeys(range(5, 10), 0.5),
-    **dict.fromkeys(range(10, 16), 1.0),
+    **dict.fromkeys(range(10, 16), 2.0),
     **dict.fromkeys(range(22, 25), 0.2),
     25: 5.0,
     **dict.fromkeys(range(31, 34), 0.2),

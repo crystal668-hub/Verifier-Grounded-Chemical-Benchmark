@@ -57,6 +57,7 @@ def task_inventory(version: str) -> dict[str, Any]:
             "task_pack_version": payload["task_pack"]["version"],
             "scoring_version": scoring_version,
             "scoring_status": scoring_config.get("scoring_status", "formal"),
+            "family_policy": scoring_config.get("family_policy"),
         }
         for profile_id, profile in scoring_payload["scoring_profiles"].items():
             encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
@@ -182,6 +183,7 @@ def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
             "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
             "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
             "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
+            "src/verifier_grounded_benchmark/task/packs/family-policy.yaml",
         },
     )
     artifacts = [

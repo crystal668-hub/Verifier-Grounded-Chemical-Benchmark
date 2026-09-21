@@ -1,6 +1,6 @@
 # Property Calculation Advanced Track
 
-更新日期：2026-09-17（v0.9.3）
+更新日期：2026-09-17（v0.9.4）
 
 ## 1. 定位
 
@@ -56,13 +56,13 @@ Task 8 的规范化 JSONL：
 
 ## 4. Scoring
 
-Advanced 001 的 gold 为 `0.258031679 kJ/mol`，v0.9.3 采用的绝对零分宽度为
+Advanced 001 的 gold 为 `0.258031679 kJ/mol`，v0.9.4 采用的绝对零分宽度为
 `8 kJ/mol`；Advanced 002 为 `0.8 eV`。只接受精确单位字符串，不进行单位换算。
 负绝对差直接判该字段零分，合法零值按线性误差规则计分。
 
-v0.9.3 全量采用已确认的 R2 家族容差。Advanced 011 的比值及 010/012 的距离
-也执行非负约束；008/013 按能量大小评分，接受正负报告约定，题面已删除保号要求。
-完整参数与采用记录见 [R2 正式评分设计](../design/property-calculation-r2-scoring.md)。
+v0.9.4 全量采用 R3 家族容差。Advanced 011 的比值及 010/012 的距离
+也执行非负约束；008/013 要求保留能量符号并按有符号误差评分。
+完整参数与采用记录见 [R3 正式评分设计](../design/property-calculation-r3-scoring.md)。
 
 Task 8 的三个字段等权评分：
 

@@ -25,20 +25,22 @@ def test_override_changes_only_the_noncovalent_family():
     for track in projection.TRACKS:
         original = _scoring(track)
         candidate = projection.candidate_scoring(original)
-        changed = []
+        family_profiles = []
         for profile_id, before in original["scoring_profiles"].items():
             after = candidate["scoring_profiles"][profile_id]
-            if before != after:
-                changed.append(profile_id)
+            if before["provenance"].get("tolerance_family") == projection.FAMILY:
+                family_profiles.append(profile_id)
                 assert before["provenance"]["tolerance_family"] == projection.FAMILY
                 assert after["lower_tolerance"] == 2.0
                 assert after["upper_tolerance"] == 2.0
                 assert after["error_parameter"] == 2.0
-        assert len(changed) == (6 if track.endswith("basic") else 3)
-        for profile_id, before in original["scoring_profiles"].items():
-            after = candidate["scoring_profiles"][profile_id]
-            if profile_id not in changed:
+            else:
                 assert after == before
+        assert len(family_profiles) == (6 if track.endswith("basic") else 3)
+        for profile_id, _before in original["scoring_profiles"].items():
+            after = candidate["scoring_profiles"][profile_id]
+            if profile_id in family_profiles:
+                assert after["lower_tolerance"] == 2.0
 
 
 def test_override_does_not_mutate_formal_input():

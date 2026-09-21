@@ -1,6 +1,6 @@
-# Property Calculation R2 Scoring
+# Property Calculation R2 Scoring (Superseded)
 
-Date: 2026-09-17. Release: v0.9.3.
+Date: 2026-09-17. Release: v0.9.3. Superseded by R3 in v0.9.4.
 
 The benchmark owner approved the complete
 `property_family_anchors_2026_09_17_r2` policy and its rescoring results for formal

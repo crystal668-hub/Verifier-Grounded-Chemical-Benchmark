@@ -1,6 +1,6 @@
 {
-  "status": "research_candidate_only",
-  "formal_scoring_unchanged": true,
+  "status": "formal_r3_projection",
+  "formal_scoring_updated": true,
   "family": "noncovalent_energy",
   "override_width_kcal_per_mol": 2.0,
   "tracks": {

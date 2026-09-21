@@ -1,14 +1,13 @@
 # Noncovalent Energy Tolerance Projection
 
-Date: 2026-09-21. Status: research candidate only.
+Date: 2026-09-21. Status: v0.9.4 formal scoring projection.
 
-The zero-score width for the `noncovalent_energy` family was projected from
+The zero-score width for the `noncovalent_energy` family was changed from
 `1` to `2 kcal/mol` for the six Basic binding-energy fields B010-B015 and the
 three Advanced fields A008 interaction energy, A008 binding energy, and A013
-halogen-bond energy. Gold values, absolute-value sign handling, field weights,
-and task aggregation were unchanged. The v0.9.3 formal scoring files were not
-modified; the override YAML files in the adjacent directory are temporary
-candidate configurations.
+halogen-bond energy. A008/A013 now use signed identity scoring, while A010
+distances use signed identity scoring with their existing nonnegative domain.
+Gold values, field weights, and task aggregation were unchanged.
 
 The calculation used the current answer workbooks `516177f8058f43d3a65127b6ba0a147a.xlsx`
 (Basic, 51 tasks) and `71ba494357c643f69dcb8e6ae28ab299.xlsx` (Advanced, 20 tasks).
@@ -43,7 +42,6 @@ zero in Basic. The individual zero rate changes from 3.43% to 2.94% in Basic and
 from 33.75% to 27.50% in Advanced. No task reaches at least 90 in all four groups
 under either rule in Advanced; Basic remains at 19 such tasks.
 
-This projection does not claim that 2 kcal/mol is an independently calibrated
-chemical uncertainty. It records the effect of the requested scoring anchor on
-the current answer set. Formal adoption would require updating the released
-scoring configuration, release metadata, and package version together.
+This report records the v0.9.4 formal scoring projection. It does not claim that
+2 kcal/mol is an independently calibrated chemical uncertainty; the family
+policy records that calibration status separately.

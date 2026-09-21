@@ -57,9 +57,9 @@ def test_nonnegative_domains_hold_even_when_tolerances_are_widened(advanced, pro
         assert score_numeric_gold(gold, gold, profile) == 1
 
 
-def test_domain_is_checked_before_absolute_transform(advanced):
+def test_domain_is_checked_before_signed_distance_scoring(advanced):
     gold, profile = field(advanced, "oh_bond_distance")
-    profile["value_transform"] = "absolute"
+    assert profile.get("value_transform", "identity") == "identity"
     assert score_numeric_gold({"value": -gold["value"], "unit": gold["unit"]}, gold, profile) == 0
 
 
@@ -77,22 +77,19 @@ def test_invalid_crystal_difference_does_not_erase_correct_phase_fields(advanced
 
 
 @pytest.mark.parametrize("property_name", ["interaction_energy", "binding_energy", "halogen_bond_interaction_energy"])
-def test_energy_sign_conventions_receive_identical_credit(advanced, property_name):
+def test_energy_sign_conventions_require_signed_values(advanced, property_name):
     gold, profile = field(advanced, property_name)
     for offset, expected in ((0, 1), (profile["upper_tolerance"] / 2, 0.5)):
         magnitude = abs(gold["value"]) + offset
-        for sign in (-1, 1):
-            assert score_numeric_gold(
-                {"value": sign * magnitude, "unit": gold["unit"]}, gold, profile
-            ) == pytest.approx(expected)
+        assert score_numeric_gold({"value": -magnitude, "unit": gold["unit"]}, gold, profile) == pytest.approx(expected)
+        assert score_numeric_gold({"value": magnitude, "unit": gold["unit"]}, gold, profile) == 0
 
 
-def test_energy_prompts_do_not_require_a_sign(advanced):
+def test_energy_prompts_require_a_sign(advanced):
     for task in advanced.tasks:
         if task.task_id.split("_")[3] in {"008", "013"}:
             prompt = task.raw["prompt"].lower()
-            assert "preserve its sign" not in prompt
-            assert "preserving their signs" not in prompt
+            assert "preserve the sign of the energy" in prompt
 
 
 @pytest.mark.parametrize("bound", [True, None, "0", float("nan"), float("inf"), -float("inf")])

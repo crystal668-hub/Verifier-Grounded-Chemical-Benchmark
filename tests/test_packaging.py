@@ -37,6 +37,7 @@ FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/family-policy.yaml",
 }
 FORMAL_TRACK_PACKS = {
     "property_calculation_advanced",

@@ -1,6 +1,6 @@
 # Property Calculation Basic Track
 
-Updated: 2026-09-17 (v0.9.3)
+Updated: 2026-09-17 (v0.9.4)
 
 ## Positioning
 
@@ -35,11 +35,12 @@ either the fixed absolute error from the reviewed standard or the reviewed perce
 Property-calculation task scores are the arithmetic mean of all requested field scores. Every basic
 task currently requests one field, so this aggregation rule does not change its numeric result.
 
-Version 0.9.3 adopts the owner-approved R2 property-family policy. The 51 gold
-answers are unchanged. In particular, standard entropy tasks 037-042 share a 10%
-relative zero-score width, and excitation-energy tasks 047-051 share a 0.5 eV
-absolute zero-score width. The complete rules and approval record are in
-[R2 scoring](../design/property-calculation-r2-scoring.md).
+Version 0.9.4 adopts the public R3 property-family policy. The 51 gold answers
+are unchanged. In particular, noncovalent binding-energy tasks 010-015 share a
+2 kcal/mol absolute zero-score width, standard entropy tasks 037-042 share a
+10% relative zero-score width, and excitation-energy tasks 047-051 share a
+0.5 eV absolute zero-score width. The complete rules are in the pack's
+`family-policy.yaml`.
 
 Tasks 044 and 046 use deterministic atom-identity scoring. Task 044 gives 1.0 only to `11 O`, 0.5
 to an oxygen symbol with a missing or incorrect index, and 0 otherwise. Task 046 gives 1.0 only to

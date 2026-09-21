@@ -129,6 +129,68 @@ def validate_profiles(
     return dict(mappings)
 
 
+def validate_family_policy(
+    policy: Any,
+    tasks: Mapping[str, Mapping[str, Any]],
+    profiles: Mapping[str, Mapping[str, Any]],
+) -> None:
+    families = require_mapping(policy, "family policy")
+    family_items = require_mapping(families.get("families"), "family policy families")
+    selectors: dict[tuple[str, str], tuple[str, Mapping[str, Any]]] = {}
+    for family_name, raw_family in family_items.items():
+        family = require_mapping(raw_family, f"family policy {family_name}")
+        mode = family.get("mode")
+        if mode not in {"absolute", "relative", "log10"}:
+            raise ValueError(f"unsupported family policy mode for {family_name}: {mode}")
+        _positive(family.get("parameter"), f"family policy {family_name} parameter")
+        _positive(family.get("upper_parameter", family["parameter"]), f"family policy {family_name} upper_parameter")
+        properties = require_list(family.get("properties"), f"family policy {family_name} properties")
+        units = require_list(family.get("units"), f"family policy {family_name} units")
+        for property_name in properties:
+            require_string(property_name, f"family policy {family_name} property")
+            for unit in units:
+                require_string(unit, f"family policy {family_name} unit")
+                selector = (property_name, unit)
+                if selector in selectors:
+                    raise ValueError(f"duplicate family policy selector: {selector}")
+                selectors[selector] = (str(family_name), family)
+
+    seen_profiles: set[str] = set()
+    for task_id, task in tasks.items():
+        if task.get("task_type") != "property_calculation":
+            continue
+        gold_by_property = index_unique(require_list(task.get("gold_answers"), f"task {task_id} gold_answers"), "property", f"task {task_id} gold")
+        requested = index_unique(require_list(task.get("requested_properties"), f"task {task_id} requested_properties"), "name", f"task {task_id} requested")
+        for property_name, definition in requested.items():
+            if definition.get("value_type") != "number":
+                continue
+            gold = gold_by_property[property_name]
+            profile_id = require_string(gold.get("scoring_profile"), "gold scoring_profile")
+            profile = profiles[profile_id]
+            unit = require_string(definition.get("unit"), f"numeric property {property_name} unit")
+            try:
+                family_name, family = selectors[(property_name, unit)]
+            except KeyError as exc:
+                raise ValueError(f"family policy has no selector for {(property_name, unit)}") from exc
+            provenance = require_mapping(profile.get("provenance"), f"scoring profile {profile_id} provenance")
+            if provenance.get("tolerance_family") != family_name:
+                raise ValueError(f"scoring profile {profile_id} family does not match family policy")
+            mode = family["mode"]
+            expected_transform = "log10" if mode == "log10" else "identity"
+            if profile.get("value_transform", "identity") != expected_transform:
+                raise ValueError(f"scoring profile {profile_id} transform does not match family policy")
+            scale = abs(float(gold["value"])) if mode == "relative" else 1.0
+            expected_lower = float(family["parameter"]) * scale
+            expected_upper = float(family.get("upper_parameter", family["parameter"])) * scale
+            if not math.isclose(float(profile["lower_tolerance"]), expected_lower, rel_tol=0, abs_tol=1e-12):
+                raise ValueError(f"scoring profile {profile_id} lower_tolerance does not match family policy")
+            if not math.isclose(float(profile["upper_tolerance"]), expected_upper, rel_tol=0, abs_tol=1e-12):
+                raise ValueError(f"scoring profile {profile_id} upper_tolerance does not match family policy")
+            seen_profiles.add(profile_id)
+    if not seen_profiles:
+        raise ValueError("family policy did not validate any numeric property profile")
+
+
 def linear_goal_from_profile(profile: Mapping[str, Any], *, gold: Any = None) -> LinearGoalSpec:
     profile_type = profile["type"]
     if profile_type == "window":

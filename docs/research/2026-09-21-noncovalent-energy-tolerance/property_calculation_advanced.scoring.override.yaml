@@ -1,9 +1,10 @@
 schema_version: 1
 scoring_config:
   task_pack_id: property_calculation_advanced
-  task_pack_version: 0.9.3
+  task_pack_version: 0.9.4
   scoring_version: linear_goal_v2
   scoring_status: formal
+  family_policy: ../family-policy.yaml
 scoring_profiles:
   property_calculation_advanced_free_energy_difference_numeric_gold_v2:
     property: free_energy_difference
@@ -16,12 +17,12 @@ scoring_profiles:
       target_source: task_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: crystal_free_energy_difference
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -37,12 +38,12 @@ scoring_profiles:
       target_source: task_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: crystal_potential_energy_difference
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -78,12 +79,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: hydrogen_bond_count
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -97,12 +98,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: harmonic_ir_frequency
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -116,12 +117,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: harmonic_ir_frequency
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -135,12 +136,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: density
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: relative
@@ -179,12 +180,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: crossover_temperature
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -195,17 +196,16 @@ scoring_profiles:
     unit: kcal/mol
     lower_tolerance: 2.0
     upper_tolerance: 2.0
-    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -216,17 +216,16 @@ scoring_profiles:
     unit: kcal/mol
     lower_tolerance: 2.0
     upper_tolerance: 2.0
-    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -240,12 +239,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: orbital_gap
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -261,12 +260,12 @@ scoring_profiles:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: geometric_distance
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -282,12 +281,12 @@ scoring_profiles:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: geometric_distance
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -303,12 +302,12 @@ scoring_profiles:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: pore_volume_ratio
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -324,12 +323,12 @@ scoring_profiles:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: geometric_distance
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -340,17 +339,16 @@ scoring_profiles:
     unit: kcal/mol
     lower_tolerance: 2.0
     upper_tolerance: 2.0
-    value_transform: absolute
     provenance:
       target_source: expert_gold_answer
       semantic_decision_record: docs/design/property-calculation-numeric-domain.md
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: noncovalent_energy
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -364,12 +362,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: pka
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -384,12 +382,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: spin_orbit_coupling
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: log10
@@ -404,12 +402,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: excited_state_rate
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: log10
@@ -424,12 +422,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: excited_state_rate
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: log10
@@ -443,12 +441,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: ht_contribution
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: retained_pending_target_definition
       approval_source: benchmark_owner_release_decision
     error_mode: absolute
@@ -464,12 +462,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: excited_state_rate
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: log10
@@ -484,12 +482,12 @@ scoring_profiles:
     provenance:
       target_source: expert_gold_answer
       decay_source: predeclared_property_family_score_anchors
-      decision_record: docs/design/property-calculation-r2-scoring.md
+      decision_record: docs/design/property-calculation-r3-scoring.md
       review_status: approved
-      review_date: '2026-09-17'
+      review_date: '2026-09-21'
       review_owner: benchmark_maintainers
       tolerance_family: excited_state_rate
-      tolerance_policy: property_family_anchors_2026_09_17_r2
+      tolerance_policy: property_family_anchors_2026_09_21_r3
       calibration_status: pending_independent_calibration
       approval_source: benchmark_owner_release_decision
     error_mode: log10

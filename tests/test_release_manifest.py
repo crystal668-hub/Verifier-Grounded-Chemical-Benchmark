@@ -24,6 +24,7 @@ V43_RELEASE_DIR = ROOT / "releases" / "v0.4.3"
 V50_RELEASE_DIR = ROOT / "releases" / "v0.5.0"
 V60_RELEASE_DIR = ROOT / "releases" / "v0.6.0"
 V93_RELEASE_DIR = ROOT / "releases" / "v0.9.3"
+V94_RELEASE_DIR = ROOT / "releases" / "v0.9.4"
 
 
 def assert_release_artifacts_if_present(
@@ -94,6 +95,32 @@ def test_v93_release_binds_approved_r2_profiles_source_and_artifacts() -> None:
         manifest,
         ROOT / "dist/verifier_grounded_benchmark-0.9.3-py3-none-any.whl",
         ROOT / "dist/verifier_grounded_benchmark-0.9.3.tar.gz",
+    )
+
+
+def test_v94_release_binds_r3_family_policy_and_artifacts() -> None:
+    manifest = json.loads((V94_RELEASE_DIR / "manifest.json").read_text())
+    inventory = json.loads((V94_RELEASE_DIR / "task-inventory.json").read_text())
+    assert manifest["version"] == inventory["package_version"] == "0.9.4"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "3"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    assert all(track["task_pack_version"] == "0.9.4" for track in inventory["tracks"].values())
+    assert all(track["scoring_status"] == "formal" for track in inventory["tracks"].values())
+    assert inventory["tracks"]["property_calculation_basic"]["family_policy"] == "../family-policy.yaml"
+    assert inventory["tracks"]["property_calculation_advanced"]["family_policy"] == "../family-policy.yaml"
+    tagged = subprocess.check_output(["git", "rev-list", "-n", "1", manifest["tag"]], cwd=ROOT, text=True).strip()
+    assert tagged == manifest["canonical_source"]["commit"]
+    policy_path = ROOT / "src/verifier_grounded_benchmark/task/packs/family-policy.yaml"
+    assert policy_path.read_bytes()
+    assert any(
+        item["definition"]["provenance"].get("tolerance_policy") == "property_family_anchors_2026_09_21_r3"
+        for item in inventory["scoring_profiles"].values()
+        if item["definition"]["type"] == "numeric_gold"
+    )
+    assert_release_artifacts_if_present(
+        manifest,
+        ROOT / "dist/verifier_grounded_benchmark-0.9.4-py3-none-any.whl",
+        ROOT / "dist/verifier_grounded_benchmark-0.9.4.tar.gz",
     )
 
 

@@ -26,6 +26,7 @@ from verifier_grounded_benchmark.task.schema.common import (
     require_list,
     require_mapping,
     require_string,
+    validate_family_policy,
     validate_profiles,
 )
 from verifier_grounded_benchmark.task.schema.open_generation import (
@@ -75,6 +76,12 @@ def load_task_pack(
     scoring_data = (
         _load_yaml_mapping(scoring_resource) if scoring_resource is not None else None
     )
+    if scoring_data is not None:
+        policy_reference = (scoring_data.get("scoring_config") or {}).get("family_policy")
+        if policy_reference:
+            policy_resource = _relative_resource(scoring_resource, policy_reference)
+            if policy_resource is not None:
+                scoring_data["family_policy"] = _load_yaml_mapping(policy_resource)
     if task_data.get("schema_version") == 2:
         task_data = _load_yaml_mapping(tasks_resource, require_unique_keys=True)
         if scoring_data is not None:
@@ -92,6 +99,15 @@ def _sibling_resource(resource: Any, filename: str) -> Any | None:
         return path if path.exists() else None
 
 
+def _relative_resource(resource: Any, reference: str) -> Any | None:
+    try:
+        candidate = resource.parent.joinpath(reference)
+        return candidate if candidate.is_file() else None
+    except AttributeError:
+        candidate = (Path(resource).resolve().parent / reference).resolve()
+        return candidate if candidate.is_file() else None
+
+
 def _merge_scoring_data(
     task_data: dict[str, Any], scoring_data: dict[str, Any]
 ) -> dict[str, Any]:
@@ -103,6 +119,8 @@ def _merge_scoring_data(
     )
     metadata["scoring_status"] = config.get("scoring_status", "formal")
     merged["scoring_profiles"] = scoring_data.get("scoring_profiles")
+    if "family_policy" in scoring_data:
+        merged["family_policy"] = scoring_data["family_policy"]
     scoring_by_id = index_unique(
         require_list(scoring_data.get("tasks"), "scoring tasks"),
         "task_id",
@@ -293,6 +311,8 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     tasks_by_id = index_unique(
         require_list(task_data.get("tasks"), "tasks"), "task_id", "task"
     )
+    if "family_policy" in task_data:
+        validate_family_policy(task_data["family_policy"], tasks_by_id, profiles)
     tasks: list[TaskSpec] = []
     for task_id, raw in tasks_by_id.items():
         task_type = require_string(raw.get("task_type"), f"task {task_id} task_type")

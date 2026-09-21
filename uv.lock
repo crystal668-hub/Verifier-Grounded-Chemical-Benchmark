@@ -2603,7 +2603,7 @@ wheels = [
 
 [[package]]
 name = "verifier-grounded-benchmark"
-version = "0.9.3"
+version = "0.9.4"
 source = { editable = "." }
 dependencies = [
     { name = "admet-ai" },

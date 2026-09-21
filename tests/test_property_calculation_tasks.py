@@ -288,6 +288,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
         "molecular_dimer_reference"
     ]
     assert "NC1=CC=C2C=CC(=O)N=C2N1" in task_19["prompt"]
+    assert "Preserve the sign of the energy." in task_19["prompt"]
 
     task_21 = tasks["property_calculation_advanced_010_hbond_distances"]
     assert [item["type"] for item in task_21["input_objects"]] == ["xyz"]
@@ -305,6 +306,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
         assert "gaussian" not in task["prompt"].lower()
 
     task_24 = tasks["property_calculation_advanced_013_halogen_bond_energy"]
+    assert "Preserve the sign of the energy." in task_24["prompt"]
     assert "FI...NH3" in task_24["prompt"]
     assert "F-I...NH3" not in task_24["prompt"]
 
