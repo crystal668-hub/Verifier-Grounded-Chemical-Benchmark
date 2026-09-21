@@ -564,7 +564,8 @@ def test_v0100_release_binds_individual_tolerances_and_standard_task_ids() -> No
         if profile_id in expected:
             width, transform = expected[profile_id]
             assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
-            assert profile["error_parameter"] == width
+            assert "error_mode" not in profile
+            assert "error_parameter" not in profile
             assert profile.get("value_transform", "identity") == transform
             if transform == "absolute":
                 assert "minimum_value" not in profile

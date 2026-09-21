@@ -43,11 +43,12 @@ def candidate_scoring(scoring: dict) -> dict:
     candidate = deepcopy(scoring)
     changed = []
     for profile_id, profile in candidate["scoring_profiles"].items():
-        if profile.get("provenance", {}).get("tolerance_family") != FAMILY:
+        if profile.get("unit") != "kcal/mol" or profile.get("property") not in {
+            "binding_energy", "interaction_energy", "halogen_bond_interaction_energy",
+        }:
             continue
         profile["lower_tolerance"] = OVERRIDE_WIDTH
         profile["upper_tolerance"] = OVERRIDE_WIDTH
-        profile["error_parameter"] = OVERRIDE_WIDTH
         changed.append(profile_id)
     if not changed:
         raise ValueError("No noncovalent profiles found")

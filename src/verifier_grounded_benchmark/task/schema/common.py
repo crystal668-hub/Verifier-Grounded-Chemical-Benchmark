@@ -59,7 +59,7 @@ def validate_profiles(
     scoring_version: str = SCORING_VERSION,
     scoring_status: str = "formal",
 ) -> dict[str, dict[str, Any]]:
-    """Validate profile types, transforms, and provenance without enforcing shared family widths."""
+    """Validate scoring semantics without requiring development provenance or family policies."""
     mappings = require_mapping(profiles, "scoring_profiles")
     if not mappings:
         raise ValueError("scoring_profiles must not be empty")
@@ -74,24 +74,6 @@ def validate_profiles(
             if profile_type != "numeric_gold":
                 raise ValueError(f"minimum_value is only supported for numeric_gold: {profile_id}")
             _finite(profile["minimum_value"], f"scoring profile {profile_id} minimum_value")
-        provenance = require_mapping(profile.get("provenance"), f"scoring profile {profile_id} provenance")
-        require_string(provenance.get("target_source"), f"scoring profile {profile_id} target_source")
-        require_string(provenance.get("decay_source"), f"scoring profile {profile_id} decay_source")
-        if scoring_version == "linear_goal_v2" and scoring_status == "formal":
-            if provenance.get("review_status") != "approved":
-                raise ValueError(
-                    f"formal v2 scoring profile {profile_id} must have approved review_status"
-                )
-            if (
-                str(provenance["target_source"]).startswith("legacy_")
-                or str(provenance["decay_source"]).startswith("legacy_")
-                or "legacy_parameters" in provenance
-            ):
-                raise ValueError(
-                    f"formal v2 scoring profile {profile_id} cannot use legacy provenance"
-                )
-            for field in ("decision_record", "review_date", "review_owner"):
-                require_string(provenance.get(field), f"scoring profile {profile_id} {field}")
         if profile_type == "exact_string":
             if profile.get("normalization") != "exact":
                 raise ValueError(f"exact string profile {profile_id} must use exact normalization")

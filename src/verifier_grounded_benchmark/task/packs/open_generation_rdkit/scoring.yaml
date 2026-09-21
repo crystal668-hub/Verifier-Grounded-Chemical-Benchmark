@@ -11,26 +11,12 @@ scoring_profiles:
     unit: dimensionless
     full_score_target: 1.0
     zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_sa_score_minimize_1p0_10p0_v2:
     property: sa_score
     type: minimize
     unit: score
     full_score_target: 1.0
     zero_score_anchor: 10.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_logp_window_1p0_3p0_2p0_v2:
     property: logp
     type: window
@@ -41,13 +27,6 @@ scoring_profiles:
     decay:
       lower_width: 2.0
       upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_tpsa_window_35p0_75p0_40p0_v2:
     property: tpsa
     type: window
@@ -58,13 +37,6 @@ scoring_profiles:
     decay:
       lower_width: 40.0
       upper_width: 40.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_hba_window_2_4_2p0_v2:
     property: hba
     type: window
@@ -75,13 +47,6 @@ scoring_profiles:
     decay:
       lower_width: 2.0
       upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_hbd_window_1_2_1p0_v2:
     property: hbd
     type: window
@@ -92,26 +57,12 @@ scoring_profiles:
     decay:
       lower_width: 1.0
       upper_width: 1.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_fraction_csp3_maximize_0p0_1p0_v2:
     property: fraction_csp3
     type: maximize
     unit: fraction
     full_score_target: 1.0
     zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_logp_target_3p0_3p0_v2:
     property: logp
     type: target
@@ -120,41 +71,18 @@ scoring_profiles:
     decay:
       lower_width: 3.0
       upper_width: 3.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_to_zero_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   rdkit_terminal_atom_distance_maximize_6p36_21p68_v2:
     property: terminal_atom_distance
     type: maximize
     unit: angstrom
     full_score_target: 21.68
     zero_score_anchor: 6.36
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: rdkit-013-terminal-atom-distance-calibration-2026-07-30
-      decision_record: docs/research/2026-07-30-rdkit-013-terminal-atom-distance-calibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
   rdkit_caffeine_morgan_tanimoto_maximize_0p0_1p0_v2:
     property: caffeine_morgan_tanimoto
     type: maximize
     unit: dimensionless
     full_score_target: 1.0
     zero_score_anchor: 0.0
-    provenance:
-      target_source: defined_metric_range
-      decay_source: defined_metric_range
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
 tasks:
 - task_id: rdkit_001_qed_max
   scoring:

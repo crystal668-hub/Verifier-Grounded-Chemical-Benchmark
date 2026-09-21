@@ -4,6 +4,7 @@
 模型调用由用户或 agent runner 负责；本包负责提供题目、解析答案并生成评分报告。
 
 v0.10.0 采用逐题独立容差，不再加载或校验 `family-policy.yaml`。
+四个正式 track 的评分 profile 已移除开发记录 `provenance`，运行时仅使用评分参数。
 Basic 013 的容差为 ±3 kcal/mol；Advanced 008、010、013 分别为
 ±10 kcal/mol、±0.1 Å、±5 kcal/mol，并先对答案与 gold 取绝对值再比较。
 容差仍表示线性评分降至零的误差宽度，gold 和字段权重不变。

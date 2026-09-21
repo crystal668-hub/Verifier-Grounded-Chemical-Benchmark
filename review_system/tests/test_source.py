@@ -111,7 +111,9 @@ def test_v0100_catalog_has_task_specific_widths_and_absolute_scoring():
         for task in track["tasks"]:
             for rule in task["scoring"]["rules"]:
                 profile = rule["profile"]
-                if profile.get("provenance", {}).get("tolerance_family") == "noncovalent_energy":
+                if profile.get("unit") == "kcal/mol" and profile.get("property") in {
+                    "binding_energy", "interaction_energy", "halogen_bond_interaction_energy",
+                }:
                     count += 1
                     advanced = track["name"] == "property_calculation_advanced"
                     number = task["task_id"].split("_")[3]

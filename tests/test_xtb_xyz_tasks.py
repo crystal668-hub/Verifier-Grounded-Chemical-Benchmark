@@ -314,7 +314,13 @@ def test_formal_expert_tasks_match_calibrated_contracts() -> None:
                 assert field not in formal
         for constraint in calibrated["constraints"]:
             profile_id = constraint["scoring_profile"]
-            assert calibration_pack.scoring_profiles[profile_id] == formal_pack.scoring_profiles[profile_id]
+            calibration_profile = calibration_pack.scoring_profiles[profile_id]
+            formal_profile = formal_pack.scoring_profiles[profile_id]
+            assert {
+                key: value
+                for key, value in calibration_profile.items()
+                if key not in {"provenance", "error_mode", "error_parameter"}
+            } == formal_profile
         assert {
             key: formal["answer_schema"][key]
             for key in ("format", "final_answer_prefix", "value_type", "fence_language", "cardinality")

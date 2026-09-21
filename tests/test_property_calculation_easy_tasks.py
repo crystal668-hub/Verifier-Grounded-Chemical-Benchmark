@@ -164,18 +164,14 @@ def test_easy_numeric_profiles_use_reviewed_symmetric_widths() -> None:
         profile = pack.scoring_profiles[profile_id]
         gold = float(task["gold_answers"][0]["value"])
         if number in ABSOLUTE_WIDTHS:
-            mode, parameter, width = "absolute", ABSOLUTE_WIDTHS[number], ABSOLUTE_WIDTHS[number]
+            width = ABSOLUTE_WIDTHS[number]
         else:
-            mode, parameter = "relative", RELATIVE_WIDTHS[number]
+            parameter = RELATIVE_WIDTHS[number]
             width = abs(gold) * parameter
         assert profile["lower_tolerance"] == pytest.approx(width)
         assert profile["upper_tolerance"] == pytest.approx(width)
-        assert profile["error_mode"] == mode
-        assert profile["error_parameter"] == parameter
-        assert profile["provenance"]["decay_source"] == (
-            "expert_reviewed_task_specific_score_anchors" if number == 13
-            else "predeclared_property_family_score_anchors"
-        )
+        assert "error_mode" not in profile
+        assert "error_parameter" not in profile
 
 
 def test_easy_numeric_profiles_score_gold_midpoints_and_boundaries() -> None:

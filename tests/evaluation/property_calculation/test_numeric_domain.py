@@ -83,7 +83,7 @@ def test_selected_advanced_fields_score_magnitudes_at_new_boundaries(advanced, p
     assert profile["value_transform"] == "absolute"
     assert "minimum_value" not in profile
     assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
-    assert profile["error_parameter"] == width
+    assert "error_parameter" not in profile
     for side in (-1, 1):
         for fraction, expected in ((0, 1), (0.5, 0.5), (1, 0), (1.01, 0)):
             magnitude = abs(gold["value"]) + side * fraction * width

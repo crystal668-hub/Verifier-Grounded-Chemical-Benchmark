@@ -15,26 +15,12 @@ scoring_profiles:
     decay:
       lower_width: 2.0
       upper_width: 2.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_relaxation_energy_minimize_0p05_0p35_v2:
     property: relaxation_energy
     type: minimize
     unit: eV
     full_score_target: 0.05
     zero_score_anchor: 0.35
-    provenance:
-      target_source: engineering_task_boundary
-      decay_source: quality_gate_threshold_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_dipole_moment_window_3p0_5p5_2p5_v2:
     property: dipole_moment
     type: window
@@ -45,55 +31,24 @@ scoring_profiles:
     decay:
       lower_width: 2.5
       upper_width: 2.5
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_maximize_10p0_12p0_v2:
     property: homo_lumo_gap
     type: maximize
     unit: eV
     full_score_target: 9.749630028571
     zero_score_anchor: 1.389963462368
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_minimize_0p0_5p0_v2:
     property: homo_lumo_gap
     type: minimize
     unit: eV
     full_score_target: 1.389963462368
     zero_score_anchor: 9.749630028571
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_dipole_moment_maximize_3p0_10p0_v2:
     property: dipole_moment
     type: maximize
     unit: debye
     full_score_target: 13.374
     zero_score_anchor: 3.32
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-gap-dipole-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-gap-dipole-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_window_2p5_4p2_1p7_v2:
     property: homo_lumo_gap
     type: window
@@ -104,13 +59,6 @@ scoring_profiles:
     decay:
       lower_width: 1.7
       upper_width: 1.7
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_dipole_moment_window_3p5_6p0_2p5_v2:
     property: dipole_moment
     type: window
@@ -121,41 +69,18 @@ scoring_profiles:
     decay:
       lower_width: 2.5
       upper_width: 2.5
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2:
     property: lumo_energy
     type: minimize
     unit: eV
     full_score_target: -10.6883
     zero_score_anchor: -1.94
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2:
     property: polarizability_per_heavy_atom
     type: maximize
     unit: atomic_units_per_heavy_atom
     full_score_target: 9.3430346
     zero_score_anchor: 6.4845643
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_dipole_moment_window_3p0_8p0_5p0_v2:
     property: dipole_moment
     type: window
@@ -166,167 +91,72 @@ scoring_profiles:
     decay:
       lower_width: 5.0
       upper_width: 5.0
-    provenance:
-      target_source: task_statement
-      decay_source: target_window_width_rule
-      decision_record: docs/superpowers/plans/2026-07-20-linear-goal-v2-parameter-finalization.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2:
     property: alpb_water_hexane_selectivity
     type: maximize
     unit: eV
     full_score_target: 0.3953163242456749
     zero_score_anchor: -0.17228322475548233
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_global_electrophilicity_maximize_0p5_3p8_v2:
     property: global_electrophilicity
     type: maximize
     unit: eV
     full_score_target: 3.1359
     zero_score_anchor: 0.4862
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2:
     property: max_f_plus_on_carbon
     type: maximize
     unit: dimensionless
     full_score_target: 0.276
     zero_score_anchor: 0.076
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_f_plus_contrast_maximize_0p0_0p15_v2:
     property: f_plus_contrast
     type: maximize
     unit: dimensionless
     full_score_target: 0.094
     zero_score_anchor: 0.0
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: scientific_tie_boundary
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2:
     property: entropy_298_per_heavy_atom
     type: maximize
     unit: J mol-1 K-1 per heavy atom
     full_score_target: 76.094775
     zero_score_anchor: 40.59789
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_dipole_moment_minimize_0p0_20p0_v2:
     property: dipole_moment
     type: minimize
     unit: debye
     full_score_target: 3.042
     zero_score_anchor: 9.328
-    provenance:
-      target_source: frozen_benchmark_reference_panel_supported_by_literature
-      decay_source: frozen_benchmark_baseline_panel_supported_by_literature
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_homo_lumo_gap_minimize_0p0_10p0_v2:
     property: homo_lumo_gap
     type: minimize
     unit: eV
     full_score_target: 1.242666887976
     zero_score_anchor: 12.358052453139
-    provenance:
-      target_source: literature_reference_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_reference_recomputed_with_frozen_verifier
-      evidence_id: xtb-advanced-property-dossier-2026-07-21
-      decision_record: docs/research/2026-07-21-xtb-advanced-property-linear-goal-dossier.md
-      review_status: approved
-      review_date: '2026-07-21'
-      review_owner: benchmark_maintainers
   xtb_total_energy_minimize_neg_50p3_neg_50p25_v2:
     property: total_energy
     type: minimize
     unit: hartree
     full_score_target: -50.302552312418
     zero_score_anchor: -50.287905192962
-    provenance:
-      target_source: frozen_run_candidate_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
-      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
   xtb_total_energy_minimize_neg_148p2_neg_148p15_v2:
     property: total_energy
     type: minimize
     unit: hartree
     full_score_target: -148.213721794168
     zero_score_anchor: -148.183476873812
-    provenance:
-      target_source: independent_crest_candidate_recomputed_with_frozen_verifier
-      decay_source: literature_baseline_conformer_recomputed_with_frozen_verifier
-      evidence_id: xtb-total-energy-anchor-recalibration-2026-07-30
-      decision_record: docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md
-      review_status: approved
-      review_date: '2026-07-30'
-      review_owner: benchmark_maintainers
   xtb_odd_element_gap_maximize_3p6_11p9_v2:
     property: homo_lumo_gap
     type: maximize
     unit: eV
     full_score_target: 11.9
     zero_score_anchor: 3.6
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
   xtb_pyrene_total_energy_minimize_neg_63p56975_neg_63p5669_v2:
     property: total_energy
     type: minimize
     unit: hartree
     full_score_target: -63.56975
     zero_score_anchor: -63.5669
-    provenance:
-      target_source: frozen_calibration_set
-      decay_source: frozen_calibration_set
-      evidence_id: expert-open-generation-009-013-calibration-2026-07-23
-      decision_record: docs/research/2026-07-23-expert-open-generation-009-013-calibration.md
-      review_status: approved
-      review_date: '2026-07-23'
-      review_owner: benchmark_maintainers
 tasks:
 - task_id: xtb_001_gap_window
   scoring:

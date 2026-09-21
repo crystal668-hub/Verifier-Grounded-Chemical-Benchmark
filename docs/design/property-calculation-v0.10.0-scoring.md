@@ -4,8 +4,9 @@ Date: 2026-09-21. Status: approved by the benchmark owner after expert review.
 
 Each numeric scoring profile defines its own lower and upper tolerances.
 The public `family-policy.yaml`, loader dependency, and cross-profile family
-validation are removed. Existing family labels and unchanged profiles' R3
-provenance remain historical attribution, not enforceable constraints.
+validation are removed. Formal scoring profiles contain runtime scoring parameters
+without development provenance. Approval and parameter-history records remain
+in design/research documentation and Git history, outside runtime validation.
 
 | Task | Fields | Symmetric zero-score width | Transform |
 | --- | --- | --- | --- |

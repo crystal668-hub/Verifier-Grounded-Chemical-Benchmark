@@ -192,7 +192,6 @@ def test_task_7_contract_and_gold() -> None:
     profile = pack.scoring_profiles[task["gold_answers"][0]["scoring_profile"]]
     assert profile["lower_tolerance"] == 8.0
     assert profile["upper_tolerance"] == 8.0
-    assert profile["provenance"]["review_status"] == "approved"
     assert task["scoring"] == {
         "aggregation": "arithmetic_mean",
         "version": "linear_goal_v2",
@@ -406,7 +405,6 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
         assert profile["lower_tolerance"] == lower_tolerance
         assert profile["upper_tolerance"] == upper_tolerance
         assert profile.get("value_transform", "identity") == transform
-        assert profile["provenance"]["review_status"] == "approved"
 
     source_protocol_fragments = (
         "B3LYP",

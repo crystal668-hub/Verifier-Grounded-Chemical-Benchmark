@@ -115,9 +115,9 @@ def candidate_scoring(source: dict, policy: dict) -> dict:
                 )
             assigned[profile_id] = widths
             profile.update(lower_tolerance=lower, upper_tolerance=upper)
-            profile.update(error_mode=rule["mode"], error_parameter=rule["parameter"])
-            if "upper_parameter" in rule:
-                profile["upper_error_parameter"] = rule["upper_parameter"]
+            profile.pop("error_mode", None)
+            profile.pop("error_parameter", None)
+            profile.pop("upper_error_parameter", None)
             profile["provenance"].update(
                 decay_source="predeclared_property_family_score_anchors",
                 decision_record=policy["decision_record"],

@@ -28,12 +28,14 @@ def test_override_changes_only_the_noncovalent_family():
         family_profiles = []
         for profile_id, before in original["scoring_profiles"].items():
             after = candidate["scoring_profiles"][profile_id]
-            if before["provenance"].get("tolerance_family") == projection.FAMILY:
+            if before.get("unit") == "kcal/mol" and before.get("property") in {
+                "binding_energy", "interaction_energy", "halogen_bond_interaction_energy",
+            }:
                 family_profiles.append(profile_id)
-                assert before["provenance"]["tolerance_family"] == projection.FAMILY
                 assert after["lower_tolerance"] == 2.0
                 assert after["upper_tolerance"] == 2.0
-                assert after["error_parameter"] == 2.0
+                assert "error_mode" not in after
+                assert "error_parameter" not in after
             else:
                 assert after == before
         assert len(family_profiles) == (6 if track.endswith("basic") else 3)

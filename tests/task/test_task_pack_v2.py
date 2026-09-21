@@ -111,73 +111,35 @@ def test_calibration_duplicates_reuse_formal_profiles() -> None:
         ]
         for constraint in calibration_task["constraints"]:
             profile_id = constraint["scoring_profile"]
-            assert calibration.scoring_profiles[profile_id] == formal.scoring_profiles[profile_id]
+            assert {key: value for key, value in calibration.scoring_profiles[profile_id].items()
+                    if key != "provenance"} == formal.scoring_profiles[profile_id]
 
 
-def test_xtb_gap_dipole_profiles_have_approved_provenance() -> None:
-    pack = _load("open_generation_xtb")
+@pytest.mark.parametrize("name", [
+    "open_generation_rdkit", "open_generation_xtb",
+    "property_calculation_basic", "property_calculation_advanced",
+])
+def test_formal_profiles_load_without_development_provenance(name):
+    pack = _load(name)
     assert pack.scoring_version == "linear_goal_v2"
-    for profile_id in (
-        "xtb_homo_lumo_gap_maximize_10p0_12p0_v2",
-        "xtb_homo_lumo_gap_minimize_0p0_5p0_v2",
-        "xtb_dipole_moment_maximize_3p0_10p0_v2",
-    ):
-        assert pack.scoring_profiles[profile_id]["provenance"]["review_status"] == "approved"
+    for profile in pack.scoring_profiles.values():
+        assert "provenance" not in profile
+        assert profile["property"]
+        assert profile["type"]
 
 
-def test_xtb_advanced_property_profiles_have_approved_provenance() -> None:
-    pack = _load("open_generation_xtb")
-    profile_ids = (
-        "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2",
-        "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2",
-        "xtb_alpb_water_hexane_selectivity_maximize_0p0_0p35_v2",
-        "xtb_global_electrophilicity_maximize_0p5_3p8_v2",
-        "xtb_max_f_plus_on_carbon_maximize_0p05_0p35_v2",
-        "xtb_f_plus_contrast_maximize_0p0_0p15_v2",
-        "xtb_entropy_298_per_heavy_atom_maximize_50p0_80p0_v2",
-        "xtb_dipole_moment_minimize_0p0_20p0_v2",
-        "xtb_homo_lumo_gap_minimize_0p0_10p0_v2",
+def test_profile_metadata_does_not_control_runtime_approval(tmp_path):
+    resource = package_resource("open_generation_rdkit", "scoring.yaml")
+    scoring = __import__("yaml").safe_load(resource.read_text())
+    profile = next(iter(scoring["scoring_profiles"].values()))
+    profile["provenance"] = {"review_status": "pending_research"}
+    path = tmp_path / "scoring.yaml"
+    path.write_text(__import__("yaml").safe_dump(scoring))
+    pack = load_task_pack(
+        package_resource("open_generation_rdkit", "tasks.yaml"),
+        package_resource("open_generation_rdkit", "verifier_specs.yaml"), path,
     )
-    for profile_id in profile_ids:
-        provenance = pack.scoring_profiles[profile_id]["provenance"]
-        assert provenance["review_status"] == "approved"
-        assert provenance["evidence_id"] == "xtb-advanced-property-dossier-2026-07-21"
-
-
-def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
-    pack = _load("open_generation_xtb")
-    profile_ids = (
-        "xtb_total_energy_minimize_neg_50p3_neg_50p25_v2",
-        "xtb_total_energy_minimize_neg_148p2_neg_148p15_v2",
-    )
-    for profile_id in profile_ids:
-        provenance = pack.scoring_profiles[profile_id]["provenance"]
-        assert provenance["review_status"] == "approved"
-        assert provenance["evidence_id"] == "xtb-total-energy-anchor-recalibration-2026-07-30"
-
-
-def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> None:
-    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
-    broken = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
-    profile = next(iter(broken["scoring_profiles"].values()))
-    profile["provenance"]["review_status"] = "pending_research"
-    scoring_path = tmp_path / "scoring.yaml"
-    scoring_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
-
-    with pytest.raises(ValueError, match="approved review_status"):
-        load_task_pack(package_resource("open_generation_rdkit", "tasks.yaml"), package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
-
-
-def test_formal_v2_loader_rejects_legacy_profile_provenance(tmp_path) -> None:
-    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
-    broken = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
-    profile = next(iter(broken["scoring_profiles"].values()))
-    profile["provenance"]["target_source"] = "legacy_task_constraint"
-    scoring_path = tmp_path / "scoring.yaml"
-    scoring_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
-
-    with pytest.raises(ValueError, match="cannot use legacy provenance"):
-        load_task_pack(package_resource("open_generation_rdkit", "tasks.yaml"), package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
+    assert len(pack.tasks) == 14
 
 
 def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:

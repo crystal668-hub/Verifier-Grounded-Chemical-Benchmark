@@ -90,8 +90,8 @@ def test_same_family_has_same_scoring_accuracy_across_both_tracks(sources):
         for gold, profile in numeric_fields(
             projection.candidate_scoring(source, POLICY)
         ):
-            family = profile["provenance"]["tolerance_family"]
-            scale = abs(gold["value"]) if profile["error_mode"] == "relative" else 1
+            family, rule = projection.index_rules(POLICY)[(gold["property"], gold["unit"])]
+            scale = abs(gold["value"]) if rule["mode"] == "relative" else 1
             accuracy = (
                 profile["lower_tolerance"] / scale,
                 profile["upper_tolerance"] / scale,
@@ -169,7 +169,7 @@ def test_absolute_differences_score_zero_normally_but_reject_negatives(
         for gold, profile in numeric_fields(candidate)
         if gold["property"] == property_name
     )
-    assert profile["error_mode"] == "absolute"
+    assert profile.get("value_transform", "identity") == "identity"
     assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
     assert profile["minimum_value"] == 0
     for value in (-1e-12, -gold["value"], -width):
@@ -223,19 +223,14 @@ def test_committed_candidate_configs_match_the_frozen_family_policy(sources):
 
 
 @pytest.mark.parametrize("track", projection.original.SOURCES)
-def test_formal_release_uses_approved_individual_scoring_profiles(track):
+def test_formal_release_uses_individual_scoring_profiles_without_provenance(track):
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
     formal = yaml.safe_load((directory / "scoring.yaml").read_text())
     assert formal["scoring_config"]["scoring_status"] == "formal"
     assert formal["scoring_config"]["task_pack_version"] == "0.10.0"
     assert "family_policy" not in formal["scoring_config"]
     assert formal["scoring_profiles"]
-    for _profile_id, released in formal["scoring_profiles"].items():
-        assert released["provenance"]["review_status"] == "approved"
-        if released["type"] == "numeric_gold":
-            assert released["provenance"]["tolerance_policy"] in {
-                "property_family_anchors_2026_09_21_r3", "task_specific_anchors_v0.10.0",
-            }
+    assert all("provenance" not in profile for profile in formal["scoring_profiles"].values())
 
 
 @pytest.mark.parametrize("track", projection.original.SOURCES)
