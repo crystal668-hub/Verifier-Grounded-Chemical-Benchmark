@@ -526,3 +526,56 @@ def test_v60_release_manifest_binds_standardized_property_calculation_tasks() ->
             "sha256": "c60dfe63e95025210c98b49f1adf0baa326c0a75adf1a7ab5db7e20617a2c8ea",
         },
     }
+
+
+def test_v0100_release_binds_individual_tolerances_and_standard_task_ids() -> None:
+    release_dir = ROOT / "releases/v0.10.0"
+    manifest = json.loads((release_dir / "manifest.json").read_text())
+    inventory = json.loads((release_dir / "task-inventory.json").read_text())
+    assert manifest["version"] == inventory["package_version"] == "0.10.0"
+    assert manifest["result_schema_version"] == inventory["result_schema_version"] == "3"
+    assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
+    counts = {"rdkit": 14, "xtb": 20, "property_calculation_basic": 51, "property_calculation_advanced": 20}
+    assert {name: track["count"] for name, track in inventory["tracks"].items()} == counts
+    for name, track in inventory["tracks"].items():
+        assert track["task_pack_version"] == "0.10.0"
+        assert track["scoring_status"] == "formal"
+        assert "family_policy" not in track
+        if name in {"rdkit", "xtb"}:
+            assert track["task_ids"] == [f"{name}_{i:03d}" for i in range(1, counts[name] + 1)]
+    expected = {
+        "property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3": (3.0, "identity"),
+        "property_calculation_advanced_interaction_energy_numeric_gold_v2": (10.0, "absolute"),
+        "property_calculation_advanced_binding_energy_numeric_gold_v2": (10.0, "absolute"),
+        "property_calculation_advanced_oh_bond_distance_numeric_gold_v2": (0.1, "absolute"),
+        "property_calculation_advanced_h_o_contact_distance_numeric_gold_v2": (0.1, "absolute"),
+        "property_calculation_advanced_halogen_bond_energy_numeric_gold_v2": (5.0, "absolute"),
+    }
+    for profile_id, item in inventory["scoring_profiles"].items():
+        profile = item["definition"]
+        encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
+        assert hashlib.sha256(encoded).hexdigest() == item["sha256"]
+        if profile_id in expected:
+            width, transform = expected[profile_id]
+            assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
+            assert profile["error_parameter"] == width
+            assert profile.get("value_transform", "identity") == transform
+            if transform == "absolute":
+                assert "minimum_value" not in profile
+    assert expected.keys() <= inventory["scoring_profiles"].keys()
+    tagged = subprocess.check_output(
+        ["git", "rev-list", "-n", "1", manifest["tag"]], cwd=ROOT, text=True,
+    ).strip()
+    assert tagged == manifest["canonical_source"]["commit"]
+    tree = subprocess.check_output(
+        ["git", "rev-parse", f"{tagged}^{{tree}}"], cwd=ROOT, text=True,
+    ).strip()
+    assert tree == manifest["canonical_source"]["tree"]
+    assert (release_dir / "SHA256SUMS").read_text() == "".join(
+        f"{item['sha256']}  {item['filename']}\n" for item in manifest["artifacts"]
+    )
+    assert_release_artifacts_if_present(
+        manifest,
+        ROOT / "dist/verifier_grounded_benchmark-0.10.0-py3-none-any.whl",
+        ROOT / "dist/verifier_grounded_benchmark-0.10.0.tar.gz",
+    )
