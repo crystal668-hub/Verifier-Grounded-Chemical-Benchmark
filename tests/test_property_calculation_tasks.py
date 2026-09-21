@@ -117,10 +117,6 @@ def test_property_task_pack_uses_common_envelope_and_answer_schema() -> None:
             "cardinality": "one",
         }
         assert "constraints" not in task
-        assert task["gold_provenance"]["disclosure"] == "withheld_initial_release"
-        task_number = int(task["task_id"].split("_", 4)[3])
-        if task_number >= 3:
-            assert task["gold_provenance"].get("source")
         assert task["scoring"]["aggregation"] == "arithmetic_mean"
         assert "parse_error" in set(task["failure_policy"].values())
 

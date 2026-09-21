@@ -324,9 +324,6 @@ tasks:
     value: -0.82
     scoring_profile: property_calculation_basic_001_toluene_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_FreeSolv_v0.52
 - task_id: property_calculation_basic_002_ethanol_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
@@ -341,9 +338,6 @@ tasks:
     value: -5.42
     scoring_profile: property_calculation_basic_002_ethanol_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_FreeSolv_v0.52
 - task_id: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
@@ -358,9 +352,6 @@ tasks:
     value: -2.11
     scoring_profile: property_calculation_basic_003_diethyl_ether_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_FreeSolv_v0.52
 - task_id: property_calculation_basic_004_anisole_aqueous_solvation_free_energy
   scoring:
     aggregation: arithmetic_mean
@@ -375,9 +366,6 @@ tasks:
     value: -1.98
     scoring_profile: property_calculation_basic_004_anisole_aqueous_solvation_free_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_FreeSolv_v0.52
 - task_id: property_calculation_basic_005_nitrobenzene_reduction_potential
   scoring:
     aggregation: arithmetic_mean
@@ -392,9 +380,6 @@ tasks:
     value: -1.24
     scoring_profile: property_calculation_basic_005_nitrobenzene_reduction_potential_numeric_gold_v3
     unit: V
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
 - task_id: property_calculation_basic_006_tetracyanoethylene_reduction_potential
   scoring:
     aggregation: arithmetic_mean
@@ -409,9 +394,6 @@ tasks:
     value: 0.21
     scoring_profile: property_calculation_basic_006_tetracyanoethylene_reduction_potential_numeric_gold_v3
     unit: V
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
 - task_id: property_calculation_basic_007_dimethylaniline_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
@@ -426,9 +408,6 @@ tasks:
     value: 0.83
     scoring_profile: property_calculation_basic_007_dimethylaniline_oxidation_potential_numeric_gold_v3
     unit: V
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
 - task_id: property_calculation_basic_008_triphenylamine_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
@@ -443,9 +422,6 @@ tasks:
     value: 0.82
     scoring_profile: property_calculation_basic_008_triphenylamine_oxidation_potential_numeric_gold_v3
     unit: V
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
 - task_id: property_calculation_basic_009_thianthrene_oxidation_potential
   scoring:
     aggregation: arithmetic_mean
@@ -460,9 +436,6 @@ tasks:
     value: 1.11
     scoring_profile: property_calculation_basic_009_thianthrene_oxidation_potential_numeric_gold_v3
     unit: V
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_acetonitrile_CV_vs_SCE
 - task_id: property_calculation_basic_010_water_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -477,9 +450,6 @@ tasks:
     value: -4.97
     scoring_profile: property_calculation_basic_010_water_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_S22_CCSDT_CBS
 - task_id: property_calculation_basic_011_ammonia_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -494,9 +464,6 @@ tasks:
     value: -2.85
     scoring_profile: property_calculation_basic_011_ammonia_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_S22_CCSDT_CBS
 - task_id: property_calculation_basic_012_benzene_t_dimer_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -511,9 +478,6 @@ tasks:
     value: -2.48
     scoring_profile: property_calculation_basic_012_benzene_t_dimer_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_CCSDT_CBS_OSTI_1958183
 - task_id: property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -528,9 +492,6 @@ tasks:
     value: -16.13
     scoring_profile: property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_S22_CCSDT_CBS
 - task_id: property_calculation_basic_014_water_methanol_complex_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -545,9 +506,6 @@ tasks:
     value: -4.89
     scoring_profile: property_calculation_basic_014_water_methanol_complex_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_S66_CCSDT_CBS
 - task_id: property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -562,9 +520,6 @@ tasks:
     value: -1.33
     scoring_profile: property_calculation_basic_015_ethene_ethyne_t_complex_binding_energy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_S22_CCSDT_CBS
 - task_id: property_calculation_basic_016_thiophene_polarizability
   scoring:
     aggregation: arithmetic_mean
@@ -579,9 +534,6 @@ tasks:
     value: 65.01
     scoring_profile: property_calculation_basic_016_thiophene_polarizability_numeric_gold_v3
     unit: a.u.
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_017_benzene_polarizability
   scoring:
     aggregation: arithmetic_mean
@@ -596,9 +548,6 @@ tasks:
     value: 67.87
     scoring_profile: property_calculation_basic_017_benzene_polarizability_numeric_gold_v3
     unit: a.u.
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_018_octatetraene_polarizability
   scoring:
     aggregation: arithmetic_mean
@@ -613,9 +562,6 @@ tasks:
     value: 95.51
     scoring_profile: property_calculation_basic_018_octatetraene_polarizability_numeric_gold_v3
     unit: a.u.
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment
   scoring:
     aggregation: arithmetic_mean
@@ -630,9 +576,6 @@ tasks:
     value: 5.43
     scoring_profile: property_calculation_basic_019_dimethyl_sulfoxide_water_dipole_moment_numeric_gold_v3
     unit: Debye
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_020_cis_dichloroethene_dipole_moment
   scoring:
     aggregation: arithmetic_mean
@@ -647,9 +590,6 @@ tasks:
     value: 1.88
     scoring_profile: property_calculation_basic_020_cis_dichloroethene_dipole_moment_numeric_gold_v3
     unit: Debye
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_021_acetonitrile_dipole_moment
   scoring:
     aggregation: arithmetic_mean
@@ -664,9 +604,6 @@ tasks:
     value: 3.85
     scoring_profile: property_calculation_basic_021_acetonitrile_dipole_moment_numeric_gold_v3
     unit: Debye
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_022_naphthalene_bridge_bond_order
   scoring:
     aggregation: arithmetic_mean
@@ -681,9 +618,6 @@ tasks:
     value: 1.2522
     scoring_profile: property_calculation_basic_022_naphthalene_bridge_bond_order_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_023_dimethyl_sulfone_so_bond_order
   scoring:
     aggregation: arithmetic_mean
@@ -698,9 +632,6 @@ tasks:
     value: 1.6615
     scoring_profile: property_calculation_basic_023_dimethyl_sulfone_so_bond_order_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_024_methyl_nitrate_no_bond_order
   scoring:
     aggregation: arithmetic_mean
@@ -715,9 +646,6 @@ tasks:
     value: 0.9292
     scoring_profile: property_calculation_basic_024_methyl_nitrate_no_bond_order_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_025_phenol_surface_esp_minimum
   scoring:
     aggregation: arithmetic_mean
@@ -732,9 +660,6 @@ tasks:
     value: -25.95
     scoring_profile: property_calculation_basic_025_phenol_surface_esp_minimum_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_026_nitrobenzene_vdw_surface_area
   scoring:
     aggregation: arithmetic_mean
@@ -749,9 +674,6 @@ tasks:
     value: 150.3
     scoring_profile: property_calculation_basic_026_nitrobenzene_vdw_surface_area_numeric_gold_v3
     unit: angstrom^2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_027_pyrrole_surface_esp_variance
   scoring:
     aggregation: arithmetic_mean
@@ -766,9 +688,6 @@ tasks:
     value: 178.25
     scoring_profile: property_calculation_basic_027_pyrrole_surface_esp_variance_numeric_gold_v3
     unit: (kcal/mol)^2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_028_urea_crystal_density
   scoring:
     aggregation: arithmetic_mean
@@ -783,9 +702,6 @@ tasks:
     value: 1.333
     scoring_profile: property_calculation_basic_028_urea_crystal_density_numeric_gold_v3
     unit: g/cm^3
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_029_tnt_crystal_density
   scoring:
     aggregation: arithmetic_mean
@@ -800,9 +716,6 @@ tasks:
     value: 1.71
     scoring_profile: property_calculation_basic_029_tnt_crystal_density_numeric_gold_v3
     unit: g/cm^3
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_030_picric_acid_crystal_density
   scoring:
     aggregation: arithmetic_mean
@@ -817,9 +730,6 @@ tasks:
     value: 1.831
     scoring_profile: property_calculation_basic_030_picric_acid_crystal_density_numeric_gold_v3
     unit: g/cm^3
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_031_allyl_radical_c1_spin_density
   scoring:
     aggregation: arithmetic_mean
@@ -834,9 +744,6 @@ tasks:
     value: -0.266
     scoring_profile: property_calculation_basic_031_allyl_radical_c1_spin_density_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_032_benzyl_radical_para_c_spin_density
   scoring:
     aggregation: arithmetic_mean
@@ -851,9 +758,6 @@ tasks:
     value: 0.301
     scoring_profile: property_calculation_basic_032_benzyl_radical_para_c_spin_density_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_033_phenoxy_radical_o_spin_density
   scoring:
     aggregation: arithmetic_mean
@@ -868,9 +772,6 @@ tasks:
     value: 0.415
     scoring_profile: property_calculation_basic_033_phenoxy_radical_o_spin_density_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_034_indole_c3_fukui_minus
   scoring:
     aggregation: arithmetic_mean
@@ -885,9 +786,6 @@ tasks:
     value: 0.076
     scoring_profile: property_calculation_basic_034_indole_c3_fukui_minus_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_035_chloronitrobenzene_c_fukui_plus
   scoring:
     aggregation: arithmetic_mean
@@ -902,9 +800,6 @@ tasks:
     value: 0.055
     scoring_profile: property_calculation_basic_035_chloronitrobenzene_c_fukui_plus_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_036_furfural_carbonyl_c_fukui_plus
   scoring:
     aggregation: arithmetic_mean
@@ -919,9 +814,6 @@ tasks:
     value: 0.07
     scoring_profile: property_calculation_basic_036_furfural_carbonyl_c_fukui_plus_numeric_gold_v3
     unit: dimensionless
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_037_benzene_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -936,9 +828,6 @@ tasks:
     value: 64.67
     scoring_profile: property_calculation_basic_037_benzene_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_038_acetonitrile_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -953,9 +842,6 @@ tasks:
     value: 57.88
     scoring_profile: property_calculation_basic_038_acetonitrile_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_039_neopentane_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -970,9 +856,6 @@ tasks:
     value: 73.88
     scoring_profile: property_calculation_basic_039_neopentane_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_040_methane_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -987,9 +870,6 @@ tasks:
     value: 44.4
     scoring_profile: property_calculation_basic_040_methane_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_041_ammonia_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -1004,9 +884,6 @@ tasks:
     value: 45.92
     scoring_profile: property_calculation_basic_041_ammonia_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_042_carbon_dioxide_standard_entropy
   scoring:
     aggregation: arithmetic_mean
@@ -1021,9 +898,6 @@ tasks:
     value: 51.18
     scoring_profile: property_calculation_basic_042_carbon_dioxide_standard_entropy_numeric_gold_v3
     unit: cal/(mol*K)
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_NIST_gas_phase_data
 - task_id: property_calculation_basic_043_acetic_acid_dimerization_enthalpy
   scoring:
     aggregation: arithmetic_mean
@@ -1038,9 +912,6 @@ tasks:
     value: -16.04
     scoring_profile: property_calculation_basic_043_acetic_acid_dimerization_enthalpy_numeric_gold_v3
     unit: kcal/mol
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_checked_against_reported_reference_value
 - task_id: property_calculation_basic_044_caffeine_most_negative_mulliken_atom
   scoring:
     aggregation: arithmetic_mean
@@ -1054,9 +925,6 @@ tasks:
   - property: most_negative_mulliken_atom
     value: 11 O
     scoring_profile: property_calculation_basic_044_caffeine_most_negative_mulliken_atom_atom_identity_v1
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge
   scoring:
     aggregation: arithmetic_mean
@@ -1071,9 +939,6 @@ tasks:
     value: 0.364
     scoring_profile: property_calculation_basic_045_trifluoroacetic_acid_hydrogen_charge_numeric_gold_v3
     unit: e
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom
   scoring:
     aggregation: arithmetic_mean
@@ -1087,9 +952,6 @@ tasks:
   - property: most_negative_mulliken_atom
     value: 3 N
     scoring_profile: property_calculation_basic_046_methyl_azide_most_negative_mulliken_atom_atom_identity_v1
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
@@ -1104,9 +966,6 @@ tasks:
     value: 4.12
     scoring_profile: property_calculation_basic_047_formaldehyde_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
@@ -1121,9 +980,6 @@ tasks:
     value: 4.42
     scoring_profile: property_calculation_basic_048_acetaldehyde_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_049_acetone_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
@@ -1138,9 +994,6 @@ tasks:
     value: 4.51
     scoring_profile: property_calculation_basic_049_acetone_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
@@ -1155,9 +1008,6 @@ tasks:
     value: 4.04
     scoring_profile: property_calculation_basic_050_pyrazine_s1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output
 - task_id: property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy
   scoring:
     aggregation: arithmetic_mean
@@ -1172,6 +1022,3 @@ tasks:
     value: 3.39
     scoring_profile: property_calculation_basic_051_formaldehyde_t1_vertical_excitation_energy_numeric_gold_v3
     unit: eV
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_calculation_output

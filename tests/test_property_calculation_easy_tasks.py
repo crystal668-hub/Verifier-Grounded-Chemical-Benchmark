@@ -133,8 +133,6 @@ def test_easy_pack_has_frozen_ids_and_common_property_envelope() -> None:
             "value_type": "json",
             "cardinality": "one",
         }
-        assert task["gold_provenance"]["disclosure"] == "withheld_initial_release"
-        assert task["gold_provenance"]["source"]
         assert task["scoring"] == {
             "aggregation": "arithmetic_mean",
             "version": "linear_goal_v2",

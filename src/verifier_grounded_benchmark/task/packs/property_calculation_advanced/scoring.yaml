@@ -185,8 +185,6 @@ tasks:
     value: 0.258031679
     unit: kJ/mol
     scoring_profile: property_calculation_advanced_free_energy_difference_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
 - task_id: property_calculation_advanced_002_crystal_phase
   scoring:
     aggregation: arithmetic_mean
@@ -217,8 +215,6 @@ tasks:
   - property: high_pressure_phase
     value: beta
     scoring_profile: property_calculation_advanced_high_pressure_phase_exact_string_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
 - task_id: property_calculation_advanced_003_hbond_count
   scoring:
     aggregation: arithmetic_mean
@@ -233,9 +229,6 @@ tasks:
     value: 12
     unit: count
     scoring_profile: property_calculation_advanced_hydrogen_bond_count_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: T2_paper_expert_answer
 - task_id: property_calculation_advanced_004_ir_top2_frequencies
   scoring:
     aggregation: arithmetic_mean
@@ -255,9 +248,6 @@ tasks:
     value: 1685.56
     unit: cm^-1
     scoring_profile: property_calculation_advanced_ir_frequency_2_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: resveratrol_gaussian_output_expert_answer
 - task_id: property_calculation_advanced_005_crystal_density
   scoring:
     aggregation: arithmetic_mean
@@ -272,9 +262,6 @@ tasks:
     value: 1.44728
     unit: g/cm^3
     scoring_profile: property_calculation_advanced_crystal_density_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: CCDC_caffeine_monohydrate_expert_answer
 - task_id: property_calculation_advanced_006_cocrystal_ratio
   scoring:
     aggregation: arithmetic_mean
@@ -288,9 +275,6 @@ tasks:
   - property: cocrystal_molar_ratio
     value: '1:1'
     scoring_profile: property_calculation_advanced_cocrystal_molar_ratio_exact_string_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: crystal_structure_prediction_blind_test_expert_answer
 - task_id: property_calculation_advanced_007_polymorph_free_energy_crossover
   scoring:
     aggregation: arithmetic_mean
@@ -308,9 +292,6 @@ tasks:
     value: 343.15
     unit: K
     scoring_profile: property_calculation_advanced_crossover_temperature_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: polymorph_free_energy_expert_answer
 - task_id: property_calculation_advanced_008_interaction_binding_energy
   scoring:
     aggregation: arithmetic_mean
@@ -329,9 +310,6 @@ tasks:
     value: -58.15
     unit: kcal/mol
     scoring_profile: property_calculation_advanced_binding_energy_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_gaussian_counterpoise_answer
 - task_id: property_calculation_advanced_009_homo_lumo_gap
   scoring:
     aggregation: arithmetic_mean
@@ -346,9 +324,6 @@ tasks:
     value: 7.26
     unit: eV
     scoring_profile: property_calculation_advanced_homo_lumo_gap_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: expert_homolumo_calculation
 - task_id: property_calculation_advanced_010_hbond_distances
   scoring:
     aggregation: arithmetic_mean
@@ -367,9 +342,6 @@ tasks:
     value: 1.485
     unit: angstrom
     scoring_profile: property_calculation_advanced_h_o_contact_distance_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: CRBAMP01_optimized_geometry_expert_answer
 - task_id: property_calculation_advanced_011_accessible_pore_volume_ratio
   scoring:
     aggregation: arithmetic_mean
@@ -384,9 +356,6 @@ tasks:
     value: 1.713
     unit: ratio
     scoring_profile: property_calculation_advanced_pore_volume_ratio_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: zeo_plus_plus_probe_1p2_angstrom_expert_answer
 - task_id: property_calculation_advanced_012_carboxyl_hydrogen_distance
   scoring:
     aggregation: arithmetic_mean
@@ -401,9 +370,6 @@ tasks:
     value: 2.521
     unit: angstrom
     scoring_profile: property_calculation_advanced_carboxyl_hydrogen_distance_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: crest_conformer_expert_answer
 - task_id: property_calculation_advanced_013_halogen_bond_energy
   scoring:
     aggregation: arithmetic_mean
@@ -418,9 +384,6 @@ tasks:
     value: -17.11
     unit: kcal/mol
     scoring_profile: property_calculation_advanced_halogen_bond_energy_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: halogen_bonding_expert_answer
 - task_id: property_calculation_advanced_014_bay069_pka
   scoring:
     aggregation: arithmetic_mean
@@ -435,9 +398,6 @@ tasks:
     value: 5.7
     unit: pKa
     scoring_profile: property_calculation_advanced_pka_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: BAY069_JMedChem_2022_expert_answer
 - task_id: property_calculation_advanced_015_formaldehyde_socme
   scoring:
     aggregation: arithmetic_mean
@@ -452,9 +412,6 @@ tasks:
     value: 0.00734
     unit: eV
     scoring_profile: property_calculation_advanced_socme_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1_SOC_tutorial_formaldehyde
 - task_id: property_calculation_advanced_016_anthracene_isc_rate
   scoring:
     aggregation: arithmetic_mean
@@ -469,9 +426,6 @@ tasks:
     value: 117000000.0
     unit: s^-1
     scoring_profile: property_calculation_advanced_anthracene_isc_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.4.2
 - task_id: property_calculation_advanced_017_biacetyl_phosphorescence_rate
   scoring:
     aggregation: arithmetic_mean
@@ -486,9 +440,6 @@ tasks:
     value: 98.0
     unit: s^-1
     scoring_profile: property_calculation_advanced_phosphorescence_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.3.2
 - task_id: property_calculation_advanced_018_anthracene_ht_contribution
   scoring:
     aggregation: arithmetic_mean
@@ -503,9 +454,6 @@ tasks:
     value: 100.0
     unit: percent
     scoring_profile: property_calculation_advanced_ht_contribution_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.0_ESD_anthracene_expert_output
 - task_id: property_calculation_advanced_019_acetophenone_isc_rate
   scoring:
     aggregation: arithmetic_mean
@@ -520,9 +468,6 @@ tasks:
     value: 28400000000.0
     unit: s^-1
     scoring_profile: property_calculation_advanced_acetophenone_isc_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.0_ESD_acetophenone_expert_output
 - task_id: property_calculation_advanced_020_azulene_internal_conversion_rate
   scoring:
     aggregation: arithmetic_mean
@@ -537,6 +482,3 @@ tasks:
     value: 382000000.0
     unit: s^-1
     scoring_profile: property_calculation_advanced_internal_conversion_rate_numeric_gold_v2
-  gold_provenance:
-    disclosure: withheld_initial_release
-    source: ORCA_6.1.1_manual_section_5.5.5
