@@ -95,11 +95,16 @@ def _scoreable_results(profile: Mapping[str, Any], gold: Mapping[str, Any] | Non
             return {"kind": "absolute_interval", "min": lower_abs, "max": upper, "min_exclusive": bool(lower and lower > 0), "max_exclusive": True, "unit": unit}
         if profile_type == "numeric_gold" and transform == "log10":
             return {"kind": "interval", "min": 10 ** lower if lower is not None else 0.0, "max": 10 ** upper if upper is not None else None, "min_exclusive": True, "max_exclusive": True, "unit": unit, "transform": "log10"}
+        lower_exclusive = True
+        minimum = profile.get("minimum_value")
+        if profile_type == "numeric_gold" and minimum is not None and (lower is None or minimum > lower):
+            lower = minimum
+            lower_exclusive = False
         if lower is None:
             return {"kind": "upper_bounded", "max": upper, "max_exclusive": True, "unit": unit}
         if upper is None:
-            return {"kind": "lower_bounded", "min": lower, "min_exclusive": True, "unit": unit}
-        return {"kind": "interval", "min": lower, "max": upper, "min_exclusive": True, "max_exclusive": True, "unit": unit}
+            return {"kind": "lower_bounded", "min": lower, "min_exclusive": lower_exclusive, "unit": unit}
+        return {"kind": "interval", "min": lower, "max": upper, "min_exclusive": lower_exclusive, "max_exclusive": True, "unit": unit}
     if profile_type == "exact_string" and gold is not None:
         values = [gold.get("value")]
         values.extend(value for value, score in profile.get("partial_scores", {}).items() if float(score) > 0)
@@ -152,6 +157,7 @@ def scoring_view(task: dict[str, Any], profiles: Mapping[str, Mapping[str, Any]]
     return {
         "aggregation": scoring.get("aggregation"),
         "answer_matching": scoring.get("answer_matching"),
+        "comparison_groups": _plain(scoring.get("comparison_groups", [])),
         "failure_policy": _plain(task.get("failure_policy", {})),
         "rules": rules,
         "gold_answers": gold_answers,

@@ -55,9 +55,9 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
     assert answers["potential_energy_difference"]["full_score_region"]["kind"] == "point"
     assert answers["potential_energy_difference"]["score_range"] == {
         "kind": "interval",
-        "min": -0.7210000000000001,
+        "min": 0.0,
         "max": 0.879,
-        "min_exclusive": True,
+        "min_exclusive": False,
         "max_exclusive": True,
         "unit": "eV",
     }
@@ -93,11 +93,31 @@ def test_score_ranges_represent_nonzero_submitted_values():
     assert qed == {"kind": "lower_bounded", "min": 0.0, "min_exclusive": True, "unit": "dimensionless"}
 
     interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
-    assert interaction["kind"] == "absolute_interval"
-    assert interaction["min"] == pytest.approx(68.04)
-    assert interaction["max"] == pytest.approx(70.04)
+    assert interaction["kind"] == "interval"
+    assert interaction["min"] == pytest.approx(-71.04)
+    assert interaction["max"] == pytest.approx(-67.04)
 
     log_score = tasks["property_calculation_advanced_015_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
     assert log_score["transform"] == "log10"
     assert log_score["min"] == 0.0007340000000000001
     assert log_score["max"] == 0.0734
+
+
+def test_v094_catalog_has_signed_energy_and_shared_family_widths():
+    catalog = load_catalog()
+    count = 0
+    for track in catalog["tracks"]:
+        assert track["version"] == "0.9.4"
+        for task in track["tasks"]:
+            for rule in task["scoring"]["rules"]:
+                profile = rule["profile"]
+                if profile.get("provenance", {}).get("tolerance_family") == "noncovalent_energy":
+                    count += 1
+                    assert profile["lower_tolerance"] == profile["upper_tolerance"] == 2.0
+                    assert profile.get("value_transform", "identity") == "identity"
+                    assert rule["score_range"]["kind"] == "interval"
+            if task["task_id"] in {"property_calculation_advanced_008_interaction_binding_energy", "property_calculation_advanced_013_halogen_bond_energy"}:
+                assert "Preserve the sign of the energy." in task["view"]["prompt"]
+            if task["task_id"] == "property_calculation_advanced_002_crystal_phase":
+                assert task["scoring"]["comparison_groups"][1]["aggregation"] == "all_correct"
+    assert count == 9
