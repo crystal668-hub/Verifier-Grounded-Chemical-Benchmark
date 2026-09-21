@@ -535,14 +535,20 @@ def test_v0100_release_binds_individual_tolerances_and_standard_task_ids() -> No
     assert manifest["version"] == inventory["package_version"] == "0.10.0"
     assert manifest["result_schema_version"] == inventory["result_schema_version"] == "3"
     assert manifest["scoring_version"] == inventory["scoring_version"] == "linear_goal_v2"
-    counts = {"rdkit": 14, "xtb": 20, "property_calculation_basic": 51, "property_calculation_advanced": 20}
+    counts = {"open_generation_rdkit": 14, "open_generation_xtb": 20, "property_calculation_basic": 51, "property_calculation_advanced": 20}
     assert {name: track["count"] for name, track in inventory["tracks"].items()} == counts
     for name, track in inventory["tracks"].items():
         assert track["task_pack_version"] == "0.10.0"
         assert track["scoring_status"] == "formal"
         assert "family_policy" not in track
-        if name in {"rdkit", "xtb"}:
-            assert track["task_ids"] == [f"{name}_{i:03d}" for i in range(1, counts[name] + 1)]
+        if name.startswith("open_generation_"):
+            backend = name.removeprefix("open_generation_")
+            previous = json.loads((V94_RELEASE_DIR / "task-inventory.json").read_text())
+            expected_ids = []
+            for task_id in previous["tracks"][backend]["task_ids"]:
+                description, number = task_id.removeprefix(backend + "_").rsplit("_", 1)
+                expected_ids.append(f"{backend}_{number}_{description}")
+            assert track["task_ids"] == expected_ids
     expected = {
         "property_calculation_basic_013_adenine_thymine_wc_pair_binding_energy_numeric_gold_v3": (3.0, "identity"),
         "property_calculation_advanced_interaction_energy_numeric_gold_v2": (10.0, "absolute"),
@@ -579,3 +585,12 @@ def test_v0100_release_binds_individual_tolerances_and_standard_task_ids() -> No
         ROOT / "dist/verifier_grounded_benchmark-0.10.0-py3-none-any.whl",
         ROOT / "dist/verifier_grounded_benchmark-0.10.0.tar.gz",
     )
+    wheel_path = ROOT / "dist/verifier_grounded_benchmark-0.10.0-py3-none-any.whl"
+    if wheel_path.is_file():
+        with zipfile.ZipFile(wheel_path) as wheel:
+            names = wheel.namelist()
+        assert not any("/task/calibration/" in name for name in names)
+        assert not any(
+            "/task/packs/property_calculation_" in name and name.endswith("/verifier_specs.yaml")
+            for name in names
+        )
