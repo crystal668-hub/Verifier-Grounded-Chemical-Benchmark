@@ -112,7 +112,7 @@ def test_track_evaluate_answers_uses_v3_result_and_scoring_contract() -> None:
     assert report["summary"]["coverage"]["complete"] is True
     assert all(row["schema_version"] == 3 for row in report["rows"])
     assert all(row["status"] == "scored" for row in report["rows"])
-    assert all(row["versions"]["package"] == "0.9.3" for row in report["rows"])
+    assert all(row["versions"]["package"] == "0.9.4" for row in report["rows"])
     assert all(
         item["scoring_version"] == "linear_goal_v2"
         for row in report["rows"]
