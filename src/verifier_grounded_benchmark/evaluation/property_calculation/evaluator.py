@@ -32,6 +32,7 @@ from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
 
 
 class PropertyCalculationEvaluator:
+    """Score submitted properties against configured gold answers without invoking verifiers."""
     def evaluate(
         self,
         answer: dict[str, Any],
@@ -40,6 +41,7 @@ class PropertyCalculationEvaluator:
         *,
         versions: dict[str, Any],
     ) -> dict[str, Any]:
+        """Parse fields, apply optional matching, score against gold, and aggregate field/group scores."""
         raw = task.raw
         requested = {item["name"]: item for item in raw["requested_properties"]}
         gold = {item["property"]: item for item in raw["gold_answers"]}

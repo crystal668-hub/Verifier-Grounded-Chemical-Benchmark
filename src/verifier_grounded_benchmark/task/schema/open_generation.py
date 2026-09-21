@@ -23,6 +23,7 @@ def validate_open_generation_task(
     profiles: dict[str, dict[str, Any]],
     verifier_ids: set[str],
 ) -> tuple[tuple[ConstraintSpec, ...], tuple[HardConstraintSpec, ...]]:
+    """Validate objective/profile compatibility and all soft and hard verifier references."""
     constraints: list[ConstraintSpec] = []
     for raw in require_list(task.get("constraints"), f"task {task['task_id']} constraints"):
         constraint = require_mapping(raw, "constraint")

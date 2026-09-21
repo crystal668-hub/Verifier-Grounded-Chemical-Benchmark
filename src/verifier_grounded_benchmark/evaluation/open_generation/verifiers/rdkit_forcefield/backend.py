@@ -35,6 +35,7 @@ def evaluate_forcefield_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Generate and optimize conformers, then report the requested RDKit force-field property."""
     task_id = task["task_id"]
     result = base_result(task_id, spec.get("verifier_id"), rdkit_forcefield_versions(spec))
     property_name = spec.get("property_name")
@@ -112,6 +113,7 @@ def evaluate_forcefield_constraint(
 
 
 def compute_forcefield_properties(mol: Chem.Mol, backend: dict[str, Any]) -> dict[str, float | int | str]:
+    """Compute conformer-ensemble force-field measurements using the configured sampling protocol."""
     config = {**DEFAULT_BACKEND, **backend}
     molecule = Chem.AddHs(Chem.Mol(mol))
     params = embedding_parameters(str(config.get("embedder", "ETKDGv3")))
@@ -157,6 +159,7 @@ def compute_terminal_atom_distance_properties(
     backend: dict[str, Any],
     terminal_atom_indices: tuple[int, ...],
 ) -> dict[str, float | int | str]:
+    """Generate the chain conformer ensemble and summarize terminal-atom distances."""
     config = {**DEFAULT_BACKEND, **backend}
     if config.get("forcefield") != "UFF":
         raise ForceFieldError("terminal atom distance protocol requires forcefield UFF")

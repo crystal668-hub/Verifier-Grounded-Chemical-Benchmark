@@ -42,6 +42,7 @@ def require_string(value: Any, label: str) -> str:
 
 
 def index_unique(items: list[Any], key: str, label: str) -> dict[str, dict[str, Any]]:
+    """Index mappings by a required string identifier, rejecting duplicates."""
     indexed: dict[str, dict[str, Any]] = {}
     for item in items:
         mapping = require_mapping(item, f"{label} entry")
@@ -58,6 +59,7 @@ def validate_profiles(
     scoring_version: str = SCORING_VERSION,
     scoring_status: str = "formal",
 ) -> dict[str, dict[str, Any]]:
+    """Validate profile types, transforms, and provenance without enforcing shared family widths."""
     mappings = require_mapping(profiles, "scoring_profiles")
     if not mappings:
         raise ValueError("scoring_profiles must not be empty")
@@ -130,6 +132,7 @@ def validate_profiles(
 
 
 def linear_goal_from_profile(profile: Mapping[str, Any], *, gold: Any = None) -> LinearGoalSpec:
+    """Convert a scoring profile into linear boundaries; numeric gold requires a reference value."""
     profile_type = profile["type"]
     if profile_type == "window":
         full_score = require_mapping(profile.get("full_score"), "window full_score")

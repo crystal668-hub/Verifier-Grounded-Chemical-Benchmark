@@ -14,6 +14,7 @@ def score_atom_identity(
     gold: Mapping[str, Any],
     profile: Mapping[str, Any],
 ) -> float:
+    """Match atom index and element, optionally granting configured element-only credit."""
     if profile.get("normalization") != "atom_identity":
         raise ValueError("atom identity profile must use atom_identity normalization")
     value = None if submitted is None else submitted.get("value")

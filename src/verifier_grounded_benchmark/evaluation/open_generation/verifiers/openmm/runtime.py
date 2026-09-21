@@ -24,6 +24,7 @@ class OpenMMToolError(RuntimeError):
 
 @dataclass(frozen=True)
 class RuntimeModules:
+    """Optional OpenMM/OpenFF imports grouped for explicitly selected runtime protocols."""
     openmm: Any
     unit: Any
     app: Any | None = None
@@ -47,12 +48,14 @@ def import_required(module_name: str) -> Any:
 
 
 def load_core_modules() -> RuntimeModules:
+    """Import the core OpenMM runtime, reporting unavailable dependencies as environment errors."""
     openmm = import_required("openmm")
     unit = import_required("openmm.unit")
     return RuntimeModules(openmm=openmm, unit=unit)
 
 
 def load_openff_modules() -> RuntimeModules:
+    """Load OpenMM and OpenFF modules only when the ligand protocol is requested."""
     openmm = import_required("openmm")
     unit = import_required("openmm.unit")
     app = import_required("openmm.app")
@@ -111,6 +114,7 @@ def quantity_vector_norm(vector_quantity: Any, target_unit: Any) -> float:
 
 
 def run_core_smoke(preferred_platform: str = "Reference") -> dict[str, Any]:
+    """Minimize a two-particle harmonic system to verify the selected OpenMM platform."""
     modules = load_core_modules()
     openmm = modules.openmm
     unit = modules.unit
@@ -158,6 +162,7 @@ def run_openmm_system_minimization(
     preferred_platform: str,
     max_iterations: int = 200,
 ) -> dict[str, float | str]:
+    """Minimize a supplied system and return energy in kJ/mol and maximum force in kJ/mol/nm."""
     openmm = modules.openmm
     unit = modules.unit
     platform = select_platform(openmm, preferred_platform)
@@ -193,6 +198,7 @@ def run_openff_smoke(
     forcefield_name: str = DEFAULT_OPENFF_FORCEFIELD,
     preferred_platform: str = "Reference",
 ) -> dict[str, Any]:
+    """Parameterize a SMILES ligand with OpenFF and validate its OpenMM minimization."""
     modules = load_openff_modules()
     toolkit = modules.openff_toolkit
     interchange_module = modules.openff_interchange

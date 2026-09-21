@@ -1,3 +1,5 @@
+"""JSON verifier entry point for the CREST/xTB pyrene energy protocol."""
+
 from __future__ import annotations
 
 import json
@@ -9,6 +11,7 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.crest_
 
 
 def main() -> None:
+    """Read a candidate payload from stdin and emit pyrene protocol evidence as JSON."""
     payload = json.load(sys.stdin)
     result = evaluate_pyrene_energy_constraint(
         payload.get("candidate", {}),

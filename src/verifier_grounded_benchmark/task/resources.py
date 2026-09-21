@@ -11,10 +11,12 @@ PACK_RESOURCE_PACKAGE = "verifier_grounded_benchmark.task.packs"
 
 
 def package_resource(pack: str, filename: str) -> Any:
+    """Locate a bundled pack resource using importlib.resources, including installed wheels."""
     return files(PACK_RESOURCE_PACKAGE).joinpath(pack, filename)
 
 
 def repository_root() -> Path:
+    """Find the source checkout root, falling back to the installed package location."""
     package_path = Path(__file__).resolve().parents[2]
     for candidate in (package_path, *package_path.parents):
         if (candidate / "tasks").is_dir():
@@ -31,6 +33,7 @@ def source_root() -> Path:
 
 
 def resolve_path(path: str | Path, *, base: str | Path | None = None) -> Path:
+    """Resolve an absolute path or a path relative to the supplied base."""
     candidate = Path(path)
     if candidate.is_absolute():
         return candidate.resolve()
@@ -38,6 +41,7 @@ def resolve_path(path: str | Path, *, base: str | Path | None = None) -> Path:
 
 
 def resolve_script_path(path: str | Path, base: str | Path) -> Path:
+    """Resolve a legacy script path against its base, then the source directory."""
     candidate = Path(path)
     resolved = candidate.resolve() if candidate.is_absolute() else resolve_path(candidate, base=base)
     if resolved.exists():
@@ -49,6 +53,7 @@ def resolve_script_path(path: str | Path, base: str | Path) -> Path:
 def materialize_verifier_specs(
     specs: dict[str, dict[str, Any]], script_root: str | Path
 ) -> dict[str, dict[str, Any]]:
+    """Copy legacy verifier specs and resolve their script paths without mutating inputs."""
     materialized = deepcopy(specs)
     for spec in materialized.values():
         verification_script = spec.get("verification_script")

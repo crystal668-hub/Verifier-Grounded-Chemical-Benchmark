@@ -16,6 +16,13 @@ def score_numeric_gold(
     gold: Mapping[str, Any],
     profile: Mapping[str, Any],
 ) -> float:
+    """Compare a finite submitted number with gold using the profile's linear tolerances.
+
+    Units must match exactly. An optional minimum_value is checked before transforms.
+    The absolute transform compares magnitudes; log10 requires positive values.
+    Invalid values or units score zero. Tolerance widths mark zero-score boundaries,
+    not full-credit acceptance intervals.
+    """
     if submitted is None or submitted.get("unit") != gold.get("unit"):
         return 0.0
     value = submitted.get("value")

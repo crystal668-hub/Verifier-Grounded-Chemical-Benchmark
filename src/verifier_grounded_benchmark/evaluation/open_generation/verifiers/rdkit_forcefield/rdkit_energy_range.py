@@ -1,3 +1,5 @@
+"""JSON verifier entry point for energy_range_kcal_mol using RDKit force-field."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.cli import (

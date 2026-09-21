@@ -6,6 +6,7 @@ from typing import Any
 
 
 def parse_structured_candidates(record: dict[str, Any]) -> list[dict[str, Any]]:
+    """Validate the structured candidates list and return its candidate mappings."""
     candidates = record.get("candidates")
     if not isinstance(candidates, list) or not candidates:
         raise ValueError("candidates must be a non-empty list")

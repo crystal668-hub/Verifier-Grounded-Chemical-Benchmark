@@ -1,3 +1,5 @@
+"""JSON verifier entry point for global_electrophilicity using xTB."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.xtb.cli import (

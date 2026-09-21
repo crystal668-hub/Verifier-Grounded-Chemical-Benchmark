@@ -30,6 +30,7 @@ def evaluate_torchani_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate molecular XYZ input and return ANI2x energy or force evidence."""
     task_id = str(task.get("task_id"))
     result = base_result(task_id, spec.get("verifier_id"), torchani_versions(spec))
     property_name = spec.get("property_name")
@@ -127,6 +128,7 @@ def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | No
 
 
 def predict_torchani_properties(atoms: Any, spec: dict[str, Any]) -> dict[str, float | str]:
+    """Compute ANI2x energy and coordinate-gradient forces for an ASE molecule."""
     import torch
 
     torchani_config = spec.get("torchani") or {}
@@ -163,6 +165,7 @@ def predict_torchani_properties(atoms: Any, spec: dict[str, Any]) -> dict[str, f
 
 @cache
 def load_torchani_model(model_name: str, device: str) -> Any:
+    """Load the supported ANI2x model on the requested device using atomic-number indexing."""
     if model_name != DEFAULT_TORCHANI_MODEL:
         raise ValueError(f"unsupported TorchANI model_name: {model_name}")
 

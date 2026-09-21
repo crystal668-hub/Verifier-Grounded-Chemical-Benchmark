@@ -1,3 +1,5 @@
+"""JSON verifier entry point for torchani_energy_per_atom_hartree using TorchANI."""
+
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.torchani.cli import (
     main,
 )

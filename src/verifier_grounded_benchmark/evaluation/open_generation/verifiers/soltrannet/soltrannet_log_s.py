@@ -1,3 +1,5 @@
+"""JSON verifier entry point for soltrannet_log_s using SolTranNet."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.soltrannet.cli import (

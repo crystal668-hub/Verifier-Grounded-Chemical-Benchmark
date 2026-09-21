@@ -11,6 +11,7 @@ from typing import Any
 def evidence_reuse_key(
     candidate: Mapping[str, Any], spec: Mapping[str, Any]
 ) -> tuple[str, str, str, str]:
+    """Build the cache key used to reuse verifier measurements within one evaluation."""
     verifier_id = str(spec["verifier_id"])
     executor = spec.get("executor")
     if isinstance(executor, Mapping):

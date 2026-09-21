@@ -11,6 +11,7 @@ def score_exact_string(
     gold: Mapping[str, Any],
     profile: Mapping[str, Any],
 ) -> float:
+    """Match strings exactly, with only explicitly configured alternative partial scores."""
     if profile.get("normalization") != "exact":
         raise ValueError("unsupported string normalization")
     value = None if submitted is None else submitted.get("value")

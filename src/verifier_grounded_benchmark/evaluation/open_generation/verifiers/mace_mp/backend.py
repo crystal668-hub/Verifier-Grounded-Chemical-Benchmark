@@ -30,6 +30,7 @@ def evaluate_mace_mp_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a CIF candidate and report configured MACE-MP crystal properties."""
     task_id = str(task.get("task_id"))
     result = base_result(task_id, spec.get("verifier_id"), mace_mp_versions(spec))
     property_name = spec.get("property_name")
@@ -68,6 +69,7 @@ def evaluate_mace_mp_constraint(
 
 
 def parse_cif_atoms(cif: Any) -> tuple[Any, Any]:
+    """Parse CIF into a pymatgen Structure and corresponding ASE Atoms object."""
     if not isinstance(cif, str) or not cif.strip():
         raise ValueError("candidate must include a CIF string")
 
@@ -114,6 +116,7 @@ def check_domain(properties: dict[str, Any], domain: dict[str, Any]) -> str | No
 
 
 def predict_mace_mp_properties(atoms: Any, spec: dict[str, Any]) -> dict[str, float | str]:
+    """Attach the configured calculator and collect energy, maximum force, and stress norm."""
     mace_config = spec.get("mace_mp") or {}
     model = str(mace_config.get("model", DEFAULT_MACE_MP_MODEL))
     device = str(mace_config.get("device", DEFAULT_MACE_MP_DEVICE))

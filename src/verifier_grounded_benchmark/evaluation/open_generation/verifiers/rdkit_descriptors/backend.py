@@ -48,6 +48,7 @@ def evaluate_descriptor_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a SMILES candidate and measure the requested RDKit descriptor or similarity."""
     task_id = task["task_id"]
     result = base_result(task_id, spec.get("verifier_id"), rdkit_versions(spec))
     descriptors = spec.get("descriptors") or [spec.get("descriptor")]

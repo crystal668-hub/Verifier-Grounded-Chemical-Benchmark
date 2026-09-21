@@ -99,6 +99,7 @@ class XTBElectronicStateError(XTBError):
 
 @dataclass(frozen=True)
 class XYZAtom:
+    """An element and Cartesian position from an XYZ record."""
     symbol: str
     x: float
     y: float
@@ -107,6 +108,7 @@ class XYZAtom:
 
 @dataclass(frozen=True)
 class XYZMolecule:
+    """Parsed XYZ atoms plus the original comment used for charge conventions."""
     comment: str
     atoms: list[XYZAtom]
 
@@ -120,6 +122,7 @@ class XTBRunResult:
 
 @dataclass(frozen=True)
 class ElectronicState:
+    """Resolved molecular charge, unpaired-electron count, and total electron count."""
     charge: int
     uhf: int
     electron_count: int
@@ -131,6 +134,7 @@ class XTBRunnerProtocol(Protocol):
 
 
 def parse_xyz(xyz: str) -> XYZMolecule:
+    """Parse a strict XYZ block, checking atom count, elements, and finite coordinates."""
     if not isinstance(xyz, str) or not xyz.strip():
         raise XTBParseError("candidate must include an XYZ string")
     lines = xyz.splitlines()
@@ -274,6 +278,7 @@ def check_all_hydrogens_explicit(molecule: XYZMolecule) -> str | None:
 
 
 def parse_xyz_charge(comment: str) -> int:
+    """Read a charge comment with the exact form charge=<integer>."""
     match = re.fullmatch(r"charge=([+-]?\d+)", comment)
     if match is None:
         raise XTBParseError("XYZ comment must have exact form charge=<integer>")
@@ -284,6 +289,7 @@ def resolve_electronic_state(
     molecule: XYZMolecule,
     spec: dict[str, Any],
 ) -> ElectronicState:
+    """Resolve configured or XYZ-supplied charge and validate UHF against electron count."""
     backend = spec.get("backend") or {}
     charge_source = backend.get("charge_source", "fixed")
     if charge_source == "xyz_comment":
@@ -349,6 +355,7 @@ def component_count(molecule: XYZMolecule) -> int:
 
 
 class XTBRunner:
+    """Subprocess adapter for xTB protocols, with explicit timeout and tool errors."""
     def __init__(self, executable: str = "xtb") -> None:
         self.executable = executable
 
@@ -413,6 +420,7 @@ def evaluate_xtb_property_constraint(
     *,
     runner: XTBRunnerProtocol | None = None,
 ) -> dict[str, Any]:
+    """Validate XYZ input, electronic state, and task domain before running the configured xTB protocol."""
     task_id = str(task.get("task_id"))
     result = base_result(task_id, spec.get("verifier_id"), xtb_versions(spec))
     property_name = spec.get("property_name")
@@ -554,6 +562,7 @@ def run_property_calculation(
     timeout_seconds: float,
     spec: dict[str, Any],
 ) -> dict[str, float | str]:
+    """Execute the configured xTB workflow and extract the properties required by an objective."""
     joint_properties = list((spec.get("backend") or {}).get("joint_properties") or [])
     if joint_properties:
         if set(joint_properties) != {"dipole_moment", "homo_lumo_gap"}:
@@ -693,6 +702,7 @@ def run_property_calculation(
 
 
 def parse_xtb_output(stdout: str, *, require_converged: bool = False) -> dict[str, float]:
+    """Extract the last reported xTB properties, optionally requiring optimization convergence."""
     if require_converged and CONVERGED_PATTERN.search(stdout) is None:
         raise XTBToolError("xTB optimization did not converge")
     properties: dict[str, float] = {}
@@ -721,6 +731,7 @@ def parse_xtb_output(stdout: str, *, require_converged: bool = False) -> dict[st
 
 
 def parse_fukui_properties(stdout: str) -> dict[str, float | int | str]:
+    """Extract the strongest carbon f(+) site and its competition with non-carbon sites."""
     table_match = re.search(r"Fukui functions:\s*\n\s*#\s+f\(\+\)\s+f\(-\)\s+f\(0\)\s*\n(?P<body>.*?)(?:\n\s*-{5,}|\n\s*\|)", stdout, re.IGNORECASE | re.DOTALL)
     if table_match is None:
         return {}

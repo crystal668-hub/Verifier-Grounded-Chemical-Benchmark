@@ -33,6 +33,7 @@ SCORERS = {
 
 
 def score_constraint_value(value: float, profile: Mapping[str, Any]) -> float:
+    """Dispatch a verified numeric value to the scorer selected by profile type."""
     try:
         scorer = SCORERS[str(profile["type"])]
     except KeyError as exc:
@@ -43,6 +44,7 @@ def score_constraint_value(value: float, profile: Mapping[str, Any]) -> float:
 def score_open_generation_task(
     constraint_scores: list[Mapping[str, Any]], *, hard_gate: float = 1.0
 ) -> dict[str, float]:
+    """Multiply hard gating, geometric-mean objective score, and the quality-gate score."""
     main = [float(item["score"]) for item in constraint_scores if item["role"] == "main"]
     quality = [float(item["score"]) for item in constraint_scores if item["role"] == "quality_gate"]
     if not main:

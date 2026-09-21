@@ -29,6 +29,7 @@ def evaluate_molgpka_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a SMILES candidate and obtain the requested MolGpKa property from its runtime."""
     result = base_result(task["task_id"], spec.get("verifier_id"), molgpka_versions(spec))
     property_name = spec.get("property_name")
     if property_name != constraint.get("property"):
@@ -88,6 +89,7 @@ def evaluate_molgpka_constraint(
 
 
 def predict_molgpka_properties(smiles: str, spec: dict[str, Any]) -> dict[str, Any]:
+    """Run MolGpKa in the configured one-shot Docker runtime and parse scalar pKa outputs."""
     config = molgpka_config(spec)
     runtime_name = str(config.get("runtime", "external_docker"))
     if runtime_name != "external_docker":
@@ -110,6 +112,7 @@ def predict_molgpka_properties(smiles: str, spec: dict[str, Any]) -> dict[str, A
 
 
 def parse_molgpka_stdout(stdout: str) -> dict[str, Any]:
+    """Find the final JSON prediction in noisy tool output or raise a tool error."""
     for line in reversed([line.strip() for line in stdout.splitlines() if line.strip()]):
         try:
             return parse_molgpka_response(json.loads(line))

@@ -65,6 +65,7 @@ class CrestRunnerProtocol(Protocol):
 
 
 class CrestRunner:
+    """Run CREST conformer search and collect geometries, energies, and diagnostics."""
     def __init__(self, executable: str = "crest") -> None:
         self.executable = executable
 
@@ -142,6 +143,7 @@ def evaluate_pyrene_energy_constraint(
     crest_runner: CrestRunnerProtocol | None = None,
     xtb_runner: XTBRunnerProtocol | None = None,
 ) -> dict[str, Any]:
+    """Validate a pyrene derivative, run CREST conformer search, and verify its xTB energy."""
     result = base_result(
         str(task.get("task_id")), spec.get("verifier_id"), protocol_versions(spec)
     )
@@ -256,6 +258,7 @@ def evaluate_pyrene_energy_constraint(
 def validate_pyrene_identity(
     mol: Chem.Mol, identity: dict[str, Any]
 ) -> dict[str, Any]:
+    """Check the task-specific formula and allowed modifications to the reference pyrene scaffold."""
     reference_smiles = str(identity.get("reference_smiles"))
     reference = Chem.MolFromSmiles(reference_smiles, sanitize=True)
     if reference is None:
@@ -415,6 +418,7 @@ def embed_initial_xyz(mol: Chem.Mol, backend: dict[str, Any]) -> str:
 
 
 def validate_xyz_identity(xyz: str, expected: Chem.Mol) -> None:
+    """Reject optimized geometry whose inferred connectivity differs from the expected molecule."""
     mol = Chem.MolFromXYZBlock(xyz)
     if mol is None:
         raise PyreneIdentityError("could not parse XYZ geometry")
@@ -440,6 +444,7 @@ def validate_xyz_identity(xyz: str, expected: Chem.Mol) -> None:
 
 
 def parse_xyz_ensemble(text: str) -> tuple[list[str], list[float]]:
+    """Read concatenated CREST XYZ conformers and energies, rejecting malformed blocks."""
     lines = text.splitlines()
     conformers: list[str] = []
     energies: list[float] = []

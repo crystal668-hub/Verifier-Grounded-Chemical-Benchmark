@@ -12,6 +12,7 @@ from verifier_grounded_benchmark.evaluation.reporting.coverage import summarize_
 
 @dataclass(frozen=True)
 class EvaluationReport:
+    """Batch summary and flattened result rows, serialized without scoring configurations."""
     summary: dict[str, Any]
     rows: list[dict[str, Any]]
 
@@ -30,6 +31,7 @@ def build_report(
     answers: list[dict[str, Any]],
     task_ids: list[str],
 ) -> EvaluationReport:
+    """Aggregate evaluated rows; an official benchmark score requires complete, error-free coverage."""
     rows = [summarize_row(result) for result in results]
     scores = [float(row["score"]) for row in rows if row["score"] is not None]
     coverage = summarize_coverage(answers, task_ids)
@@ -55,6 +57,7 @@ def build_report(
 
 
 def summarize_row(result: dict[str, Any]) -> dict[str, Any]:
+    """Flatten a detailed evaluation result into the public batch-report row schema."""
     scores = result.get("scores") or {}
     row = {
         "schema_version": result.get("schema_version"),

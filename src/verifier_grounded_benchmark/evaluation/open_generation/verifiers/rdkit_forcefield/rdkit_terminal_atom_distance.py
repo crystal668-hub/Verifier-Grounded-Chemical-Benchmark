@@ -1,3 +1,5 @@
+"""JSON verifier entry point for terminal_atom_distance using RDKit force-field."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_forcefield.cli import (

@@ -6,12 +6,14 @@ from typing import Any
 
 
 class PropertyAnswerParseError(ValueError):
+    """A malformed property-answer structure that should receive a submission failure."""
     pass
 
 
 def parse_multi_property(
     answer: dict[str, Any], requested_names: set[str]
 ) -> tuple[dict[str, dict[str, Any]], list[str]]:
+    """Index submitted property fields while rejecting malformed or duplicate entries."""
     items = answer.get("answers")
     if items is None:
         return {}, []

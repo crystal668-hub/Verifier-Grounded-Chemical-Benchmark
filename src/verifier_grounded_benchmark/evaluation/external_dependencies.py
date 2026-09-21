@@ -13,6 +13,7 @@ from typing import Any
 
 
 class ExternalDependencyError(RuntimeError):
+    """Collect failed executable/version checks for reporting before verifier evaluation."""
     def __init__(self, checks: list[dict[str, Any]]) -> None:
         self.checks = checks
         failures = [str(check["message"]) for check in checks if check["status"] == "error"]

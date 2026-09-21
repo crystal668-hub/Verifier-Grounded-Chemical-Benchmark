@@ -18,6 +18,7 @@ from verifier_grounded_benchmark.evaluation.property_calculation.parsing.single_
 def parse_answer(
     answer: dict[str, Any], requested_names: list[str]
 ) -> tuple[dict[str, dict[str, Any]], list[str]]:
+    """Normalize single- or multi-property answers and report unrequested property names."""
     if len(requested_names) == 1 and "answers" not in answer:
         return parse_single_value(answer, requested_names[0]), []
     return parse_multi_property(answer, set(requested_names))
@@ -37,6 +38,7 @@ class ExtractionResult:
 def normalize_answer_record(
     record: dict[str, Any], task: dict[str, Any]
 ) -> ExtractionResult:
+    """Return a normalized property answer or an explicit parse failure."""
     if not isinstance(record.get("response", record.get("raw_answer")), str):
         return _normalize_payload(record, record)
     raw_answer = record.get("response", record.get("raw_answer"))

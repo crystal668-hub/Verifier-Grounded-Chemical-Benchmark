@@ -34,6 +34,7 @@ from verifier_grounded_benchmark.task.models import (
 
 
 class EvaluationEngine:
+    """Dispatch validated tasks to verifier-based or gold-answer evaluation."""
     def __init__(
         self,
         task_pack: TaskPack,
@@ -51,6 +52,7 @@ class EvaluationEngine:
         self._property_calculation = PropertyCalculationEvaluator()
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        """Normalize and score an answer; unknown IDs and evaluator failures become error results."""
         task_id = answer.get("task_id")
         if not isinstance(task_id, str) or not task_id:
             return error_result(
@@ -104,6 +106,7 @@ class EvaluationEngine:
         return result
 
     def evaluate_many(self, answers: list[dict[str, Any]]) -> EvaluationReport:
+        """Evaluate each record and compute coverage against the entire loaded task pack."""
         results = [self.evaluate_one(answer) for answer in answers]
         return build_report(results, answers, list(self._tasks))
 
@@ -119,6 +122,7 @@ class EvaluationEngine:
 def _normalize_property_answer(
     answer: dict[str, Any], task: Any
 ) -> tuple[dict[str, Any], str | None, str | None]:
+    """Accept structured answers or extract the required JSON final-answer line."""
     if "response" not in answer and not isinstance(answer.get("raw_answer"), str):
         return answer, None, None
     raw_answer = answer.get("response", answer.get("raw_answer"))

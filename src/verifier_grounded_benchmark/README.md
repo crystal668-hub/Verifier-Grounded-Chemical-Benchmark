@@ -8,8 +8,8 @@ Basic 013 的容差为 ±3 kcal/mol；Advanced 008、010、013 分别为
 ±10 kcal/mol、±0.1 Å、±5 kcal/mol，并先对答案与 gold 取绝对值再比较。
 容差仍表示线性评分降至零的误差宽度，gold 和字段权重不变。
 Advanced 011 使用半径 1.2 Å 的球形探针。
-RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001`–`rdkit_014`、
-`xtb_001`–`xtb_020`；已有答案记录需同步更新 task-id。
+RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001_qed_max`–`rdkit_014_caffeine_similarity_max`、
+`xtb_001_gap_window`–`xtb_020_pyrene_substituent_energy_min`；已有答案记录需同步更新 task-id。
 
 ## QuickStart
 
@@ -28,13 +28,15 @@ print(result["scores"]["score"])
 
 | Canonical name | 内容 |
 | --- | --- |
-| `rdkit` | 开放分子生成与 RDKit descriptor/force-field 评分 |
-| `xtb` | 开放分子或 XYZ 结构生成与 xTB 评分 |
+| `open_generation_rdkit` | 开放分子生成与 RDKit descriptor/force-field 评分 |
+| `open_generation_xtb` | 开放分子或 XYZ 结构生成与 xTB 评分 |
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
 | `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
 
-v0.10.0 仅支持上述 canonical names；旧的 `property_calculation` 和
-`property_calculation_easy` 名称已移除。
+v0.10.0 仅支持上述 canonical names；旧的 `rdkit`、`xtb`、
+`property_calculation` 和 `property_calculation_easy` 名称已移除。
+开放生成任务通过 verifier 计算候选分子的性质；性质计算任务依据 gold answer
+和逐题 scoring profile 评分，不调用 verifier，也不需要 verifier 配置文件。
 
 ## Public API
 
@@ -64,14 +66,20 @@ Property calculation tracks 不提供内置 `sample_answers()`；RDKit 和 xTB �
 ## CLI
 
 ```bash
-vgb-score --track rdkit --answers answers.jsonl --require-complete
+vgb-score --track open_generation_rdkit --answers answers.jsonl --require-complete
 ```
 
-开发态自定义 pack：
+开发态自定义开放生成 pack：
 
 ```bash
 vgb-score --tasks tasks.yaml --specs verifier_specs.yaml \
   --scoring scoring.yaml --answers answers.jsonl
+```
+
+开发态自定义性质计算 pack：
+
+```bash
+vgb-score --tasks tasks.yaml --scoring scoring.yaml --answers answers.jsonl
 ```
 
 ## Pack layout
@@ -80,8 +88,11 @@ vgb-score --tasks tasks.yaml --specs verifier_specs.yaml \
 <track>/
   tasks.yaml          # 题目、输入、prompt、answer schema
   scoring.yaml        # gold、scoring profiles、聚合和失败策略
-  verifier_specs.yaml # verifier 实现与运行环境
+  verifier_specs.yaml # 仅开放生成 track：verifier 实现与运行环境
 ```
 
 `tasks.yaml` 与 `scoring.yaml` 在发行包中均可用于离线审计；公共 API 不会在普通任务视图
 或评分结果中重复暴露评分配置。正式防止测试集调参需要不携带 scoring config 的 server-side pack。
+
+性质计算 track 仅需要 `tasks.yaml` 和 `scoring.yaml`，不提供空 verifier 占位文件。
+`task/calibration/` 为源码维护用校准数据，整个目录均不进入 wheel 或 sdist。

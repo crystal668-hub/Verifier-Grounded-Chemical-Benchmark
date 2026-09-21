@@ -36,6 +36,7 @@ def evaluate_openmm_openff_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a ligand candidate and report properties from the configured OpenFF/OpenMM protocol."""
     result = base_result(task["task_id"], spec.get("verifier_id"), openmm_openff_versions(spec))
     property_name = spec.get("property_name")
     allowed_properties = {property_name, *(spec.get("additional_property_names") or [])}

@@ -1,0 +1,1 @@
+"""MACE-MP verifier integration."""

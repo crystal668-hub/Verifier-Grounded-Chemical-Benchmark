@@ -23,6 +23,7 @@ def run_property_script(
     evaluator: Evaluator,
     sort_keys: bool = True,
 ) -> None:
+    """Read one JSON payload from stdin, check the property binding, and emit verifier JSON."""
     payload: dict[str, Any] = json.load(sys.stdin)
     task = payload.get("task", {})
     constraint = payload.get("constraint", {})

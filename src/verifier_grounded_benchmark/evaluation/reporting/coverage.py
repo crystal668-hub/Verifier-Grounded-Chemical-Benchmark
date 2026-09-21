@@ -8,6 +8,7 @@ from typing import Any
 def summarize_coverage(
     answers: list[dict[str, Any]], task_ids: list[str]
 ) -> dict[str, Any]:
+    """Report missing, duplicate, and unknown task IDs relative to the expected inventory."""
     task_id_set = set(task_ids)
     submitted_ids = [
         answer.get("task_id")

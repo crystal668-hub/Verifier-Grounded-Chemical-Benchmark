@@ -15,6 +15,7 @@ from verifier_grounded_benchmark.task.schema.common import (
 def validate_verifier_specs(
     items: list[Any], *, require_module_executor: bool = False
 ) -> dict[str, dict[str, Any]]:
+    """Index verifier specs and validate executors and declared external dependencies."""
     indexed = index_unique(items, "verifier_id", "verifier")
     for verifier_id, spec in indexed.items():
         _validate_external_dependencies(verifier_id, spec)

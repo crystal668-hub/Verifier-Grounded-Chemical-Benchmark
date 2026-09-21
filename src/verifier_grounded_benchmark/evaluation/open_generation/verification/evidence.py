@@ -10,6 +10,7 @@ EvidenceOutcome = Literal["verified", "candidate_rejected", "evaluation_failed"]
 
 @dataclass(frozen=True)
 class VerificationEvidence:
+    """Verifier measurements, provenance, and failure classification used by task scoring."""
     outcome: EvidenceOutcome
     task_id: str
     verifier_id: str

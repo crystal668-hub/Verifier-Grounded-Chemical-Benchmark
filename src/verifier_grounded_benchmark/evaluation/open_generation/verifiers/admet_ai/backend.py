@@ -20,6 +20,7 @@ from verifier_grounded_benchmark.evaluation.open_generation.verifiers.common.res
 
 @lru_cache(maxsize=4)
 def load_model_cached(include_physchem: bool, drugbank_percentiles: bool, num_workers: int):
+    """Cache an ADMET-AI model by options while capturing initialization output."""
     stdout = io.StringIO()
     stderr = io.StringIO()
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
@@ -43,6 +44,7 @@ def load_model(spec: dict[str, Any]):
 
 
 def quiet_predict(model: Any, smiles: str) -> dict[str, float]:
+    """Run model prediction with stdout and stderr redirected away from the JSON protocol."""
     stdout = io.StringIO()
     stderr = io.StringIO()
     with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
@@ -56,6 +58,7 @@ def evaluate_admet_ai_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a SMILES candidate and return ADMET-AI property predictions as verifier evidence."""
     task_id = task["task_id"]
     result = base_result(task_id, spec.get("verifier_id"), admet_ai_versions(spec))
     property_name = spec.get("property_name")

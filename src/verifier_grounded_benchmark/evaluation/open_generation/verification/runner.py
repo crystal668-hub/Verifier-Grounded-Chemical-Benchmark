@@ -31,6 +31,7 @@ TASK_FAILURES = {"task_error", "verifier_spec_error"}
 
 
 class SubprocessPropertyVerifier:
+    """Execute a configured verifier in a subprocess and normalize its evidence or failure."""
     def __init__(self, *, python_executable: str = sys.executable) -> None:
         self.python_executable = python_executable
 
@@ -41,6 +42,7 @@ class SubprocessPropertyVerifier:
         constraint: Mapping[str, Any],
         spec: Mapping[str, Any],
     ) -> VerificationEvidence:
+        """Execute the module or legacy script and classify timeout, process, and output failures."""
         payload = {
             "task": {
                 key: _plain(task[key])
@@ -188,6 +190,7 @@ def build_script_payload(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Build the verifier JSON input from one candidate and the task context it needs."""
     candidates = answer.get("candidates")
     candidate = (
         candidates[0]
@@ -213,6 +216,7 @@ def run_verification_script(
     timeout_seconds: float,
     python_executable: str = sys.executable,
 ) -> dict[str, Any]:
+    """Run a legacy verifier script with a timeout and return serialized evidence."""
     spec = {
         **payload.get("verifier_spec", {}),
         "verification_script": str(script_path),

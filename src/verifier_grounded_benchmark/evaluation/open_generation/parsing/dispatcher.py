@@ -19,6 +19,7 @@ from verifier_grounded_benchmark.evaluation.open_generation.parsing.structured_c
 
 @dataclass(frozen=True)
 class ParsedCandidates:
+    """Parsed candidate objects with optional original response and extracted answer text."""
     candidates: list[dict[str, Any]]
     raw_answer: str | None = None
     extracted_answer: str | None = None
@@ -26,6 +27,7 @@ class ParsedCandidates:
 
 @dataclass(frozen=True)
 class ExtractionResult:
+    """A normalized answer or an explicit parse failure for compatibility callers."""
     answer: dict[str, Any] | None
     failure_type: str | None
     message: str | None
@@ -36,6 +38,7 @@ class ExtractionResult:
 
 
 def parse_answer(record: dict[str, Any], task: Mapping[str, Any]) -> ParsedCandidates:
+    """Parse structured candidates or the final-answer format declared by the task schema."""
     if "candidates" in record:
         return ParsedCandidates(parse_structured_candidates(record))
     raw_answer = record.get("response", record.get("raw_answer"))
@@ -57,6 +60,7 @@ def parse_answer(record: dict[str, Any], task: Mapping[str, Any]) -> ParsedCandi
 def normalize_answer_record(
     record: dict[str, Any], task: Mapping[str, Any]
 ) -> ExtractionResult:
+    """Normalize an answer record, returning parse failures as data instead of exceptions."""
     try:
         parsed = parse_answer(record, task)
     except ValueError as exc:

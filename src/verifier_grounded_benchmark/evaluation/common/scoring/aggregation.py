@@ -8,11 +8,13 @@ from numbers import Real
 
 
 def arithmetic_mean(values: Iterable[float]) -> float:
+    """Average a nonempty sequence of finite scores in [0, 1]."""
     scores = _validated_scores(values)
     return sum(scores) / len(scores)
 
 
 def geometric_mean(values: Iterable[float]) -> float:
+    """Combine finite scores in [0, 1]; any zero makes the aggregate zero."""
     scores = _validated_scores(values)
     if any(value == 0.0 for value in scores):
         return 0.0
@@ -20,6 +22,7 @@ def geometric_mean(values: Iterable[float]) -> float:
 
 
 def minimum(values: Iterable[float]) -> float:
+    """Return the weakest score, rejecting empty or invalid score sequences."""
     return min(_validated_scores(values))
 
 

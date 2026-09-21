@@ -8,6 +8,7 @@ from typing import Any
 
 
 def parse_final_answer_block(raw_answer: str, schema: Mapping[str, Any]) -> tuple[dict[str, Any], str]:
+    """Extract a fenced final-answer block using the language declared by the task schema."""
     prefix = schema.get("final_answer_prefix")
     if not isinstance(prefix, str) or not prefix:
         raise ValueError("answer_schema must include final_answer_prefix")

@@ -1,4 +1,4 @@
-"""Result schema v2 construction helpers."""
+"""Result schema v3 construction helpers."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ def scored_result(
     failure_type: str | None = None,
     message: str | None = None,
 ) -> dict[str, Any]:
+    """Build a schema 3 result with a finite score in [0, 1], including scored rejections."""
     score = scores.get("score")
     if not isinstance(score, (int, float)) or isinstance(score, bool) or not 0.0 <= float(score) <= 1.0:
         raise ValueError("scored result requires a score in [0, 1]")
@@ -44,6 +45,7 @@ def error_result(
     message: str,
     versions: dict[str, Any],
 ) -> dict[str, Any]:
+    """Build a schema 3 infrastructure/task error with null scores rather than a scored zero."""
     return {
         "schema_version": 3,
         "task_id": task_id,

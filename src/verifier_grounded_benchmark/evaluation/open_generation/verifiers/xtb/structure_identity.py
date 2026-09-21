@@ -19,6 +19,7 @@ def validate_structure_identity(
     charge: int,
     require_stereochemistry: bool,
 ) -> dict[str, Any]:
+    """Reconstruct candidate bonding and enforce reference identity, optionally including stereochemistry."""
     reference = Chem.MolFromSmiles(reference_smiles)
     if reference is None:
         raise StructureIdentityError("reference SMILES is invalid")

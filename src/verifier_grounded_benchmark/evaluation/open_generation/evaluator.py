@@ -34,6 +34,7 @@ from verifier_grounded_benchmark.task.models import OpenGenerationTaskSpec
 
 
 class OpenGenerationEvaluator:
+    """Verify a submitted candidate and score measured evidence against configured goals."""
     def __init__(self, verifier: PropertyVerifier | None = None) -> None:
         self.verifier = verifier or SubprocessPropertyVerifier()
 
@@ -46,6 +47,7 @@ class OpenGenerationEvaluator:
         *,
         versions: dict[str, Any],
     ) -> dict[str, Any]:
+        """Parse one candidate, apply hard gates, reuse verifier evidence, and aggregate objectives."""
         try:
             parsed = parse_answer(answer, task.raw)
         except ValueError as exc:

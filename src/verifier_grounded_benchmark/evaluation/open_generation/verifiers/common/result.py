@@ -19,6 +19,7 @@ def base_result(
     verifier_id: Any,
     versions: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Create the common verifier-result envelope before measurements or failure details."""
     return {
         "outcome": "evaluation_failed",
         "task_id": task_id,
@@ -40,6 +41,7 @@ def error_result(
     *,
     properties: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Classify a verifier failure into candidate rejection or evaluation failure."""
     result["outcome"] = (
         "candidate_rejected" if failure_type in CANDIDATE_FAILURES else "evaluation_failed"
     )
@@ -63,6 +65,7 @@ def verified_result(
     *,
     canonical_candidate: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    """Attach measured properties and canonical candidate data to a successful verifier result."""
     result.update(
         {
             "outcome": "verified",

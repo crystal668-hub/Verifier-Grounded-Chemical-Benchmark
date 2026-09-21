@@ -31,12 +31,14 @@ class DockerRuntimeToolError(RuntimeError):
 
 @dataclass(frozen=True)
 class DockerCommandResult:
+    """Captured exit status and text streams from one Docker command."""
     stdout: str
     stderr: str
     returncode: int
 
 
 def resolve_docker_executable(docker_executable: str | None = None) -> str:
+    """Resolve the configured Docker executable or raise an environment error."""
     configured = docker_executable or os.environ.get("VGB_DOCKER_EXECUTABLE") or "docker"
     resolved = configured if os.sep in configured else shutil.which(configured)
     if not resolved:
@@ -52,6 +54,7 @@ def run_docker_command(
     input_text: str | None = None,
     check: bool = True,
 ) -> DockerCommandResult:
+    """Run Docker with captured output, mapping timeout and execution failures to runtime errors."""
     executable = resolve_docker_executable(docker_executable)
     command = [executable, *args]
     try:
@@ -108,6 +111,7 @@ def run_one_shot_container(
     timeout_seconds: float = 60,
     workdir: str | None = None,
 ) -> str:
+    """Run a temporary container with --rm and return its stdout."""
     args = ["run", "--rm"]
     if platform:
         args.extend(["--platform", platform])
@@ -151,6 +155,7 @@ def wait_for_http_json(
     startup_timeout_seconds: float = 60,
     poll_interval_seconds: float = 1,
 ) -> Any:
+    """Poll a JSON endpoint until it becomes ready or the startup deadline expires."""
     deadline = time.monotonic() + startup_timeout_seconds
     last_error: Exception | None = None
     while True:
@@ -205,6 +210,7 @@ def ensure_http_container(
     docker_executable: str | None = None,
     startup_timeout_seconds: float = 60,
 ) -> None:
+    """Reuse or start the named model container and wait for its HTTP endpoint."""
     inspect = run_docker_command(
         ["container", "inspect", "-f", "{{.State.Running}}", container_name],
         docker_executable=docker_executable,

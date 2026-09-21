@@ -28,6 +28,7 @@ def evaluate_matgl_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a crystal candidate and return the requested MatGL prediction as verifier evidence."""
     task_id = str(task.get("task_id"))
     result = base_result(task_id, spec.get("verifier_id"), matgl_versions(spec))
     property_name = spec.get("property_name")
@@ -84,6 +85,7 @@ def evaluate_matgl_constraint(
 
 
 def load_matgl_model(spec: dict[str, Any]) -> Any:
+    """Resolve the configured pretrained MatGL model through the cached model loader."""
     matgl_config = spec.get("matgl") or {}
     model_name = matgl_config.get("model_name", DEFAULT_MATGL_MODEL)
     return _load_matgl_model_by_name(str(model_name))
@@ -97,6 +99,7 @@ def _load_matgl_model_by_name(model_name: str) -> Any:
 
 
 def parse_prediction(property_name: str, prediction: Any) -> dict[str, float | str]:
+    """Convert a MatGL prediction into a finite scalar property with its declared unit."""
     if property_name == "formation_energy":
         return {"formation_energy": float_value(prediction), "formation_energy_unit": "eV/atom"}
     if property_name == "bandgap":

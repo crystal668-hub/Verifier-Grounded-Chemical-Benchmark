@@ -1,3 +1,5 @@
+"""JSON verifier entry point for molgpka_min_pka using MolGpKa."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.molgpka.cli import (

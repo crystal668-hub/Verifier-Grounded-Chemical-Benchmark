@@ -13,6 +13,7 @@ from typing import Any
 
 @dataclass(frozen=True)
 class LinearGoalSpec:
+    """Validated full-score interval and positive linear decay widths; None leaves a side unbounded."""
     lower: float | None
     upper: float | None
     lower_width: float | None
@@ -39,6 +40,7 @@ class LinearGoalSpec:
 
 @dataclass(frozen=True)
 class ConstraintSpec:
+    """Bind an open-generation objective to its verifier, scoring profile, and role."""
     property: str
     type: str
     role: str
@@ -48,6 +50,7 @@ class ConstraintSpec:
 
 @dataclass(frozen=True)
 class HardConstraintSpec:
+    """A verifier-backed eligibility condition evaluated before soft objectives."""
     property: str
     verifier_id: str
     operator: str
@@ -58,6 +61,7 @@ class HardConstraintSpec:
 
 @dataclass(frozen=True)
 class VerifierSpec:
+    """Immutable verifier configuration and its unique lookup identifier."""
     verifier_id: str
     raw: Mapping[str, Any]
 
@@ -67,6 +71,7 @@ class VerifierSpec:
 
 @dataclass(frozen=True)
 class TaskSpec:
+    """Validated task identity and frozen source mapping, including private scoring data."""
     task_id: str
     task_type: str
     raw: Mapping[str, Any]
@@ -101,17 +106,20 @@ def public_task_dict(task: Mapping[str, Any], *, include_gold: bool = False) -> 
 
 @dataclass(frozen=True)
 class OpenGenerationTaskSpec(TaskSpec):
+    """A candidate-generation task with verifier-backed soft and hard constraints."""
     constraints: tuple[ConstraintSpec, ...]
     hard_constraints: tuple[HardConstraintSpec, ...] = ()
 
 
 @dataclass(frozen=True)
 class PropertyCalculationTaskSpec(TaskSpec):
+    """A fixed-input task evaluated against gold answers without a verifier."""
     pass
 
 
 @dataclass(frozen=True)
 class TaskPack:
+    """Immutable validated tasks, verifier definitions, and independently configured profiles."""
     schema_version: int
     pack_id: str
     version: str
@@ -152,10 +160,12 @@ class TaskPack:
 
 
 def freeze_mapping(value: Mapping[str, Any]) -> Mapping[str, Any]:
+    """Recursively freeze a configuration mapping so evaluation cannot mutate shared state."""
     return _freeze(value)
 
 
 def merge_task_packs(packs: list[TaskPack], *, pack_id: str = "suite") -> TaskPack:
+    """Combine packs, rejecting incompatible scoring versions and conflicting identifiers."""
     if not packs:
         raise ValueError("suite requires at least one task pack")
     scoring_versions = {pack.scoring_version for pack in packs}

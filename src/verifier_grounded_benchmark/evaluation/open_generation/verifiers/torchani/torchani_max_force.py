@@ -1,3 +1,5 @@
+"""JSON verifier entry point for torchani_max_force_hartree_per_angstrom using TorchANI."""
+
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.torchani.cli import (
     main,
 )

@@ -12,6 +12,7 @@ def score_task(
     field_scores: Mapping[str, float],
     comparison_groups: Sequence[Mapping[str, object]] | None = None,
 ) -> tuple[float, list[dict[str, object]]]:
+    """Average field scores, or average configured comparison groups including all-correct gates."""
     if comparison_groups is None:
         return arithmetic_mean(list(field_scores.values())), []
 

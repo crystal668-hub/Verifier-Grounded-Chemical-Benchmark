@@ -25,6 +25,7 @@ def evaluate_openmm_core_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Evaluate the configured OpenMM core protocol and return measurements or a classified failure."""
     del candidate
     result = base_result(task["task_id"], spec.get("verifier_id"), openmm_core_versions(spec))
     property_name = spec.get("property_name")

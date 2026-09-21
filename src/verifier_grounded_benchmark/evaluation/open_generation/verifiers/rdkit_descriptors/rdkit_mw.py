@@ -1,3 +1,5 @@
+"""JSON verifier entry point for mw using RDKit descriptor."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.cli import (

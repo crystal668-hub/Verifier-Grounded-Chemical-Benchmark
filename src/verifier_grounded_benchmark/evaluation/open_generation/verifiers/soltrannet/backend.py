@@ -33,6 +33,7 @@ def evaluate_soltrannet_constraint(
     constraint: dict[str, Any],
     spec: dict[str, Any],
 ) -> dict[str, Any]:
+    """Validate a SMILES candidate and obtain aqueous-solubility evidence from SolTranNet."""
     result = base_result(task["task_id"], spec.get("verifier_id"), soltrannet_versions(spec))
     property_name = spec.get("property_name")
     if property_name != constraint.get("property"):
@@ -84,6 +85,7 @@ def evaluate_soltrannet_constraint(
 
 
 def predict_soltrannet_log_s(smiles: str, spec: dict[str, Any]) -> float:
+    """Query the configured SolTranNet runtime and return the predicted logS value."""
     config = soltrannet_config(spec)
     runtime_name = str(config.get("runtime", "external_docker"))
     if runtime_name != "external_docker":

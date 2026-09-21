@@ -16,6 +16,7 @@ from verifier_grounded_benchmark.task.schema.common import (
 def validate_property_calculation_task(
     task: dict[str, Any], profiles: dict[str, dict[str, Any]]
 ) -> None:
+    """Validate requested fields, gold answers, domains, and scoring references without verifiers."""
     task_id = task["task_id"]
     requested = index_unique(
         require_list(

@@ -1,3 +1,5 @@
+"""JSON verifier entry point for hERG using ADMET-AI."""
+
 from __future__ import annotations
 
 from verifier_grounded_benchmark.evaluation.open_generation.verifiers.admet_ai.cli import (

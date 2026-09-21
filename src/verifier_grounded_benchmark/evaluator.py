@@ -14,6 +14,7 @@ from verifier_grounded_benchmark.task.models import TaskPack, public_task_dict
 
 
 class Evaluator:
+    """Public compatibility wrapper accepting a validated pack or legacy task mappings."""
     def __init__(
         self,
         tasks: TaskPack | dict[str, dict[str, Any]],
@@ -39,6 +40,7 @@ class Evaluator:
         return self.task_pack.verifier_specs_by_id
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        """Return the detailed result for one submission, including failure scope and scores."""
         return self.engine.evaluate_one(answer)
 
     def evaluate_many(
@@ -47,5 +49,6 @@ class Evaluator:
         *,
         as_report: bool = False,
     ) -> dict[str, Any] | EvaluationReport:
+        """Return batch scores and coverage as a report object or detached dictionary."""
         report = self.engine.evaluate_many(answers)
         return report if as_report else report.to_dict()
