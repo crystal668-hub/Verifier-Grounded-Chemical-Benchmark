@@ -1,0 +1,80 @@
+{
+  "status": "research_candidate_only",
+  "formal_scoring_unchanged": true,
+  "family": "noncovalent_energy",
+  "override_width_kcal_per_mol": 2.0,
+  "tracks": {
+    "property_calculation_basic": {
+      "tasks": 51,
+      "baseline": {
+        "means": {
+          "gpt_sol_skill_on": 86.06945680337506,
+          "gpt_sol_skill_off": 88.25376152069488,
+          "qwen_flash_skill_on": 86.47874743370193,
+          "qwen_flash_skill_off": 86.19780245298304
+        },
+        "mean_within_task_sd": 10.914675269658684,
+        "mean_pairwise_absolute_gap": 14.04114489008055,
+        "all_groups_at_least_90_count": 19,
+        "all_groups_zero_count": 0,
+        "individual_zero_rate": 0.03431372549019608
+      },
+      "candidate": {
+        "means": {
+          "gpt_sol_skill_on": 87.71860119857112,
+          "gpt_sol_skill_off": 89.51846740304784,
+          "qwen_flash_skill_on": 87.28266900232937,
+          "qwen_flash_skill_off": 86.70760637455169
+        },
+        "mean_within_task_sd": 10.058935209986592,
+        "mean_pairwise_absolute_gap": 12.861997529083819,
+        "all_groups_at_least_90_count": 19,
+        "all_groups_zero_count": 0,
+        "individual_zero_rate": 0.029411764705882353
+      },
+      "mean_change": {
+        "gpt_sol_skill_on": 1.649144395196081,
+        "gpt_sol_skill_off": 1.2647058823529436,
+        "qwen_flash_skill_on": 0.80392156862745,
+        "qwen_flash_skill_off": 0.5098039215686279
+      },
+      "affected_task_count": 6
+    },
+    "property_calculation_advanced": {
+      "tasks": 20,
+      "baseline": {
+        "means": {
+          "gpt_sol_skill_on": 59.225880858286594,
+          "gpt_sol_skill_off": 40.889623861004544,
+          "qwen_flash_skill_on": 53.06998726822736,
+          "qwen_flash_skill_off": 36.5741058211407
+        },
+        "mean_within_task_sd": 24.593465493219924,
+        "mean_pairwise_absolute_gap": 31.23250702713537,
+        "all_groups_at_least_90_count": 0,
+        "all_groups_zero_count": 3,
+        "individual_zero_rate": 0.3375
+      },
+      "candidate": {
+        "means": {
+          "gpt_sol_skill_on": 60.91200585828661,
+          "gpt_sol_skill_off": 42.564623861004534,
+          "qwen_flash_skill_on": 55.999737268227356,
+          "qwen_flash_skill_off": 39.74910582114071
+        },
+        "mean_within_task_sd": 24.51214655214215,
+        "mean_pairwise_absolute_gap": 31.316902860468705,
+        "all_groups_at_least_90_count": 0,
+        "all_groups_zero_count": 2,
+        "individual_zero_rate": 0.275
+      },
+      "mean_change": {
+        "gpt_sol_skill_on": 1.6861250000000094,
+        "gpt_sol_skill_off": 1.6750000000000043,
+        "qwen_flash_skill_on": 2.9297500000000065,
+        "qwen_flash_skill_off": 3.175000000000008
+      },
+      "affected_task_count": 2
+    }
+  }
+}
