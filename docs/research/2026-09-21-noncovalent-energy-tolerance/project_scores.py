@@ -124,7 +124,7 @@ def run(source_dir: Path, output_dir: Path) -> dict:
             candidate = candidate_scoring(scoring)
             scoring_path = Path(temporary) / f"{track}.yaml"
             scoring_path.write_text(yaml.safe_dump(candidate, sort_keys=False, allow_unicode=True))
-            projected = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml", scoring_path)
+            projected = load_task_pack(directory / "tasks.yaml", None, scoring_path)
             projected_tasks = {task.task_id: task for task in projected.tasks}
             observations = _observations(source_dir / filename, projected_tasks)
             baseline = np.array([

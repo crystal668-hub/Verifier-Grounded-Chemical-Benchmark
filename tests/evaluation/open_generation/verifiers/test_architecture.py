@@ -33,7 +33,7 @@ def _pack(name: str):
 
 
 def test_all_formal_verifier_specs_use_importable_modules() -> None:
-    for pack_name in ("rdkit", "xtb"):
+    for pack_name in ("open_generation_rdkit", "open_generation_xtb"):
         pack = _pack(pack_name)
         for spec in pack.verifier_specs:
             executor = spec.raw["executor"]
@@ -56,8 +56,8 @@ def test_concrete_backends_do_not_import_or_emit_scoring() -> None:
 
 
 def test_rdkit_backend_returns_verified_evidence_without_score() -> None:
-    pack = _pack("rdkit")
-    task = pack.tasks_by_id["rdkit_001"]
+    pack = _pack("open_generation_rdkit")
+    task = pack.tasks_by_id["rdkit_001_qed_max"]
     constraint = task["constraints"][0]
     spec = pack.verifier_specs_by_id[constraint["verifier_id"]]
 
@@ -75,8 +75,8 @@ def test_rdkit_backend_returns_verified_evidence_without_score() -> None:
 
 
 def test_candidate_parse_failure_is_candidate_rejected_evidence() -> None:
-    pack = _pack("xtb")
-    task = pack.tasks_by_id["xtb_001"]
+    pack = _pack("open_generation_xtb")
+    task = pack.tasks_by_id["xtb_001_gap_window"]
     constraint = task["constraints"][0]
     spec = pack.verifier_specs_by_id[constraint["verifier_id"]]
 
@@ -89,8 +89,8 @@ def test_candidate_parse_failure_is_candidate_rejected_evidence() -> None:
 
 
 def test_module_runner_returns_score_free_evidence() -> None:
-    pack = _pack("rdkit")
-    task = pack.tasks_by_id["rdkit_001"]
+    pack = _pack("open_generation_rdkit")
+    task = pack.tasks_by_id["rdkit_001_qed_max"]
     constraint = task["constraints"][0]
     spec = pack.verifier_specs_by_id[constraint["verifier_id"]]
 

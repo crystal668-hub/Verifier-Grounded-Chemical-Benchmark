@@ -14,15 +14,15 @@ from verifier_grounded_benchmark.task.schema.common import linear_goal_from_prof
 def _load(pack: str):
     return load_task_pack(
         package_resource(pack, "tasks.yaml"),
-        package_resource(pack, "verifier_specs.yaml"),
+        package_resource(pack, "verifier_specs.yaml") if pack.startswith("open_generation_") else None,
         package_resource(pack, "scoring.yaml"),
     )
 
 
 def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
     packs = [
-        _load("rdkit"),
-        _load("xtb"),
+        _load("open_generation_rdkit"),
+        _load("open_generation_xtb"),
         _load("property_calculation_advanced"),
     ]
     task_ids = [task.task_id for pack in packs for task in pack.tasks]
@@ -34,7 +34,7 @@ def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
 
 
 def test_all_numeric_constraints_normalize_to_linear_goal() -> None:
-    for pack_name in ("rdkit", "xtb"):
+    for pack_name in ("open_generation_rdkit", "open_generation_xtb"):
         pack = _load(pack_name)
         for task in pack.tasks:
             for constraint in task.raw["constraints"]:
@@ -72,13 +72,13 @@ def test_exact_string_partial_scores_reject_invalid_values(
     with pytest.raises(ValueError, match=r"partial_scores|partial scores"):
         load_task_pack(
             package_resource("property_calculation_advanced", "tasks.yaml"),
-            package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+            None,
             scoring_path,
         )
 
 
 def test_repeated_semantics_reuse_one_profile() -> None:
-    rdkit = _load("rdkit")
+    rdkit = _load("open_generation_rdkit")
     logp_profiles = {
         constraint["scoring_profile"]
         for task in rdkit.tasks
@@ -87,7 +87,7 @@ def test_repeated_semantics_reuse_one_profile() -> None:
     }
     assert len(logp_profiles) == 1
 
-    xtb = _load("xtb")
+    xtb = _load("open_generation_xtb")
     relaxation_profiles = {
         constraint["scoring_profile"]
         for task in xtb.tasks
@@ -98,7 +98,7 @@ def test_repeated_semantics_reuse_one_profile() -> None:
 
 
 def test_calibration_duplicates_reuse_formal_profiles() -> None:
-    formal = _load("xtb")
+    formal = _load("open_generation_xtb")
     calibration = load_task_pack(
         files("verifier_grounded_benchmark.task.calibration.xtb").joinpath("tasks.yaml"),
         files("verifier_grounded_benchmark.task.calibration.xtb").joinpath("verifier_specs.yaml"),
@@ -115,7 +115,7 @@ def test_calibration_duplicates_reuse_formal_profiles() -> None:
 
 
 def test_xtb_gap_dipole_profiles_have_approved_provenance() -> None:
-    pack = _load("xtb")
+    pack = _load("open_generation_xtb")
     assert pack.scoring_version == "linear_goal_v2"
     for profile_id in (
         "xtb_homo_lumo_gap_maximize_10p0_12p0_v2",
@@ -126,7 +126,7 @@ def test_xtb_gap_dipole_profiles_have_approved_provenance() -> None:
 
 
 def test_xtb_advanced_property_profiles_have_approved_provenance() -> None:
-    pack = _load("xtb")
+    pack = _load("open_generation_xtb")
     profile_ids = (
         "xtb_lumo_energy_minimize_neg_9p0_neg_6p0_v2",
         "xtb_polarizability_per_heavy_atom_maximize_4p0_12p0_v2",
@@ -145,7 +145,7 @@ def test_xtb_advanced_property_profiles_have_approved_provenance() -> None:
 
 
 def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
-    pack = _load("xtb")
+    pack = _load("open_generation_xtb")
     profile_ids = (
         "xtb_total_energy_minimize_neg_50p3_neg_50p25_v2",
         "xtb_total_energy_minimize_neg_148p2_neg_148p15_v2",
@@ -157,7 +157,7 @@ def test_xtb_total_energy_profiles_have_approved_provenance() -> None:
 
 
 def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> None:
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     broken = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     profile = next(iter(broken["scoring_profiles"].values()))
     profile["provenance"]["review_status"] = "pending_research"
@@ -165,11 +165,11 @@ def test_formal_v2_loader_rejects_unapproved_profile_provenance(tmp_path) -> Non
     scoring_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
 
     with pytest.raises(ValueError, match="approved review_status"):
-        load_task_pack(package_resource("rdkit", "tasks.yaml"), package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(package_resource("open_generation_rdkit", "tasks.yaml"), package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
 
 def test_formal_v2_loader_rejects_legacy_profile_provenance(tmp_path) -> None:
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     broken = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     profile = next(iter(broken["scoring_profiles"].values()))
     profile["provenance"]["target_source"] = "legacy_task_constraint"
@@ -177,13 +177,13 @@ def test_formal_v2_loader_rejects_legacy_profile_provenance(tmp_path) -> None:
     scoring_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
 
     with pytest.raises(ValueError, match="cannot use legacy provenance"):
-        load_task_pack(package_resource("rdkit", "tasks.yaml"), package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(package_resource("open_generation_rdkit", "tasks.yaml"), package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
 
 def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["scoring"]["version"] = "linear_goal_v1"
     tasks_path = tmp_path / "tasks.yaml"
@@ -192,7 +192,7 @@ def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
     with pytest.raises(ValueError, match="does not match task_pack scoring_version"):
-        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
 
 def test_property_calculation_loader_rejects_incomplete_comparison_groups(tmp_path) -> None:
@@ -212,7 +212,7 @@ def test_property_calculation_loader_rejects_incomplete_comparison_groups(tmp_pa
     with pytest.raises(ValueError, match="properties must be a non-empty list"):
         load_task_pack(
             task_resource,
-            package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+            None,
             scoring_path,
         )
 
@@ -236,15 +236,15 @@ def test_property_calculation_loader_rejects_unknown_group_property(
     with pytest.raises(ValueError, match="unknown property: unknown_property"):
         load_task_pack(
             task_resource,
-            package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+            None,
             scoring_path,
         )
 
 
 def test_v2_loader_rejects_removed_stability_gate_role(tmp_path) -> None:
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["constraints"][0]["role"] = "stability_gate"
     tasks_path = tmp_path / "tasks.yaml"
@@ -253,16 +253,16 @@ def test_v2_loader_rejects_removed_stability_gate_role(tmp_path) -> None:
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
     with pytest.raises(ValueError, match="unsupported constraint role: stability_gate"):
-        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
 
 def test_public_tracks_use_validated_v2_package_resources() -> None:
-    assert len(vgb.load_track("rdkit").tasks()) == 14
-    assert vgb.load_track("rdkit")._task_pack.schema_version == 2
+    assert len(vgb.load_track("open_generation_rdkit").tasks()) == 14
+    assert vgb.load_track("open_generation_rdkit")._task_pack.schema_version == 2
 
 
 def test_task_pack_is_immutable_and_accessors_return_copies() -> None:
-    pack = _load("rdkit")
+    pack = _load("open_generation_rdkit")
     with pytest.raises(TypeError):
         pack.tasks[0].raw["prompt"] = "mutated"  # type: ignore[index]
 
@@ -272,7 +272,7 @@ def test_task_pack_is_immutable_and_accessors_return_copies() -> None:
 
 
 def test_v2_loader_rejects_static_profile_errors(tmp_path) -> None:
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     broken = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     profile = next(iter(broken["scoring_profiles"].values()))
     profile["zero_score_anchor"] = profile["full_score_target"]
@@ -280,14 +280,14 @@ def test_v2_loader_rejects_static_profile_errors(tmp_path) -> None:
     scoring_path.write_text(__import__("yaml").safe_dump(broken), encoding="utf-8")
 
     with pytest.raises(ValueError, match="zero_score_anchor"):
-        load_task_pack(package_resource("rdkit", "tasks.yaml"), package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(package_resource("open_generation_rdkit", "tasks.yaml"), package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
 
 @pytest.mark.parametrize("operator", ["lt", "le"])
 def test_v2_loader_accepts_threshold_hard_constraints(tmp_path, operator) -> None:
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["hard_constraints"] = [
         {
@@ -302,16 +302,16 @@ def test_v2_loader_accepts_threshold_hard_constraints(tmp_path, operator) -> Non
     tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
-    pack = load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+    pack = load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
     hard = pack.tasks[0].hard_constraints[0]
     assert (hard.property, hard.operator, hard.threshold) == ("qed", operator, 0.75)
 
 
 def test_v2_loader_accepts_closed_window_hard_constraint(tmp_path) -> None:
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["hard_constraints"] = [
         {
@@ -327,7 +327,7 @@ def test_v2_loader_accepts_closed_window_hard_constraint(tmp_path) -> None:
     tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
-    pack = load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+    pack = load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)
 
     hard = pack.tasks[0].hard_constraints[0]
     assert (hard.lower, hard.upper) == (0.65, 0.75)
@@ -342,9 +342,9 @@ def test_v2_loader_accepts_closed_window_hard_constraint(tmp_path) -> None:
     ],
 )
 def test_v2_loader_rejects_invalid_hard_constraints(tmp_path, hard_constraint, message) -> None:
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
-    scoring_resource = package_resource("rdkit", "scoring.yaml")
+    scoring_resource = package_resource("open_generation_rdkit", "scoring.yaml")
     scoring = deepcopy(__import__("yaml").safe_load(scoring_resource.read_text(encoding="utf-8")))
     scoring["tasks"][0]["hard_constraints"] = [hard_constraint]
     tasks_path = tmp_path / "tasks.yaml"
@@ -353,4 +353,4 @@ def test_v2_loader_rejects_invalid_hard_constraints(tmp_path, hard_constraint, m
     scoring_path.write_text(__import__("yaml").safe_dump(scoring), encoding="utf-8")
 
     with pytest.raises(ValueError, match=message):
-        load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"), scoring_path)
+        load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"), scoring_path)

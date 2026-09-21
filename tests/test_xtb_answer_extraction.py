@@ -5,7 +5,7 @@ from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher i
 )
 
 XYZ_TASK = {
-    "task_id": "xtb_001",
+    "task_id": "xtb_001_gap_window",
     "answer_schema": {
         "format": "final_answer_block",
         "final_answer_prefix": "FINAL ANSWER:",
@@ -27,11 +27,11 @@ H -0.758602 0.000000 0.504284
 def test_normalize_answer_record_extracts_xyz_block() -> None:
     response = f"Use a compact water geometry.\nFINAL ANSWER:\n```xyz\n{WATER_XYZ}```"
 
-    result = normalize_answer_record({"task_id": "xtb_001", "response": response}, XYZ_TASK)
+    result = normalize_answer_record({"task_id": "xtb_001_gap_window", "response": response}, XYZ_TASK)
 
     assert result.ok
     assert result.answer == {
-        "task_id": "xtb_001",
+        "task_id": "xtb_001_gap_window",
         "candidates": [{"xyz": WATER_XYZ.rstrip()}],
         "raw_answer": response,
         "extracted_answer": WATER_XYZ.rstrip(),
@@ -49,7 +49,7 @@ H 0.629118 -0.629118 -0.629118
 """
     response = f"FINAL ANSWER:\n```xyz\n{WATER_XYZ}```\nRevision:\nFINAL ANSWER:\n```xyz\n{methane}```"
 
-    result = normalize_answer_record({"task_id": "xtb_001", "response": response}, XYZ_TASK)
+    result = normalize_answer_record({"task_id": "xtb_001_gap_window", "response": response}, XYZ_TASK)
 
     assert result.ok
     assert result.answer is not None
@@ -57,7 +57,7 @@ H 0.629118 -0.629118 -0.629118
 
 
 def test_normalize_answer_record_rejects_missing_xyz_fence() -> None:
-    result = normalize_answer_record({"task_id": "xtb_001", "response": f"FINAL ANSWER:\n{WATER_XYZ}"}, XYZ_TASK)
+    result = normalize_answer_record({"task_id": "xtb_001_gap_window", "response": f"FINAL ANSWER:\n{WATER_XYZ}"}, XYZ_TASK)
 
     assert not result.ok
     assert result.failure_type == "parse_error"
@@ -65,7 +65,7 @@ def test_normalize_answer_record_rejects_missing_xyz_fence() -> None:
 
 
 def test_normalize_answer_record_rejects_empty_xyz_block() -> None:
-    result = normalize_answer_record({"task_id": "xtb_001", "response": "FINAL ANSWER:\n```xyz\n```"}, XYZ_TASK)
+    result = normalize_answer_record({"task_id": "xtb_001_gap_window", "response": "FINAL ANSWER:\n```xyz\n```"}, XYZ_TASK)
 
     assert not result.ok
     assert result.failure_type == "parse_error"
@@ -73,7 +73,7 @@ def test_normalize_answer_record_rejects_empty_xyz_block() -> None:
 
 
 def test_normalize_answer_record_passes_structured_xyz_candidates_through() -> None:
-    record = {"task_id": "xtb_001", "candidates": [{"xyz": WATER_XYZ}]}
+    record = {"task_id": "xtb_001_gap_window", "candidates": [{"xyz": WATER_XYZ}]}
 
     result = normalize_answer_record(record, XYZ_TASK)
 

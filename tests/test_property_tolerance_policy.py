@@ -204,7 +204,7 @@ def test_export_needs_no_answer_workbooks_and_loads_as_shadow_scoring(tmp_path):
         directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
         scoring_path = tmp_path / f"{track}.scoring.yaml"
         pack = load_task_pack(
-            directory / "tasks.yaml", directory / "verifier_specs.yaml", scoring_path
+            directory / "tasks.yaml", None, scoring_path
         )
         config = yaml.safe_load(scoring_path.read_text())
         assert config["scoring_config"]["scoring_status"] == "shadow_pending_research"
@@ -248,7 +248,7 @@ def test_formal_release_reproduces_current_answer_scores(track):
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
     pack = load_task_pack(
         directory / "tasks.yaml",
-        directory / "verifier_specs.yaml",
+        None,
         directory / "scoring.yaml",
     )
     for observation in projection.original.read_observations(workbook, pack):

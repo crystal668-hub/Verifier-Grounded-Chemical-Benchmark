@@ -86,7 +86,7 @@ EXPECTED_TASK_IDS = {
 def load_pack():
     return load_task_pack(
         package_resource("property_calculation_advanced", "tasks.yaml"),
-        package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+        None,
     )
 
 

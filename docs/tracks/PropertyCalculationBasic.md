@@ -1,5 +1,10 @@
 # Property Calculation Basic Track
 
+This track compares submitted values with gold answers using the task's scoring
+profiles. It has no verifier dependency or `verifier_specs.yaml` file. Both the
+public API and custom-pack CLI load it from `tasks.yaml` and `scoring.yaml`.
+
+
 Updated: 2026-09-21 (v0.10.0)
 
 ## Positioning

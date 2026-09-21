@@ -10,43 +10,43 @@ from scripts.release.build_release import _require_formal_inventory, task_invent
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_TASK_IDS = {
-    "rdkit": [
-        "rdkit_001",
-        "rdkit_002",
-        "rdkit_003",
-        "rdkit_004",
-        "rdkit_005",
-        "rdkit_006",
-        "rdkit_007",
-        "rdkit_008",
-        "rdkit_009",
-        "rdkit_010",
-        "rdkit_011",
-        "rdkit_012",
-        "rdkit_013",
-        "rdkit_014",
+    "open_generation_rdkit": [
+        "rdkit_001_qed_max",
+        "rdkit_002_sa_min",
+        "rdkit_003_logp_window",
+        "rdkit_004_tpsa_window",
+        "rdkit_005_hba_window",
+        "rdkit_006_hbd_window",
+        "rdkit_007_fsp3_max",
+        "rdkit_008_qed_sa",
+        "rdkit_009_logp_tpsa",
+        "rdkit_010_hba_hbd",
+        "rdkit_011_logp_target",
+        "rdkit_012_sa_logp_target",
+        "rdkit_013_chain_end_to_end_max",
+        "rdkit_014_caffeine_similarity_max",
     ],
-    "xtb": [
-        "xtb_001",
-        "xtb_002",
-        "xtb_003",
-        "xtb_004",
-        "xtb_005",
-        "xtb_006",
-        "xtb_007",
-        "xtb_008",
-        "xtb_009",
-        "xtb_010",
-        "xtb_011",
-        "xtb_012",
-        "xtb_013",
-        "xtb_014",
-        "xtb_015",
-        "xtb_016",
-        "xtb_017",
-        "xtb_018",
-        "xtb_019",
-        "xtb_020",
+    "open_generation_xtb": [
+        "xtb_001_gap_window",
+        "xtb_002_dipole_window",
+        "xtb_003_gap_max",
+        "xtb_004_gap_min",
+        "xtb_005_dipole_max",
+        "xtb_006_low_gap_high_dipole_opt",
+        "xtb_007_gap_dipole_window",
+        "xtb_008_lumo_min",
+        "xtb_009_polarizability_dipole_opt",
+        "xtb_010_solvation_selectivity_alpb",
+        "xtb_011_electrophilicity_max",
+        "xtb_012_fukui_carbon_site",
+        "xtb_013_hessian_thermo_stability",
+        "xtb_014_formula_dipole_min",
+        "xtb_015_two_fluorine_gap_min",
+        "xtb_016_c10_f2_gap_min",
+        "xtb_017_roy_singlepoint_energy_min",
+        "xtb_018_ritonavir_optimized_energy_min",
+        "xtb_019_odd_element_counts_gap_max",
+        "xtb_020_pyrene_substituent_energy_min",
     ],
     "property_calculation_advanced": [
         "property_calculation_advanced_001_free_energy",
@@ -135,7 +135,7 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
     assert inventory["schema_version"] == 2
     assert inventory["result_schema_version"] == "3"
     assert inventory["scoring_version"] == "linear_goal_v2"
-    assert inventory["tracks"]["xtb"]["scoring_status"] == "formal"
+    assert inventory["tracks"]["open_generation_xtb"]["scoring_status"] == "formal"
     assert all("family_policy" not in track for track in inventory["tracks"].values())
     assert inventory["scoring_profiles"]
     for track_name, expected_ids in EXPECTED_TASK_IDS.items():
@@ -148,9 +148,9 @@ def test_package_track_versions_and_inventory_are_release_aligned() -> None:
 
 def test_release_inventory_rejects_shadow_scoring_tracks() -> None:
     inventory = task_inventory("0.10.0")
-    inventory["tracks"]["xtb"]["scoring_status"] = "shadow_pending_research"
+    inventory["tracks"]["open_generation_xtb"]["scoring_status"] = "shadow_pending_research"
 
-    with pytest.raises(RuntimeError, match="xtb"):
+    with pytest.raises(RuntimeError, match="open_generation_xtb"):
         _require_formal_inventory(inventory)
 
 

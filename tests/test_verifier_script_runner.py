@@ -53,7 +53,7 @@ def test_run_verification_script_resolves_legacy_root_relative_script_path() -> 
     result = run_verification_script(
         ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "xtb" / "xtb_gap.py",
         {
-            "task": {"task_id": "xtb_001"},
+            "task": {"task_id": "xtb_001_gap_window"},
             "constraint": {"property": "homo_lumo_gap", "verifier_id": "xtb_gap_gfn2_v1"},
             "verifier_spec": {
                 "verifier_id": "xtb_gap_gfn2_v1",

@@ -33,7 +33,7 @@ def main() -> int:
         )
         return 1
 
-    track = load_track("xtb")
+    track = load_track("open_generation_xtb")
     report = track.evaluate_answers(track.sample_answers())
     failing_rows = [
         row

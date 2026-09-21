@@ -274,19 +274,19 @@ def write_recommendations(path: Path, summary: dict[str, Any], failures: list[di
         "| --- | --- | --- |",
     ]
     tasks = [
-        "xtb_001",
-        "xtb_002",
-        "xtb_003",
-        "xtb_004",
-        "xtb_005",
-        "xtb_006",
-        "xtb_007",
-        "xtb_008",
-        "xtb_009",
-        "xtb_010",
-        "xtb_011",
-        "xtb_012",
-        "xtb_013",
+        "xtb_001_gap_window",
+        "xtb_002_dipole_window",
+        "xtb_003_gap_max",
+        "xtb_004_gap_min",
+        "xtb_005_dipole_max",
+        "xtb_006_low_gap_high_dipole_opt",
+        "xtb_007_gap_dipole_window",
+        "xtb_008_lumo_min",
+        "xtb_009_polarizability_dipole_opt",
+        "xtb_010_solvation_selectivity_alpb",
+        "xtb_011_electrophilicity_max",
+        "xtb_012_fukui_carbon_site",
+        "xtb_013_hessian_thermo_stability",
     ]
     property_count = len(summary.get("properties", {}))
     rationale = f"Generated from {property_count} measured properties; score diagnostics require official task scoring in a follow-up analysis."

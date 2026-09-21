@@ -1,6 +1,6 @@
 schema_version: 1
 scoring_config:
-  task_pack_id: xtb
+  task_pack_id: open_generation_xtb
   task_pack_version: 0.10.0
   scoring_version: linear_goal_v2
   scoring_status: formal
@@ -328,7 +328,7 @@ scoring_profiles:
       review_date: '2026-07-23'
       review_owner: benchmark_maintainers
 tasks:
-- task_id: xtb_001
+- task_id: xtb_001_gap_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -353,7 +353,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_002
+- task_id: xtb_002_dipole_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -378,7 +378,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_003
+- task_id: xtb_003_gap_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -403,7 +403,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_004
+- task_id: xtb_004_gap_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -428,7 +428,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_005
+- task_id: xtb_005_dipole_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -453,7 +453,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_006
+- task_id: xtb_006_low_gap_high_dipole_opt
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -483,7 +483,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_007
+- task_id: xtb_007_gap_dipole_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -513,7 +513,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_008
+- task_id: xtb_008_lumo_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -538,7 +538,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_009
+- task_id: xtb_009_polarizability_dipole_opt
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -568,7 +568,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_010
+- task_id: xtb_010_solvation_selectivity_alpb
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -593,7 +593,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_011
+- task_id: xtb_011_electrophilicity_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -618,7 +618,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_012
+- task_id: xtb_012_fukui_carbon_site
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -648,7 +648,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_013
+- task_id: xtb_013_hessian_thermo_stability
   hard_constraints:
   - property: imaginary_frequency_count
     verifier_id: xtb_hessian_thermo_gfn2_v1
@@ -679,7 +679,7 @@ tasks:
     verifier_id: xtb_relaxation_energy_gfn2_v1
     role: quality_gate
     scoring_profile: xtb_relaxation_energy_minimize_0p05_0p35_v2
-- task_id: xtb_014
+- task_id: xtb_014_formula_dipole_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -699,7 +699,7 @@ tasks:
     verifier_id: xtb_dipole_doublet_gfn2_v1
     role: main
     scoring_profile: xtb_dipole_moment_minimize_0p0_20p0_v2
-- task_id: xtb_015
+- task_id: xtb_015_two_fluorine_gap_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -719,7 +719,7 @@ tasks:
     verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
     role: main
     scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
-- task_id: xtb_016
+- task_id: xtb_016_c10_f2_gap_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -739,7 +739,7 @@ tasks:
     verifier_id: xtb_gap_charged_closed_shell_gfn2_v1
     role: main
     scoring_profile: xtb_homo_lumo_gap_minimize_0p0_10p0_v2
-- task_id: xtb_017
+- task_id: xtb_017_roy_singlepoint_energy_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -759,7 +759,7 @@ tasks:
     verifier_id: xtb_total_energy_roy_singlepoint_gfn2_v1
     role: main
     scoring_profile: xtb_total_energy_minimize_neg_50p3_neg_50p25_v2
-- task_id: xtb_018
+- task_id: xtb_018_ritonavir_optimized_energy_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -779,7 +779,7 @@ tasks:
     verifier_id: xtb_total_energy_ritonavir_optimized_gfn2_v1
     role: main
     scoring_profile: xtb_total_energy_minimize_neg_148p2_neg_148p15_v2
-- task_id: xtb_019
+- task_id: xtb_019_odd_element_counts_gap_max
   hard_constraints:
   - property: dipole_moment
     verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
@@ -803,7 +803,7 @@ tasks:
     verifier_id: xtb_odd_element_gap_dipole_gfn2_v1
     role: main
     scoring_profile: xtb_odd_element_gap_maximize_3p6_11p9_v2
-- task_id: xtb_020
+- task_id: xtb_020_pyrene_substituent_energy_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2

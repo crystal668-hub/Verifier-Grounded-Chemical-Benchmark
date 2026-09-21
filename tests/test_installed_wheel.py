@@ -76,7 +76,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
             "-c",
             (
                 "from importlib.resources import files; import json; "
-                "print(str(files('verifier_grounded_benchmark.task.packs.rdkit').joinpath('sample_answers.jsonl')))"
+                "print(str(files('verifier_grounded_benchmark.task.packs.open_generation_rdkit').joinpath('sample_answers.jsonl')))"
             ),
         ],
         cwd=tmp_path,
@@ -99,7 +99,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
         [
             str(executable),
             "--track",
-            "rdkit",
+            "open_generation_rdkit",
             "--answers",
             answers_path,
         ],
@@ -160,7 +160,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
             "-c",
             (
                 "import json, verifier_grounded_benchmark as v; "
-                "t=v.load_track('xtb'); "
+                "t=v.load_track('open_generation_xtb'); "
                 "print(json.dumps({'task_ids':[x['task_id'] for x in t.tasks()],"
                 "'num_specs':len(t.verifier_specs_by_id)}))"
             ),
@@ -175,11 +175,11 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     assert len(xtb_payload["task_ids"]) == 20
     assert xtb_payload["num_specs"] == 15
     assert {
-        "xtb_014",
-        "xtb_015",
-        "xtb_016",
-        "xtb_017",
-        "xtb_018",
-        "xtb_019",
-        "xtb_020",
+        "xtb_014_formula_dipole_min",
+        "xtb_015_two_fluorine_gap_min",
+        "xtb_016_c10_f2_gap_min",
+        "xtb_017_roy_singlepoint_energy_min",
+        "xtb_018_ritonavir_optimized_energy_min",
+        "xtb_019_odd_element_counts_gap_max",
+        "xtb_020_pyrene_substituent_energy_min",
     }.issubset(xtb_payload["task_ids"])

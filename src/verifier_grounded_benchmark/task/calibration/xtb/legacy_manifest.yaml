@@ -4,245 +4,245 @@ candidates:
   xtb_gap_window_001_positive_perfluoropropyl_nitrile:
     role: positive_candidate
     molecule_family: fluorinated_nitrile
-    target_tasks: [xtb_001]
+    target_tasks: [xtb_001_gap_window]
     expected_behavior:
-      xtb_001: high_score
+      xtb_001_gap_window: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_gap_window_001_negative_water:
     role: negative_baseline
     molecule_family: simple_inorganic
-    target_tasks: [xtb_001]
+    target_tasks: [xtb_001_gap_window]
     expected_behavior:
-      xtb_001: domain_error_or_low_score
+      xtb_001_gap_window: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_dipole_window_002_positive_trifluoroethyl_nitroethane:
     role: positive_candidate
     molecule_family: fluorinated_nitroalkane
-    target_tasks: [xtb_002]
+    target_tasks: [xtb_002_dipole_window]
     expected_behavior:
-      xtb_002: high_score
+      xtb_002_dipole_window: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_dipole_window_002_negative_methane:
     role: negative_baseline
     molecule_family: simple_hydrocarbon
-    target_tasks: [xtb_002]
+    target_tasks: [xtb_002_dipole_window]
     expected_behavior:
-      xtb_002: domain_error_or_low_score
+      xtb_002_dipole_window: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_gap_max_003_positive_hexafluoroisopropanol:
     role: positive_candidate
     molecule_family: fluorinated_alcohol
-    target_tasks: [xtb_003]
+    target_tasks: [xtb_003_gap_max]
     expected_behavior:
-      xtb_003: high_score
+      xtb_003_gap_max: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_gap_max_003_negative_benzene:
     role: negative_baseline
     molecule_family: aromatic_hydrocarbon
-    target_tasks: [xtb_003]
+    target_tasks: [xtb_003_gap_max]
     expected_behavior:
-      xtb_003: domain_error_or_low_score
+      xtb_003_gap_max: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_gap_min_004_positive_push_pull_azo_nitroarene:
     role: positive_candidate
     molecule_family: push_pull_azo_arene
-    target_tasks: [xtb_004]
+    target_tasks: [xtb_004_gap_min]
     expected_behavior:
-      xtb_004: high_score
+      xtb_004_gap_min: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_gap_min_004_negative_ethene:
     role: negative_baseline
     molecule_family: simple_alkene
-    target_tasks: [xtb_004]
+    target_tasks: [xtb_004_gap_min]
     expected_behavior:
-      xtb_004: domain_error_or_low_score
+      xtb_004_gap_min: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_dipole_max_005_positive_dimethylamino_nitrobenzene:
     role: positive_candidate
     molecule_family: push_pull_nitroarene
-    target_tasks: [xtb_005]
+    target_tasks: [xtb_005_dipole_max]
     expected_behavior:
-      xtb_005: high_score
+      xtb_005_dipole_max: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_dipole_max_005_negative_carbon_dioxide:
     role: negative_baseline
     molecule_family: simple_oxide
-    target_tasks: [xtb_005]
+    target_tasks: [xtb_005_dipole_max]
     expected_behavior:
-      xtb_005: domain_error_or_low_score
+      xtb_005_dipole_max: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_low_gap_high_dipole_opt_006_positive_push_pull_cinnamonitrile:
     role: positive_candidate
     molecule_family: push_pull_cinnamonitrile
-    target_tasks: [xtb_006]
+    target_tasks: [xtb_006_low_gap_high_dipole_opt]
     expected_behavior:
-      xtb_006: high_score
+      xtb_006_low_gap_high_dipole_opt: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_low_gap_high_dipole_opt_006_negative_acetonitrile:
     role: negative_baseline
     molecule_family: simple_nitrile
-    target_tasks: [xtb_006]
+    target_tasks: [xtb_006_low_gap_high_dipole_opt]
     expected_behavior:
-      xtb_006: domain_error_or_low_score
+      xtb_006_low_gap_high_dipole_opt: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_gap_dipole_window_007_positive_dicyanobenzene:
     role: positive_candidate
     molecule_family: aromatic_dinitrile
-    target_tasks: [xtb_007]
+    target_tasks: [xtb_007_gap_dipole_window]
     expected_behavior:
-      xtb_007: high_score
+      xtb_007_gap_dipole_window: high_score
     source: "Seeded from tasks/xtb_xyz/sample_answers.jsonl"
   xtb_gap_dipole_window_007_negative_formaldehyde:
     role: negative_baseline
     molecule_family: simple_carbonyl
-    target_tasks: [xtb_007]
+    target_tasks: [xtb_007_gap_dipole_window]
     expected_behavior:
-      xtb_007: domain_error_or_low_score
+      xtb_007_gap_dipole_window: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_lumo_min_008_positive_push_pull_cinnamonitrile:
     role: positive_candidate
     molecule_family: push_pull_cinnamonitrile
-    target_tasks: [xtb_008]
+    target_tasks: [xtb_008_lumo_min]
     expected_behavior:
-      xtb_008: high_score
+      xtb_008_lumo_min: high_score
     source: "Cross-task reuse of existing local xTB-optimized push-pull cinnamonitrile sample; selected by 2026-06-19 advanced calibration iteration for stronger low-LUMO separation."
   xtb_lumo_min_008_negative_benzene:
     role: negative_baseline
     molecule_family: aromatic_hydrocarbon
-    target_tasks: [xtb_008]
+    target_tasks: [xtb_008_lumo_min]
     expected_behavior:
-      xtb_008: domain_error_or_low_score
+      xtb_008_lumo_min: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_lumo_min_008_near_miss_dimethylamino_nitrobenzene:
     role: near_miss
     molecule_family: push_pull_nitroarene
-    target_tasks: [xtb_008]
+    target_tasks: [xtb_008_lumo_min]
     expected_behavior:
-      xtb_008: medium_score
+      xtb_008_lumo_min: medium_score
     source: "Cross-task reuse of existing local xTB-optimized dimethylamino nitrobenzene sample; selected by 2026-06-19 advanced calibration iteration as a weaker acceptor near miss."
   xtb_polarizability_dipole_opt_009_positive_dicyanobenzene:
     role: positive_candidate
     molecule_family: aromatic_dinitrile
-    target_tasks: [xtb_009]
+    target_tasks: [xtb_009_polarizability_dipole_opt]
     expected_behavior:
-      xtb_009: high_score
+      xtb_009_polarizability_dipole_opt: high_score
     source: "Cross-task reuse of existing local xTB-optimized dicyanobenzene sample; selected by 2026-06-19 advanced calibration iteration because it satisfies the dipole window and has high per-heavy-atom polarizability."
   xtb_polarizability_dipole_opt_009_negative_methanol:
     role: negative_baseline
     molecule_family: simple_alcohol
-    target_tasks: [xtb_009]
+    target_tasks: [xtb_009_polarizability_dipole_opt]
     expected_behavior:
-      xtb_009: domain_error_or_low_score
+      xtb_009_polarizability_dipole_opt: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_polarizability_dipole_opt_009_near_miss_high_dipole_dimethylamino_nitrobenzene:
     role: near_miss
     molecule_family: push_pull_nitroarene
-    target_tasks: [xtb_009]
+    target_tasks: [xtb_009_polarizability_dipole_opt]
     expected_behavior:
-      xtb_009: medium_or_low_score
+      xtb_009_polarizability_dipole_opt: medium_or_low_score
     source: "Cross-task reuse of existing local xTB-optimized dimethylamino nitrobenzene sample; selected by 2026-06-19 advanced calibration iteration as a high-polarizability molecule outside the dipole window."
   xtb_solvation_selectivity_alpb_010_positive_dimethylamino_nitrobenzene:
     role: positive_candidate
     molecule_family: push_pull_nitroarene
-    target_tasks: [xtb_010]
+    target_tasks: [xtb_010_solvation_selectivity_alpb]
     expected_behavior:
-      xtb_010: high_score
+      xtb_010_solvation_selectivity_alpb: high_score
     source: "Cross-task reuse of existing local xTB-optimized dimethylamino nitrobenzene sample; selected by 2026-06-19 advanced calibration iteration as the strongest current domain-valid ALPB water-over-hexane control."
   xtb_solvation_selectivity_alpb_010_negative_acetonitrile:
     role: negative_baseline
     molecule_family: simple_nitrile
-    target_tasks: [xtb_010]
+    target_tasks: [xtb_010_solvation_selectivity_alpb]
     expected_behavior:
-      xtb_010: domain_error_or_low_score
+      xtb_010_solvation_selectivity_alpb: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_solvation_selectivity_alpb_010_near_miss_trifluoroethyl_nitroethane:
     role: near_miss
     molecule_family: fluorinated_nitroalkane
-    target_tasks: [xtb_010]
+    target_tasks: [xtb_010_solvation_selectivity_alpb]
     expected_behavior:
-      xtb_010: medium_or_low_score
+      xtb_010_solvation_selectivity_alpb: medium_or_low_score
     source: "Cross-task reuse of existing local xTB-optimized trifluoroethyl nitroethane sample; selected by 2026-06-19 advanced calibration iteration as a weaker ALPB selectivity near miss."
   xtb_electrophilicity_max_011_positive_push_pull_cinnamonitrile:
     role: positive_candidate
     molecule_family: push_pull_cinnamonitrile
-    target_tasks: [xtb_011]
+    target_tasks: [xtb_011_electrophilicity_max]
     expected_behavior:
-      xtb_011: high_score
+      xtb_011_electrophilicity_max: high_score
     source: "Cross-task reuse of existing local xTB-optimized push-pull cinnamonitrile sample; selected by 2026-06-19 advanced calibration iteration as the highest validated electrophilicity control in the local calibration pack."
   xtb_electrophilicity_max_011_negative_formaldehyde:
     role: negative_baseline
     molecule_family: simple_carbonyl
-    target_tasks: [xtb_011]
+    target_tasks: [xtb_011_electrophilicity_max]
     expected_behavior:
-      xtb_011: domain_error_or_low_score
+      xtb_011_electrophilicity_max: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_electrophilicity_max_011_near_miss_dicyanobenzene:
     role: near_miss
     molecule_family: aromatic_dinitrile
-    target_tasks: [xtb_011]
+    target_tasks: [xtb_011_electrophilicity_max]
     expected_behavior:
-      xtb_011: medium_score
+      xtb_011_electrophilicity_max: medium_score
     source: "Curated XYZ from existing local xTB optimization sample"
   xtb_fukui_carbon_site_012_positive_qm9_gdb9_000059:
     role: positive_candidate
     molecule_family: small_unsaturated_carbonyl_nitrile
-    target_tasks: [xtb_012]
+    target_tasks: [xtb_012_fukui_carbon_site]
     expected_behavior:
-      xtb_012: high_score
+      xtb_012_fukui_carbon_site: high_score
     source: "QM9 rerun record gdb9_000059 from artifacts/xtb_real_distribution/2026-06-15-rerun, selected by 2026-06-19 advanced calibration iteration for high max carbon f+ and positive carbon-site contrast."
   xtb_fukui_carbon_site_012_negative_nitromethane:
     role: negative_baseline
     molecule_family: nitroalkane
-    target_tasks: [xtb_012]
+    target_tasks: [xtb_012_fukui_carbon_site]
     expected_behavior:
-      xtb_012: domain_error_or_low_score
+      xtb_012_fukui_carbon_site: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_fukui_carbon_site_012_near_miss_qm9_gdb9_000071:
     role: near_miss
     molecule_family: small_oxygenated_unsaturated_molecule
-    target_tasks: [xtb_012]
+    target_tasks: [xtb_012_fukui_carbon_site]
     expected_behavior:
-      xtb_012: medium_score
+      xtb_012_fukui_carbon_site: medium_score
     source: "QM9 rerun record gdb9_000071 from artifacts/xtb_real_distribution/2026-06-15-rerun, selected by 2026-06-19 advanced calibration iteration for target-range carbon f+ but weaker contrast."
   xtb_fukui_carbon_site_012_stress_dimethylamino_nitrobenzene:
     role: stress_case
     molecule_family: push_pull_nitroarene
-    target_tasks: [xtb_012]
+    target_tasks: [xtb_012_fukui_carbon_site]
     expected_behavior:
-      xtb_012: parser_runtime_stress
+      xtb_012_fukui_carbon_site: parser_runtime_stress
     source: "Cross-task reuse of existing local xTB-optimized dimethylamino nitrobenzene sample retained by 2026-06-19 advanced calibration iteration as a larger valid contrast-failure stress case."
   xtb_hessian_thermo_stability_013_positive_qm9_gdb9_000041:
     role: positive_candidate
     molecule_family: small_alcohol
-    target_tasks: [xtb_013]
+    target_tasks: [xtb_013_hessian_thermo_stability]
     expected_behavior:
-      xtb_013: high_score
+      xtb_013_hessian_thermo_stability: high_score
     source: "QM9 rerun record gdb9_000041 from artifacts/xtb_real_distribution/2026-06-15-rerun, selected by 2026-06-19 advanced calibration iteration for high entropy per heavy atom, zero imaginary frequencies, and low relaxation energy."
   xtb_hessian_thermo_stability_013_negative_methane:
     role: negative_baseline
     molecule_family: simple_hydrocarbon
-    target_tasks: [xtb_013]
+    target_tasks: [xtb_013_hessian_thermo_stability]
     expected_behavior:
-      xtb_013: domain_error_or_low_score
+      xtb_013_hessian_thermo_stability: domain_error_or_low_score
     source: "Common small-molecule baseline"
   xtb_hessian_thermo_stability_013_near_miss_hexafluoroisopropanol:
     role: near_miss
     molecule_family: fluorinated_alcohol
-    target_tasks: [xtb_013]
+    target_tasks: [xtb_013_hessian_thermo_stability]
     expected_behavior:
-      xtb_013: medium_or_low_score
+      xtb_013_hessian_thermo_stability: medium_or_low_score
     source: "Curated XYZ from existing local xTB optimization sample"
   xtb_solvation_selectivity_alpb_010_stress_large_push_pull_cinnamonitrile:
     role: stress_case
     molecule_family: push_pull_cinnamonitrile
-    target_tasks: [xtb_010]
+    target_tasks: [xtb_010_solvation_selectivity_alpb]
     expected_behavior:
-      xtb_010: parser_runtime_stress
+      xtb_010_solvation_selectivity_alpb: parser_runtime_stress
     source: "Curated XYZ from existing local xTB optimization sample"
   xtb_hessian_thermo_stability_013_stress_flexible_dimethoxyethane:
     role: stress_case
     molecule_family: flexible_ether
-    target_tasks: [xtb_013]
+    target_tasks: [xtb_013_hessian_thermo_stability]
     expected_behavior:
-      xtb_013: parser_runtime_stress
+      xtb_013_hessian_thermo_stability: parser_runtime_stress
     source: "Hand-curated flexible XYZ stress case"

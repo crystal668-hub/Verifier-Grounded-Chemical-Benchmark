@@ -7,13 +7,13 @@ from verifier_grounded_benchmark.task.loader import load_task_pack
 from verifier_grounded_benchmark.task.resources import package_resource
 
 PACK = load_task_pack(
-    package_resource("rdkit", "tasks.yaml"),
-    package_resource("rdkit", "verifier_specs.yaml"),
+    package_resource("open_generation_rdkit", "tasks.yaml"),
+    package_resource("open_generation_rdkit", "verifier_specs.yaml"),
 )
 
 
 def test_formal_terminal_atom_distance_task_binds_to_uff_spec() -> None:
-    task = PACK.tasks_by_id["rdkit_013"]
+    task = PACK.tasks_by_id["rdkit_013_chain_end_to_end_max"]
     constraint = task["constraints"][0]
     spec = PACK.verifier_specs_by_id[constraint["verifier_id"]]
     chain_smarts = spec["domain"]["chain_smarts"]
@@ -37,7 +37,7 @@ def test_formal_terminal_atom_distance_task_binds_to_uff_spec() -> None:
 def test_formal_chain_distance_sample_scores_successfully() -> None:
     engine = EvaluationEngine(PACK)
     sample = {
-        "task_id": "rdkit_013",
+        "task_id": "rdkit_013_chain_end_to_end_max",
         "candidates": [{"smiles": "CCCCCC"}],
     }
 

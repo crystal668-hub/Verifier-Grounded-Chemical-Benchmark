@@ -23,13 +23,13 @@ SPECS_PATH = CALIBRATION_DIR.joinpath("verifier_specs.yaml")
 ANSWERS_PATH = CALIBRATION_DIR.joinpath("answers.jsonl")
 MANIFEST_PATH = CALIBRATION_DIR.joinpath("manifest.yaml")
 TASK_IDS = {
-    "xtb_014",
-    "xtb_015",
-    "xtb_016",
-    "xtb_017",
-    "xtb_018",
-    "xtb_019",
-    "xtb_020",
+    "xtb_014_formula_dipole_min",
+    "xtb_015_two_fluorine_gap_min",
+    "xtb_016_c10_f2_gap_min",
+    "xtb_017_roy_singlepoint_energy_min",
+    "xtb_018_ritonavir_optimized_energy_min",
+    "xtb_019_odd_element_counts_gap_max",
+    "xtb_020_pyrene_substituent_energy_min",
 }
 
 
@@ -53,7 +53,7 @@ def test_expert_candidate_pack_is_complete_but_not_formal() -> None:
     assert len(specs) == 6
     for task in tasks.values():
         assert task["formal_track"] is False
-        if task["task_id"] == "xtb_020":
+        if task["task_id"] == "xtb_020_pyrene_substituent_energy_min":
             assert task["object_type"] == "small_molecule"
             assert task["answer_schema"]["format"] == "final_answer_line"
             assert task["answer_schema"]["value_type"] == "smiles"
@@ -77,21 +77,21 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
     expected = {
-        "xtb_014": (3.042, 9.328, 240),
-        "xtb_015": (1.242666887976, 12.358052453139, 240),
-        "xtb_016": (1.242666887976, 12.358052453139, 240),
-        "xtb_017": (
+        "xtb_014_formula_dipole_min": (3.042, 9.328, 240),
+        "xtb_015_two_fluorine_gap_min": (1.242666887976, 12.358052453139, 240),
+        "xtb_016_c10_f2_gap_min": (1.242666887976, 12.358052453139, 240),
+        "xtb_017_roy_singlepoint_energy_min": (
             -50.302552312418,
             -50.287905192962,
             300,
         ),
-        "xtb_018": (
+        "xtb_018_ritonavir_optimized_energy_min": (
             -148.213721794168,
             -148.183476873812,
             600,
         ),
-        "xtb_019": (11.9, 3.6, 300),
-        "xtb_020": (-63.56975, -63.5669, 1250),
+        "xtb_019_odd_element_counts_gap_max": (11.9, 3.6, 300),
+        "xtb_020_pyrene_substituent_energy_min": (-63.56975, -63.5669, 1250),
     }
 
     for task_id, (lower, upper, timeout) in expected.items():
@@ -105,7 +105,7 @@ def test_expert_candidate_pack_uses_frozen_bounds_and_timeouts() -> None:
 
 def test_pyrene_energy_repeatability_tolerance_is_frozen() -> None:
     pack = load_calibration_pack()
-    task = pack.tasks_by_id["xtb_020"]
+    task = pack.tasks_by_id["xtb_020_pyrene_substituent_energy_min"]
     spec = pack.verifier_specs_by_id[task["constraints"][0]["verifier_id"]]
 
     assert spec["repeatability"] == {
@@ -119,7 +119,7 @@ def test_task_2_uses_exact_formula_and_neutral_doublet() -> None:
     pack = load_calibration_pack()
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
-    task = tasks["xtb_014"]
+    task = tasks["xtb_014_formula_dipole_min"]
     spec = specs[task["constraints"][0]["verifier_id"]]
 
     assert task["structural_domain"] == {"formula": "C12H16N3O8"}
@@ -135,8 +135,8 @@ def test_tasks_3_and_4_use_comment_charge_and_only_source_constraints() -> None:
     pack = load_calibration_pack()
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
-    task_3 = tasks["xtb_015"]
-    task_4 = tasks["xtb_016"]
+    task_3 = tasks["xtb_015_two_fluorine_gap_min"]
+    task_4 = tasks["xtb_016_c10_f2_gap_min"]
     spec = specs[task_3["constraints"][0]["verifier_id"]]
 
     assert task_3["constraints"][0]["verifier_id"] == task_4["constraints"][0]["verifier_id"]
@@ -166,8 +166,8 @@ def test_roy_and_ritonavir_use_required_identity_and_energy_modes() -> None:
     pack = load_calibration_pack()
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
-    roy = tasks["xtb_017"]
-    ritonavir = tasks["xtb_018"]
+    roy = tasks["xtb_017_roy_singlepoint_energy_min"]
+    ritonavir = tasks["xtb_018_ritonavir_optimized_energy_min"]
     roy_spec = specs[roy["constraints"][0]["verifier_id"]]
     ritonavir_spec = specs[ritonavir["constraints"][0]["verifier_id"]]
 
@@ -214,9 +214,9 @@ def test_calibration_answers_and_manifest_cover_valid_conformers_and_controls() 
 def test_positive_candidate_formulas_and_charge_comments() -> None:
     tasks = load_calibration_pack().tasks_by_id
     expected_formulas = {
-        "xtb_014": "C12H16N3O8",
-        "xtb_017": "C12H9N3O2S",
-        "xtb_018": "C37H48N6O5S2",
+        "xtb_014_formula_dipole_min": "C12H16N3O8",
+        "xtb_017_roy_singlepoint_energy_min": "C12H9N3O2S",
+        "xtb_018_ritonavir_optimized_energy_min": "C37H48N6O5S2",
     }
     for answer in load_answers():
         if answer["role"] != "positive_candidate":
@@ -232,8 +232,8 @@ def test_positive_candidate_formulas_and_charge_comments() -> None:
         if expected_formula:
             assert properties["formula"] == expected_formula
         if answer["task_id"] in {
-            "xtb_015",
-            "xtb_016",
+            "xtb_015_two_fluorine_gap_min",
+            "xtb_016_c10_f2_gap_min",
         }:
             assert molecule.comment == "charge=0"
             assert properties["element_counts"].get("F") == 2

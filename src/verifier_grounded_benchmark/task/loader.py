@@ -59,16 +59,32 @@ _UniqueKeyLoader.add_constructor(
 
 def load_task_pack(
     tasks_resource: Any,
-    verifier_resource: Any,
+    verifier_resource: Any | None = None,
     scoring_resource: Any | None = None,
 ) -> TaskPack:
+    """Load YAML resources into a validated task pack.
+
+    Omit verifier_resource for property-calculation-only packs. Any open-generation
+    task requires verifier specs. Version 2 packs merge task-local scoring profiles
+    from scoring_resource or the sibling scoring.yaml; tolerances are independent
+    across tasks. Legacy packs retain their legacy loading path.
+    """
     task_data = _load_yaml_mapping(tasks_resource)
-    verifier_data = _load_yaml_mapping(verifier_resource)
+    if verifier_resource is None:
+        tasks = require_list(task_data.get("tasks"), "tasks")
+        if any(
+            require_mapping(task, "task").get("task_type", "open_generation") == "open_generation"
+            for task in tasks
+        ):
+            raise ValueError("verifier specs are required for open-generation tasks")
+        verifier_data = {"verifiers": []}
+    else:
+        verifier_data = _load_yaml_mapping(verifier_resource)
     if scoring_resource is None and "scoring_profiles" not in task_data:
         scoring_resource = _sibling_resource(tasks_resource, "scoring.yaml")
         if scoring_resource is None:
             pack_id = (task_data.get("task_pack") or {}).get("id")
-            if pack_id in {"rdkit", "xtb", "property_calculation_basic", "property_calculation_advanced"}:
+            if pack_id in {"open_generation_rdkit", "open_generation_xtb", "property_calculation_basic", "property_calculation_advanced"}:
                 from verifier_grounded_benchmark.task.resources import package_resource
 
                 scoring_resource = package_resource(pack_id, "scoring.yaml")
@@ -95,6 +111,7 @@ def _sibling_resource(resource: Any, filename: str) -> Any | None:
 def _merge_scoring_data(
     task_data: dict[str, Any], scoring_data: dict[str, Any]
 ) -> dict[str, Any]:
+    """Merge scoring entries by task_id, rejecting missing or extra task IDs."""
     config = require_mapping(scoring_data.get("scoring_config"), "scoring_config")
     merged = deepcopy(task_data)
     metadata = require_mapping(merged.get("task_pack"), "task_pack")
@@ -121,11 +138,13 @@ def _merge_scoring_data(
 
 
 def load_tasks_file(resource: Any) -> dict[str, dict[str, Any]]:
+    """Load task definitions indexed by unique task_id without merging scoring data."""
     data = _load_yaml_mapping(resource)
     return index_unique(require_list(data.get("tasks"), "tasks"), "task_id", "task")
 
 
 def load_verifier_specs_file(resource: Any) -> dict[str, dict[str, Any]]:
+    """Load verifier definitions, rejecting malformed entries and duplicate IDs."""
     data = _load_yaml_mapping(resource)
     items = data.get("verifiers")
     if not isinstance(items, list):
@@ -134,6 +153,7 @@ def load_verifier_specs_file(resource: Any) -> dict[str, dict[str, Any]]:
 
 
 def load_answers_jsonl_file(resource: Any) -> list[dict[str, Any]]:
+    """Read JSONL answer objects, requiring a nonempty task_id on every record."""
     text = _read_text(resource, "answers")
     answers: list[dict[str, Any]] = []
     for line_number, line in enumerate(text.splitlines(), start=1):
@@ -153,6 +173,7 @@ def load_answers_jsonl_file(resource: Any) -> list[dict[str, Any]]:
 def task_pack_from_mappings(
     tasks: dict[str, dict[str, Any]], verifier_specs: dict[str, dict[str, Any]]
 ) -> TaskPack:
+    """Adapt legacy task and verifier mappings into immutable version 2 task models."""
     profiles: dict[str, dict[str, Any]] = {}
     migrated_tasks: list[TaskSpec] = []
     for task_id, source in tasks.items():
@@ -270,6 +291,7 @@ def _legacy_constraint_profile(
 
 
 def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPack:
+    """Validate scoring, task-specific schemas, and verifier references before freezing."""
     metadata = require_mapping(task_data.get("task_pack"), "task_pack")
     pack_id = require_string(metadata.get("id"), "task_pack id")
     version = require_string(metadata.get("version"), "task_pack version")
@@ -338,6 +360,7 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
 def _load_legacy(
     task_data: dict[str, Any], verifier_data: dict[str, Any], *, source: str
 ) -> TaskPack:
+    """Preserve the legacy schema for downstream compatibility evaluation."""
     tasks_by_id = index_unique(
         require_list(task_data.get("tasks"), f"legacy tasks in {source}"), "task_id", "task"
     )

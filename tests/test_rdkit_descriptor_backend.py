@@ -25,7 +25,7 @@ SPEC = {
 
 
 TASK = {
-    "task_id": "rdkit_003",
+    "task_id": "rdkit_003_logp_window",
 }
 
 CONSTRAINT = {"type": "window", "property": "logp", "min": 1.0, "max": 3.0, "sigma": 0.5}
@@ -35,7 +35,7 @@ def test_evaluate_descriptor_constraint_scores_valid_smiles() -> None:
     result = evaluate_descriptor_constraint({"smiles": "CC(=O)Oc1ccccc1C(=O)O"}, TASK, CONSTRAINT, SPEC)
 
     assert result["outcome"] == "verified"
-    assert result["task_id"] == "rdkit_003"
+    assert result["task_id"] == "rdkit_003_logp_window"
     assert result["verifier_id"] == "rdkit_logp_v1"
     assert result["canonical_candidate"]["smiles"] == "CC(=O)Oc1ccccc1C(=O)O"
     assert result["properties"] == {"logp": pytest.approx(1.3101, abs=1e-4)}
@@ -72,7 +72,7 @@ def test_expert_domain_counts_all_atoms_and_oxygen_fraction() -> None:
 
     result = evaluate_descriptor_constraint(
         {"smiles": "CCCCCC(=O)O"},
-        {"task_id": "rdkit_011"},
+        {"task_id": "rdkit_011_logp_target"},
         constraint,
         spec,
     )
@@ -184,7 +184,7 @@ def test_expert_sa_logp_domain_requires_carbon_but_not_oxygen() -> None:
     }
     sa_result = evaluate_descriptor_constraint(
         {"smiles": "CCCC"},
-        {"task_id": "rdkit_012"},
+        {"task_id": "rdkit_012_sa_logp_target"},
         {"property": "sa_score"},
         {
             **SPEC,
@@ -195,7 +195,7 @@ def test_expert_sa_logp_domain_requires_carbon_but_not_oxygen() -> None:
     )
     no_carbon_result = evaluate_descriptor_constraint(
         {"smiles": "O"},
-        {"task_id": "rdkit_012"},
+        {"task_id": "rdkit_012_sa_logp_target"},
         {"property": "sa_score"},
         {**SPEC, "descriptor": "sa_score", "domain": domain},
     )
@@ -222,7 +222,7 @@ def test_caffeine_hard_property_verifier_reports_frozen_reference_sa() -> None:
 
     result = evaluate_descriptor_constraint(
         {"smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O"},
-        {"task_id": "rdkit_014"},
+        {"task_id": "rdkit_014_caffeine_similarity_max"},
         {"property": "logp"},
         spec,
     )
@@ -251,7 +251,7 @@ def test_caffeine_reference_sa_mismatch_is_task_failure() -> None:
 
     result = evaluate_descriptor_constraint(
         {"smiles": "CCO"},
-        {"task_id": "rdkit_014"},
+        {"task_id": "rdkit_014_caffeine_similarity_max"},
         {"property": "logp"},
         spec,
     )
@@ -281,13 +281,13 @@ def test_caffeine_morgan_similarity_uses_frozen_fingerprint() -> None:
 
     first = evaluate_descriptor_constraint(
         {"smiles": reference},
-        {"task_id": "rdkit_014"},
+        {"task_id": "rdkit_014_caffeine_similarity_max"},
         {"property": "caffeine_morgan_tanimoto"},
         spec,
     )
     equivalent = evaluate_descriptor_constraint(
         {"smiles": "Cn1c(=O)c2c(ncn2C)n(C)c1=O"},
-        {"task_id": "rdkit_014"},
+        {"task_id": "rdkit_014_caffeine_similarity_max"},
         {"property": "caffeine_morgan_tanimoto"},
         spec,
     )
@@ -321,7 +321,7 @@ def test_caffeine_fingerprint_parameter_change_is_task_failure() -> None:
 
     result = evaluate_descriptor_constraint(
         {"smiles": "CCO"},
-        {"task_id": "rdkit_014"},
+        {"task_id": "rdkit_014_caffeine_similarity_max"},
         {"property": "caffeine_morgan_tanimoto"},
         spec,
     )

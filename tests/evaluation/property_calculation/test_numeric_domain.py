@@ -22,7 +22,7 @@ from verifier_grounded_benchmark.task.schema.property_calculation import (
 def advanced():
     return load_task_pack(
         package_resource("property_calculation_advanced", "tasks.yaml"),
-        package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+        None,
     )
 
 
@@ -140,7 +140,7 @@ def test_gold_must_satisfy_its_original_value_domain(advanced):
 def test_signed_spin_density_keeps_its_negative_gold():
     basic = load_task_pack(
         package_resource("property_calculation_basic", "tasks.yaml"),
-        package_resource("property_calculation_basic", "verifier_specs.yaml"),
+        None,
     )
     gold, profile = field(basic, "spin_density")
     assert gold["value"] < 0

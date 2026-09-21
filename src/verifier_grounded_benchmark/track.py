@@ -1,3 +1,5 @@
+"""Track and suite APIs that separate public task views from private evaluation data."""
+
 from __future__ import annotations
 
 from collections.abc import Iterable
@@ -23,11 +25,12 @@ from verifier_grounded_benchmark.task.resources import materialize_verifier_spec
 
 
 class Track:
+    """A loaded track exposing public task views and evaluation over private scoring data."""
     def __init__(self, definition: TrackDefinition) -> None:
         self.definition = definition
         self._task_pack = load_task_pack(
             _resolve_track_resource(definition, definition.task_pack_path),
-            _resolve_track_resource(definition, definition.verifier_specs_path),
+            definition.resource(definition.verifier_specs_path),
             _resolve_track_resource(definition, definition.scoring_config_path)
             if definition.scoring_config_path is not None
             else None,
@@ -53,18 +56,22 @@ class Track:
 
     @property
     def verifier_specs_by_id(self) -> dict[str, dict[str, Any]]:
+        """Return a defensive copy of verifier specs; property-only tracks return an empty dict."""
         return deepcopy(self._verifier_specs_by_id)
 
     def tasks(self) -> list[dict[str, Any]]:
+        """Return public task definitions with gold answers and scoring configuration removed."""
         return [public_task_dict(task) for task in self._tasks_by_id.values()]
 
     def task(self, task_id: str, *, include_gold: bool = False) -> dict[str, Any]:
+        """Return a detached public task view; include_gold explicitly opts into answer access."""
         try:
             return public_task_dict(self._tasks_by_id[task_id], include_gold=include_gold)
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for track {self.name!r}: {task_id}") from exc
 
     def prompts(self) -> list[dict[str, Any]]:
+        """Return minimal runner inputs containing track, task_id, prompt, and answer schema."""
         prompts: list[dict[str, Any]] = []
         for task in self._tasks_by_id.values():
             prompt = task.get("prompt")
@@ -81,6 +88,7 @@ class Track:
         return prompts
 
     def sample_answers(self) -> list[dict[str, Any]]:
+        """Load bundled examples, or return an empty list when a track supplies none."""
         if self.definition.sample_answers_path is None:
             return []
         return load_answers_jsonl_file(
@@ -91,6 +99,7 @@ class Track:
         return Evaluator(self._task_pack, config=config)
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        """Evaluate one answer record and return the detailed result schema."""
         return self.evaluator().evaluate_one(answer)
 
     def evaluate_answers(
@@ -99,10 +108,12 @@ class Track:
         *,
         as_report: bool = False,
     ) -> dict[str, Any] | EvaluationReport:
+        """Evaluate answer records and return a report dict or an EvaluationReport."""
         return self.evaluator().evaluate_many(answers, as_report=as_report)
 
 
 class Suite:
+    """Combine loaded tracks, rejecting duplicate tasks and conflicting verifier definitions."""
     def __init__(self, tracks: Iterable[Track]) -> None:
         self._tracks = list(tracks)
         self._tasks_by_id: dict[str, dict[str, Any]] = {}
@@ -140,12 +151,14 @@ class Suite:
         return [public_task_dict(task) for task in self._tasks_by_id.values()]
 
     def task(self, task_id: str) -> dict[str, Any]:
+        """Return a public task view from the suite without exposing scoring data."""
         try:
             return public_task_dict(self._tasks_by_id[task_id])
         except KeyError as exc:
             raise KeyError(f"Unknown task_id for suite: {task_id}") from exc
 
     def prompts(self) -> list[dict[str, Any]]:
+        """Concatenate runner inputs in track and task registration order."""
         prompts: list[dict[str, Any]] = []
         for track in self._tracks:
             prompts.extend(track.prompts())
@@ -155,6 +168,7 @@ class Suite:
         return Evaluator(self._task_pack, config=config)
 
     def evaluate_one(self, answer: dict[str, Any]) -> dict[str, Any]:
+        """Dispatch one answer to its task across the combined tracks."""
         return self.evaluator().evaluate_one(answer)
 
     def evaluate_answers(
@@ -163,6 +177,7 @@ class Suite:
         *,
         as_report: bool = False,
     ) -> dict[str, Any] | EvaluationReport:
+        """Score a submission against the combined task inventory and coverage rules."""
         return self.evaluator().evaluate_many(answers, as_report=as_report)
 
 

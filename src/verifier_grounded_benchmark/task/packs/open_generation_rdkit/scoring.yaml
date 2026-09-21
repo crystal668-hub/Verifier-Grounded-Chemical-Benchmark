@@ -1,6 +1,6 @@
 schema_version: 1
 scoring_config:
-  task_pack_id: rdkit
+  task_pack_id: open_generation_rdkit
   task_pack_version: 0.10.0
   scoring_version: linear_goal_v2
   scoring_status: formal
@@ -156,7 +156,7 @@ scoring_profiles:
       review_date: '2026-07-23'
       review_owner: benchmark_maintainers
 tasks:
-- task_id: rdkit_001
+- task_id: rdkit_001_qed_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -171,7 +171,7 @@ tasks:
     verifier_id: rdkit_qed_v1
     role: main
     scoring_profile: rdkit_qed_maximize_0p0_1p0_v2
-- task_id: rdkit_002
+- task_id: rdkit_002_sa_min
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -186,7 +186,7 @@ tasks:
     verifier_id: rdkit_sa_score_v1
     role: main
     scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
-- task_id: rdkit_003
+- task_id: rdkit_003_logp_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -201,7 +201,7 @@ tasks:
     verifier_id: rdkit_logp_v1
     role: main
     scoring_profile: rdkit_logp_window_1p0_3p0_2p0_v2
-- task_id: rdkit_004
+- task_id: rdkit_004_tpsa_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -216,7 +216,7 @@ tasks:
     verifier_id: rdkit_tpsa_v1
     role: main
     scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
-- task_id: rdkit_005
+- task_id: rdkit_005_hba_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -231,7 +231,7 @@ tasks:
     verifier_id: rdkit_hba_v1
     role: main
     scoring_profile: rdkit_hba_window_2_4_2p0_v2
-- task_id: rdkit_006
+- task_id: rdkit_006_hbd_window
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -246,7 +246,7 @@ tasks:
     verifier_id: rdkit_hbd_v1
     role: main
     scoring_profile: rdkit_hbd_window_1_2_1p0_v2
-- task_id: rdkit_007
+- task_id: rdkit_007_fsp3_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -261,7 +261,7 @@ tasks:
     verifier_id: rdkit_fraction_csp3_v1
     role: main
     scoring_profile: rdkit_fraction_csp3_maximize_0p0_1p0_v2
-- task_id: rdkit_008
+- task_id: rdkit_008_qed_sa
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -281,7 +281,7 @@ tasks:
     verifier_id: rdkit_sa_score_v1
     role: main
     scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
-- task_id: rdkit_009
+- task_id: rdkit_009_logp_tpsa
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -301,7 +301,7 @@ tasks:
     verifier_id: rdkit_tpsa_v1
     role: main
     scoring_profile: rdkit_tpsa_window_35p0_75p0_40p0_v2
-- task_id: rdkit_010
+- task_id: rdkit_010_hba_hbd
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -321,7 +321,7 @@ tasks:
     verifier_id: rdkit_hbd_v1
     role: main
     scoring_profile: rdkit_hbd_window_1_2_1p0_v2
-- task_id: rdkit_011
+- task_id: rdkit_011_logp_target
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -336,7 +336,7 @@ tasks:
     verifier_id: rdkit_logp_expert_v1
     role: main
     scoring_profile: rdkit_logp_target_3p0_3p0_v2
-- task_id: rdkit_012
+- task_id: rdkit_012_sa_logp_target
   hard_constraints:
   - property: sa_score
     verifier_id: rdkit_sa_logp_domain_sa_v1
@@ -356,7 +356,7 @@ tasks:
     verifier_id: rdkit_sa_logp_domain_logp_v1
     role: main
     scoring_profile: rdkit_logp_target_3p0_3p0_v2
-- task_id: rdkit_013
+- task_id: rdkit_013_chain_end_to_end_max
   scoring:
     aggregation: geometric_mean
     version: linear_goal_v2
@@ -371,7 +371,7 @@ tasks:
     verifier_id: rdkit_terminal_atom_distance_uff_v2
     role: main
     scoring_profile: rdkit_terminal_atom_distance_maximize_6p36_21p68_v2
-- task_id: rdkit_014
+- task_id: rdkit_014_caffeine_similarity_max
   hard_constraints:
   - property: logp
     verifier_id: rdkit_caffeine_properties_v1

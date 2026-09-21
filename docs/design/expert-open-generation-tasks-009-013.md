@@ -23,11 +23,11 @@
 
 | 专家题号 | task_id | track | 输入 | 主目标 |
 |---|---|---|---|---|
-| 009 | `rdkit_012` | `rdkit` | SMILES | LogP 接近 3 |
-| 010 | `xtb_019` | `xtb` | explicit-H XYZ | 最大化 HOMO-LUMO gap |
-| 011 | `xtb_020` | `xtb` | SMILES | 最小化最低构象能量 |
-| 012 | `rdkit_013` | `rdkit` | SMILES | 最大化最低能构象的末端重原子距离 |
-| 013 | `rdkit_014` | `rdkit` | SMILES | 最大化与咖啡因的 Morgan Tanimoto 相似度 |
+| 009 | `rdkit_012_sa_logp_target` | `rdkit` | SMILES | LogP 接近 3 |
+| 010 | `xtb_019_odd_element_counts_gap_max` | `xtb` | explicit-H XYZ | 最大化 HOMO-LUMO gap |
+| 011 | `xtb_020_pyrene_substituent_energy_min` | `xtb` | SMILES | 最小化最低构象能量 |
+| 012 | `rdkit_013_chain_end_to_end_max` | `rdkit` | SMILES | 最大化最低能构象的末端重原子距离 |
+| 013 | `rdkit_014_caffeine_similarity_max` | `rdkit` | SMILES | 最大化与咖啡因的 Morgan Tanimoto 相似度 |
 
 task ID 按各 track 当前正式任务的末尾顺延。专家题号保留在设计、测试名称和
 release notes 中，不要求写入公共 answer schema。
@@ -135,7 +135,7 @@ minimize: score = 1                         if x <= T
 
 ```yaml
 expert_question: 9
-task_id: rdkit_012
+task_id: rdkit_012_sa_logp_target
 track: rdkit
 object_type: small_molecule
 answer_type: smiles
@@ -153,7 +153,7 @@ task_type: open_generation
 - SA Score 严格低于 5；
 - 在满足以上限制后，使 LogP 尽可能接近 3。
 
-这里不要求氧原子占比。现有 `rdkit_011` 的氧占比门不得继承到本题。
+这里不要求氧原子占比。现有 `rdkit_011_logp_target` 的氧占比门不得继承到本题。
 
 ### 4.3 验证协议
 
@@ -204,7 +204,7 @@ hard_constraint_passed
 
 ```yaml
 expert_question: 10
-task_id: xtb_019
+task_id: xtb_019_odd_element_counts_gap_max
 track: xtb
 object_type: small_molecule_3d
 answer_type: xyz
@@ -307,7 +307,7 @@ hard_constraint_passed
 
 ```yaml
 expert_question: 11
-task_id: xtb_020
+task_id: xtb_020_pyrene_substituent_energy_min
 track: xtb
 object_type: small_molecule
 answer_type: smiles
@@ -429,7 +429,7 @@ post_crest_identity_match
 
 ```yaml
 expert_question: 12
-task_id: rdkit_013
+task_id: rdkit_013_chain_end_to_end_max
 track: rdkit
 object_type: small_molecule
 answer_type: smiles
@@ -566,7 +566,7 @@ terminal_atom_distance
 
 ```yaml
 expert_question: 13
-task_id: rdkit_014
+task_id: rdkit_014_caffeine_similarity_max
 track: rdkit
 object_type: small_molecule
 answer_type: smiles
@@ -715,7 +715,7 @@ hard_constraint_passed
 
 - 五道题均能从 raw answer 完成解析、验证和评分；
 - verifier subprocess 输出符合公共 result schema；
-- `vgb.load_track("rdkit")` 返回 14 题，`vgb.load_track("xtb")` 返回 20 题；
+- `vgb.load_track("open_generation_rdkit")` 返回 14 题，`vgb.load_track("open_generation_xtb")` 返回 20 题；
 - suite 共返回 36 个唯一 task ID；
 - wheel/sdist 包含新增正式资源且不包含 `task/packs/experimental/rdkit_forcefield`；
 - xTB track 的 SMILES 和 XYZ 两种 answer schema 均能从安装后的 wheel 工作。

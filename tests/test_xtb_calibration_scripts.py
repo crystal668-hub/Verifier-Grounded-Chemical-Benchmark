@@ -59,7 +59,7 @@ def test_build_calibration_row_records_expert_diagnostics() -> None:
             "role": "positive_candidate",
         },
         result={
-            "task_id": "xtb_018",
+            "task_id": "xtb_018_ritonavir_optimized_energy_min",
             "status": "scored",
             "failure_type": None,
             "properties": {
@@ -112,7 +112,7 @@ def test_analyze_xtb_calibration_writes_summary_files(tmp_path) -> None:
                     {
                         "candidate_id": "positive_1",
                         "role": "positive_candidate",
-                        "task_id": "xtb_008",
+                        "task_id": "xtb_008_lumo_min",
                         "status": "ok",
                         "failure_type": None,
                         "score": 0.8,
@@ -130,7 +130,7 @@ def test_analyze_xtb_calibration_writes_summary_files(tmp_path) -> None:
                     {
                         "candidate_id": "negative_1",
                         "role": "negative_baseline",
-                        "task_id": "xtb_008",
+                        "task_id": "xtb_008_lumo_min",
                         "status": "ok",
                         "failure_type": None,
                         "score": 0.1,
@@ -148,7 +148,7 @@ def test_analyze_xtb_calibration_writes_summary_files(tmp_path) -> None:
                     {
                         "candidate_id": "bad_1",
                         "role": "stress_case",
-                        "task_id": "xtb_013",
+                        "task_id": "xtb_013_hessian_thermo_stability",
                         "status": "error",
                         "failure_type": "verifier_timeout",
                         "score": 0.0,
@@ -180,20 +180,20 @@ def test_analyze_xtb_calibration_writes_summary_files(tmp_path) -> None:
 
     assert completed.returncode == 0
     summary = json.loads((output_dir / "summary.json").read_text())
-    assert summary["tasks"]["xtb_008"]["num_rows"] == 2
-    assert summary["tasks"]["xtb_008"]["num_positive_candidates"] == 1
-    assert summary["tasks"]["xtb_008"]["num_negative_baselines"] == 1
-    assert summary["tasks"]["xtb_008"]["success_rate"] == 1.0
-    assert summary["tasks"]["xtb_008"]["timeout_count"] == 0
-    assert summary["tasks"]["xtb_008"]["runtime_seconds"]["median"] == 6.0
-    assert summary["tasks"]["xtb_008"]["property_stats"] == {
+    assert summary["tasks"]["xtb_008_lumo_min"]["num_rows"] == 2
+    assert summary["tasks"]["xtb_008_lumo_min"]["num_positive_candidates"] == 1
+    assert summary["tasks"]["xtb_008_lumo_min"]["num_negative_baselines"] == 1
+    assert summary["tasks"]["xtb_008_lumo_min"]["success_rate"] == 1.0
+    assert summary["tasks"]["xtb_008_lumo_min"]["timeout_count"] == 0
+    assert summary["tasks"]["xtb_008_lumo_min"]["runtime_seconds"]["median"] == 6.0
+    assert summary["tasks"]["xtb_008_lumo_min"]["property_stats"] == {
         "count": 2,
         "min": -3.0,
         "median": -1.25,
         "mean": -1.25,
         "max": 0.5,
     }
-    assert summary["tasks"]["xtb_008"]["structure_retention_failures"] == 1
-    assert summary["tasks"]["xtb_013"]["failure_types"]["verifier_timeout"] == 1
-    assert summary["tasks"]["xtb_013"]["timeout_count"] == 1
+    assert summary["tasks"]["xtb_008_lumo_min"]["structure_retention_failures"] == 1
+    assert summary["tasks"]["xtb_013_hessian_thermo_stability"]["failure_types"]["verifier_timeout"] == 1
+    assert summary["tasks"]["xtb_013_hessian_thermo_stability"]["timeout_count"] == 1
     assert (output_dir / "summary.md").exists()

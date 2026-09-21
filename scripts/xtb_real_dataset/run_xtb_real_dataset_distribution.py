@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--specs",
         type=Path,
-        default=Path(str(package_resource("xtb", "verifier_specs.yaml"))),
+        default=Path(str(package_resource("open_generation_xtb", "verifier_specs.yaml"))),
     )
     parser.add_argument("--resume", action="store_true", help="Reuse completed rows already present in --output")
     parser.add_argument("--checkpoint-every", type=int, default=0, help="Write partial output after this many newly completed records")

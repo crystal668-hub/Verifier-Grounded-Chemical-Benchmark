@@ -14,7 +14,7 @@ def test_cli_reports_preflight_failure_before_evaluation(
 ) -> None:
     answers_path = tmp_path / "answers.jsonl"
     answers_path.write_text(
-        json.dumps({"task_id": "rdkit_001", "response": "FINAL ANSWER: C"})
+        json.dumps({"task_id": "xtb_020_pyrene_substituent_energy_min", "response": "FINAL ANSWER: C"})
         + "\n",
         encoding="utf-8",
     )
@@ -28,14 +28,15 @@ def test_cli_reports_preflight_failure_before_evaluation(
             }
         ]
     )
-    monkeypatch.setattr(
-        score_answers,
-        "preflight_external_dependencies",
-        lambda specs: (_ for _ in ()).throw(failure),
-    )
+    def reject_missing_dependency(specs):
+        assert {dependency["executable"] for spec in specs
+                for dependency in spec.get("external_dependencies", [])} == {"xtb", "crest"}
+        raise failure
+
+    monkeypatch.setattr(score_answers, "preflight_external_dependencies", reject_missing_dependency)
 
     exit_code = score_answers.main(
-        ["--track", "rdkit", "--answers", str(answers_path)]
+        ["--track", "open_generation_xtb", "--answers", str(answers_path)]
     )
 
     assert exit_code == 2

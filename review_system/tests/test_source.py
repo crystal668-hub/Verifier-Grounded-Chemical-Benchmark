@@ -10,7 +10,7 @@ from review_system.source import load_catalog, schema_view, source_revision, spl
 
 def test_catalog_contains_formal_tracks_and_hides_long_inputs():
     catalog = load_catalog()
-    assert {track["name"] for track in catalog["tracks"]} == {"rdkit", "xtb", "property_calculation_basic", "property_calculation_advanced"}
+    assert {track["name"] for track in catalog["tracks"]} == {"open_generation_rdkit", "open_generation_xtb", "property_calculation_basic", "property_calculation_advanced"}
     assert sum(len(track["tasks"]) for track in catalog["tracks"]) == 105
     for track in catalog["tracks"]:
         for task in track["tasks"]:
@@ -62,8 +62,8 @@ def test_scoring_view_exposes_answers_ranges_and_multi_field_rules():
         "unit": "eV",
     }
 
-    rdkit = next(track for track in catalog["tracks"] if track["name"] == "rdkit")
-    qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_001")
+    rdkit = next(track for track in catalog["tracks"] if track["name"] == "open_generation_rdkit")
+    qed = next(task for task in rdkit["tasks"] if task["task_id"] == "rdkit_001_qed_max")
     assert qed["scoring"]["rules"][0]["profile"]["full_score_target"] == 1.0
 
 
@@ -89,7 +89,7 @@ def test_score_ranges_represent_nonzero_submitted_values():
         for track in catalog["tracks"]
         for task in track["tasks"]
     }
-    qed = tasks["rdkit_001"]["scoring"]["rules"][0]["score_range"]
+    qed = tasks["rdkit_001_qed_max"]["scoring"]["rules"][0]["score_range"]
     assert qed == {"kind": "lower_bounded", "min": 0.0, "min_exclusive": True, "unit": "dimensionless"}
 
     interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]

@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def gap_payload() -> dict:
     return {
-        "task": {"task_id": "xtb_001", "version": 1, "object_type": "small_molecule_3d"},
+        "task": {"task_id": "xtb_001_gap_window", "version": 1, "object_type": "small_molecule_3d"},
         "constraint": {
             "type": "window",
             "property": "homo_lumo_gap",
@@ -45,7 +45,7 @@ def test_xtb_property_script_rejects_property_mismatch() -> None:
     result = run_verification_script(ROOT / "src" / "verifier_grounded_benchmark" / "evaluation" / "open_generation" / "verifiers" / "xtb" / "xtb_gap.py", payload, timeout_seconds=60)
 
     assert result["outcome"] != "verified"
-    assert result["task_id"] == "xtb_001"
+    assert result["task_id"] == "xtb_001_gap_window"
     assert result["verifier_id"] == "xtb_gap_gfn2_v1"
     assert result["failure_type"] == "verifier_spec_error"
     assert result["message"] == "script property 'homo_lumo_gap' does not match verifier_spec property 'dipole_moment'"
@@ -61,7 +61,7 @@ def test_xtb_property_script_outputs_standard_json_result_for_missing_candidate(
     )
 
     assert result["outcome"] != "verified"
-    assert result["task_id"] == "xtb_001"
+    assert result["task_id"] == "xtb_001_gap_window"
     assert result["verifier_id"] == "xtb_gap_gfn2_v1"
     assert result["canonical_candidate"] == {}
     assert result["failure_type"] == "parse_error"

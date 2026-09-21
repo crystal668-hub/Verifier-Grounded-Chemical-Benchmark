@@ -1,5 +1,8 @@
 # xTB 题目设计与实现同步
 
+Canonical track name: `open_generation_xtb`. Task IDs: `xtb_NNN_description`.
+
+
 更新日期：2026-07-30
 
 ## 1. Track 边界与答案格式
@@ -9,7 +12,7 @@ xTB track 包含两类 open-generation 任务，具体格式由每题 `answer_sc
 - direct-XYZ：提交全氢显式的 fenced XYZ；候选坐标是答案的一部分。
 - SMILES-to-conformer：提交单个 SMILES；verifier 生成初始几何并执行冻结的 CREST/xTB workflow。
 
-因此“xTB track 只接受 XYZ”不再是 track 不变量。正式资源位于 `src/verifier_grounded_benchmark/task/packs/xtb/`，当前只有任务 020 使用 SMILES，其余任务使用 XYZ。
+因此“xTB track 只接受 XYZ”不再是 track 不变量。正式资源位于 `src/verifier_grounded_benchmark/task/packs/open_generation_xtb/`，当前只有任务 020 使用 SMILES，其余任务使用 XYZ。
 
 direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按任务验证元素、原子数、电子态和结构限制。任务 019 进一步要求中性闭壳层、全氢显式、至少 7 个重原子、至少 3 种非氢元素，且每种实际出现的非氢元素计数均为奇数。
 
@@ -21,26 +24,26 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 
 | task_id | 主目标 | 输入/特殊协议 |
 |---|---|---|
-| `xtb_001` | gap window | XYZ |
-| `xtb_002` | dipole window | XYZ |
-| `xtb_003` | maximize gap | XYZ |
-| `xtb_004` | minimize gap | XYZ |
-| `xtb_005` | maximize dipole | XYZ |
-| `xtb_006` | gap + dipole | XYZ |
-| `xtb_007` | gap + dipole windows | XYZ |
-| `xtb_008` | minimize LUMO | XYZ |
-| `xtb_009` | polarizability + dipole | XYZ |
-| `xtb_010` | ALPB selectivity | XYZ |
-| `xtb_011` | electrophilicity | XYZ |
-| `xtb_012` | carbon Fukui response | XYZ |
-| `xtb_013` | maximize entropy, zero-imaginary-frequency hard constraint | XYZ |
-| `xtb_014` | exact-formula dipole | XYZ, neutral doublet |
-| `xtb_015` | minimize gap | XYZ, exact F count |
-| `xtb_016` | minimize gap | XYZ, `C10F2` domain |
-| `xtb_017` | ROY single-point energy | XYZ, graph identity |
-| `xtb_018` | Ritonavir optimized energy | XYZ, graph/stereo identity |
-| `xtb_019` | maximize gap | XYZ, odd element counts, dipole `<2 D` |
-| `xtb_020` | minimize total energy | SMILES, CREST ensemble + xTB single-point |
+| `xtb_001_gap_window` | gap window | XYZ |
+| `xtb_002_dipole_window` | dipole window | XYZ |
+| `xtb_003_gap_max` | maximize gap | XYZ |
+| `xtb_004_gap_min` | minimize gap | XYZ |
+| `xtb_005_dipole_max` | maximize dipole | XYZ |
+| `xtb_006_low_gap_high_dipole_opt` | gap + dipole | XYZ |
+| `xtb_007_gap_dipole_window` | gap + dipole windows | XYZ |
+| `xtb_008_lumo_min` | minimize LUMO | XYZ |
+| `xtb_009_polarizability_dipole_opt` | polarizability + dipole | XYZ |
+| `xtb_010_solvation_selectivity_alpb` | ALPB selectivity | XYZ |
+| `xtb_011_electrophilicity_max` | electrophilicity | XYZ |
+| `xtb_012_fukui_carbon_site` | carbon Fukui response | XYZ |
+| `xtb_013_hessian_thermo_stability` | maximize entropy, zero-imaginary-frequency hard constraint | XYZ |
+| `xtb_014_formula_dipole_min` | exact-formula dipole | XYZ, neutral doublet |
+| `xtb_015_two_fluorine_gap_min` | minimize gap | XYZ, exact F count |
+| `xtb_016_c10_f2_gap_min` | minimize gap | XYZ, `C10F2` domain |
+| `xtb_017_roy_singlepoint_energy_min` | ROY single-point energy | XYZ, graph identity |
+| `xtb_018_ritonavir_optimized_energy_min` | Ritonavir optimized energy | XYZ, graph/stereo identity |
+| `xtb_019_odd_element_counts_gap_max` | maximize gap | XYZ, odd element counts, dipole `<2 D` |
+| `xtb_020_pyrene_substituent_energy_min` | minimize total energy | SMILES, CREST ensemble + xTB single-point |
 
 ## 3. 新增专家协议
 
@@ -63,7 +66,7 @@ direct-XYZ 基线 domain 要求单连通分子、有限 Angstrom 坐标，并按
 任务 017 的 verifier 对提交坐标直接运行 neutral closed-shell GFN2-xTB
 single-point；任务 018 优化提交坐标后读取 total energy，并在优化前后检查身份和
 立体化学。两项满分锚点已按同一冻结 verifier 复核到当前 run 中可达的最低值：
-`xtb_017 = -50.302552312418 Eh`、`xtb_018 = -148.213721794168 Eh`。零分锚点
+`xtb_017_roy_singlepoint_energy_min = -50.302552312418 Eh`、`xtb_018_ritonavir_optimized_energy_min = -148.213721794168 Eh`。零分锚点
 保持 `-50.287905192962 Eh` 与 `-148.183476873812 Eh` 不变。该结果是同一
 分子、方法、电子态和计算模式下的已复核最低可达候选，不作跨分子或跨方法的绝对能量比较；
 证据见 `docs/research/2026-07-30-xtb-017-018-energy-anchor-recalibration.md`。

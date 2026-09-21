@@ -83,17 +83,17 @@ def test_preflight_reports_missing_named_environment(tmp_path: Path) -> None:
 
 
 def test_verifier_selection_uses_only_submitted_tasks() -> None:
-    track = load_track("xtb")
+    track = load_track("open_generation_xtb")
 
     regular = verifier_specs_for_answers(
         track._task_pack.tasks_by_id,
         track.verifier_specs_by_id,
-        [{"task_id": "xtb_001"}],
+        [{"task_id": "xtb_001_gap_window"}],
     )
     conformer_search = verifier_specs_for_answers(
         track._task_pack.tasks_by_id,
         track.verifier_specs_by_id,
-        [{"task_id": "xtb_020"}],
+        [{"task_id": "xtb_020_pyrene_substituent_energy_min"}],
     )
 
     assert {

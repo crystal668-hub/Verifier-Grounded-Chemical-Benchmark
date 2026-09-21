@@ -46,13 +46,13 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     tracks = vgb.list_tracks()
 
     assert [track.name for track in tracks] == [
-        "rdkit",
-        "xtb",
+        "open_generation_rdkit",
+        "open_generation_xtb",
         "property_calculation_advanced",
         "property_calculation_basic",
     ]
     assert tracks[0] == TrackDefinition(
-        name="rdkit",
+        name="open_generation_rdkit",
         version="0.10.0",
         display_name="RDKit baseline small-molecule tasks",
         task_pack_path="tasks.yaml",
@@ -61,10 +61,10 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         sample_answers_path="sample_answers.jsonl",
         status="formal",
         tags=("small_molecule", "rdkit", "descriptor"),
-        resource_pack="rdkit",
+        resource_pack="open_generation_rdkit",
     )
     assert tracks[1] == TrackDefinition(
-        name="xtb",
+        name="open_generation_xtb",
         version="0.10.0",
         display_name="xTB molecular optimization tasks",
         task_pack_path="tasks.yaml",
@@ -74,14 +74,14 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         status="formal",
         tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
         requirements=("xTB executable; CREST 2.12 for conformer-search tasks",),
-        resource_pack="xtb",
+        resource_pack="open_generation_xtb",
     )
     assert tracks[2] == TrackDefinition(
         name="property_calculation_advanced",
         version="0.10.0",
         display_name="Advanced fixed-input property calculation tasks",
         task_pack_path="tasks.yaml",
-        verifier_specs_path="verifier_specs.yaml",
+        verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
         sample_answers_path=None,
         status="formal",
@@ -93,7 +93,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         version="0.10.0",
         display_name="Basic fixed-input property calculation tasks",
         task_pack_path="tasks.yaml",
-        verifier_specs_path="verifier_specs.yaml",
+        verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
         sample_answers_path=None,
         status="formal",
@@ -105,7 +105,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
 def test_registry_rejects_duplicate_track_names() -> None:
     registry = Registry()
     track = TrackDefinition(
-        name="rdkit",
+        name="open_generation_rdkit",
         version="1",
         display_name="RDKit",
         task_pack_path="tasks/rdkit_baseline/tasks.yaml",
@@ -114,21 +114,21 @@ def test_registry_rejects_duplicate_track_names() -> None:
 
     registry.register_track(track)
 
-    with pytest.raises(ValueError, match="rdkit"):
+    with pytest.raises(ValueError, match="open_generation_rdkit"):
         registry.register_track(track)
 
 
 def test_registry_replace_allows_explicit_override() -> None:
     registry = Registry()
     original = TrackDefinition(
-        name="rdkit",
+        name="open_generation_rdkit",
         version="1",
         display_name="RDKit",
         task_pack_path="tasks/rdkit_baseline/tasks.yaml",
         verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
     )
     replacement = TrackDefinition(
-        name="rdkit",
+        name="open_generation_rdkit",
         version="2",
         display_name="RDKit Replacement",
         task_pack_path="tasks/rdkit_baseline/tasks-v2.yaml",
@@ -138,7 +138,7 @@ def test_registry_replace_allows_explicit_override() -> None:
     registry.register_track(original)
     registry.register_track(replacement, replace=True)
 
-    assert registry.get_track_definition("rdkit") == replacement
+    assert registry.get_track_definition("open_generation_rdkit") == replacement
 
 
 def test_track_definition_resolves_relative_paths_from_resource_root(

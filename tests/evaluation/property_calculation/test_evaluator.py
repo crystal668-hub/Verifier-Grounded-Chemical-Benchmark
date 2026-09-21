@@ -14,7 +14,7 @@ from verifier_grounded_benchmark.task.resources import package_resource
 
 PACK = load_task_pack(
     package_resource("property_calculation_advanced", "tasks.yaml"),
-    package_resource("property_calculation_advanced", "verifier_specs.yaml"),
+    None,
 )
 VERSIONS = {
     "package": "0.9.0",

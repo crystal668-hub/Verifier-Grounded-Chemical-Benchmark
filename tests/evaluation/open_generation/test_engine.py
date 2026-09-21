@@ -20,18 +20,18 @@ from verifier_grounded_benchmark.task.resources import package_resource
 def _pack(name: str):
     return load_task_pack(
         package_resource(name, "tasks.yaml"),
-        package_resource(name, "verifier_specs.yaml"),
+        package_resource(name, "verifier_specs.yaml") if name.startswith("open_generation_") else None,
     )
 
 
 def _pack_with_hard_constraint(tmp_path, hard_constraint):
-    task_resource = package_resource("rdkit", "tasks.yaml")
+    task_resource = package_resource("open_generation_rdkit", "tasks.yaml")
     data = __import__("yaml").safe_load(task_resource.read_text(encoding="utf-8"))
     data = deepcopy(data)
     data["tasks"][0]["hard_constraints"] = [hard_constraint]
     tasks_path = tmp_path / "tasks.yaml"
     tasks_path.write_text(__import__("yaml").safe_dump(data), encoding="utf-8")
-    return load_task_pack(tasks_path, package_resource("rdkit", "verifier_specs.yaml"))
+    return load_task_pack(tasks_path, package_resource("open_generation_rdkit", "verifier_specs.yaml"))
 
 
 class FakeVerifier:
@@ -56,10 +56,10 @@ class FakeVerifier:
 
 def test_open_generation_scores_evidence_with_configured_profile() -> None:
     fake = FakeVerifier({"rdkit_qed_v1": {"qed": 0.5}})
-    engine = EvaluationEngine(_pack("rdkit"), verifier=fake)
+    engine = EvaluationEngine(_pack("open_generation_rdkit"), verifier=fake)
 
     result = engine.evaluate_one(
-        {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+        {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
     )
 
     assert result["status"] == "scored"
@@ -87,10 +87,10 @@ def test_evidence_reuse_never_reuses_constraint_score() -> None:
             "xtb_relaxation_energy_gfn2_v1": {"relaxation_energy": 0.175},
         }
     )
-    engine = EvaluationEngine(_pack("xtb"), verifier=fake)
+    engine = EvaluationEngine(_pack("open_generation_xtb"), verifier=fake)
 
     result = engine.evaluate_one(
-        {"task_id": "xtb_013", "candidates": [{"xyz": "fake"}]}
+        {"task_id": "xtb_013_hessian_thermo_stability", "candidates": [{"xyz": "fake"}]}
     )
 
     assert len(fake.calls) == 2
@@ -114,10 +114,10 @@ def test_hessian_task_rejects_nonzero_imaginary_frequency_before_scoring() -> No
             "xtb_relaxation_energy_gfn2_v1": {"relaxation_energy": 0.175},
         }
     )
-    engine = EvaluationEngine(_pack("xtb"), verifier=fake)
+    engine = EvaluationEngine(_pack("open_generation_xtb"), verifier=fake)
 
     result = engine.evaluate_one(
-        {"task_id": "xtb_013", "candidates": [{"xyz": "fake"}]}
+        {"task_id": "xtb_013_hessian_thermo_stability", "candidates": [{"xyz": "fake"}]}
     )
 
     assert fake.calls == [("xtb_hessian_thermo_gfn2_v1", "imaginary_frequency_count")]
@@ -138,7 +138,7 @@ def test_candidate_rejection_is_scored_zero() -> None:
     fake = FakeVerifier({})
     fake.evidence_override = VerificationEvidence(
         "candidate_rejected",
-        "rdkit_001",
+        "rdkit_001_qed_max",
         "rdkit_qed_v1",
         {"smiles": "invalid"},
         {},
@@ -146,10 +146,10 @@ def test_candidate_rejection_is_scored_zero() -> None:
         message="invalid molecule",
         failure_scope="candidate",
     )
-    engine = EvaluationEngine(_pack("rdkit"), verifier=fake)
+    engine = EvaluationEngine(_pack("open_generation_rdkit"), verifier=fake)
 
     result = engine.evaluate_one(
-        {"task_id": "rdkit_001", "candidates": [{"smiles": "invalid"}]}
+        {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "invalid"}]}
     )
 
     assert result["status"] == "scored"
@@ -161,7 +161,7 @@ def test_infrastructure_failure_has_null_score_and_invalidates_benchmark() -> No
     fake = FakeVerifier({})
     fake.evidence_override = VerificationEvidence(
         "evaluation_failed",
-        "rdkit_001",
+        "rdkit_001_qed_max",
         "rdkit_qed_v1",
         {"smiles": "CCO"},
         {},
@@ -169,8 +169,8 @@ def test_infrastructure_failure_has_null_score_and_invalidates_benchmark() -> No
         message="timed out",
         failure_scope="infrastructure",
     )
-    engine = EvaluationEngine(_pack("rdkit"), verifier=fake)
-    answer = {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+    engine = EvaluationEngine(_pack("open_generation_rdkit"), verifier=fake)
+    answer = {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
 
     result = engine.evaluate_one(answer)
     report = engine.evaluate_many([answer])
@@ -182,10 +182,10 @@ def test_infrastructure_failure_has_null_score_and_invalidates_benchmark() -> No
 
 
 def test_known_task_parse_failure_is_submission_zero() -> None:
-    engine = EvaluationEngine(_pack("rdkit"), verifier=FakeVerifier({}))
+    engine = EvaluationEngine(_pack("open_generation_rdkit"), verifier=FakeVerifier({}))
 
     result = engine.evaluate_one(
-        {"task_id": "rdkit_001", "response": "no final answer"}
+        {"task_id": "rdkit_001_qed_max", "response": "no final answer"}
     )
 
     assert result["status"] == "scored"
@@ -298,7 +298,7 @@ def test_hard_constraint_threshold_boundaries(
     fake = FakeVerifier({"rdkit_qed_v1": {"qed": value}})
 
     result = EvaluationEngine(pack, verifier=fake).evaluate_one(
-        {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+        {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
     )
 
     assert result["properties"]["hard_constraint_passed"] is passed
@@ -322,7 +322,7 @@ def test_closed_window_hard_constraint_includes_both_boundaries(tmp_path, value)
     fake = FakeVerifier({"rdkit_qed_v1": {"qed": value}})
 
     result = EvaluationEngine(pack, verifier=fake).evaluate_one(
-        {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+        {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
     )
 
     assert result["failure_type"] is None
@@ -342,7 +342,7 @@ def test_hard_constraint_failure_short_circuits_and_preserves_evidence(tmp_path)
     fake = FakeVerifier({"rdkit_qed_v1": {"qed": 0.5, "atom_count": 12}})
 
     result = EvaluationEngine(pack, verifier=fake).evaluate_one(
-        {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+        {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
     )
 
     assert fake.calls == [("rdkit_qed_v1", "qed")]

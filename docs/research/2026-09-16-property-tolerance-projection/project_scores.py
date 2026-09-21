@@ -54,7 +54,7 @@ def baseline_profiles(profile_ids) -> dict:
 
 def load_baseline_pack(track: str) -> TaskPack:
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
-    pack = load_task_pack(directory / "tasks.yaml", directory / "verifier_specs.yaml")
+    pack = load_task_pack(directory / "tasks.yaml", None)
     historical_tasks = []
     for task in pack.tasks:
         raw = task.to_dict()
@@ -288,7 +288,7 @@ def run(source_dir: Path, output_dir: Path, bootstrap_samples: int = 10000) -> d
             source_dir / filename,
             *[
                 pack_dir / name
-                for name in ("tasks.yaml", "scoring.yaml", "verifier_specs.yaml")
+                for name in ("tasks.yaml", "scoring.yaml")
             ],
         ]
         for path in inputs:

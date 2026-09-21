@@ -14,11 +14,12 @@ from verifier_grounded_benchmark.task.resources import (
 
 @dataclass(frozen=True)
 class TrackDefinition:
+    """Resource locations and metadata for one track; property tracks need no verifier path."""
     name: str
     version: str
     display_name: str
     task_pack_path: str | Path
-    verifier_specs_path: str | Path
+    verifier_specs_path: str | Path | None = None
     scoring_config_path: str | Path | None = None
     sample_answers_path: str | Path | None = None
     status: str = "formal"
@@ -44,6 +45,7 @@ class TrackDefinition:
         return resolve_path(path, base=self.root)
 
     def resource(self, path: str | Path | None) -> object | None:
+        """Resolve an optional resource from a package or filesystem root; preserve None."""
         if path is None:
             return None
         if self.resource_pack is not None:
@@ -58,47 +60,52 @@ class TrackDefinition:
 
 
 class Registry:
+    """Store track definitions by canonical name, with explicit replacement semantics."""
     def __init__(self, tracks: list[TrackDefinition] | None = None) -> None:
         self._tracks: dict[str, TrackDefinition] = {}
         for track in tracks or []:
             self.register_track(track)
 
     def register_track(self, track: TrackDefinition, *, replace: bool = False) -> None:
+        """Register metadata without loading files; reject duplicate names unless replacing."""
         if track.name in self._tracks and not replace:
             raise ValueError(f"Track {track.name!r} is already registered")
         self._tracks[track.name] = track
 
     def get_track_definition(self, name: str) -> TrackDefinition:
+        """Return a registered definition or raise KeyError for an unknown name."""
         try:
             return self._tracks[name]
         except KeyError as exc:
             raise KeyError(f"Unknown benchmark track {name!r}") from exc
 
     def list_tracks(self, status: str | None = "formal") -> list[TrackDefinition]:
+        """Return definitions in registration order, optionally filtered by status."""
         tracks = list(self._tracks.values())
         return tracks if status is None else [track for track in tracks if track.status == status]
 
 
 def builtin_definitions() -> list[TrackDefinition]:
+    """Return the four formal tracks, separating verifier-based and gold-based tasks."""
     return [
         TrackDefinition(
-            name="rdkit", version="0.10.0", display_name="RDKit baseline small-molecule tasks",
+            name="open_generation_rdkit", version="0.10.0", display_name="RDKit baseline small-molecule tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
-            tags=("small_molecule", "rdkit", "descriptor"), resource_pack="rdkit",
+            tags=("small_molecule", "rdkit", "descriptor"), resource_pack="open_generation_rdkit",
         ),
         TrackDefinition(
-            name="xtb", version="0.10.0", display_name="xTB molecular optimization tasks",
+            name="open_generation_xtb", version="0.10.0", display_name="xTB molecular optimization tasks",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
-            requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="xtb",
+            requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="open_generation_xtb",
         ),
         TrackDefinition(
             name="property_calculation_advanced", version="0.10.0", display_name="Advanced fixed-input property calculation tasks",
-            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "crystal"),
@@ -107,7 +114,7 @@ def builtin_definitions() -> list[TrackDefinition]:
         TrackDefinition(
             name="property_calculation_basic", version="0.10.0",
             display_name="Basic fixed-input property calculation tasks",
-            task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
+            task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "basic", "small_molecule"),

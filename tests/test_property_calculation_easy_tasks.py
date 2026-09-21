@@ -110,7 +110,7 @@ RELATIVE_WIDTHS = {
 def load_pack(name: str = "property_calculation_basic"):
     return load_task_pack(
         package_resource(name, "tasks.yaml"),
-        package_resource(name, "verifier_specs.yaml"),
+        None,
     )
 
 

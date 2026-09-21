@@ -25,31 +25,29 @@ REMOVED_LEGACY_PACKAGES = {
     "verifiers/__init__.py",
 }
 FORMAL_V2_TASK_FILES = {
-    "verifier_grounded_benchmark/task/packs/rdkit/tasks.yaml",
-    "verifier_grounded_benchmark/task/packs/rdkit/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/rdkit/sample_answers.jsonl",
-    "verifier_grounded_benchmark/task/packs/xtb/tasks.yaml",
-    "verifier_grounded_benchmark/task/packs/xtb/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/xtb/sample_answers.jsonl",
+    "verifier_grounded_benchmark/task/packs/open_generation_rdkit/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/open_generation_rdkit/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/open_generation_rdkit/sample_answers.jsonl",
+    "verifier_grounded_benchmark/task/packs/open_generation_xtb/tasks.yaml",
+    "verifier_grounded_benchmark/task/packs/open_generation_xtb/verifier_specs.yaml",
+    "verifier_grounded_benchmark/task/packs/open_generation_xtb/sample_answers.jsonl",
     "verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation_advanced/verifier_specs.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
-    "verifier_grounded_benchmark/task/packs/property_calculation_basic/verifier_specs.yaml",
 }
 FORMAL_TRACK_PACKS = {
     "property_calculation_advanced",
     "property_calculation_basic",
-    "rdkit",
-    "xtb",
+    "open_generation_rdkit",
+    "open_generation_xtb",
 }
 FORMAL_EXPERT_XTB_TASK_IDS = {
-    "xtb_014",
-    "xtb_015",
-    "xtb_016",
-    "xtb_017",
-    "xtb_018",
+    "xtb_014_formula_dipole_min",
+    "xtb_015_two_fluorine_gap_min",
+    "xtb_016_c10_f2_gap_min",
+    "xtb_017_roy_singlepoint_energy_min",
+    "xtb_018_ritonavir_optimized_energy_min",
 }
 
 
@@ -68,7 +66,7 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     with zipfile.ZipFile(wheel_path) as wheel:
         wheel_members = set(wheel.namelist())
         wheel_tasks = yaml.safe_load(
-            wheel.read("verifier_grounded_benchmark/task/packs/xtb/tasks.yaml")
+            wheel.read("verifier_grounded_benchmark/task/packs/open_generation_xtb/tasks.yaml")
         )
     with tarfile.open(sdist_path) as sdist:
         sdist_members = {"/".join(Path(member.name).parts[1:]) for member in sdist.getmembers()}
@@ -76,7 +74,7 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
             member
             for member in sdist.getmembers()
             if member.name.endswith(
-                "/src/verifier_grounded_benchmark/task/packs/xtb/tasks.yaml"
+                "/src/verifier_grounded_benchmark/task/packs/open_generation_xtb/tasks.yaml"
             )
         )
         extracted_tasks = sdist.extractfile(tasks_member)
@@ -95,6 +93,12 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
     assert not any(path.startswith("review_system/") for path in sdist_members)
     assert "verifier_grounded_benchmark/task/packs/family-policy.yaml" not in wheel_members
     assert "src/verifier_grounded_benchmark/task/packs/family-policy.yaml" not in sdist_members
+    for track in ("property_calculation_basic", "property_calculation_advanced"):
+        placeholder = f"verifier_grounded_benchmark/task/packs/{track}/verifier_specs.yaml"
+        assert placeholder not in wheel_members
+        assert f"src/{placeholder}" not in sdist_members
+    for legacy_track in ("rdkit", "xtb"):
+        assert not any(f"/task/packs/{legacy_track}/" in path for path in wheel_members | sdist_members)
     assert FORMAL_V2_TASK_FILES.issubset(wheel_members)
     assert {f"src/{path}" for path in FORMAL_V2_TASK_FILES}.issubset(sdist_members)
     assert not any("/task/calibration/" in path for path in wheel_members)

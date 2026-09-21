@@ -19,43 +19,43 @@ from verifier_grounded_benchmark.task.loader import (
 )
 from verifier_grounded_benchmark.task.resources import package_resource
 
-TASKS_RESOURCE = package_resource("xtb", "tasks.yaml")
-SPECS_RESOURCE = package_resource("xtb", "verifier_specs.yaml")
-ANSWERS_RESOURCE = package_resource("xtb", "sample_answers.jsonl")
+TASKS_RESOURCE = package_resource("open_generation_xtb", "tasks.yaml")
+SPECS_RESOURCE = package_resource("open_generation_xtb", "verifier_specs.yaml")
+ANSWERS_RESOURCE = package_resource("open_generation_xtb", "sample_answers.jsonl")
 
 
 def load_xtb_pack():
     return load_task_pack(TASKS_RESOURCE, SPECS_RESOURCE)
 LEGACY_TASK_IDS = {
-    "xtb_001",
-    "xtb_002",
-    "xtb_003",
-    "xtb_004",
-    "xtb_005",
-    "xtb_006",
-    "xtb_007",
-    "xtb_008",
-    "xtb_009",
-    "xtb_010",
-    "xtb_011",
-    "xtb_012",
-    "xtb_013",
+    "xtb_001_gap_window",
+    "xtb_002_dipole_window",
+    "xtb_003_gap_max",
+    "xtb_004_gap_min",
+    "xtb_005_dipole_max",
+    "xtb_006_low_gap_high_dipole_opt",
+    "xtb_007_gap_dipole_window",
+    "xtb_008_lumo_min",
+    "xtb_009_polarizability_dipole_opt",
+    "xtb_010_solvation_selectivity_alpb",
+    "xtb_011_electrophilicity_max",
+    "xtb_012_fukui_carbon_site",
+    "xtb_013_hessian_thermo_stability",
 }
 EXPERT_TASK_IDS = {
-    "xtb_014",
-    "xtb_015",
-    "xtb_016",
-    "xtb_017",
-    "xtb_018",
-    "xtb_019",
-    "xtb_020",
+    "xtb_014_formula_dipole_min",
+    "xtb_015_two_fluorine_gap_min",
+    "xtb_016_c10_f2_gap_min",
+    "xtb_017_roy_singlepoint_energy_min",
+    "xtb_018_ritonavir_optimized_energy_min",
+    "xtb_019_odd_element_counts_gap_max",
+    "xtb_020_pyrene_substituent_energy_min",
 }
 CALIBRATED_EXPERT_TASK_IDS = {
-    "xtb_014",
-    "xtb_015",
-    "xtb_016",
-    "xtb_017",
-    "xtb_018",
+    "xtb_014_formula_dipole_min",
+    "xtb_015_two_fluorine_gap_min",
+    "xtb_016_c10_f2_gap_min",
+    "xtb_017_roy_singlepoint_energy_min",
+    "xtb_018_ritonavir_optimized_energy_min",
 }
 EXPERT_VERIFIER_IDS = {
     "xtb_dipole_doublet_gfn2_v1",
@@ -123,7 +123,7 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     for task_id, task in tasks.items():
         assert task["formal_track"] is True
         assert task["scoring"]["aggregation"] == "geometric_mean"
-        if task_id == "xtb_020":
+        if task_id == "xtb_020_pyrene_substituent_energy_min":
             assert task["answer_schema"]["format"] == "final_answer_line"
             assert task["answer_schema"]["value_type"] == "smiles"
             assert task["object_type"] == "small_molecule"
@@ -149,28 +149,28 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
             assert constraint["verifier_id"] in specs
 
     optimization_tasks = [
-        "xtb_003",
-        "xtb_004",
-        "xtb_005",
-        "xtb_006",
-        "xtb_007",
-        "xtb_008",
-        "xtb_009",
-        "xtb_010",
-        "xtb_011",
+        "xtb_003_gap_max",
+        "xtb_004_gap_min",
+        "xtb_005_dipole_max",
+        "xtb_006_low_gap_high_dipole_opt",
+        "xtb_007_gap_dipole_window",
+        "xtb_008_lumo_min",
+        "xtb_009_polarizability_dipole_opt",
+        "xtb_010_solvation_selectivity_alpb",
+        "xtb_011_electrophilicity_max",
     ]
     for task_id in optimization_tasks:
         structural_domain = tasks[task_id]["structural_domain"]
         assert structural_domain["heavy_atom_count"][0] >= 6
         assert "formula_denylist" in structural_domain or "heavy_element_diversity_min" in structural_domain
 
-    fukui_domain = tasks["xtb_012"]["structural_domain"]
+    fukui_domain = tasks["xtb_012_fukui_carbon_site"]["structural_domain"]
     assert fukui_domain["heavy_atom_count"] == [4, 32]
     assert fukui_domain["carbon_count_min"] == 3
     assert fukui_domain["hetero_atom_count_min"] == 1
     assert "formula_denylist" in fukui_domain
 
-    task_006_constraints = tasks["xtb_006"]["constraints"]
+    task_006_constraints = tasks["xtb_006_low_gap_high_dipole_opt"]["constraints"]
     gap = next(item for item in task_006_constraints if item["property"] == "homo_lumo_gap")
     dipole = next(item for item in task_006_constraints if item["property"] == "dipole_moment")
     assert gap["type"] == "minimize"
@@ -180,7 +180,7 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
     assert dipole_profile["zero_score_anchor"] == pytest.approx(3.32)
     assert dipole_profile["full_score_target"] == pytest.approx(13.374)
 
-    hessian_task = tasks["xtb_013"]
+    hessian_task = tasks["xtb_013_hessian_thermo_stability"]
     hessian_constraints = hessian_task["constraints"]
     imaginary = hessian_task["hard_constraints"][0]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
@@ -192,13 +192,13 @@ def test_xtb_xyz_tasks_define_first_batch_properties() -> None:
         "upper": 0,
     }
     assert entropy["type"] == "maximize"
-    assert tasks["xtb_013"]["structural_domain"]["heavy_atom_count"] == [4, 18]
+    assert tasks["xtb_013_hessian_thermo_stability"]["structural_domain"]["heavy_atom_count"] == [4, 18]
 
 
 def test_xtb_gap_max_task_uses_literature_reviewed_thresholds() -> None:
     pack = load_xtb_pack()
     tasks = pack.tasks_by_id
-    gap_max = tasks["xtb_003"]
+    gap_max = tasks["xtb_003_gap_max"]
     gap_constraint = next(item for item in gap_max["constraints"] if item["property"] == "homo_lumo_gap")
     structural_domain = gap_max["structural_domain"]
 
@@ -216,7 +216,7 @@ def test_xtb_advanced_tasks_use_literature_reviewed_thresholds() -> None:
     pack = load_xtb_pack()
     tasks = pack.tasks_by_id
 
-    lumo = next(item for item in tasks["xtb_008"]["constraints"] if item["property"] == "lumo_energy")
+    lumo = next(item for item in tasks["xtb_008_lumo_min"]["constraints"] if item["property"] == "lumo_energy")
     assert lumo["type"] == "minimize"
     lumo_profile = pack.scoring_profiles[lumo["scoring_profile"]]
     assert lumo_profile["full_score_target"] == -10.6883
@@ -225,7 +225,7 @@ def test_xtb_advanced_tasks_use_literature_reviewed_thresholds() -> None:
     assert score_constraint_value(-8.0285, lumo_profile) == pytest.approx(0.695964, rel=1e-4)
     assert score_constraint_value(-1.0, lumo_profile) == 0.0
 
-    hessian_task = tasks["xtb_013"]
+    hessian_task = tasks["xtb_013_hessian_thermo_stability"]
     hessian_constraints = hessian_task["constraints"]
     entropy = next(item for item in hessian_constraints if item["property"] == "entropy_298_per_heavy_atom")
     imaginary = hessian_task["hard_constraints"][0]
@@ -242,22 +242,22 @@ def test_xtb_advanced_tasks_use_literature_reviewed_thresholds() -> None:
 
     polarizability = next(
         item
-        for item in tasks["xtb_009"]["constraints"]
+        for item in tasks["xtb_009_polarizability_dipole_opt"]["constraints"]
         if item["property"] == "polarizability_per_heavy_atom"
     )
     solvation = next(
         item
-        for item in tasks["xtb_010"]["constraints"]
+        for item in tasks["xtb_010_solvation_selectivity_alpb"]["constraints"]
         if item["property"] == "alpb_water_hexane_selectivity"
     )
     electrophilicity = next(
         item
-        for item in tasks["xtb_011"]["constraints"]
+        for item in tasks["xtb_011_electrophilicity_max"]["constraints"]
         if item["property"] == "global_electrophilicity"
     )
     fukui = next(
         item
-        for item in tasks["xtb_012"]["constraints"]
+        for item in tasks["xtb_012_fukui_carbon_site"]["constraints"]
         if item["property"] == "max_f_plus_on_carbon"
     )
     polarizability_profile = pack.scoring_profiles[polarizability["scoring_profile"]]
@@ -339,11 +339,11 @@ def test_formal_expert_tasks_keep_only_source_constraints() -> None:
     tasks = pack.tasks_by_id
     specs = pack.verifier_specs_by_id
 
-    task_2 = tasks["xtb_014"]
-    task_3 = tasks["xtb_015"]
-    task_4 = tasks["xtb_016"]
-    roy = tasks["xtb_017"]
-    ritonavir = tasks["xtb_018"]
+    task_2 = tasks["xtb_014_formula_dipole_min"]
+    task_3 = tasks["xtb_015_two_fluorine_gap_min"]
+    task_4 = tasks["xtb_016_c10_f2_gap_min"]
+    roy = tasks["xtb_017_roy_singlepoint_energy_min"]
+    ritonavir = tasks["xtb_018_ritonavir_optimized_energy_min"]
 
     assert task_2["structural_domain"] == {"formula": "C12H16N3O8"}
     assert task_3["structural_domain"] == {

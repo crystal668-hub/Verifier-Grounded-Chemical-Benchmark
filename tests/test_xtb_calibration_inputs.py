@@ -17,12 +17,12 @@ ANSWERS_PATH = CALIBRATION_DIR.joinpath("legacy_answers.jsonl")
 MANIFEST_PATH = CALIBRATION_DIR.joinpath("legacy_manifest.yaml")
 EXPERT_ANSWERS_PATH = CALIBRATION_DIR.joinpath("answers.jsonl")
 ADVANCED_TASK_IDS = {
-    "xtb_008",
-    "xtb_009",
-    "xtb_010",
-    "xtb_011",
-    "xtb_012",
-    "xtb_013",
+    "xtb_008_lumo_min",
+    "xtb_009_polarizability_dipole_opt",
+    "xtb_010_solvation_selectivity_alpb",
+    "xtb_011_electrophilicity_max",
+    "xtb_012_fukui_carbon_site",
+    "xtb_013_hessian_thermo_stability",
 }
 
 
@@ -57,7 +57,7 @@ def test_xtb_calibration_answers_have_unique_candidate_ids() -> None:
 
 
 def test_xtb_calibration_answers_reference_known_tasks_and_extract_xyz() -> None:
-    tasks = load_tasks(package_resource("xtb", "tasks.yaml"))
+    tasks = load_tasks(package_resource("open_generation_xtb", "tasks.yaml"))
     answers = _load_answers()
     for answer in answers:
         assert answer["task_id"] in tasks
@@ -84,7 +84,7 @@ def test_xtb_calibration_manifest_matches_answers() -> None:
 
 
 def test_xtb_calibration_covers_every_task_with_positive_and_negative_cases() -> None:
-    tasks = load_tasks(package_resource("xtb", "tasks.yaml"))
+    tasks = load_tasks(package_resource("open_generation_xtb", "tasks.yaml"))
     answers = _load_answers() + _load_expert_answers()
     for task_id in tasks:
         roles = {answer["role"] for answer in answers if answer["task_id"] == task_id}

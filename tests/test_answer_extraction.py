@@ -7,7 +7,7 @@ from verifier_grounded_benchmark.evaluation.open_generation.parsing.dispatcher i
 )
 
 TASK = {
-    "task_id": "rdkit_001",
+    "task_id": "rdkit_001_qed_max",
     "answer_schema": {
         "format": "final_answer_line",
         "final_answer_prefix": "FINAL ANSWER:",
@@ -20,7 +20,7 @@ TASK = {
 def test_normalize_answer_record_extracts_final_answer_line() -> None:
     result = normalize_answer_record(
         {
-            "task_id": "rdkit_001",
+            "task_id": "rdkit_001_qed_max",
             "response": "I will use ethanol.\nFINAL ANSWER: CCO",
         },
         TASK,
@@ -28,7 +28,7 @@ def test_normalize_answer_record_extracts_final_answer_line() -> None:
 
     assert result.ok
     assert result.answer == {
-        "task_id": "rdkit_001",
+        "task_id": "rdkit_001_qed_max",
         "candidates": [{"smiles": "CCO"}],
         "raw_answer": "I will use ethanol.\nFINAL ANSWER: CCO",
         "extracted_answer": "CCO",
@@ -38,7 +38,7 @@ def test_normalize_answer_record_extracts_final_answer_line() -> None:
 def test_normalize_answer_record_uses_last_final_answer_line() -> None:
     result = normalize_answer_record(
         {
-            "task_id": "rdkit_001",
+            "task_id": "rdkit_001_qed_max",
             "response": "FINAL ANSWER: C\nRevision follows.\nFINAL ANSWER: CCO",
         },
         TASK,
@@ -50,7 +50,7 @@ def test_normalize_answer_record_uses_last_final_answer_line() -> None:
 
 
 def test_normalize_answer_record_reports_missing_final_answer_line() -> None:
-    result = normalize_answer_record({"task_id": "rdkit_001", "response": "CCO"}, TASK)
+    result = normalize_answer_record({"task_id": "rdkit_001_qed_max", "response": "CCO"}, TASK)
 
     assert not result.ok
     assert result.failure_type == "parse_error"
@@ -58,7 +58,7 @@ def test_normalize_answer_record_reports_missing_final_answer_line() -> None:
 
 
 def test_normalize_answer_record_reports_empty_final_answer_line() -> None:
-    result = normalize_answer_record({"task_id": "rdkit_001", "response": "FINAL ANSWER:   "}, TASK)
+    result = normalize_answer_record({"task_id": "rdkit_001_qed_max", "response": "FINAL ANSWER:   "}, TASK)
 
     assert not result.ok
     assert result.failure_type == "parse_error"
@@ -76,7 +76,7 @@ def test_normalize_answer_record_reports_unsupported_schema_format() -> None:
 
 
 def test_normalize_answer_record_passes_structured_candidates_through() -> None:
-    record = {"task_id": "rdkit_001", "candidates": [{"smiles": "CCO"}]}
+    record = {"task_id": "rdkit_001_qed_max", "candidates": [{"smiles": "CCO"}]}
 
     result = normalize_answer_record(record, TASK)
 

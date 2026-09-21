@@ -1,4 +1,4 @@
-"""Score answer JSONL files through configured verifier scripts."""
+"""Score answer JSONL files using verifiers or reference gold answers."""
 
 from __future__ import annotations
 
@@ -17,19 +17,18 @@ from verifier_grounded_benchmark.evaluation.external_dependencies import (
 from verifier_grounded_benchmark.evaluation.io import load_answers_jsonl_file
 from verifier_grounded_benchmark.task.loader import (
     load_task_pack,
-    load_verifier_specs_file,
 )
 from verifier_grounded_benchmark.task.models import TaskPack
 
 
 def load_development_task_pack(
     tasks_path: Path,
-    specs_path: Path,
+    specs_path: Path | None = None,
     *,
     script_root: Path | None = None,
     scoring_path: Path | None = None,
 ) -> TaskPack:
-    load_verifier_specs_file(specs_path)
+    """Load a custom task pack; verifier specs are optional for property-only packs."""
     return load_task_pack(
         tasks_path,
         specs_path,
@@ -38,6 +37,7 @@ def load_development_task_pack(
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse CLI options and reject incomplete or conflicting track/pack selections."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--track",
@@ -67,29 +67,32 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.track and any(x is not None for x in (args.tasks, args.specs, args.scoring)):
         parser.error("--track cannot be combined with --tasks, --specs, or --scoring")
-    if len({args.tasks is None, args.specs is None, args.scoring is None}) != 1:
-        parser.error("--tasks, --specs, and --scoring must be provided together")
+    if (args.tasks is None) != (args.scoring is None):
+        parser.error("--tasks and --scoring must be provided together")
+    if args.specs is not None and args.tasks is None:
+        parser.error("--specs requires --tasks and --scoring")
     return args
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Score a JSONL submission; return 2 on dependency or required-coverage failure."""
     args = parse_args(argv)
     answers = load_answers_jsonl_file(args.answers)
     pack: TaskPack | None = None
     if args.track:
         track = load_track(args.track)
-        tasks_by_id = track.tasks_by_id
+        tasks_by_id = track._task_pack.tasks_by_id
         specs_by_id = track.verifier_specs_by_id
     elif args.tasks is None:
-        track = load_track("rdkit")
-        tasks_by_id = track.tasks_by_id
+        track = load_track("open_generation_rdkit")
+        tasks_by_id = track._task_pack.tasks_by_id
         specs_by_id = track.verifier_specs_by_id
     else:
-        assert args.specs is not None and args.scoring is not None
+        assert args.scoring is not None
         pack = load_development_task_pack(
             args.tasks,
             args.specs,
-            script_root=args.specs.resolve().parent,
+            script_root=args.specs.resolve().parent if args.specs is not None else None,
             scoring_path=args.scoring,
         )
         tasks_by_id = pack.tasks_by_id
@@ -97,7 +100,8 @@ def main(argv: list[str] | None = None) -> int:
 
     required_specs = verifier_specs_for_answers(tasks_by_id, specs_by_id, answers)
     try:
-        preflight_external_dependencies(required_specs)
+        if required_specs:
+            preflight_external_dependencies(required_specs)
     except ExternalDependencyError as exc:
         print(
             json.dumps(

@@ -222,7 +222,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
         directories[track] = directory
         inputs.extend(
             directory / name
-            for name in ("tasks.yaml", "scoring.yaml", "verifier_specs.yaml")
+            for name in ("tasks.yaml", "scoring.yaml")
         )
         inputs.append(DIRECTORY / f"{track}.scoring.yaml")
         source = baseline_scoring(track)
@@ -251,7 +251,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             config_path = Path(temporary) / f"{track}.scoring.yaml"
             config_path.write_text(config, encoding="utf-8")
             pack = load_task_pack(
-                directory / "tasks.yaml", directory / "verifier_specs.yaml", config_path
+                directory / "tasks.yaml", None, config_path
             )
             parameters.extend(parameter_rows(track, sources[track], candidate))
             if source_dir is None:
@@ -267,7 +267,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             baseline_path.write_text(yaml.safe_dump(sources[track]), encoding="utf-8")
             current_pack = load_task_pack(
                 directory / "tasks.yaml",
-                directory / "verifier_specs.yaml",
+                None,
                 baseline_path,
             )
             corrected = np.array(

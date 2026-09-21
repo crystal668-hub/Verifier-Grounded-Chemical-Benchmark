@@ -1,10 +1,13 @@
 # RDKit 题目设计与实现同步
 
+Canonical track name: `open_generation_rdkit`. Task IDs: `rdkit_NNN_description`.
+
+
 更新日期：2026-07-30
 
 ## 1. Track 边界
 
-RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始终重新 sanitize、canonicalize 并计算性质，不使用模型自报数值。正式任务资源位于 `src/verifier_grounded_benchmark/task/packs/rdkit/`。
+RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始终重新 sanitize、canonicalize 并计算性质，不使用模型自报数值。正式任务资源位于 `src/verifier_grounded_benchmark/task/packs/open_generation_rdkit/`。
 
 基线题共享 drug-like domain：单组分；允许 H、B、C、N、O、F、P、S、Cl、Br、I；重原子 5 到 60；分子量不超过 600 Da；formal charge 在 `[-1, 1]`。专家题 011-014 只应用各自公开题面中的 domain，不继承未公开的基线限制。
 
@@ -18,20 +21,20 @@ RDKit track 是输入为单个 SMILES 的 open-generation track。verifier 始�
 
 | task_id | 主目标 | 关键约束 |
 |---|---|---|
-| `rdkit_001` | maximize QED | 基线 domain |
-| `rdkit_002` | minimize SA score | 基线 domain |
-| `rdkit_003` | LogP window `[1, 3]` | 基线 domain |
-| `rdkit_004` | TPSA window `[35, 75]` | 基线 domain |
-| `rdkit_005` | HBA window `[2, 4]` | 基线 domain |
-| `rdkit_006` | HBD window `[1, 2]` | 基线 domain |
-| `rdkit_007` | maximize fraction Csp3 | 基线 domain |
-| `rdkit_008` | QED + SA | multi-objective |
-| `rdkit_009` | LogP + TPSA | multi-objective |
-| `rdkit_010` | HBA + HBD | multi-objective |
-| `rdkit_011` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
-| `rdkit_012` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
-| `rdkit_013` | maximize 末端重原子距离 | 精确六碳饱和链；固定 UFF workflow |
-| `rdkit_014` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
+| `rdkit_001_qed_max` | maximize QED | 基线 domain |
+| `rdkit_002_sa_min` | minimize SA score | 基线 domain |
+| `rdkit_003_logp_window` | LogP window `[1, 3]` | 基线 domain |
+| `rdkit_004_tpsa_window` | TPSA window `[35, 75]` | 基线 domain |
+| `rdkit_005_hba_window` | HBA window `[2, 4]` | 基线 domain |
+| `rdkit_006_hbd_window` | HBD window `[1, 2]` | 基线 domain |
+| `rdkit_007_fsp3_max` | maximize fraction Csp3 | 基线 domain |
+| `rdkit_008_qed_sa` | QED + SA | multi-objective |
+| `rdkit_009_logp_tpsa` | LogP + TPSA | multi-objective |
+| `rdkit_010_hba_hbd` | HBA + HBD | multi-objective |
+| `rdkit_011_logp_target` | LogP 接近 3 | 含氢总原子数和氧比例 domain |
+| `rdkit_012_sa_logp_target` | LogP 接近 3 | SA `< 5` 硬门，无氧比例门 |
+| `rdkit_013_chain_end_to_end_max` | maximize 末端重原子距离 | 精确六碳饱和链；固定 UFF workflow |
+| `rdkit_014_caffeine_similarity_max` | maximize caffeine Morgan Tanimoto | LogP、SA、QED 三个硬门 |
 
 ## 3. 性质与 verifier
 
