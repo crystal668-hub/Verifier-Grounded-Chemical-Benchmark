@@ -1,6 +1,7 @@
 data/
 artifacts/
 /build/
+/templates/
 /dist/
 .cache/
 .venv/
