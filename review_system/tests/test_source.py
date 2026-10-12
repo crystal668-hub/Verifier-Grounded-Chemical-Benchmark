@@ -2,15 +2,21 @@ import json
 from pathlib import Path
 import sys
 import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "backend"))
 sys.path.insert(0, str(Path(__file__).parents[2] / "src"))
 
 from review_system.source import load_catalog, schema_view, source_revision, split_attachments
+from review_system.db import Base
+from review_system.main import tracks as list_tracks_endpoint
+from review_system.models import SnapshotTrack, SourceSnapshot, User
 
 def test_catalog_contains_formal_tracks_and_hides_long_inputs():
     catalog = load_catalog()
     assert {track["name"] for track in catalog["tracks"]} == {"open_generation_rdkit", "open_generation_xtb", "property_calculation_basic", "property_calculation_advanced"}
+    assert all("display_name" not in track for track in catalog["tracks"])
     assert sum(len(track["tasks"]) for track in catalog["tracks"]) == 105
     for track in catalog["tracks"]:
         for task in track["tasks"]:
@@ -19,6 +25,24 @@ def test_catalog_contains_formal_tracks_and_hides_long_inputs():
             for input_object in task["schema"].get("input_objects", []):
                 value = input_object.get("value")
                 assert not isinstance(value, str) or len(value.strip()) < 80
+
+
+def test_track_endpoint_exposes_only_the_canonical_name():
+    engine = create_engine("sqlite:///:memory:")
+    Base.metadata.create_all(engine)
+    with Session(engine) as database:
+        user = User(username="reviewer", password_hash="hash")
+        snapshot = SourceSnapshot(commit="abc123", fingerprint="a" * 64, status="active")
+        database.add_all([user, snapshot])
+        database.flush()
+        database.add(SnapshotTrack(snapshot_id=snapshot.id, name="open_generation_rdkit", version="0.10.0"))
+        database.commit()
+
+        result = list_tracks_endpoint(database, user)
+
+    assert result["tracks"] == [
+        {"name": "open_generation_rdkit", "version": "0.10.0", "task_count": 0}
+    ]
 
 def test_attachment_split_replaces_body_with_reference():
     view, attachments = split_attachments({"task_id":"demo", "prompt":"Input:\n```xyz\n" + "C 0 0 0\n" * 30 + "```"})

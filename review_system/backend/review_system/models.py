@@ -56,7 +56,6 @@ class SnapshotTrack(Base):
     snapshot_id: Mapped[int] = mapped_column(ForeignKey("source_snapshots.id"), index=True)
     name: Mapped[str] = mapped_column(String(120), index=True)
     version: Mapped[str] = mapped_column(String(40))
-    display_name: Mapped[str] = mapped_column(String(240))
     tasks = relationship("SnapshotTask", cascade="all, delete-orphan")
     __table_args__ = (UniqueConstraint("snapshot_id", "name"),)
 

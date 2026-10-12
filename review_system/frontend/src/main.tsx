@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BookOpen, Check, ChevronDown, FileText, KeyRound, MessageCircle, Minus, PanelRight, Plus, RefreshCw, Search, Send, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import './styles.css';
 
-type Track = { name: string; display_name: string; task_count: number };
+type Track = { name: string; task_count: number };
 type Task = { task_id: string; version: number; status: string; summary: string };
 type Detail = Record<string, any>;
 type CurrentUser = { id: number; username: string; role: string };
@@ -451,7 +451,7 @@ function App() {
       <aside className="sidebar">
         <div className="side-title"><span>目录</span><span className="count">{tracks.length} tracks</span></div>
         <label className="search"><Search size={16} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="搜索题目 ID" /></label>
-        {tracks.map(item => { const expanded = expandedTrack === item.name; return <div className="track" key={item.name}><button className="track-button" aria-expanded={expanded} onClick={() => { setExpandedTrack(expanded ? '' : item.name); if (!expanded && track !== item.name) { setTrack(item.name); setSelected(''); setTasks([]); } }}><BookOpen size={16} /><span>{item.display_name}</span><ChevronDown size={14} className={expanded ? 'chevron-open' : ''} /></button>{expanded && <div className="task-list">{track === item.name && tasks.map(task => <button className={`task ${selected === task.task_id ? 'active' : ''}`} onClick={() => setSelected(task.task_id)} key={task.task_id}><span>{task.task_id}</span><em>{task.status === 'pending' ? '待审核' : '已同步'}</em></button>)}</div>}</div>; })}
+        {tracks.map(item => { const expanded = expandedTrack === item.name; return <div className="track" key={item.name}><button className="track-button" aria-expanded={expanded} onClick={() => { setExpandedTrack(expanded ? '' : item.name); if (!expanded && track !== item.name) { setTrack(item.name); setSelected(''); setTasks([]); } }}><BookOpen size={16} /><span>{item.name}</span><ChevronDown size={14} className={expanded ? 'chevron-open' : ''} /></button>{expanded && <div className="task-list">{track === item.name && tasks.map(task => <button className={`task ${selected === task.task_id ? 'active' : ''}`} onClick={() => setSelected(task.task_id)} key={task.task_id}><span>{task.task_id}</span><em>{task.status === 'pending' ? '待审核' : '已同步'}</em></button>)}</div>}</div>; })}
         <div className="sidebar-bottom"><button className="draft" onClick={() => notify('草稿提交功能即将开放')}><span>＋</span>提交 task 草稿</button><p>V1 · {new Date().getFullYear()}</p></div>
       </aside>
       <div className={`resize-handle ${resizeTarget === 'sidebar' ? 'resizing' : ''}`} role="separator" aria-label="调整目录栏宽度" onPointerDown={event => beginResize('sidebar', event)} />

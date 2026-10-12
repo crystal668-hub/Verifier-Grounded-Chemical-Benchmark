@@ -67,7 +67,7 @@ def sync_catalog(database: DBSession) -> SourceSnapshot:
     snapshot=SourceSnapshot(commit=catalog["commit"], fingerprint=catalog["fingerprint"], status="active")
     database.add(snapshot); database.flush()
     for track in catalog["tracks"]:
-        st=SnapshotTrack(snapshot_id=snapshot.id,name=track["name"],version=track["version"],display_name=track["display_name"]); database.add(st); database.flush()
+        st=SnapshotTrack(snapshot_id=snapshot.id,name=track["name"],version=track["version"]); database.add(st); database.flush()
         for task in track["tasks"]:
             database.add(SnapshotTask(track_id=st.id,task_id=task["task_id"],version=task["version"],fingerprint=task["fingerprint"],data_json=json.dumps(task["data"],ensure_ascii=False),view_json=json.dumps(task["view"],ensure_ascii=False),scoring_json=json.dumps(task["scoring"],ensure_ascii=False),schema_json=json.dumps(task["schema"],ensure_ascii=False),attachments_json=json.dumps(task["attachments"],ensure_ascii=False)))
     database.commit(); return snapshot
@@ -196,7 +196,7 @@ def revoke_sessions(user_id: int, database: DBSession=Depends(db), actor: User=D
 
 @app.get("/api/v1/tracks")
 def tracks(database: DBSession=Depends(db), user: User=Depends(auth)):
-    snapshot=active_snapshot(database); return {"snapshot":{"id":snapshot.id,"commit":snapshot.commit,"fingerprint":snapshot.fingerprint},"tracks":[{"name":x.name,"version":x.version,"display_name":x.display_name,"task_count":len(x.tasks)} for x in snapshot.tracks]}
+    snapshot=active_snapshot(database); return {"snapshot":{"id":snapshot.id,"commit":snapshot.commit,"fingerprint":snapshot.fingerprint},"tracks":[{"name":x.name,"version":x.version,"task_count":len(x.tasks)} for x in snapshot.tracks]}
 
 @app.get("/api/v1/tracks/{track}/tasks")
 def task_list(track: str, q: str|None=None, status: str|None=None, database: DBSession=Depends(db), user: User=Depends(auth)):

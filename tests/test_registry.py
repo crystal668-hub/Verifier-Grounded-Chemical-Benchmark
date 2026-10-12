@@ -19,7 +19,6 @@ def test_registry_lists_only_formal_tracks_by_default() -> None:
             TrackDefinition(
                 name="formal",
                 version="1",
-                display_name="Formal Track",
                 task_pack_path="tasks/formal/tasks.yaml",
                 verifier_specs_path="tasks/formal/verifier_specs.yaml",
                 status="formal",
@@ -27,7 +26,6 @@ def test_registry_lists_only_formal_tracks_by_default() -> None:
             TrackDefinition(
                 name="experimental",
                 version="1",
-                display_name="Experimental Track",
                 task_pack_path="tasks/experimental/tasks.yaml",
                 verifier_specs_path="tasks/experimental/verifier_specs.yaml",
                 status="experimental",
@@ -54,7 +52,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     assert tracks[0] == TrackDefinition(
         name="open_generation_rdkit",
         version="0.10.0",
-        display_name="RDKit baseline small-molecule tasks",
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
@@ -66,7 +63,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     assert tracks[1] == TrackDefinition(
         name="open_generation_xtb",
         version="0.10.0",
-        display_name="xTB molecular optimization tasks",
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
@@ -79,7 +75,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     assert tracks[2] == TrackDefinition(
         name="property_calculation_advanced",
         version="0.10.0",
-        display_name="Advanced fixed-input property calculation tasks",
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
@@ -91,7 +86,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     assert tracks[3] == TrackDefinition(
         name="property_calculation_basic",
         version="0.10.0",
-        display_name="Basic fixed-input property calculation tasks",
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
@@ -107,7 +101,6 @@ def test_registry_rejects_duplicate_track_names() -> None:
     track = TrackDefinition(
         name="open_generation_rdkit",
         version="1",
-        display_name="RDKit",
         task_pack_path="tasks/rdkit_baseline/tasks.yaml",
         verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
     )
@@ -123,14 +116,12 @@ def test_registry_replace_allows_explicit_override() -> None:
     original = TrackDefinition(
         name="open_generation_rdkit",
         version="1",
-        display_name="RDKit",
         task_pack_path="tasks/rdkit_baseline/tasks.yaml",
         verifier_specs_path="tasks/rdkit_baseline/verifier_specs.yaml",
     )
     replacement = TrackDefinition(
         name="open_generation_rdkit",
         version="2",
-        display_name="RDKit Replacement",
         task_pack_path="tasks/rdkit_baseline/tasks-v2.yaml",
         verifier_specs_path="tasks/rdkit_baseline/verifier_specs-v2.yaml",
     )
@@ -159,7 +150,6 @@ def test_track_definition_resolves_relative_paths_from_resource_root(
     track = TrackDefinition(
         name="example",
         version="1",
-        display_name="Example",
         task_pack_path="packs/example/tasks.yaml",
         verifier_specs_path="packs/example/verifier_specs.yaml",
         resource_root=tmp_path,
@@ -298,7 +288,6 @@ def test_external_absolute_track_paths_resolve_scripts_from_spec_directory(
         TrackDefinition(
             name="external",
             version="1",
-            display_name="External",
             task_pack_path=tasks_path,
             verifier_specs_path=specs_path,
         )
@@ -351,7 +340,6 @@ def test_external_absolute_task_path_resolves_relative_specs_and_samples(
         TrackDefinition(
             name="external-relative",
             version="1",
-            display_name="External Relative",
             task_pack_path=tasks_path,
             verifier_specs_path="verifier_specs.yaml",
             sample_answers_path="sample_answers.jsonl",
@@ -411,7 +399,6 @@ def test_external_nested_relative_specs_resolve_scripts_from_specs_directory(
         TrackDefinition(
             name="external-nested",
             version="1",
-            display_name="External Nested",
             task_pack_path=tasks_path,
             verifier_specs_path="specs/verifier_specs.yaml",
         )
@@ -463,7 +450,6 @@ def _write_track_files(
     definition = TrackDefinition(
         name=name,
         version="1",
-        display_name=name.title(),
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         resource_root=root,
