@@ -27,10 +27,8 @@ REMOVED_LEGACY_PACKAGES = {
 FORMAL_V2_TASK_FILES = {
     "verifier_grounded_benchmark/task/packs/open_generation_rdkit/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/open_generation_rdkit/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/open_generation_rdkit/sample_answers.jsonl",
     "verifier_grounded_benchmark/task/packs/open_generation_xtb/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/open_generation_xtb/verifier_specs.yaml",
-    "verifier_grounded_benchmark/task/packs/open_generation_xtb/sample_answers.jsonl",
     "verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml",
     "verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
@@ -82,6 +80,7 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
         sdist_tasks = yaml.safe_load(extracted_tasks.read())
 
     assert not any(path.startswith("task_backups/") for path in wheel_members | sdist_members)
+    assert not any(path.endswith("sample_answers.jsonl") or "_regression_answers.jsonl" in path for path in wheel_members | sdist_members)
     retired = {
         "rdkit_002_sa_min", "rdkit_005_hba_window", "rdkit_006_hbd_window",
         "rdkit_007_fsp3_max", "property_calculation_advanced_004_ir_top2_frequencies",

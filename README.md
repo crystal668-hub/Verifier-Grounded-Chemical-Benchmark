@@ -4,7 +4,8 @@ Python package version: **1.0.0rc1**. Requires Python **3.12**.
 
 The formal suite contains 100 tasks: RDKit 10, xTB 20, Property Calculation
 Basic 51 and Advanced 19. The package supplies tasks and evaluates answers;
-model execution is provided by the caller.
+model execution and answers are provided by the caller. No track includes
+public sample answers. Development regression fixtures are excluded from wheel/sdist.
 
 - [Installation, QuickStart and API/CLI contracts](src/verifier_grounded_benchmark/README.md)
 - [RC changes, migration and verification boundaries](docs/research/2026-10-28-v1.0.0-rc-release-notes.md)

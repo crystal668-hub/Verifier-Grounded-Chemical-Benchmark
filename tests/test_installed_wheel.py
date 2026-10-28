@@ -70,22 +70,8 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     if shutil.which("uv") is not None:
         env["UV_NO_SYNC"] = "1"
     python = venv_dir / ("Scripts" if sys.platform == "win32" else "bin") / "python"
-    resources_completed = subprocess.run(
-        [
-            str(python),
-            "-c",
-            (
-                "from importlib.resources import files; import json; "
-                "print(str(files('verifier_grounded_benchmark.task.packs.open_generation_rdkit').joinpath('sample_answers.jsonl')))"
-            ),
-        ],
-        cwd=tmp_path,
-        check=True,
-        text=True,
-        capture_output=True,
-        env=env,
-    )
-    answers_path = resources_completed.stdout.strip()
+    answers_path = tmp_path / "rdkit-regression-answers.jsonl"
+    shutil.copyfile(ROOT / "tests/fixtures/open_generation_rdkit_regression_answers.jsonl", answers_path)
     property_answers_path = tmp_path / "property_answers.jsonl"
     property_easy_answers_path = tmp_path / "property_basic_answers.jsonl"
     generator = (
@@ -101,7 +87,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
             "--track",
             "open_generation_rdkit",
             "--answers",
-            answers_path,
+            str(answers_path),
         ],
         cwd=tmp_path,
         check=True,

@@ -55,7 +55,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
-        sample_answers_path="sample_answers.jsonl",
         status="formal",
         tags=("small_molecule", "rdkit", "descriptor"),
         resource_pack="open_generation_rdkit",
@@ -66,7 +65,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
-        sample_answers_path="sample_answers.jsonl",
         status="formal",
         tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
         requirements=("xTB executable; CREST 2.12 for conformer-search tasks",),
@@ -78,7 +76,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
-        sample_answers_path=None,
         status="formal",
         tags=("property_calculation", "fixed_input", "crystal"),
         resource_pack="property_calculation_advanced",
@@ -89,7 +86,6 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
-        sample_answers_path=None,
         status="formal",
         tags=("property_calculation", "fixed_input", "basic", "small_molecule"),
         resource_pack="property_calculation_basic",
@@ -331,10 +327,6 @@ def test_external_absolute_task_path_resolves_relative_specs_and_samples(
         ),
         encoding="utf-8",
     )
-    (root / "sample_answers.jsonl").write_text(
-        '{"task_id": "external_relative_task", "candidates": [{"value": "C"}]}',
-        encoding="utf-8",
-    )
 
     track = Track(
         TrackDefinition(
@@ -342,7 +334,6 @@ def test_external_absolute_task_path_resolves_relative_specs_and_samples(
             version="1",
             task_pack_path=tasks_path,
             verifier_specs_path="verifier_specs.yaml",
-            sample_answers_path="sample_answers.jsonl",
         )
     )
 
@@ -352,12 +343,7 @@ def test_external_absolute_task_path_resolves_relative_specs_and_samples(
     assert track.verifier_specs_by_id["external_relative_v1"][
         "verification_script"
     ] == str(root / "verifier.py")
-    assert track.sample_answers() == [
-        {
-            "task_id": "external_relative_task",
-            "candidates": [{"value": "C"}],
-        }
-    ]
+
 
 
 def test_external_nested_relative_specs_resolve_scripts_from_specs_directory(

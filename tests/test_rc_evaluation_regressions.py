@@ -24,7 +24,7 @@ def test_cli_retains_report_and_fails_when_verifier_cannot_execute(tmp_path):
         else:
             data["tasks"] = data["tasks"][:1]
         (tmp_path / filename).write_text(yaml.safe_dump(data))
-    answer = vgb.load_track(name).sample_answers()[0]
+    answer = json.loads((Path(__file__).parent / "fixtures/open_generation_rdkit_regression_answers.jsonl").read_text().splitlines()[0])
     answers = tmp_path / "answers.jsonl"
     answers.write_text(json.dumps(answer) + "\n")
     result = subprocess.run(

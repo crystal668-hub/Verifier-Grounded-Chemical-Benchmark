@@ -104,8 +104,7 @@ versions: mapping
 
 ## 6. Gold Policy
 
-发行包保留 scoring data 供本地离线评分和审计，但普通任务视图、`prompts()`、sample answers
-和评分结果都不返回 gold。需要公开读取标准答案时，只能通过
+发行包保留 scoring data 供本地离线评分和审计，但普通任务视图、`prompts()` 和评分结果都不返回 gold。需要公开读取标准答案时，只能通过
 `track.task(task_id, include_gold=True)` 获取；该接口明确表达答案访问意图，避免 gold 在多层
 公共 API 中重复暴露。初版只记录 `withheld_initial_release`，不公布 gold 生成协议，也不把协议
 写入 prompt。

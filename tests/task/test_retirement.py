@@ -33,8 +33,7 @@ def test_formal_suite_is_contiguous_and_excludes_retired_tasks():
         for retired_id in RETIRED:
             with pytest.raises(KeyError):
                 track.task(retired_id)
-        if name == "open_generation_rdkit":
-            assert [s["task_id"] for s in track.sample_answers()] == ids
+        assert not hasattr(track, "sample_answers")
 
 
 def test_retired_backups_are_loadable_and_mapping_preserves_order():

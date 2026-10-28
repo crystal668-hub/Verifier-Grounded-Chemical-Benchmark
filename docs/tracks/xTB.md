@@ -83,9 +83,16 @@ direct-XYZ 路径解析坐标、推断连通性并应用 task-level structural d
 
 ## 5. 数据与发布边界
 
-`sample_answers.jsonl` 只包含公开 showcase examples，用于展示两种 answer schema 和验证 pipeline；当前 9 条样例不覆盖全部 20 个正式任务，也不代表 benchmark 或校准分布。校准 raw answers（包括 XYZ 候选和 legacy answers）属于私有数据，不进入公开 Git 或发行包；公开仓库只保留脱敏的 `manifest.yaml`、校准 task/spec 定义、校准脚本和研究报告，用于审计校准协议，不公开候选坐标。需要运行校准时，必须通过 `--answers` 显式传入仓库外的私有 JSONL 文件。
+所有正式 track 均不提供公开样例答案。xTB 的任务定义、15 个 verifier specs
+以及 SMILES/XYZ 路由代码仍包含在发行包中，答案由调用者自行提供。
+维护验证使用显式输入：
+python scripts/validation/check_xtb_xyz_samples.py --answers /path/to/answers.jsonl。
+脚本不提供默认答案，也不允许空输入被误判为验证通过。
 
-发行包必须同时包含 20 个 task definitions、15 个 verifier specs、公开样例及 SMILES/XYZ routing 所需代码。任务 020 的 CREST/xTB 可执行环境是外部运行时依赖，缺失时不得把候选计为零分。
+开发测试夹具仅用于回归检查，不进入 wheel/sdist。私有校准 raw answers
+仍不进入公开 Git 或发行包；校准脚本需要显式 --answers 参数。
+任务 020 的 CREST/xTB 是外部运行时依赖，缺失时不得把候选计为零分。
+
 
 ## 6. 化学解释边界
 

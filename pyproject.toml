@@ -73,6 +73,7 @@ package = true
 exclude = [
     "/releases/",
     "/task_backups/",
+    "/tests/fixtures/*_regression_answers.jsonl",
     "/review_system/",
     "/src/verifier_grounded_benchmark/task/calibration/",
 ]

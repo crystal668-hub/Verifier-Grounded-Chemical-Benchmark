@@ -266,7 +266,7 @@ def build_release(*, output_dir: Path, metadata_dir: Path, tag: str) -> dict[str
             folder = f"src/verifier_grounded_benchmark/task/packs/{track}"
             required.update(f"{folder}/{name}" for name in ("tasks.yaml", "scoring.yaml"))
             if track.startswith("open_generation_"):
-                required.update(f"{folder}/{name}" for name in ("verifier_specs.yaml", "sample_answers.jsonl"))
+                required.add(f"{folder}/verifier_specs.yaml")
         payload = verify_archive_payloads(wheel_path, sdist_path, additional_required=required)
         artifacts = [
             {"filename": path.name, "sha256": sha256_file(path), "size": path.stat().st_size}

@@ -13,7 +13,6 @@ from verifier_grounded_benchmark.evaluator import (
     Evaluator,
 )
 from verifier_grounded_benchmark.task.loader import (
-    load_answers_jsonl_file,
     load_task_pack,
 )
 from verifier_grounded_benchmark.task.models import (
@@ -86,14 +85,6 @@ class Track:
                     item["answer_schema"] = deepcopy(answer_schema)
                 prompts.append(item)
         return prompts
-
-    def sample_answers(self) -> list[dict[str, Any]]:
-        """Load bundled examples, or return an empty list when a track supplies none."""
-        if self.definition.sample_answers_path is None:
-            return []
-        return load_answers_jsonl_file(
-            _resolve_track_resource(self.definition, self.definition.sample_answers_path)
-        )
 
     def evaluator(self, *, config: EvaluationConfig | None = None) -> Evaluator:
         return Evaluator(self._task_pack, config=config)

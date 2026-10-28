@@ -20,7 +20,6 @@ class TrackDefinition:
     task_pack_path: str | Path
     verifier_specs_path: str | Path | None = None
     scoring_config_path: str | Path | None = None
-    sample_answers_path: str | Path | None = None
     status: str = "formal"
     tags: tuple[str, ...] = field(default_factory=tuple)
     requirements: tuple[str, ...] = field(default_factory=tuple)
@@ -91,14 +90,12 @@ def builtin_definitions() -> list[TrackDefinition]:
             name="open_generation_rdkit", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
-            sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="open_generation_rdkit",
         ),
         TrackDefinition(
             name="open_generation_xtb", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
-            sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "small_molecule_3d", "xtb", "xyz", "smiles"),
             requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="open_generation_xtb",
         ),
@@ -106,7 +103,6 @@ def builtin_definitions() -> list[TrackDefinition]:
             name="property_calculation_advanced", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
-            sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "crystal"),
             resource_pack="property_calculation_advanced",
         ),
@@ -114,7 +110,6 @@ def builtin_definitions() -> list[TrackDefinition]:
             name="property_calculation_basic", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
-            sample_answers_path=None,
             tags=("property_calculation", "fixed_input", "basic", "small_molecule"),
             resource_pack="property_calculation_basic",
         ),

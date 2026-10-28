@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from importlib.resources import files
+from pathlib import Path
 
 import pytest
 import yaml
@@ -21,7 +22,7 @@ from verifier_grounded_benchmark.task.resources import package_resource
 
 TASKS_RESOURCE = package_resource("open_generation_xtb", "tasks.yaml")
 SPECS_RESOURCE = package_resource("open_generation_xtb", "verifier_specs.yaml")
-ANSWERS_RESOURCE = package_resource("open_generation_xtb", "sample_answers.jsonl")
+ANSWERS_RESOURCE = Path(__file__).parent / "fixtures/open_generation_xtb_regression_answers.jsonl"
 
 
 def load_xtb_pack():
@@ -429,7 +430,7 @@ def test_xtb_prompts_expose_domain_without_verifier_internals() -> None:
             assert phrase not in prompt
 
 
-def test_xtb_sample_answers_follow_each_task_schema() -> None:
+def test_xtb_regression_answers_follow_each_task_schema() -> None:
     tasks = load_xtb_pack().tasks_by_id
     answers = load_answers_jsonl(ANSWERS_RESOURCE)
 

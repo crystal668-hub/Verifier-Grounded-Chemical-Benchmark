@@ -1,8 +1,29 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 import verifier_grounded_benchmark as vgb
+
+
+def regression_answers():
+    path = Path(__file__).parent / "fixtures/open_generation_rdkit_regression_answers.jsonl"
+    return [json.loads(line) for line in path.read_text().splitlines()]
+
+
+@pytest.mark.parametrize("name", [
+    "open_generation_rdkit", "open_generation_xtb",
+    "property_calculation_basic", "property_calculation_advanced",
+])
+def test_all_tracks_omit_sample_resources_and_api(name):
+    from verifier_grounded_benchmark.task.resources import package_resource
+
+    track = vgb.load_track(name)
+    assert not package_resource(name, "sample_answers.jsonl").is_file()
+    assert not hasattr(track, "sample_answers")
+    assert not hasattr(track.definition, "sample_answers_path")
 
 
 def test_list_tracks_returns_formal_builtin_names() -> None:
@@ -26,7 +47,7 @@ def test_vgb_alias_exposes_same_public_api() -> None:
     assert short_vgb.load_track("open_generation_rdkit").name == "open_generation_rdkit"
 
 
-def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
+def test_load_track_exposes_tasks_and_prompts_without_sample_api() -> None:
     track = vgb.load_track("open_generation_rdkit")
 
     task_ids = [task["task_id"] for task in track.tasks()]
@@ -44,7 +65,7 @@ def test_load_track_exposes_tasks_prompts_and_sample_answers() -> None:
     )
     assert prompt["answer_schema"] == track.task("rdkit_001_qed_max")["answer_schema"]
     assert set(prompt) == {"track", "task_id", "prompt", "answer_schema"}
-    assert len(track.sample_answers()) == 10
+    assert not hasattr(track, "sample_answers")
 
 
 def test_load_suite_defaults_to_formal_tracks_only() -> None:
@@ -87,7 +108,7 @@ def test_property_calculation_track_has_no_public_samples_and_redacts_gold() -> 
     track = vgb.load_track("property_calculation_advanced")
     task = track.tasks()[0]
     assert len(track.tasks()) == 19
-    assert track.sample_answers() == []
+    assert not hasattr(track, "sample_answers")
     assert "gold_answers" not in task
     gold_task = track.task(task["task_id"], include_gold=True)
     assert "gold_answers" in gold_task
@@ -96,7 +117,7 @@ def test_property_calculation_track_has_no_public_samples_and_redacts_gold() -> 
 def test_property_calculation_basic_track_has_no_public_samples() -> None:
     track = vgb.load_track("property_calculation_basic")
     assert len(track.tasks()) == 51
-    assert track.sample_answers() == []
+    assert not hasattr(track, "sample_answers")
     assert "gold_answers" not in track.tasks()[0]
 
 
@@ -107,7 +128,7 @@ def test_load_track_rejects_unknown_track() -> None:
 
 def test_track_evaluate_answers_uses_v3_result_and_scoring_contract() -> None:
     track = vgb.load_track("open_generation_rdkit")
-    report = track.evaluate_answers(track.sample_answers())
+    report = track.evaluate_answers(regression_answers())
 
     assert report["summary"]["coverage"]["complete"] is True
     assert all(row["schema_version"] == 3 for row in report["rows"])
@@ -122,7 +143,7 @@ def test_track_evaluate_answers_uses_v3_result_and_scoring_contract() -> None:
 
 def test_track_evaluate_answers_reports_partial_coverage() -> None:
     track = vgb.load_track("open_generation_rdkit")
-    answers = track.sample_answers()[:2]
+    answers = regression_answers()[:2]
 
     report = track.evaluate_answers(answers)
 
@@ -142,7 +163,7 @@ def test_track_evaluate_answers_reports_partial_coverage() -> None:
 def test_track_evaluate_answers_reports_complete_benchmark_score() -> None:
     track = vgb.load_track("open_generation_rdkit")
 
-    report = track.evaluate_answers(track.sample_answers())
+    report = track.evaluate_answers(regression_answers())
 
     coverage = report["summary"]["coverage"]
     assert coverage["complete"] is True
@@ -155,8 +176,8 @@ def test_track_evaluate_answers_reports_complete_benchmark_score() -> None:
 def test_track_evaluate_answers_coverage_detects_duplicate_and_unknown_task_ids() -> None:
     track = vgb.load_track("open_generation_rdkit")
     answers = [
-        track.sample_answers()[0],
-        track.sample_answers()[0],
+        regression_answers()[0],
+        regression_answers()[0],
         {"task_id": "missing_from_track", "candidates": [{"smiles": "CCO"}]},
     ]
 
