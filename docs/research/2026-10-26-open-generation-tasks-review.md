@@ -4,9 +4,9 @@
 > 仅保留为历史记录。当前任务统一使用 basic / advanced，具体映射以
 > [标准任务难度等级](../design/task-difficulty-levels.md)及正式 tasks.yaml 为准；不要复用本文的旧分级示例。
 
-**Date:** 2026-10-26  
-**Reviewer:** Claude (AI Assistant)  
-**Scope:** `open_generation_rdkit` and `open_generation_xtb` tracks  
+**Date:** 2026-10-26\
+**Reviewer:** Claude (AI Assistant)\
+**Scope:** `open_generation_rdkit` and `open_generation_xtb` tracks\
 **Total Tasks Reviewed:** 34 (14 RDKit + 20 xTB)
 
 ---
@@ -46,7 +46,7 @@ The RDKit track focuses on 2D molecular design with fast descriptor-based proper
 
 ### Task rdkit_001_qed_max
 
-**Difficulty:** simple  
+**Difficulty:** simple\
 **Objective:** Maximize QED (drug-likeness) within basic constraints
 
 #### Novelty Assessment: ⭐⭐ (Moderate)
@@ -105,7 +105,7 @@ The task currently allows very small molecules (5 heavy atoms) which might not b
 
 ### Task rdkit_002_sa_min
 
-**Difficulty:** simple  
+**Difficulty:** simple\
 **Objective:** Minimize synthetic accessibility (SA) score (1-10 scale, lower = easier to synthesize)
 
 #### Novelty Assessment: ⭐⭐⭐ (Good)
@@ -164,7 +164,7 @@ The task explicitly allows heavy atoms 5-60, which permits trivial 5-6 carbon mo
 
 ### Task rdkit_003_logp_window
 
-**Difficulty:** simple  
+**Difficulty:** simple\
 **Objective:** logP between 1.0 and 3.0 (Lipinski-like range)
 
 #### Novelty Assessment: ⭐⭐ (Moderate)
@@ -222,7 +222,7 @@ The window is actually well-bounded, but edge cases exist:
 
 ### Task rdkit_004_tpsa_window
 
-**Difficulty:** simple  
+**Difficulty:** simple\
 **Objective:** TPSA (topological polar surface area) between 35.0-75.0 Ų
 
 #### Novelty Assessment: ⭐⭐ (Moderate)

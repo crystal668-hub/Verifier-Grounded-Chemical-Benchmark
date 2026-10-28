@@ -18,9 +18,9 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 ## Track 1: open_generation_rdkit
 
-**Type:** Open generation (verifier-based)  
-**Object Type:** Small molecule (SMILES)  
-**Requirements:** RDKit  
+**Type:** Open generation (verifier-based)\
+**Object Type:** Small molecule (SMILES)\
+**Requirements:** RDKit\
 **Task Count:** 10
 
 ### Task List
@@ -59,9 +59,9 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 ## Track 2: open_generation_xtb
 
-**Type:** Open generation (verifier-based)  
-**Object Type:** Small molecule 3D (XYZ)  
-**Requirements:** xTB executable; CREST 2.12 for conformer-search tasks  
+**Type:** Open generation (verifier-based)\
+**Object Type:** Small molecule 3D (XYZ)\
+**Requirements:** xTB executable; CREST 2.12 for conformer-search tasks\
 **Task Count:** 20
 
 ### Task List
@@ -130,9 +130,9 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 ## Track 3: property_calculation_basic
 
-**Type:** Property calculation (gold-based)  
-**Object Type:** Various (molecules, complexes, surfaces)  
-**Requirements:** Various computational chemistry tools  
+**Type:** Property calculation (gold-based)\
+**Object Type:** Various (molecules, complexes, surfaces)\
+**Requirements:** Various computational chemistry tools\
 **Task Count:** 51
 
 ### Task Categories
@@ -211,9 +211,9 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 ## Track 4: property_calculation_advanced
 
-**Type:** Property calculation (gold-based)  
-**Object Type:** Molecular crystals and advanced properties  
-**Requirements:** Advanced computational chemistry tools (DFT, TDDFT)  
+**Type:** Property calculation (gold-based)\
+**Object Type:** Molecular crystals and advanced properties\
+**Requirements:** Advanced computational chemistry tools (DFT, TDDFT)\
 **Task Count:** 19
 
 ### Task List
