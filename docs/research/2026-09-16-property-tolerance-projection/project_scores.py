@@ -52,9 +52,31 @@ def baseline_profiles(profile_ids) -> dict:
     }
 
 
-def load_baseline_pack(track: str) -> TaskPack:
+def load_historical_pack(track: str) -> TaskPack:
+    """Restore pre-retirement IDs and retired items only for this historical study."""
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
-    pack = load_task_pack(directory / "tasks.yaml", None)
+    current = load_task_pack(directory / "tasks.yaml", None)
+    if track != "property_calculation_advanced":
+        return current
+    backup = ROOT / "task_backups/2026-10-28-five-tasks"
+    manifest = json.loads((backup / "manifest.json").read_text())
+    reverse_ids = {new: old for old, new in manifest["id_mapping"].items()}
+    archived = load_task_pack(backup / track / "tasks.yaml", None)
+    tasks = []
+    for task in current.tasks:
+        raw = task.to_dict()
+        raw["task_id"] = reverse_ids[task.task_id]
+        tasks.append(replace(task, task_id=raw["task_id"], raw=freeze_mapping(raw)))
+    tasks.extend(archived.tasks)
+    return replace(
+        current,
+        tasks=tuple(sorted(tasks, key=lambda task: task.task_id)),
+        scoring_profiles=freeze_mapping({**current.scoring_profiles, **archived.scoring_profiles}),
+    )
+
+
+def load_baseline_pack(track: str) -> TaskPack:
+    pack = load_historical_pack(track)
     historical_tasks = []
     for task in pack.tasks:
         raw = task.to_dict()
@@ -80,7 +102,9 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def read_observations(path: Path, pack: TaskPack) -> list[Observation]:
+def read_observations(
+    path: Path, pack: TaskPack, *, task_id_mapping: dict[str, str | None] | None = None
+) -> list[Observation]:
     import openpyxl  # Optional dependency used only to read the private workbooks.
 
     workbook = openpyxl.load_workbook(path, read_only=True, data_only=True)
@@ -110,6 +134,10 @@ def read_observations(path: Path, pack: TaskPack) -> list[Observation]:
                 continue
             raise ValueError(f"Unrecognized source row {row_number}")
         task_id = match[1]
+        if task_id_mapping is not None:
+            task_id = task_id_mapping.get(task_id, task_id)
+            if task_id is None:
+                continue
         if task_id in seen or task_id not in tasks:
             raise ValueError(f"Duplicate or unknown task: {task_id}")
         seen.add(task_id)

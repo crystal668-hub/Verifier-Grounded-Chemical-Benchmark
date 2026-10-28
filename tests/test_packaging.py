@@ -81,6 +81,29 @@ def test_distribution_artifacts_exclude_private_and_removed_files(tmp_path: Path
         assert extracted_tasks is not None
         sdist_tasks = yaml.safe_load(extracted_tasks.read())
 
+    assert not any(path.startswith("task_backups/") for path in wheel_members | sdist_members)
+    retired = {
+        "rdkit_002_sa_min", "rdkit_005_hba_window", "rdkit_006_hbd_window",
+        "rdkit_007_fsp3_max", "property_calculation_advanced_004_ir_top2_frequencies",
+    }
+    with zipfile.ZipFile(wheel_path) as wheel, tarfile.open(sdist_path) as sdist:
+        for pack, count in (("open_generation_rdkit", 10), ("property_calculation_advanced", 19)):
+            relative = f"verifier_grounded_benchmark/task/packs/{pack}/tasks.yaml"
+            wheel_data = yaml.safe_load(wheel.read(relative))
+            member = next(m for m in sdist.getmembers() if m.name.endswith("/src/" + relative))
+            handle = sdist.extractfile(member)
+            assert handle is not None
+            sdist_data = yaml.safe_load(handle.read())
+            assert wheel_data == sdist_data
+            ids = [t["task_id"] for t in wheel_data["tasks"]]
+            assert len(ids) == count
+            assert retired.isdisjoint(ids)
+            index = 1 if pack == "open_generation_rdkit" else 3
+            assert [int(task_id.split("_")[index]) for task_id in ids] == list(range(1, count + 1))
+    removed_module = "verifier_grounded_benchmark/evaluation/open_generation/verifiers/rdkit_descriptors/rdkit_fraction_csp3.py"
+    assert removed_module not in wheel_members
+    assert "src/" + removed_module not in sdist_members
+
     assert PRIVATE_XTB_CALIBRATION_FILES.isdisjoint(wheel_members)
     assert PRIVATE_XTB_CALIBRATION_FILES.isdisjoint(sdist_members)
     assert REMOVED_COMPATIBILITY_SCRIPTS.isdisjoint(wheel_members)

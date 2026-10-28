@@ -63,23 +63,22 @@ EXPECTED_TASK_IDS = {
     "property_calculation_advanced_001_free_energy",
     "property_calculation_advanced_002_crystal_phase",
     "property_calculation_advanced_003_hbond_count",
-    "property_calculation_advanced_004_ir_top2_frequencies",
-    "property_calculation_advanced_005_crystal_density",
-    "property_calculation_advanced_006_cocrystal_ratio",
-    "property_calculation_advanced_007_polymorph_free_energy_crossover",
-    "property_calculation_advanced_008_interaction_binding_energy",
-    "property_calculation_advanced_009_homo_lumo_gap",
-    "property_calculation_advanced_010_hbond_distances",
-    "property_calculation_advanced_011_accessible_pore_volume_ratio",
-    "property_calculation_advanced_012_carboxyl_hydrogen_distance",
-    "property_calculation_advanced_013_halogen_bond_energy",
-    "property_calculation_advanced_014_bay069_pka",
-    "property_calculation_advanced_015_formaldehyde_socme",
-    "property_calculation_advanced_016_anthracene_isc_rate",
-    "property_calculation_advanced_017_biacetyl_phosphorescence_rate",
-    "property_calculation_advanced_018_anthracene_ht_contribution",
-    "property_calculation_advanced_019_acetophenone_isc_rate",
-    "property_calculation_advanced_020_azulene_internal_conversion_rate",
+    "property_calculation_advanced_004_crystal_density",
+    "property_calculation_advanced_005_cocrystal_ratio",
+    "property_calculation_advanced_006_polymorph_free_energy_crossover",
+    "property_calculation_advanced_007_interaction_binding_energy",
+    "property_calculation_advanced_008_homo_lumo_gap",
+    "property_calculation_advanced_009_hbond_distances",
+    "property_calculation_advanced_010_accessible_pore_volume_ratio",
+    "property_calculation_advanced_011_carboxyl_hydrogen_distance",
+    "property_calculation_advanced_012_halogen_bond_energy",
+    "property_calculation_advanced_013_bay069_pka",
+    "property_calculation_advanced_014_formaldehyde_socme",
+    "property_calculation_advanced_015_anthracene_isc_rate",
+    "property_calculation_advanced_016_biacetyl_phosphorescence_rate",
+    "property_calculation_advanced_017_anthracene_ht_contribution",
+    "property_calculation_advanced_018_acetophenone_isc_rate",
+    "property_calculation_advanced_019_azulene_internal_conversion_rate",
 }
 
 
@@ -269,30 +268,20 @@ def test_task_8_contract_and_gold() -> None:
 def test_expert_task_special_contracts_are_frozen() -> None:
     tasks = load_tasks()
 
-    task_15 = tasks["property_calculation_advanced_004_ir_top2_frequencies"]
-    assert task_15["scoring"]["answer_matching"] == "unordered_numeric"
-    assert [item["name"] for item in task_15["requested_properties"]] == [
-        "frequency_1",
-        "frequency_2",
-    ]
-    assert "two vibrational modes" in task_15["prompt"]
-    assert "frequency_3" not in task_15["prompt"]
-
-    task_19 = tasks["property_calculation_advanced_008_interaction_binding_energy"]
+    task_19 = tasks["property_calculation_advanced_007_interaction_binding_energy"]
     assert [item["type"] for item in task_19["input_objects"]] == [
         "molecular_dimer_reference"
     ]
     assert "NC1=CC=C2C=CC(=O)N=C2N1" in task_19["prompt"]
     assert "Preserve the sign of the energy." not in task_19["prompt"]
 
-    task_21 = tasks["property_calculation_advanced_010_hbond_distances"]
+    task_21 = tasks["property_calculation_advanced_009_hbond_distances"]
     assert [item["type"] for item in task_21["input_objects"]] == ["xyz"]
 
     for task_id in (
-        "property_calculation_advanced_004_ir_top2_frequencies",
-        "property_calculation_advanced_008_interaction_binding_energy",
-        "property_calculation_advanced_009_homo_lumo_gap",
-        "property_calculation_advanced_010_hbond_distances",
+        "property_calculation_advanced_007_interaction_binding_energy",
+        "property_calculation_advanced_008_homo_lumo_gap",
+        "property_calculation_advanced_009_hbond_distances",
     ):
         task = tasks[task_id]
         assert all(
@@ -300,7 +289,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
         )
         assert "gaussian" not in task["prompt"].lower()
 
-    task_24 = tasks["property_calculation_advanced_013_halogen_bond_energy"]
+    task_24 = tasks["property_calculation_advanced_012_halogen_bond_energy"]
     assert "Preserve the sign of the energy." not in task_24["prompt"]
     assert "FI...NH3" in task_24["prompt"]
     assert "F-I...NH3" not in task_24["prompt"]
@@ -309,7 +298,7 @@ def test_expert_task_special_contracts_are_frozen() -> None:
 def test_excited_state_expert_task_contracts_are_frozen() -> None:
     pack = load_pack()
     expected = {
-        "property_calculation_advanced_015_formaldehyde_socme": (
+        "property_calculation_advanced_014_formaldehyde_socme": (
             "spin_orbit_coupling_matrix_element",
             0.00734,
             "eV",
@@ -318,7 +307,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             1.0,
             "log10",
         ),
-        "property_calculation_advanced_016_anthracene_isc_rate": (
+        "property_calculation_advanced_015_anthracene_isc_rate": (
             "intersystem_crossing_rate",
             117000000.0,
             "s^-1",
@@ -327,7 +316,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             2.0,
             "log10",
         ),
-        "property_calculation_advanced_017_biacetyl_phosphorescence_rate": (
+        "property_calculation_advanced_016_biacetyl_phosphorescence_rate": (
             "phosphorescence_rate",
             98.0,
             "s^-1",
@@ -336,7 +325,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             2.0,
             "log10",
         ),
-        "property_calculation_advanced_018_anthracene_ht_contribution": (
+        "property_calculation_advanced_017_anthracene_ht_contribution": (
             "herzberg_teller_contribution",
             100.0,
             "percent",
@@ -345,7 +334,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             1.0,
             "identity",
         ),
-        "property_calculation_advanced_019_acetophenone_isc_rate": (
+        "property_calculation_advanced_018_acetophenone_isc_rate": (
             "intersystem_crossing_rate",
             28400000000.0,
             "s^-1",
@@ -354,7 +343,7 @@ def test_excited_state_expert_task_contracts_are_frozen() -> None:
             2.0,
             "log10",
         ),
-        "property_calculation_advanced_020_azulene_internal_conversion_rate": (
+        "property_calculation_advanced_019_azulene_internal_conversion_rate": (
             "internal_conversion_rate",
             382000000.0,
             "s^-1",

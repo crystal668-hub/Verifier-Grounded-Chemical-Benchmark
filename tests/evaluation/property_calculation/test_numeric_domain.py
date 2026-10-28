@@ -92,7 +92,7 @@ def test_selected_advanced_fields_score_magnitudes_at_new_boundaries(advanced, p
                 assert score_numeric_gold(answer, gold, profile) == pytest.approx(expected, abs=1e-12)
 
 
-@pytest.mark.parametrize("number", ["008", "010", "013"])
+@pytest.mark.parametrize("number", ["007", "009", "012"])
 def test_selected_advanced_tasks_accept_opposite_sign_answers_end_to_end(advanced, number):
     task = next(task for task in advanced.tasks if task.task_id.split("_")[3] == number)
     answers = [
@@ -109,9 +109,9 @@ def test_selected_advanced_tasks_accept_opposite_sign_answers_end_to_end(advance
 def test_energy_prompts_accept_either_sign_and_pore_prompt_specifies_probe(advanced):
     for task in advanced.tasks:
         number = task.task_id.split("_")[3]
-        if number in {"008", "013"}:
+        if number in {"007", "012"}:
             assert "preserve the sign of the energy" not in task.raw["prompt"].lower()
-        if number == "011":
+        if number == "010":
             assert "spherical probe radius of 1.2 angstrom" in task.raw["prompt"]
 
 

@@ -1,5 +1,8 @@
 # v0.10.0 track and task ID migration
 
+> 2026-10-28：本文保留历史任务编号；退役后的正式题集及连续编号见
+> [任务退役与 ID 迁移](../research/2026-10-28-task-retirement.md)。
+
 The four canonical tracks are `open_generation_rdkit`, `open_generation_xtb`,
 `property_calculation_basic`, and `property_calculation_advanced`.
 RDKit and xTB's former track names `rdkit` and `xtb` are replaced by the two

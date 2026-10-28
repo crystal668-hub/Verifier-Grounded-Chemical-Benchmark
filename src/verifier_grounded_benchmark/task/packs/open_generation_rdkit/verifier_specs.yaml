@@ -179,25 +179,6 @@ verifiers:
     type: python_module
     module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_sa_score
     timeout_seconds: 60
-- verifier_id: rdkit_fraction_csp3_v1
-  name: RDKit Fraction Csp3 Descriptor Verifier
-  version: 1
-  verifier_image: verifier-grounded:dev
-  descriptor: fraction_csp3
-  resources: *id001
-  backend: *id002
-  package_versions: *id003
-  domain: *id004
-  property:
-    source: rdkit.Chem.rdMolDescriptors.CalcFractionCSP3
-    range:
-    - 0.0
-    - 1.0
-  failure_policy: *id005
-  executor:
-    type: python_module
-    module: verifier_grounded_benchmark.evaluation.open_generation.verifiers.rdkit_descriptors.rdkit_fraction_csp3
-    timeout_seconds: 60
 - verifier_id: rdkit_sa_logp_domain_sa_v1
   name: RDKit Expert SA Hard-Gate Verifier
   version: 1

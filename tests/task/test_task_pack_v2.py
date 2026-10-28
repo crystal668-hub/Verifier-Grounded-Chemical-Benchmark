@@ -19,7 +19,7 @@ def _load(pack: str):
     )
 
 
-def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
+def test_formal_packs_cover_exactly_49_unique_tasks() -> None:
     packs = [
         _load("open_generation_rdkit"),
         _load("open_generation_xtb"),
@@ -27,8 +27,8 @@ def test_formal_packs_cover_exactly_54_unique_tasks() -> None:
     ]
     task_ids = [task.task_id for pack in packs for task in pack.tasks]
 
-    assert len(task_ids) == 54
-    assert len(set(task_ids)) == 54
+    assert len(task_ids) == 49
+    assert len(set(task_ids)) == 49
     assert all(pack.schema_version == 2 for pack in packs)
     assert all(pack.scoring_version == "linear_goal_v2" for pack in packs)
 
@@ -139,7 +139,7 @@ def test_profile_metadata_does_not_control_runtime_approval(tmp_path):
         package_resource("open_generation_rdkit", "tasks.yaml"),
         package_resource("open_generation_rdkit", "verifier_specs.yaml"), path,
     )
-    assert len(pack.tasks) == 14
+    assert len(pack.tasks) == 10
 
 
 def test_v2_loader_rejects_task_scoring_version_mismatch(tmp_path) -> None:
@@ -219,7 +219,7 @@ def test_v2_loader_rejects_removed_stability_gate_role(tmp_path) -> None:
 
 
 def test_public_tracks_use_validated_v2_package_resources() -> None:
-    assert len(vgb.load_track("open_generation_rdkit").tasks()) == 14
+    assert len(vgb.load_track("open_generation_rdkit").tasks()) == 10
     assert vgb.load_track("open_generation_rdkit")._task_pack.schema_version == 2
 
 

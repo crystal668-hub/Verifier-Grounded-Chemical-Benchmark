@@ -1,0 +1,38 @@
+schema_version: 2
+task_pack:
+  id: property_calculation_advanced
+  version: 0.10.0
+tasks:
+- task_id: property_calculation_advanced_004_ir_top2_frequencies
+  version: 1
+  task_type: property_calculation
+  object_type: molecular_vibration_calculation
+  difficulty: advanced
+  formal_track: true
+  capability_tags:
+  - property_calculation
+  - fixed_input
+  - infrared_spectroscopy
+  prompt: 'For the M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol
+    conformer, report the harmonic frequencies of the two vibrational modes with the
+    largest IR intensities in cm^-1.
+
+
+    Your final answer must appear on its own line exactly in this format:
+
+    FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"}]}
+
+    '
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: json
+    cardinality: one
+  input_objects: []
+  requested_properties:
+  - name: frequency_1
+    value_type: number
+    unit: cm^-1
+  - name: frequency_2
+    value_type: number
+    unit: cm^-1

@@ -1051,35 +1051,7 @@ tasks:
   - name: hydrogen_bond_count
     value_type: number
     unit: count
-- task_id: property_calculation_advanced_004_ir_top2_frequencies
-  version: 1
-  task_type: property_calculation
-  object_type: molecular_vibration_calculation
-  difficulty: advanced
-  formal_track: true
-  capability_tags:
-  - property_calculation
-  - fixed_input
-  - infrared_spectroscopy
-  prompt: |
-    For the M06-2X/cc-pVTZ frequency calculation of the lowest-energy resveratrol conformer, report the harmonic frequencies of the two vibrational modes with the largest IR intensities in cm^-1.
-
-    Your final answer must appear on its own line exactly in this format:
-    FINAL ANSWER: {"answers":[{"property":"frequency_1","value":<number>,"unit":"cm^-1"},{"property":"frequency_2","value":<number>,"unit":"cm^-1"}]}
-  answer_schema:
-    format: final_answer_line
-    final_answer_prefix: 'FINAL ANSWER:'
-    value_type: json
-    cardinality: one
-  input_objects: []
-  requested_properties:
-  - name: frequency_1
-    value_type: number
-    unit: cm^-1
-  - name: frequency_2
-    value_type: number
-    unit: cm^-1
-- task_id: property_calculation_advanced_005_crystal_density
+- task_id: property_calculation_advanced_004_crystal_density
   version: 1
   task_type: property_calculation
   object_type: hydrate_crystal
@@ -1105,7 +1077,7 @@ tasks:
   - name: crystal_density
     value_type: number
     unit: g/cm^3
-- task_id: property_calculation_advanced_006_cocrystal_ratio
+- task_id: property_calculation_advanced_005_cocrystal_ratio
   version: 1
   task_type: property_calculation
   object_type: molecular_cocrystal
@@ -1129,7 +1101,7 @@ tasks:
   requested_properties:
   - name: cocrystal_molar_ratio
     value_type: string
-- task_id: property_calculation_advanced_007_polymorph_free_energy_crossover
+- task_id: property_calculation_advanced_006_polymorph_free_energy_crossover
   version: 1
   task_type: property_calculation
   object_type: polymorph_pair
@@ -1466,7 +1438,7 @@ tasks:
   - name: crossover_temperature
     value_type: number
     unit: K
-- task_id: property_calculation_advanced_008_interaction_binding_energy
+- task_id: property_calculation_advanced_007_interaction_binding_energy
   version: 1
   task_type: property_calculation
   object_type: molecular_dimer
@@ -1499,7 +1471,7 @@ tasks:
   - name: binding_energy
     value_type: number
     unit: kcal/mol
-- task_id: property_calculation_advanced_009_homo_lumo_gap
+- task_id: property_calculation_advanced_008_homo_lumo_gap
   version: 1
   task_type: property_calculation
   object_type: small_molecule_electronic_structure
@@ -1529,7 +1501,7 @@ tasks:
   - name: homo_lumo_gap
     value_type: number
     unit: eV
-- task_id: property_calculation_advanced_010_hbond_distances
+- task_id: property_calculation_advanced_009_hbond_distances
   version: 1
   task_type: property_calculation
   object_type: optimized_molecular_complex
@@ -1602,7 +1574,7 @@ tasks:
   - name: h_o_contact_distance
     value_type: number
     unit: angstrom
-- task_id: property_calculation_advanced_011_accessible_pore_volume_ratio
+- task_id: property_calculation_advanced_010_accessible_pore_volume_ratio
   version: 1
   task_type: property_calculation
   object_type: porous_crystal
@@ -2017,7 +1989,7 @@ tasks:
   - name: accessible_to_inaccessible_volume_ratio
     value_type: number
     unit: ratio
-- task_id: property_calculation_advanced_012_carboxyl_hydrogen_distance
+- task_id: property_calculation_advanced_011_carboxyl_hydrogen_distance
   version: 1
   task_type: property_calculation
   object_type: conformer_ensemble
@@ -2043,7 +2015,7 @@ tasks:
   - name: carboxyl_hydrogen_distance
     value_type: number
     unit: angstrom
-- task_id: property_calculation_advanced_013_halogen_bond_energy
+- task_id: property_calculation_advanced_012_halogen_bond_energy
   version: 1
   task_type: property_calculation
   object_type: halogen_bond_complex
@@ -2068,7 +2040,7 @@ tasks:
   - name: halogen_bond_interaction_energy
     value_type: number
     unit: kcal/mol
-- task_id: property_calculation_advanced_014_bay069_pka
+- task_id: property_calculation_advanced_013_bay069_pka
   version: 1
   task_type: property_calculation
   object_type: ionizable_small_molecule
@@ -2101,7 +2073,7 @@ tasks:
   - name: pka
     value_type: number
     unit: pKa
-- task_id: property_calculation_advanced_015_formaldehyde_socme
+- task_id: property_calculation_advanced_014_formaldehyde_socme
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_calculation
@@ -2131,7 +2103,7 @@ tasks:
   - name: spin_orbit_coupling_matrix_element
     value_type: number
     unit: eV
-- task_id: property_calculation_advanced_016_anthracene_isc_rate
+- task_id: property_calculation_advanced_015_anthracene_isc_rate
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_rate
@@ -2161,7 +2133,7 @@ tasks:
   - name: intersystem_crossing_rate
     value_type: number
     unit: s^-1
-- task_id: property_calculation_advanced_017_biacetyl_phosphorescence_rate
+- task_id: property_calculation_advanced_016_biacetyl_phosphorescence_rate
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_rate
@@ -2191,7 +2163,7 @@ tasks:
   - name: phosphorescence_rate
     value_type: number
     unit: s^-1
-- task_id: property_calculation_advanced_018_anthracene_ht_contribution
+- task_id: property_calculation_advanced_017_anthracene_ht_contribution
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_rate
@@ -2222,7 +2194,7 @@ tasks:
   - name: herzberg_teller_contribution
     value_type: number
     unit: percent
-- task_id: property_calculation_advanced_019_acetophenone_isc_rate
+- task_id: property_calculation_advanced_018_acetophenone_isc_rate
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_rate
@@ -2253,7 +2225,7 @@ tasks:
   - name: intersystem_crossing_rate
     value_type: number
     unit: s^-1
-- task_id: property_calculation_advanced_020_azulene_internal_conversion_rate
+- task_id: property_calculation_advanced_019_azulene_internal_conversion_rate
   version: 1
   task_type: property_calculation
   object_type: molecular_excited_state_rate

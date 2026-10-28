@@ -8,7 +8,10 @@ from verifier_grounded_benchmark.evaluation.property_calculation import (
 from verifier_grounded_benchmark.evaluation.property_calculation.scoring.answer_matching import (
     match_unordered_numeric_answers,
 )
-from verifier_grounded_benchmark.task.loader import load_task_pack
+from verifier_grounded_benchmark.task.loader import (
+    load_task_pack,
+    task_pack_from_mappings,
+)
 from verifier_grounded_benchmark.task.models import PropertyCalculationTaskSpec
 from verifier_grounded_benchmark.task.resources import package_resource
 
@@ -275,9 +278,30 @@ def test_unordered_numeric_matching_uses_best_assignment() -> None:
     }
 
 
-def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
-    result = _evaluate(
-        "property_calculation_advanced_004_ir_top2_frequencies",
+def _evaluate_unordered_frequencies(answer: dict):
+    task_id = "synthetic_unordered_frequencies"
+    raw = {
+        "task_id": task_id,
+        "task_type": "property_calculation",
+        "answer_schema": {"value_type": "json"},
+        "requested_properties": [
+            {"name": name, "value_type": "number", "unit": "cm^-1"}
+            for name in ("frequency_1", "frequency_2")
+        ],
+        "gold_answers": [
+            {"property": name, "value": value, "unit": "cm^-1", "absolute_tolerance": 100.0}
+            for name, value in (("frequency_1", 1208.10), ("frequency_2", 1685.56))
+        ],
+        "scoring": {"aggregation": "arithmetic_mean", "answer_matching": "unordered_numeric"},
+    }
+    pack = task_pack_from_mappings({task_id: raw}, {})
+    return PropertyCalculationEvaluator().evaluate(
+        answer, pack.tasks[0], pack.scoring_profiles, versions=VERSIONS,
+    )
+
+
+def test_two_frequencies_are_scored_as_an_unordered_pair() -> None:
+    result = _evaluate_unordered_frequencies(
         {
             "answers": [
                 {"property": "frequency_1", "value": 1685.56, "unit": "cm^-1"},
@@ -295,9 +319,8 @@ def test_ir_top_two_frequencies_are_scored_as_an_unordered_pair() -> None:
     ] == pytest.approx([1.0, 1.0])
 
 
-def test_ir_top_two_frequencies_average_partial_credit_after_matching() -> None:
-    result = _evaluate(
-        "property_calculation_advanced_004_ir_top2_frequencies",
+def test_two_frequencies_average_partial_credit_after_matching() -> None:
+    result = _evaluate_unordered_frequencies(
         {
             "answers": [
                 {"property": "frequency_1", "value": 1785.56, "unit": "cm^-1"},
@@ -320,7 +343,7 @@ def test_cocrystal_ratio_has_explicit_partial_credit(
     answer: str, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calculation_advanced_006_cocrystal_ratio", {"answer": answer}
+        "property_calculation_advanced_005_cocrystal_ratio", {"answer": answer}
     )
 
     assert result["scores"]["score"] == pytest.approx(expected)
@@ -328,14 +351,14 @@ def test_cocrystal_ratio_has_explicit_partial_credit(
 
 def test_halogen_energy_scoring_accepts_either_sign() -> None:
     result = _evaluate(
-        "property_calculation_advanced_013_halogen_bond_energy",
+        "property_calculation_advanced_012_halogen_bond_energy",
         {"answer": -17.11, "unit": "kcal/mol"},
     )
 
     assert result["scores"]["score"] == pytest.approx(1.0)
 
     opposite_sign = _evaluate(
-        "property_calculation_advanced_013_halogen_bond_energy",
+        "property_calculation_advanced_012_halogen_bond_energy",
         {"answer": 17.11, "unit": "kcal/mol"},
     )
     assert opposite_sign["scores"]["score"] == pytest.approx(1.0)
@@ -343,7 +366,7 @@ def test_halogen_energy_scoring_accepts_either_sign() -> None:
 
 def test_hbond_distance_scoring_accepts_either_sign() -> None:
     result = _evaluate(
-        "property_calculation_advanced_010_hbond_distances",
+        "property_calculation_advanced_009_hbond_distances",
         {
             "answers": [
                 {"property": "oh_bond_distance", "value": 1.029, "unit": "angstrom"},
@@ -353,7 +376,7 @@ def test_hbond_distance_scoring_accepts_either_sign() -> None:
     )
     assert result["scores"]["score"] == pytest.approx(1.0)
     negative = _evaluate(
-        "property_calculation_advanced_010_hbond_distances",
+        "property_calculation_advanced_009_hbond_distances",
         {
             "answers": [
                 {"property": "oh_bond_distance", "value": -1.029, "unit": "angstrom"},
@@ -379,7 +402,7 @@ def test_log10_scoring_uses_order_of_magnitude_distance(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calculation_advanced_016_anthracene_isc_rate",
+        "property_calculation_advanced_015_anthracene_isc_rate",
         {"answer": answer, "unit": "s^-1"},
     )
 
@@ -394,7 +417,7 @@ def test_rate_log10_scoring_uses_symmetric_two_decade_widths(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calculation_advanced_017_biacetyl_phosphorescence_rate",
+        "property_calculation_advanced_016_biacetyl_phosphorescence_rate",
         {"answer": answer, "unit": "s^-1"},
     )
 
@@ -408,7 +431,7 @@ def test_asymmetric_linear_scoring_uses_separate_side_widths(
     answer: float, expected: float
 ) -> None:
     result = _evaluate(
-        "property_calculation_advanced_018_anthracene_ht_contribution",
+        "property_calculation_advanced_017_anthracene_ht_contribution",
         {"answer": answer, "unit": "percent"},
     )
 

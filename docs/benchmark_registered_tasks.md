@@ -1,18 +1,18 @@
 # Verifier Grounded Benchmark - Registered Tasks
 
-**Version:** 0.10.0  
+**Version:** 0.10.0 source, post-retirement (2026-10-28)\
 **Last Updated:** 2026-10-28
 
 ## Summary
 
-The benchmark currently has **4 formal tracks** with a total of **105 registered tasks**.
+The benchmark currently has **4 formal tracks** with a total of **100 registered tasks**.
 
 | Track | Version | Tasks | Type | Tags |
 |-------|---------|-------|------|------|
-| open_generation_rdkit | 0.10.0 | 14 | Verifier-based | small_molecule, rdkit, descriptor |
+| open_generation_rdkit | 0.10.0 | 10 | Verifier-based | small_molecule, rdkit, descriptor |
 | open_generation_xtb | 0.10.0 | 20 | Verifier-based | small_molecule_3d, xtb, xyz, smiles |
 | property_calculation_basic | 0.10.0 | 51 | Gold-based | property_calculation, fixed_input, basic, small_molecule |
-| property_calculation_advanced | 0.10.0 | 20 | Gold-based | property_calculation, fixed_input, crystal |
+| property_calculation_advanced | 0.10.0 | 19 | Gold-based | property_calculation, fixed_input, crystal |
 
 ---
 
@@ -21,50 +21,38 @@ The benchmark currently has **4 formal tracks** with a total of **105 registered
 **Type:** Open generation (verifier-based)  
 **Object Type:** Small molecule (SMILES)  
 **Requirements:** RDKit  
-**Task Count:** 14
+**Task Count:** 10
 
 ### Task List
 
 1. **rdkit_001_qed_max** (v1) - basic\
    Maximize QED on a bounded 0.0 to 1.0 scale
 
-2. **rdkit_002_sa_min** (v1) - basic\
-   Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range
-
-3. **rdkit_003_logp_window** (v1) - basic\
+2. **rdkit_002_logp_window** (v1) - basic\
    Have logP between 1.0 and 3.0
 
-4. **rdkit_004_tpsa_window** (v1) - basic\
+3. **rdkit_003_tpsa_window** (v1) - basic\
    Have TPSA between 35.0 and 75.0 square angstroms
 
-5. **rdkit_005_hba_window** (v1) - basic\
-   Have hydrogen-bond acceptors between 2.0 and 4.0 inclusive
-
-6. **rdkit_006_hbd_window** (v1) - basic\
-   Have hydrogen-bond donors between 1.0 and 2.0 inclusive
-
-7. **rdkit_007_fsp3_max** (v1) - basic\
-   Maximize fraction Csp3 on a 0.0 to 1.0 scale
-
-8. **rdkit_008_qed_sa** (v1) - basic [multi_objective]\
+4. **rdkit_004_qed_sa** (v1) - basic [multi_objective]\
    Maximize QED and minimize synthetic accessibility score
 
-9. **rdkit_009_logp_tpsa** (v1) - basic [multi_objective]\
+5. **rdkit_005_logp_tpsa** (v1) - basic [multi_objective]\
    Have logP between 1.0-3.0 and TPSA between 35.0-75.0
 
-10. **rdkit_010_hba_hbd** (v1) - basic [multi_objective]\
+6. **rdkit_006_hba_hbd** (v1) - basic [multi_objective]\
     Have HBA between 2.0-4.0 and HBD between 1.0-2.0
 
-11. **rdkit_011_logp_target** (v1) - advanced [formal_track]\
+7. **rdkit_007_logp_target** (v1) - advanced [formal_track]\
     Make logP as close as possible to 3.0 with constraints
 
-12. **rdkit_012_sa_logp_target** (v1) - advanced [formal_track]\
+8. **rdkit_008_sa_logp_target** (v1) - advanced [formal_track]\
     SA < 5.0, optimize logP to 3.0
 
-13. **rdkit_013_chain_end_to_end_max** (v2) - advanced [formal_track]\
+9. **rdkit_009_chain_end_to_end_max** (v2) - advanced [formal_track]\
     Maximize end-to-end distance in six-carbon chain using UFF
 
-14. **rdkit_014_caffeine_similarity_max** (v1) - advanced [formal_track]\
+10. **rdkit_010_caffeine_similarity_max** (v1) - advanced [formal_track]\
     Maximize similarity to caffeine with property constraints
 
 ---
@@ -226,68 +214,65 @@ The benchmark currently has **4 formal tracks** with a total of **105 registered
 **Type:** Property calculation (gold-based)  
 **Object Type:** Molecular crystals and advanced properties  
 **Requirements:** Advanced computational chemistry tools (DFT, TDDFT)  
-**Task Count:** 20
+**Task Count:** 19
 
 ### Task List
 
-1. **property_calculation_advanced_001_free_energy**  
+1. **property_calculation_advanced_001_free_energy**\
    Crystal pair free energy difference at 300 K
 
-2. **property_calculation_advanced_002_crystal_phase**  
+2. **property_calculation_advanced_002_crystal_phase**\
    Determine stable crystal phase
 
-3. **property_calculation_advanced_003_hbond_count**  
+3. **property_calculation_advanced_003_hbond_count**\
    Count hydrogen bonds in crystal structure
 
-4. **property_calculation_advanced_004_ir_top2_frequencies**  
-   Top 2 IR frequencies
-
-5. **property_calculation_advanced_005_crystal_density**  
+4. **property_calculation_advanced_004_crystal_density**\
    Calculate crystal density
 
-6. **property_calculation_advanced_006_cocrystal_ratio**  
+5. **property_calculation_advanced_005_cocrystal_ratio**\
    Determine co-crystal stoichiometric ratio
 
-7. **property_calculation_advanced_007_polymorph_free_energy_crossover**  
+6. **property_calculation_advanced_006_polymorph_free_energy_crossover**\
    Temperature of polymorph crossover
 
-8. **property_calculation_advanced_008_interaction_binding_energy**  
+7. **property_calculation_advanced_007_interaction_binding_energy**\
    Intermolecular binding energy in crystal
 
-9. **property_calculation_advanced_009_homo_lumo_gap**  
+8. **property_calculation_advanced_008_homo_lumo_gap**\
    HOMO-LUMO gap of crystal
 
-10. **property_calculation_advanced_010_hbond_distances**  
+9. **property_calculation_advanced_009_hbond_distances**\
     Hydrogen bond distances
 
-11. **property_calculation_advanced_011_accessible_pore_volume_ratio**  
+10. **property_calculation_advanced_010_accessible_pore_volume_ratio**\
     Pore volume ratio in MOF/COF
 
-12. **property_calculation_advanced_012_carboxyl_hydrogen_distance**  
+11. **property_calculation_advanced_011_carboxyl_hydrogen_distance**\
     Specific H-bond distance
 
-13. **property_calculation_advanced_013_halogen_bond_energy**  
+12. **property_calculation_advanced_012_halogen_bond_energy**\
     Halogen bond interaction energy
 
-14. **property_calculation_advanced_014_bay069_pka**  
+13. **property_calculation_advanced_013_bay069_pka**\
     pKa calculation for BAY069
 
-15. **property_calculation_advanced_015_formaldehyde_socme**  
+14. **property_calculation_advanced_014_formaldehyde_socme**\
     Spin-orbit coupling matrix element
 
-16. **property_calculation_advanced_016_anthracene_isc_rate**  
+15. **property_calculation_advanced_015_anthracene_isc_rate**\
     Intersystem crossing rate
 
-17. **property_calculation_advanced_017_biacetyl_phosphorescence_rate**  
+16. **property_calculation_advanced_016_biacetyl_phosphorescence_rate**\
     Phosphorescence rate constant
 
-18. **property_calculation_advanced_018_anthracene_ht_contribution**  
+17. **property_calculation_advanced_017_anthracene_ht_contribution**\
     Heavy-atom contribution to ISC
 
-19. **property_calculation_advanced_019_acetophenone_isc_rate**  
+18. **property_calculation_advanced_018_acetophenone_isc_rate**\
     ISC rate for acetophenone
 
-20. **property_calculation_advanced_020_azulene_internal_conversion_rate**  
+19. **property_calculation_advanced_019_azulene_internal_conversion_rate**\
     Internal conversion rate
 
 ---

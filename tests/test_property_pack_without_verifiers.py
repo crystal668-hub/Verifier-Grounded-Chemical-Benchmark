@@ -101,11 +101,11 @@ def test_cli_rejects_incomplete_or_conflicting_pack_options(args):
 
 def test_mixed_suite_keeps_property_scoring_independent_of_open_generation(monkeypatch):
     suite = vgb.load_suite([*OPEN_TRACKS, *PROPERTY_TRACKS])
-    assert len(suite.tasks()) == 105
+    assert len(suite.tasks()) == 100
     engine = suite.evaluator().engine
     monkeypatch.setattr(engine._open_generation, "evaluate", fail_verifier)
     result = engine.evaluate_one({
-        "task_id": "property_calculation_advanced_013_halogen_bond_energy",
+        "task_id": "property_calculation_advanced_012_halogen_bond_energy",
         "answer": 17.11, "unit": "kcal/mol",
     })
     assert result["scores"]["score"] == 1

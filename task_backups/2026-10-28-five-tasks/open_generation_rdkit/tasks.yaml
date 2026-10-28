@@ -1,0 +1,166 @@
+schema_version: 2
+task_pack:
+  id: open_generation_rdkit
+  version: 0.10.0
+tasks:
+- task_id: rdkit_002_sa_min
+  version: 1
+  object_type: small_molecule
+  difficulty: basic
+  capability_tags:
+  - open_generation
+  - property_satisfaction
+  - rdkit_descriptor
+  prompt: 'Propose one valid single-component molecule and provide it as a SMILES
+    string.
+
+
+    The molecule must satisfy these requirements:
+
+    - The SMILES must describe exactly one component; dot-separated multi-component
+    SMILES are not accepted.
+
+    - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
+
+    - Heavy atom count must be between 5 and 60 inclusive.
+
+    - Molecular weight must be at most 600.0 daltons.
+
+    - Formal charge must be between -1 and 1 inclusive.
+
+    - Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range where lower
+    is better.
+
+
+    Your final answer must appear on its own line exactly in this format:
+
+    FINAL ANSWER: <SMILES>
+
+    '
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
+  task_type: open_generation
+- task_id: rdkit_005_hba_window
+  version: 1
+  object_type: small_molecule
+  difficulty: basic
+  capability_tags:
+  - open_generation
+  - property_satisfaction
+  - rdkit_descriptor
+  prompt: 'Propose one valid single-component molecule and provide it as a SMILES
+    string.
+
+
+    The molecule must satisfy these requirements:
+
+    - The SMILES must describe exactly one component; dot-separated multi-component
+    SMILES are not accepted.
+
+    - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
+
+    - Heavy atom count must be between 5 and 60 inclusive.
+
+    - Molecular weight must be at most 600.0 daltons.
+
+    - Formal charge must be between -1 and 1 inclusive.
+
+    - Have a moderate number of hydrogen-bond acceptors, between 2.0 and 4.0 inclusive.
+
+
+    Your final answer must appear on its own line exactly in this format:
+
+    FINAL ANSWER: <SMILES>
+
+    '
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
+  task_type: open_generation
+- task_id: rdkit_006_hbd_window
+  version: 1
+  object_type: small_molecule
+  difficulty: basic
+  capability_tags:
+  - open_generation
+  - property_satisfaction
+  - rdkit_descriptor
+  prompt: 'Propose one valid single-component molecule and provide it as a SMILES
+    string.
+
+
+    The molecule must satisfy these requirements:
+
+    - The SMILES must describe exactly one component; dot-separated multi-component
+    SMILES are not accepted.
+
+    - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
+
+    - Heavy atom count must be between 5 and 60 inclusive.
+
+    - Molecular weight must be at most 600.0 daltons.
+
+    - Formal charge must be between -1 and 1 inclusive.
+
+    - Have a small nonzero number of hydrogen-bond donors, between 1.0 and 2.0 inclusive.
+
+
+    Your final answer must appear on its own line exactly in this format:
+
+    FINAL ANSWER: <SMILES>
+
+    '
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
+  task_type: open_generation
+- task_id: rdkit_007_fsp3_max
+  version: 1
+  object_type: small_molecule
+  difficulty: basic
+  capability_tags:
+  - open_generation
+  - property_satisfaction
+  - rdkit_descriptor
+  prompt: 'Propose one valid single-component molecule and provide it as a SMILES
+    string.
+
+
+    The molecule must satisfy these requirements:
+
+    - The SMILES must describe exactly one component; dot-separated multi-component
+    SMILES are not accepted.
+
+    - Allowed elements: H, B, C, N, O, F, P, S, Cl, Br, I.
+
+    - Heavy atom count must be between 5 and 60 inclusive.
+
+    - Molecular weight must be at most 600.0 daltons.
+
+    - Formal charge must be between -1 and 1 inclusive.
+
+    - Maximize fraction Csp3 on a 0.0 to 1.0 scale.
+
+
+    Your final answer must appear on its own line exactly in this format:
+
+    FINAL ANSWER: <SMILES>
+
+    '
+  answer_schema:
+    format: final_answer_line
+    final_answer_prefix: 'FINAL ANSWER:'
+    value_type: smiles
+    cardinality: one
+    example: 'FINAL ANSWER: CC(=O)Oc1ccccc1C(=O)O'
+  task_type: open_generation

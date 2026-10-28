@@ -12,10 +12,10 @@ from verifier_grounded_benchmark.task.resources import package_resource
 
 
 @pytest.mark.parametrize("pack,cutoff,total", [
-    ("open_generation_rdkit", 10, 14),
+    ("open_generation_rdkit", 6, 10),
     ("open_generation_xtb", 13, 20),
     ("property_calculation_basic", 51, 51),
-    ("property_calculation_advanced", 0, 20),
+    ("property_calculation_advanced", 0, 19),
 ])
 def test_formal_tasks_use_declared_two_level_classification(pack, cutoff, total):
     tasks = load_tasks_file(package_resource(pack, "tasks.yaml"))

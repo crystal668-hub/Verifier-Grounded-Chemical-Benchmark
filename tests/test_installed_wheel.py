@@ -132,7 +132,7 @@ def test_installed_wheel_vgb_score_rdkit_smoke(tmp_path: Path) -> None:
     property_report = json.loads(property_completed.stdout)
     assert property_report["summary"]["coverage"]["complete"] is True
     assert property_report["summary"]["benchmark_score"] == 1.0
-    assert [row["score"] for row in property_report["rows"]] == [1.0] * 20
+    assert [row["score"] for row in property_report["rows"]] == [1.0] * 19
 
     property_easy_completed = subprocess.run(
         [

@@ -1,0 +1,100 @@
+schema_version: 1
+scoring_config:
+  task_pack_id: open_generation_rdkit
+  task_pack_version: 0.10.0
+  scoring_version: linear_goal_v2
+  scoring_status: formal
+scoring_profiles:
+  rdkit_sa_score_minimize_1p0_10p0_v2:
+    property: sa_score
+    type: minimize
+    unit: score
+    full_score_target: 1.0
+    zero_score_anchor: 10.0
+  rdkit_hba_window_2_4_2p0_v2:
+    property: hba
+    type: window
+    unit: count
+    full_score:
+      min: 2
+      max: 4
+    decay:
+      lower_width: 2.0
+      upper_width: 2.0
+  rdkit_hbd_window_1_2_1p0_v2:
+    property: hbd
+    type: window
+    unit: count
+    full_score:
+      min: 1
+      max: 2
+    decay:
+      lower_width: 1.0
+      upper_width: 1.0
+  rdkit_fraction_csp3_maximize_0p0_1p0_v2:
+    property: fraction_csp3
+    type: maximize
+    unit: fraction
+    full_score_target: 1.0
+    zero_score_anchor: 0.0
+tasks:
+- task_id: rdkit_002_sa_min
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_json: parse_error
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+  constraints:
+  - type: minimize
+    property: sa_score
+    verifier_id: rdkit_sa_score_v1
+    role: main
+    scoring_profile: rdkit_sa_score_minimize_1p0_10p0_v2
+- task_id: rdkit_005_hba_window
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_json: parse_error
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+  constraints:
+  - type: window
+    property: hba
+    verifier_id: rdkit_hba_v1
+    role: main
+    scoring_profile: rdkit_hba_window_2_4_2p0_v2
+- task_id: rdkit_006_hbd_window
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_json: parse_error
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+  constraints:
+  - type: window
+    property: hbd
+    verifier_id: rdkit_hbd_v1
+    role: main
+    scoring_profile: rdkit_hbd_window_1_2_1p0_v2
+- task_id: rdkit_007_fsp3_max
+  scoring:
+    aggregation: geometric_mean
+    version: linear_goal_v2
+  failure_policy:
+    invalid_json: parse_error
+    invalid_smiles: parse_error
+    multi_component: validity_error
+    outside_domain: domain_error
+  constraints:
+  - type: maximize
+    property: fraction_csp3
+    verifier_id: rdkit_fraction_csp3_v1
+    role: main
+    scoring_profile: rdkit_fraction_csp3_maximize_0p0_1p0_v2

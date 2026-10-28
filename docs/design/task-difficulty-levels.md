@@ -16,12 +16,12 @@ Open-generation 与 property-calculation tracks 使用相同的等级词表。
 
 | Track | basic | advanced |
 | --- | --- | --- |
-| open_generation_rdkit | rdkit_001–rdkit_010（10 题） | rdkit_011–rdkit_014（4 题） |
+| open_generation_rdkit | rdkit_001–rdkit_006（6 题） | rdkit_007–rdkit_010（4 题） |
 | open_generation_xtb | xtb_001–xtb_013（13 题） | xtb_014–xtb_020（7 题） |
 | property_calculation_basic | 全部任务 | — |
 | property_calculation_advanced | — | 全部任务 |
 
-Open-generation 合计 23 道 basic、11 道 advanced，共 34 道题。
+Open-generation 合计 19 道 basic、11 道 advanced，共 30 道题。
 正式标签以 src/verifier_grounded_benchmark/task/packs/ 下各 tasks.yaml 为准。
 上表的编号范围是当前任务清单的显式分类，不是新任务按编号自动分级的规则。
 

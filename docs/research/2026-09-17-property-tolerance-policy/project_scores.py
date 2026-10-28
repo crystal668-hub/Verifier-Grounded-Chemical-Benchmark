@@ -41,7 +41,7 @@ def baseline_scoring(track: str) -> dict:
     )
     source["scoring_config"].update(task_pack_version="0.9.2", scoring_status="formal")
     source["tasks"] = deepcopy(snapshot["tasks"])
-    source["scoring_profiles"] = original.baseline_profiles(source["scoring_profiles"])
+    source["scoring_profiles"] = original.baseline_profiles(snapshot["scoring_profiles"])
     for profile_id, profile in source["scoring_profiles"].items():
         frozen = snapshot["scoring_profiles"][profile_id]
         for key in ("minimum_value", "value_transform"):
@@ -207,6 +207,12 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
         PREVIOUS / "task_scores.csv",
         original.BASELINE_INVENTORY,
     ]
+    backup = ROOT / "task_backups/2026-10-28-five-tasks"
+    inputs.extend([
+        backup / "manifest.json",
+        backup / "property_calculation_advanced/tasks.yaml",
+        backup / "property_calculation_advanced/scoring.yaml",
+    ])
     inputs.extend(
         ROOT / "src/verifier_grounded_benchmark" / name
         for name in (
@@ -250,8 +256,12 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             configs[track] = config
             config_path = Path(temporary) / f"{track}.scoring.yaml"
             config_path.write_text(config, encoding="utf-8")
+            task_data = yaml.safe_load((directory / "tasks.yaml").read_text())
+            task_data["tasks"] = [task.to_dict() for task in original.load_historical_pack(track).tasks]
+            tasks_path = Path(temporary) / f"{track}.tasks.yaml"
+            tasks_path.write_text(yaml.safe_dump(task_data), encoding="utf-8")
             pack = load_task_pack(
-                directory / "tasks.yaml", None, config_path
+                tasks_path, None, config_path
             )
             parameters.extend(parameter_rows(track, sources[track], candidate))
             if source_dir is None:
@@ -266,7 +276,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             baseline_path = Path(temporary) / f"{track}.baseline.scoring.yaml"
             baseline_path.write_text(yaml.safe_dump(sources[track]), encoding="utf-8")
             current_pack = load_task_pack(
-                directory / "tasks.yaml",
+                tasks_path,
                 None,
                 baseline_path,
             )

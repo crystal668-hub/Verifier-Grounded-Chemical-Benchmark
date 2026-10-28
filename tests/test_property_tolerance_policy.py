@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -203,8 +204,12 @@ def test_export_needs_no_answer_workbooks_and_loads_as_shadow_scoring(tmp_path):
     for track in projection.original.SOURCES:
         directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
         scoring_path = tmp_path / f"{track}.scoring.yaml"
+        task_data = yaml.safe_load((directory / "tasks.yaml").read_text())
+        task_data["tasks"] = [task.to_dict() for task in projection.original.load_historical_pack(track).tasks]
+        tasks_path = tmp_path / f"{track}.tasks.yaml"
+        tasks_path.write_text(yaml.safe_dump(task_data))
         pack = load_task_pack(
-            directory / "tasks.yaml", None, scoring_path
+            tasks_path, None, scoring_path
         )
         config = yaml.safe_load(scoring_path.read_text())
         assert config["scoring_config"]["scoring_status"] == "shadow_pending_research"
@@ -246,6 +251,10 @@ def test_formal_release_reproduces_current_answer_scores(track):
         None,
         directory / "scoring.yaml",
     )
-    for observation in projection.original.read_observations(workbook, pack):
+    manifest = json.loads((ROOT / "task_backups/2026-10-28-five-tasks/manifest.json").read_text())
+    mapping = {**manifest["id_mapping"], **dict.fromkeys(manifest["retired_task_ids"])}
+    observations = projection.original.read_observations(workbook, pack, task_id_mapping=mapping)
+    assert len(observations) == len(pack.tasks)
+    for observation in observations:
         scores, _ = projection.original.evaluate(pack, observation)
         assert np.isfinite(scores).all()

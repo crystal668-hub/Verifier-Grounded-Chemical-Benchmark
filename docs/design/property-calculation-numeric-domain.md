@@ -1,5 +1,8 @@
 # Property Calculation Numeric Domains
 
+> 2026-10-28：下文使用退役后的连续编号，评分参数保持原样；
+> [完整迁移表](../research/2026-10-28-task-retirement.md)。
+
 Date: 2026-09-21 (v0.10.0)
 
 Numeric domains describe the requested quantity independently of the scoring
@@ -9,15 +12,15 @@ below it receive zero for that field, even if a wider tolerance would otherwise
 give partial credit. The loader rejects nonfinite bounds and gold values outside
 the domain. Missing bounds preserve the existing signed-number behavior.
 
-Advanced 001 and 002 request absolute energy differences; Advanced 011 requests a
+Advanced 001 and 002 request absolute energy differences; Advanced 010 requests a
 volume ratio. These quantities have `minimum_value: 0.0`. The same bound applies
-to the distance field in Advanced 012, which uses the identity transform.
-Advanced 010 instead compares absolute values in v0.10.0 and has no original-value
+to the distance field in Advanced 011, which uses the identity transform.
+Advanced 009 instead compares absolute values in v0.10.0 and has no original-value
 minimum bound, as required by the expert-reviewed task scoring rule.
 Zero is in the domain; its score still depends on its error from the gold value.
 For multi-field tasks such as Advanced 002, other fields retain their own scores.
 
-Advanced 008 and 013 instead accept both signs for interaction/binding energies,
+Advanced 007 and 013 instead accept both signs for interaction/binding energies,
 following the task owner's convention: stabilization energies and positive energy
 magnitudes are both accepted. Their existing `absolute` transform compares
 `abs(answer)` with `abs(gold)`. The sign-preservation wording is removed from both

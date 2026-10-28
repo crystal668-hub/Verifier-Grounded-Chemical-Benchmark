@@ -226,7 +226,7 @@ def test_complete_property_report_gets_official_benchmark_score() -> None:
 
     assert report.summary["coverage"]["complete"] is True
     assert report.summary["benchmark_score"] == 1.0
-    assert [row["score"] for row in report.rows] == [1.0] * 20
+    assert [row["score"] for row in report.rows] == [1.0] * 19
 
 
 def test_duplicate_unknown_and_missing_ids_invalidate_coverage() -> None:

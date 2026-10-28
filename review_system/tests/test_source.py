@@ -17,7 +17,7 @@ def test_catalog_contains_formal_tracks_and_hides_long_inputs():
     catalog = load_catalog()
     assert {track["name"] for track in catalog["tracks"]} == {"open_generation_rdkit", "open_generation_xtb", "property_calculation_basic", "property_calculation_advanced"}
     assert all("display_name" not in track for track in catalog["tracks"])
-    assert sum(len(track["tasks"]) for track in catalog["tracks"]) == 105
+    assert sum(len(track["tasks"]) for track in catalog["tracks"]) == 100
     for track in catalog["tracks"]:
         for task in track["tasks"]:
             assert task["fingerprint"]
@@ -116,12 +116,12 @@ def test_score_ranges_represent_nonzero_submitted_values():
     qed = tasks["rdkit_001_qed_max"]["scoring"]["rules"][0]["score_range"]
     assert qed == {"kind": "lower_bounded", "min": 0.0, "min_exclusive": True, "unit": "dimensionless"}
 
-    interaction = tasks["property_calculation_advanced_008_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
+    interaction = tasks["property_calculation_advanced_007_interaction_binding_energy"]["scoring"]["rules"][0]["score_range"]
     assert interaction["kind"] == "absolute_interval"
     assert interaction["min"] == pytest.approx(59.04)
     assert interaction["max"] == pytest.approx(79.04)
 
-    log_score = tasks["property_calculation_advanced_015_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
+    log_score = tasks["property_calculation_advanced_014_formaldehyde_socme"]["scoring"]["rules"][0]["score_range"]
     assert log_score["transform"] == "log10"
     assert log_score["min"] == 0.0007340000000000001
     assert log_score["max"] == 0.0734
@@ -141,12 +141,12 @@ def test_v0100_catalog_has_task_specific_widths_and_absolute_scoring():
                     count += 1
                     advanced = track["name"] == "property_calculation_advanced"
                     number = task["task_id"].split("_")[3]
-                    width = ({"008": 10.0, "013": 5.0}[number] if advanced
+                    width = ({"007": 10.0, "012": 5.0}[number] if advanced
                              else 3.0 if number == "013" else 2.0)
                     assert profile["lower_tolerance"] == profile["upper_tolerance"] == width
                     assert profile.get("value_transform", "identity") == ("absolute" if advanced else "identity")
                     assert rule["score_range"]["kind"] == ("absolute_interval" if advanced else "interval")
-            if task["task_id"] in {"property_calculation_advanced_008_interaction_binding_energy", "property_calculation_advanced_013_halogen_bond_energy"}:
+            if task["task_id"] in {"property_calculation_advanced_007_interaction_binding_energy", "property_calculation_advanced_012_halogen_bond_energy"}:
                 assert "Preserve the sign of the energy." not in task["view"]["prompt"]
             if task["task_id"] == "property_calculation_advanced_002_crystal_phase":
                 assert task["scoring"]["comparison_groups"][1]["aggregation"] == "all_correct"

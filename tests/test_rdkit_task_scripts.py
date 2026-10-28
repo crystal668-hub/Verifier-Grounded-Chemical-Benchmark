@@ -12,7 +12,7 @@ def test_rdkit_descriptor_script_outputs_single_constraint_result_json() -> None
         package_resource("open_generation_rdkit", "tasks.yaml"),
         package_resource("open_generation_rdkit", "verifier_specs.yaml"),
     )
-    task = pack.tasks_by_id["rdkit_003_logp_window"]
+    task = pack.tasks_by_id["rdkit_002_logp_window"]
     constraint = task["constraints"][0]
     spec = pack.verifier_specs_by_id[constraint["verifier_id"]]
 
@@ -21,7 +21,7 @@ def test_rdkit_descriptor_script_outputs_single_constraint_result_json() -> None
     ).to_dict()
 
     assert result["outcome"] == "verified"
-    assert result["task_id"] == "rdkit_003_logp_window"
+    assert result["task_id"] == "rdkit_002_logp_window"
     assert result["verifier_id"] == "rdkit_logp_v1"
     assert result["canonical_candidate"]["smiles"] == "CC(=O)Oc1ccccc1C(=O)O"
     assert set(result["properties"]) == {"logp"}

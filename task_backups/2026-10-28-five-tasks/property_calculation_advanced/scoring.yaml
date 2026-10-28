@@ -1,0 +1,39 @@
+schema_version: 1
+scoring_config:
+  task_pack_id: property_calculation_advanced
+  task_pack_version: 0.10.0
+  scoring_version: linear_goal_v2
+  scoring_status: formal
+scoring_profiles:
+  property_calculation_advanced_ir_frequency_1_numeric_gold_v2:
+    property: frequency_1
+    type: numeric_gold
+    unit: cm^-1
+    lower_tolerance: 100.0
+    upper_tolerance: 100.0
+  property_calculation_advanced_ir_frequency_2_numeric_gold_v2:
+    property: frequency_2
+    type: numeric_gold
+    unit: cm^-1
+    lower_tolerance: 100.0
+    upper_tolerance: 100.0
+tasks:
+- task_id: property_calculation_advanced_004_ir_top2_frequencies
+  scoring:
+    aggregation: arithmetic_mean
+    answer_matching: unordered_numeric
+    version: linear_goal_v2
+  failure_policy:
+    malformed_final_answer: parse_error
+    invalid_json: parse_error
+    malformed_property_answer: parse_error
+    invalid_task_schema: task_error
+  gold_answers:
+  - property: frequency_1
+    value: 1208.1
+    unit: cm^-1
+    scoring_profile: property_calculation_advanced_ir_frequency_1_numeric_gold_v2
+  - property: frequency_2
+    value: 1685.56
+    unit: cm^-1
+    scoring_profile: property_calculation_advanced_ir_frequency_2_numeric_gold_v2

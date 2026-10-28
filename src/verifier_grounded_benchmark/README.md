@@ -5,12 +5,16 @@
 
 v0.10.0 采用逐题独立容差，不再加载或校验 `family-policy.yaml`。
 四个正式 track 的评分 profile 已移除开发记录 `provenance`，运行时仅使用评分参数。
-Basic 013 的容差为 ±3 kcal/mol；Advanced 008、010、013 分别为
+Basic 013 的容差为 ±3 kcal/mol；Advanced 007、009、012 分别为
 ±10 kcal/mol、±0.1 Å、±5 kcal/mol，并先对答案与 gold 取绝对值再比较。
 容差仍表示线性评分降至零的误差宽度，gold 和字段权重不变。
-Advanced 011 使用半径 1.2 Å 的球形探针。
-RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001_qed_max`–`rdkit_014_caffeine_similarity_max`、
+Advanced 010 使用半径 1.2 Å 的球形探针。
+RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001_qed_max`–`rdkit_010_caffeine_similarity_max`、
 `xtb_001_gap_window`–`xtb_020_pyrene_substituent_energy_min`；已有答案记录需同步更新 task-id。
+
+2026-10-28 源码题集删减后共 100 题：RDKit 10、xTB 20、Basic 51、Advanced 19。
+保留任务已按原相对顺序连续编号；旧答案记录必须按完整 task ID 映射迁移，
+不能只按数字编号匹配。退役备份不进入 wheel/sdist；历史 release 快照保持原样。
 
 ## QuickStart
 
@@ -32,7 +36,7 @@ print(result["scores"]["score"])
 | `open_generation_rdkit` | 开放分子生成与 RDKit descriptor/force-field 评分 |
 | `open_generation_xtb` | 开放分子或 XYZ 结构生成与 xTB 评分 |
 | `property_calculation_basic` | 51 道 basic 固定输入性质计算题 |
-| `property_calculation_advanced` | 20 道 advanced 固定输入性质计算题 |
+| `property_calculation_advanced` | 19 道 advanced 固定输入性质计算题 |
 
 v0.10.0 仅支持上述 canonical names；旧的 `rdkit`、`xtb`、
 `property_calculation` 和 `property_calculation_easy` 名称已移除。

@@ -5,24 +5,24 @@ profiles. It has no verifier dependency or `verifier_specs.yaml` file. Both the
 public API and custom-pack CLI load it from `tasks.yaml` and `scoring.yaml`.
 
 
-更新日期：2026-09-21（v0.10.0）
+更新日期：2026-10-28（源码题集删减后）
 
 ## 1. 定位
 
 `property_calculation_advanced` 是独立于 open-generation 的正式 track。题面给出完整化学或材料结构，模型报告计算结果；评分器只比较最终答案与公开 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。
 
-当前正式题目共 20 道。新增的激发态动力学题目如下：
+当前正式题目共 19 道。新增的激发态动力学题目如下：
 
 | task_id | 输入 | 输出 |
 |---|---|---|
-| `property_calculation_advanced_015_formaldehyde_socme` | formaldehyde SMILES 与气相条件 | T1-S0 SOCME，`eV` |
-| `property_calculation_advanced_016_anthracene_isc_rate` | anthracene SMILES、77 K 与气相条件 | S1 ISC 速率，`s^-1` |
-| `property_calculation_advanced_017_biacetyl_phosphorescence_rate` | biacetyl SMILES、乙醇隐式溶剂与 298 K | 磷光速率，`s^-1` |
-| `property_calculation_advanced_018_anthracene_ht_contribution` | anthracene SMILES、77 K 与气相条件 | HT 项占比，`percent` |
-| `property_calculation_advanced_019_acetophenone_isc_rate` | acetophenone SMILES、77 K 与气相条件 | S1-to-T1 ISC 速率，`s^-1` |
-| `property_calculation_advanced_020_azulene_internal_conversion_rate` | azulene SMILES、甲醇隐式溶剂与 298.15 K | S1-to-S0 IC 速率，`s^-1` |
+| `property_calculation_advanced_014_formaldehyde_socme` | formaldehyde SMILES 与气相条件 | T1-S0 SOCME，`eV` |
+| `property_calculation_advanced_015_anthracene_isc_rate` | anthracene SMILES、77 K 与气相条件 | S1 ISC 速率，`s^-1` |
+| `property_calculation_advanced_016_biacetyl_phosphorescence_rate` | biacetyl SMILES、乙醇隐式溶剂与 298 K | 磷光速率，`s^-1` |
+| `property_calculation_advanced_017_anthracene_ht_contribution` | anthracene SMILES、77 K 与气相条件 | HT 项占比，`percent` |
+| `property_calculation_advanced_018_acetophenone_isc_rate` | acetophenone SMILES、77 K 与气相条件 | S1-to-T1 ISC 速率，`s^-1` |
+| `property_calculation_advanced_019_azulene_internal_conversion_rate` | azulene SMILES、甲醇隐式溶剂与 298.15 K | S1-to-S0 IC 速率，`s^-1` |
 
-`property_calculation_advanced_001_free_energy` 至 `property_calculation_advanced_014_bay069_pka` 保持既有定义。所有
+`property_calculation_advanced_001_free_energy` 至 `property_calculation_advanced_013_bay069_pka` 保持既有定义。所有
 模型输入均在英文 `prompt` 中，运行时不读取附件、文件路径或外部结构数据库。
 
 ## 2. Task Schema
@@ -65,10 +65,10 @@ Advanced 001 的 gold 为 `0.258031679 kJ/mol`，v0.9.4 采用的绝对零分宽
 `8 kJ/mol`；Advanced 002 为 `0.8 eV`。只接受精确单位字符串，不进行单位换算。
 负绝对差直接判该字段零分，合法零值按线性误差规则计分。
 
-v0.10.0 采用逐题独立容差。Advanced 008、010、013 分别使用
+v0.10.0 采用逐题独立容差。Advanced 007、009、012 分别使用
 ±10 kcal/mol、±0.1 Å、±5 kcal/mol 的线性零分宽度，并先取答案与 gold 的绝对值
-再比较；008 和 010 的两个字段均适用。Advanced 011 明确使用半径 1.2 Å 的球形探针。
-其他字段保留原阈值和规则，包括 011 的非负比值、012 的非负距离限制。
+再比较；007 和 009 的两个字段均适用。Advanced 010 明确使用半径 1.2 Å 的球形探针。
+其他字段保留原阈值和规则，包括 010 的非负比值、011 的非负距离限制。
 详见 [v0.10.0 评分规则](../design/property-calculation-v0.10.0-scoring.md)。
 
 Task 8 的三个字段等权评分：
@@ -78,9 +78,6 @@ Task 8 的三个字段等权评分：
 3. `high_pressure_phase`：精确字符串分。
 
 所有 Property Calculation 题均对请求字段分数取等权算术平均。一个字段错误不会抹去其他字段已经获得的分数。
-
-`property_calculation_advanced_004_ir_top2_frequencies` 使用
-`answer_matching: unordered_numeric`。两个提交频率与两个 gold 频率采用使字段平均分最高的一一匹配，输出顺序不影响分数；匹配后的两个字段仍各自等权计分。
 
 格式正确但数值、单位或相位错误的答案返回 `status: scored` 和相应低分；它不是 evaluator 故障。
 
