@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "verifier-grounded-benchmark"
 version = "1.0.0rc1"
 description = "Verifier-grounded chemical benchmark environment and tooling."
+readme = "src/verifier_grounded_benchmark/README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "admet-ai==2.0.1",

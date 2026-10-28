@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import importlib
 import importlib.metadata as metadata
 import json
@@ -64,39 +65,40 @@ def check_pymatgen() -> dict[str, str]:
     }
 
 
-def main() -> None:
-    modules = {
-        "admet_ai": "admet-ai",
-        "ase": "ase",
-        "cclib": "cclib",
-        "chembl_webresource_client": "chembl-webresource-client",
-        "mp_api": "mp-api",
-        "ord_schema": "ord-schema",
-        "pymatgen": "pymatgen",
-        "rdkit": "rdkit",
-    }
-
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--include-optional", action="store_true",
+        help="Also check the future-backends and materials dependency groups.",
+    )
+    args = parser.parse_args(argv)
+    modules = {"admet_ai": "admet-ai", "yaml": "pyyaml", "rdkit": "rdkit"}
+    if args.include_optional:
+        modules.update({
+            "ase": "ase", "cclib": "cclib",
+            "chembl_webresource_client": "chembl-webresource-client",
+            "mp_api": "mp-api", "ord_schema": "ord-schema", "pymatgen": "pymatgen",
+        })
     versions: dict[str, str] = {}
-    for module, distribution in modules.items():
-        importlib.import_module(module)
-        versions[distribution] = package_version(distribution)
-
-    result = {
-        "status": "ok",
-        "versions": versions,
-        "checks": {
-            "rdkit": check_rdkit(),
-            "ord_schema": check_ord_schema(),
-            "ase": check_ase(),
-            "pymatgen": check_pymatgen(),
-            "cclib_import": True,
-            "mp_api_import": True,
-            "admet_ai_import": True,
-            "chembl_client_import": True,
-        },
-    }
-    print(json.dumps(result, indent=2, sort_keys=True))
+    try:
+        for module, distribution in modules.items():
+            importlib.import_module(module)
+            versions[distribution] = package_version(distribution)
+        checks: dict[str, Any] = {
+            "rdkit": check_rdkit(), "yaml_import": True, "admet_ai_import": True,
+        }
+        if args.include_optional:
+            checks.update({
+                "ord_schema": check_ord_schema(), "ase": check_ase(),
+                "pymatgen": check_pymatgen(), "cclib_import": True,
+                "mp_api_import": True, "chembl_client_import": True,
+            })
+    except (ImportError, metadata.PackageNotFoundError) as exc:
+        print(json.dumps({"status": "error", "message": str(exc)}, indent=2, sort_keys=True))
+        return 1
+    print(json.dumps({"status": "ok", "versions": versions, "checks": checks}, indent=2, sort_keys=True))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -5,7 +5,7 @@ profiles. It has no verifier dependency or `verifier_specs.yaml` file. Both the
 public API and custom-pack CLI load it from `tasks.yaml` and `scoring.yaml`.
 
 
-更新日期：2026-10-28（源码题集删减后）
+更新日期：2026-10-28（v1.0.0-rc / Python 1.0.0rc1）
 
 ## 1. 定位
 
@@ -35,23 +35,18 @@ input_objects: [mapping]
 requested_properties: [mapping]
 ```
 
-它不创建伪 `constraints`。为了兼容现有 `TrackDefinition`，`verifier_specs.yaml` 内容为：
-
-```yaml
-verifiers: []
-```
-
-缺失 `task_type` 的既有任务仍默认按 `open_generation` 路由。
+性质计算 pack 仅需要 tasks.yaml 和 scoring.yaml；不提供 verifier_specs.yaml 占位文件。
+Schema v2 必须显式声明 task_type: property_calculation。
 
 ## 3. Answer Contract
 
-Task 7 的规范化 JSONL：
+Advanced 001 的规范化 JSONL：
 
 ```json
 {"task_id":"property_calculation_advanced_001_free_energy","answer":0.258031679,"unit":"kJ/mol"}
 ```
 
-Task 8 的规范化 JSONL：
+Advanced 002 的规范化 JSONL：
 
 ```json
 {"task_id":"property_calculation_advanced_002_crystal_phase","answers":[{"property":"potential_energy_difference","value":0.079,"unit":"eV"},{"property":"ambient_pressure_phase","value":"alpha"},{"property":"high_pressure_phase","value":"beta"}]}
@@ -71,13 +66,14 @@ v0.10.0 采用逐题独立容差。Advanced 007、009、012 分别使用
 其他字段保留原阈值和规则，包括 010 的非负比值、011 的非负距离限制。
 详见 [v0.10.0 评分规则](../design/property-calculation-v0.10.0-scoring.md)。
 
-Task 8 的三个字段等权评分：
+Advanced 002 分为两个等权比较组：
 
-1. `potential_energy_difference`：连续数值分。
-2. `ambient_pressure_phase`：精确字符串分。
-3. `high_pressure_phase`：精确字符串分。
+1. energy 组：potential_energy_difference 的连续数值分。
+2. phase 组：ambient_pressure_phase 和 high_pressure_phase 必须全部正确，组分才为 1，否则为 0。
 
-所有 Property Calculation 题均对请求字段分数取等权算术平均。一个字段错误不会抹去其他字段已经获得的分数。
+最终分数为 (energy + phase) / 2。字段分 [1, 1, 0] 对应总分 0.5，
+不是 2/3。其他未声明 comparison_groups 的性质计算任务对请求字段取等权算术平均。
+缺失字段、错误单位和非法数值计该字段零分；重复属性或非法列表结构是提交格式错误。
 
 格式正确但数值、单位或相位错误的答案返回 `status: scored` 和相应低分；它不是 evaluator 故障。
 
@@ -92,7 +88,7 @@ status: scored | error
 canonical_smiles: null
 properties:
   submitted_answers: mapping
-  gold_answers: mapping
+  diagnostics: mapping
 scores:
   validity_gate: number
   domain_gate: number

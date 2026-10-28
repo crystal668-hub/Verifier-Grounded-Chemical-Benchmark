@@ -20,6 +20,59 @@ RDKit 和 xTB 的 task-id 分别标准化为 `rdkit_001_qed_max`–`rdkit_010_ca
 
 ## QuickStart
 
+### Installation
+
+Requires Python **3.12** (`>=3.12,<3.13`). The following commands target macOS/Linux.
+On Windows, activate `.venv\Scripts\activate` instead. Use the actual absolute
+path of the local RC wheel; it is not assumed to be published on PyPI.
+
+```bash
+python3.12 -m venv .venv
+. .venv/bin/activate
+python -m pip install /absolute/path/to/verifier_grounded_benchmark-1.0.0rc1-py3-none-any.whl
+```
+
+For a source checkout with uv installed, use `uv sync --frozen` and run commands
+through `uv run --no-sync`. Optional backend groups are not needed for the
+RDKit and Property Calculation examples below.
+
+### Complete RDKit example
+
+Run these commands in a writable experiment directory after installation:
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+import verifier_grounded_benchmark as vgb
+
+track = vgb.load_track("open_generation_rdkit")
+Path("rdkit-answers.jsonl").write_text(
+    "\n".join(json.dumps(answer) for answer in track.sample_answers()) + "\n",
+    encoding="utf-8",
+)
+print(f"Prepared {len(track.tasks())} sample answers")
+PY
+vgb-score --track open_generation_rdkit --answers rdkit-answers.jsonl --require-complete > rdkit-report.json
+python - <<'PY'
+import json
+from pathlib import Path
+report = json.loads(Path("rdkit-report.json").read_text())
+print(report["summary"])
+assert report["summary"]["coverage"]["complete"] is True
+assert report["summary"]["num_error"] == 0
+assert report["summary"]["benchmark_score"] is not None
+PY
+```
+
+These are bundled showcase answers, not model-performance measurements.
+For a real run, pass `track.prompts()` to your model runner and save one JSON
+object per task containing `task_id` and either `response` (the full model text)
+or the documented structured answer. Keep the original answers and model/tool
+configuration together with the report.
+
+### Single property answer
+
 ```python
 import verifier_grounded_benchmark as vgb
 
@@ -60,6 +113,15 @@ v0.10.0 仅支持上述 canonical names；旧的 `rdkit`、`xtb`、
 `Evaluator.tasks`、`Suite.tasks()`、`EvaluationReport` 和评分结果都不会返回
 `gold_answers`、评分 profile 或 failure policy。
 
+`list_tracks(status="formal")` accepts a status string or `None` to list every
+registered track. `load_suite(track_names=None)` defaults to the formal tracks.
+`register_track(definition, replace=False)` rejects duplicate names unless
+replacement is explicit. Unknown track/task names raise `KeyError`; malformed
+packs raise `ValueError`. `TrackDefinition` is the typed registration input.
+`evaluate_one(answer: dict)` returns the detailed result with `scores.score`;
+`evaluate_answers(answers: list[dict], as_report=False)` returns `{summary, rows}`
+with flattened `rows[*].score`. Set `as_report=True` for an `EvaluationReport`.
+
 Property calculation tracks 不提供内置 `sample_answers()`；RDKit 和 xTB 仍提供 showcase samples。
 
 ## Answer format
@@ -89,6 +151,45 @@ vgb-score --tasks tasks.yaml --specs verifier_specs.yaml \
 vgb-score --tasks tasks.yaml --scoring scoring.yaml --answers answers.jsonl
 ```
 
+### Report and error interpretation
+
+- `score` is in `[0, 1]` for scored answers. Invalid candidates, wrong units and
+  invalid numeric values may legitimately receive zero. They are not tool errors.
+- `status: error` and `score: null` identify submission-ID, evaluator or
+  infrastructure errors. `failure_scope`, `failure_type` and `message` explain them.
+- `evaluated_mean_score` summarizes scored rows only. `benchmark_score` is
+  populated only for complete, duplicate-free, known-task coverage with no errors.
+- Exit **0**: evaluation completed without error rows; a partial run can still
+  exit 0 unless `--require-complete` was requested.
+- Exit **2**: argument, dependency, required-coverage or evaluation error.
+  Evaluation errors retain the JSON report on stdout; dependency and coverage
+  failures produce structured diagnostics on stderr. Invalid input files may
+  terminate with exit 1. Never interpret a missing report as a zero score.
+
+Property numeric units must match exactly; no unit conversion is performed.
+Tolerance widths are the distance from gold to zero credit, not full-credit
+acceptance intervals. Advanced 002 averages two groups: energy and phase. The
+phase group scores 1 only when both phases are correct. Field scores `[1,1,0]`
+therefore give total **0.5**, not 2/3. Other ungrouped property tasks average fields.
+
+### xTB and environment checks
+
+xTB tasks require xTB **6.7.1**; task 020 additionally requires CREST **2.12**.
+The source checkout includes `envs/crest-xtb.yml`: create it with
+`conda env create -f envs/crest-xtb.yml`. Verifier preflight can discover the
+`vgb-crest` environment. No executable environment is bundled in the wheel.
+The nine xTB showcase answers cover only nine of the twenty tasks.
+
+From the source checkout, `uv run --no-sync python scripts/env/check_core_env.py`
+checks only declared core packages. `--include-optional` additionally checks the
+`future-backends` and `materials` groups, which must first be installed with
+`uv sync --group future-backends --group materials`. Dedicated backend check
+scripts remain available under `scripts/env/`.
+
+If an executable is missing or has the wrong version, fix the environment and
+rerun the original answers. If coverage fails, inspect missing/duplicate/unknown
+task IDs and apply the RC ID migration; do not match tasks by numeric suffix alone.
+
 ## Pack layout
 
 ```text
@@ -103,3 +204,21 @@ vgb-score --tasks tasks.yaml --scoring scoring.yaml --answers answers.jsonl
 
 性质计算 track 仅需要 `tasks.yaml` 和 `scoring.yaml`，不提供空 verifier 占位文件。
 `task/calibration/` 为源码维护用校准数据，整个目录均不进入 wheel 或 sdist。
+
+Separate scoring configs must match the task-pack ID and version. Duplicate
+mapping keys in task, scoring and verifier YAML are errors rather than overrides.
+
+## RC scope and migration
+
+The `v1.0.0-rc` Git label maps explicitly to Python version `1.0.0rc1`. Historical
+`v0.10.0` artifacts remain unchanged. Five tasks were retired, and 25 retained
+task IDs changed; the new suite has 100 tasks instead of 105. Difficulty accepts
+only `basic` or `advanced`. Old/new whole-suite scores use different inventories
+and must not be treated as directly comparable. Result schema 3 and
+`linear_goal_v2` are unchanged.
+
+Full RC changes, the retained-ID mapping and acceptance materials accompany the
+local release directory `releases/v1.0.0-rc/`. The source release notes are in
+`docs/research/2026-10-28-v1.0.0-rc-release-notes.md`. This is a local artifact
+delivery, with no remote publication or license grant implied. The review-system
+development tool, retirement backups and private calibration inputs are excluded.

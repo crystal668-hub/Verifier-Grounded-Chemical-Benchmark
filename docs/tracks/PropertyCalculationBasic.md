@@ -5,13 +5,13 @@ profiles. It has no verifier dependency or `verifier_specs.yaml` file. Both the
 public API and custom-pack CLI load it from `tasks.yaml` and `scoring.yaml`.
 
 
-Updated: 2026-09-21 (v0.10.0)
+Updated: 2026-10-28 (v1.0.0-rc / Python 1.0.0rc1)
 
 ## Positioning
 
 `property_calculation_basic` is a formal track for 51 fixed-input, basic molecular property
 questions. It is separate from `property_calculation_advanced`; adding or revising basic-track tasks does not
-change the advanced track's 20 task definitions or scoring profiles.
+change the advanced track's 19 task definitions or scoring profiles.
 
 The track covers aqueous solvation free energies, redox potentials, noncovalent binding energies,
 polarizabilities, dipole moments, bond orders, molecular-surface properties, crystal densities,
@@ -28,11 +28,12 @@ chemistry executable.
 ```yaml
 task_pack:
   id: property_calculation_basic
-  scoring_version: linear_goal_v2
+  version: 1.0.0rc1
 task_type: property_calculation
 ```
 
-`verifier_specs.yaml` therefore contains an empty `verifiers` list. Numeric scores use the same
+There is no verifier_specs.yaml file. Scoring profiles live in scoring.yaml.
+Numeric scores use the same
 `linear_goal_v2` implementation as the original property-calculation track. Each numeric task has a
 single full-score gold and symmetric linear decay on both sides. The configured absolute width is
 either the fixed absolute error from the reviewed standard or the reviewed percentage multiplied by
