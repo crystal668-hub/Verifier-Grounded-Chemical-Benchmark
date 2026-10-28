@@ -1,7 +1,7 @@
 schema_version: 2
 task_pack:
   id: open_generation_rdkit
-  version: 0.10.0
+  version: 1.0.0rc1
 tasks:
 - task_id: rdkit_001_qed_max
   version: 1

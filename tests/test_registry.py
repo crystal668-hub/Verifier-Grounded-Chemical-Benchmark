@@ -51,7 +51,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     ]
     assert tracks[0] == TrackDefinition(
         name="open_generation_rdkit",
-        version="0.10.0",
+        version="1.0.0rc1",
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
@@ -62,7 +62,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     )
     assert tracks[1] == TrackDefinition(
         name="open_generation_xtb",
-        version="0.10.0",
+        version="1.0.0rc1",
         task_pack_path="tasks.yaml",
         verifier_specs_path="verifier_specs.yaml",
         scoring_config_path="scoring.yaml",
@@ -74,7 +74,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     )
     assert tracks[2] == TrackDefinition(
         name="property_calculation_advanced",
-        version="0.10.0",
+        version="1.0.0rc1",
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",
@@ -85,7 +85,7 @@ def test_public_registry_exposes_all_formal_builtins() -> None:
     )
     assert tracks[3] == TrackDefinition(
         name="property_calculation_basic",
-        version="0.10.0",
+        version="1.0.0rc1",
         task_pack_path="tasks.yaml",
         verifier_specs_path=None,
         scoring_config_path="scoring.yaml",

@@ -1,4 +1,6 @@
-# Verifier-Grounded Benchmark (v0.10.0)
+# Verifier-Grounded Benchmark (v1.0.0-rc)
+
+Python package version: `1.0.0rc1`; Git tag: `v1.0.0-rc`.
 
 `verifier_grounded_benchmark` 提供可复现的化学 benchmark task pack、verifier 和评分工具。
 模型调用由用户或 agent runner 负责；本包负责提供题目、解析答案并生成评分报告。

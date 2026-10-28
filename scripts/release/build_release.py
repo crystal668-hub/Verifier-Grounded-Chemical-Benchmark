@@ -4,14 +4,22 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import tarfile
+import tempfile
 import tomllib
 import zipfile
+from email.parser import BytesParser
 from pathlib import Path
 from typing import Any
 
 import yaml
+from packaging.utils import canonicalize_name, parse_wheel_filename
+from packaging.version import InvalidVersion, Version
+
+from verifier_grounded_benchmark.task.loader import load_task_pack
+from verifier_grounded_benchmark.task.registry import builtin_definitions
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_NAME = "verifier-grounded-benchmark"
@@ -26,14 +34,29 @@ FORMAL_TRACK_PATHS = {
 
 def project_version() -> str:
     payload = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    return str(payload["project"]["version"])
+    raw = str(payload["project"]["version"])
+    try:
+        normalized = str(Version(raw))
+    except InvalidVersion as exc:
+        raise ValueError(f"Invalid project version: {raw!r}") from exc
+    if raw != normalized:
+        raise ValueError(f"Project version must be canonical: {raw!r}; use {normalized!r}")
+    return normalized
 
 
 def task_inventory(version: str) -> dict[str, Any]:
     tracks: dict[str, Any] = {}
     scoring_profiles: dict[str, Any] = {}
     scoring_versions: set[str] = set()
+    definitions = {definition.name: definition for definition in builtin_definitions()}
     for track, path in FORMAL_TRACK_PATHS.items():
+        specs_path = path.parent / "verifier_specs.yaml"
+        pack = load_task_pack(
+            path, specs_path if track.startswith("open_generation_") else None,
+            path.parent / "scoring.yaml",
+        )
+        if pack.pack_id != track or pack.version != version or definitions[track].version != version:
+            raise ValueError(f"Release version/identity mismatch for {track}: expected {version}")
         payload = yaml.safe_load(path.read_text(encoding="utf-8"))
         tasks = payload.get("tasks") if isinstance(payload, dict) else None
         if not isinstance(tasks, list):
@@ -54,10 +77,13 @@ def task_inventory(version: str) -> dict[str, Any]:
             "count": len(task_ids),
             "task_ids": task_ids,
             "tasks_sha256": sha256_file(path),
+            "scoring_sha256": sha256_file(path.parent / "scoring.yaml"),
             "task_pack_version": payload["task_pack"]["version"],
             "scoring_version": scoring_version,
             "scoring_status": scoring_config.get("scoring_status", "formal"),
         }
+        if specs_path.is_file():
+            tracks[track]["verifier_specs_sha256"] = sha256_file(specs_path)
         for profile_id, profile in scoring_payload["scoring_profiles"].items():
             encoded = json.dumps(profile, sort_keys=True, separators=(",", ":")).encode()
             profile_hash = hashlib.sha256(encoded).hexdigest()
@@ -144,76 +170,151 @@ def verify_archive_payloads(
     }
 
 
-def build_release(*, output_dir: Path, metadata_dir: Path) -> dict[str, Any]:
+def release_preflight(*, output_dir: Path, metadata_dir: Path, tag: str) -> dict[str, Any]:
+    """Validate immutable release identity and destinations without writing files."""
     version = project_version()
     _require_clean_worktree()
+    source_commit = _git("rev-parse", "HEAD")
+    _validate_release_tag(tag, source_commit)
+    _require_new_destinations(output_dir, metadata_dir, version)
     inventory = task_inventory(version)
     _require_formal_inventory(inventory)
-    source_commit = _git("rev-parse", "HEAD")
-    source_tree = _git("rev-parse", "HEAD^{tree}")
-    source_date_epoch = _git("show", "-s", "--format=%ct", "HEAD")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    expected = {
-        output_dir / f"verifier_grounded_benchmark-{version}-py3-none-any.whl",
-        output_dir / f"verifier_grounded_benchmark-{version}.tar.gz",
-    }
-    for path in expected:
-        path.unlink(missing_ok=True)
-    env = os.environ.copy()
-    env["SOURCE_DATE_EPOCH"] = source_date_epoch
-    subprocess.run(
-        ["uv", "build", "--wheel", "--sdist", "--out-dir", str(output_dir)],
-        cwd=ROOT,
-        env=env,
-        check=True,
-    )
-    wheel_path = output_dir / f"verifier_grounded_benchmark-{version}-py3-none-any.whl"
-    sdist_path = output_dir / f"verifier_grounded_benchmark-{version}.tar.gz"
-    if not wheel_path.is_file() or not sdist_path.is_file():
-        raise FileNotFoundError("Expected wheel and sdist were not both created")
-
-    payload = verify_archive_payloads(
-        wheel_path,
-        sdist_path,
-        additional_required={
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/tasks.yaml",
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_advanced/scoring.yaml",
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/tasks.yaml",
-            "src/verifier_grounded_benchmark/task/packs/property_calculation_basic/scoring.yaml",
-        },
-    )
-    artifacts = [
-        {
-            "filename": path.name,
-            "sha256": sha256_file(path),
-            "size": path.stat().st_size,
-        }
-        for path in (wheel_path, sdist_path)
-    ]
-    manifest = {
-        "schema_version": 1,
-        "package": PACKAGE_NAME,
+    return {
         "version": version,
-        "result_schema_version": "3",
-        "scoring_version": inventory["scoring_version"],
-        "tag": f"v{version}",
+        "tag": tag,
         "canonical_source": {
             "commit": source_commit,
-            "tree": source_tree,
-            "source_date_epoch": int(source_date_epoch),
+            "tree": _git("rev-parse", "HEAD^{tree}"),
+            "source_date_epoch": int(_git("show", "-s", "--format=%ct", "HEAD")),
         },
-        "artifacts": artifacts,
-        "verified_payload": payload,
-        "task_inventory": "task-inventory.json",
+        "inventory": inventory,
     }
-    metadata_dir.mkdir(parents=True, exist_ok=True)
-    _write_json(metadata_dir / "manifest.json", manifest)
-    _write_json(metadata_dir / "task-inventory.json", inventory)
-    (metadata_dir / "SHA256SUMS").write_text(
-        "".join(f"{item['sha256']}  {item['filename']}\n" for item in artifacts),
-        encoding="ascii",
+
+
+def _validate_release_tag(tag: str, source_commit: str) -> None:
+    if not tag or tag.startswith("-"):
+        raise ValueError("An explicit Git release tag is required")
+    try:
+        _git("check-ref-format", f"refs/tags/{tag}")
+    except subprocess.CalledProcessError as exc:
+        raise ValueError(f"Invalid release tag: {tag!r}") from exc
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}"],
+        cwd=ROOT, capture_output=True, text=True, check=False,
     )
+    if result.returncode == 0 and result.stdout.strip() != source_commit:
+        raise RuntimeError(f"Release tag {tag!r} already points to another commit")
+
+
+def _require_new_destinations(output_dir: Path, metadata_dir: Path, version: str) -> None:
+    output_dir, metadata_dir = output_dir.resolve(), metadata_dir.resolve()
+    if output_dir == metadata_dir or output_dir in metadata_dir.parents or metadata_dir in output_dir.parents:
+        raise ValueError("Artifact and metadata directories must not overlap")
+    if metadata_dir.exists() or metadata_dir.is_symlink():
+        raise FileExistsError(f"Refusing to replace release metadata: {metadata_dir}")
+    if output_dir.exists() and not output_dir.is_dir():
+        raise FileExistsError(f"Artifact destination is not a directory: {output_dir}")
+    for name in (f"verifier_grounded_benchmark-{version}-py3-none-any.whl",
+                 f"verifier_grounded_benchmark-{version}.tar.gz"):
+        destination = output_dir / name
+        if destination.exists() or destination.is_symlink():
+            raise FileExistsError(f"Refusing to overwrite release artifact: {destination}")
+
+
+def _verify_artifact_versions(wheel_path: Path, sdist_path: Path, version: str) -> None:
+    name, wheel_version, _build, _tags = parse_wheel_filename(wheel_path.name)
+    if name != canonicalize_name(PACKAGE_NAME) or str(wheel_version) != version:
+        raise ValueError("Wheel filename does not match the release identity")
+    with zipfile.ZipFile(wheel_path) as archive:
+        metadata = [item for item in archive.namelist() if item.endswith(".dist-info/METADATA")]
+        if len(metadata) != 1:
+            raise ValueError("Wheel must contain exactly one distribution METADATA")
+        wheel_info = BytesParser().parsebytes(archive.read(metadata[0]))
+    with tarfile.open(sdist_path, "r:gz") as archive:
+        metadata = [item for item in archive.getmembers()
+                    if len(Path(item.name).parts) == 2 and Path(item.name).name == "PKG-INFO"]
+        if len(metadata) != 1:
+            raise ValueError("Sdist must contain one root PKG-INFO")
+        handle = archive.extractfile(metadata[0])
+        if handle is None:
+            raise ValueError("Unable to read sdist PKG-INFO")
+        sdist_info = BytesParser().parsebytes(handle.read())
+    for info in (wheel_info, sdist_info):
+        if info.get("Version") != version or canonicalize_name(info.get("Name", "")) != canonicalize_name(PACKAGE_NAME):
+            raise ValueError("Artifact metadata does not match the release identity")
+
+
+def build_release(*, output_dir: Path, metadata_dir: Path, tag: str) -> dict[str, Any]:
+    """Stage and verify a release, then create new artifacts without overwriting history."""
+    state = release_preflight(output_dir=output_dir, metadata_dir=metadata_dir, tag=tag)
+    version, inventory = state["version"], state["inventory"]
+    env = os.environ.copy()
+    env["SOURCE_DATE_EPOCH"] = str(state["canonical_source"]["source_date_epoch"])
+    with tempfile.TemporaryDirectory(prefix="vgb-release-") as temporary:
+        staging = Path(temporary)
+        subprocess.run(
+            ["uv", "build", "--wheel", "--sdist", "--out-dir", str(staging)],
+            cwd=ROOT, env=env, check=True,
+        )
+        wheel_path = staging / f"verifier_grounded_benchmark-{version}-py3-none-any.whl"
+        sdist_path = staging / f"verifier_grounded_benchmark-{version}.tar.gz"
+        if not wheel_path.is_file() or not sdist_path.is_file():
+            raise FileNotFoundError("Expected canonical wheel and sdist were not both created")
+        _verify_artifact_versions(wheel_path, sdist_path, version)
+        required = set()
+        for track in FORMAL_TRACK_PATHS:
+            folder = f"src/verifier_grounded_benchmark/task/packs/{track}"
+            required.update(f"{folder}/{name}" for name in ("tasks.yaml", "scoring.yaml"))
+            if track.startswith("open_generation_"):
+                required.update(f"{folder}/{name}" for name in ("verifier_specs.yaml", "sample_answers.jsonl"))
+        payload = verify_archive_payloads(wheel_path, sdist_path, additional_required=required)
+        artifacts = [
+            {"filename": path.name, "sha256": sha256_file(path), "size": path.stat().st_size}
+            for path in (wheel_path, sdist_path)
+        ]
+        manifest = {
+            "schema_version": 1, "package": PACKAGE_NAME, "version": version,
+            "result_schema_version": "3", "scoring_version": inventory["scoring_version"],
+            "tag": tag, "canonical_source": state["canonical_source"],
+            "artifacts": artifacts, "verified_payload": payload,
+            "task_inventory": "task-inventory.json",
+        }
+        staged_metadata = staging / "metadata"
+        staged_metadata.mkdir()
+        _write_json(staged_metadata / "manifest.json", manifest)
+        _write_json(staged_metadata / "task-inventory.json", inventory)
+        (staged_metadata / "SHA256SUMS").write_text(
+            "".join(f"{item['sha256']}  {item['filename']}\n" for item in artifacts), encoding="ascii",
+        )
+        _require_clean_worktree()
+        if _git("rev-parse", "HEAD") != state["canonical_source"]["commit"]:
+            raise RuntimeError("Source commit changed while building the release")
+        _validate_release_tag(tag, state["canonical_source"]["commit"])
+        _require_new_destinations(output_dir, metadata_dir, version)
+        _publish_new_files((wheel_path, sdist_path), staged_metadata, output_dir, metadata_dir)
     return manifest
+
+
+def _publish_new_files(artifacts, staged_metadata: Path, output_dir: Path, metadata_dir: Path) -> None:
+    """Create files exclusively; roll back only files this invocation created on failure."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    metadata_dir.parent.mkdir(parents=True, exist_ok=True)
+    metadata_dir.mkdir(exist_ok=False)
+    created: list[Path] = []
+    try:
+        pairs = [(source, output_dir / source.name) for source in artifacts]
+        pairs.extend((source, metadata_dir / source.name) for source in staged_metadata.iterdir())
+        for source, destination in pairs:
+            with destination.open("xb") as output:
+                created.append(destination)
+                with source.open("rb") as input_file:
+                    shutil.copyfileobj(input_file, output)
+    except Exception:
+        for path in reversed(created):
+            path.unlink()
+        if not any(metadata_dir.iterdir()):
+            metadata_dir.rmdir()
+        raise
 
 
 def sha256_file(path: Path) -> str:
@@ -292,18 +393,23 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build and attest a verifier-grounded release.")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     parser.add_argument("--metadata-dir", type=Path)
+    parser.add_argument("--tag", required=True, help="Explicit Git release tag; independent of the Python version.")
+    parser.add_argument("--check", action="store_true", help="Validate source, versions, tag and paths without building.")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    version = project_version()
-    metadata_dir = args.metadata_dir or ROOT / "releases" / f"v{version}"
-    manifest = build_release(
+    metadata_dir = args.metadata_dir or ROOT / "releases" / args.tag
+    operation = release_preflight if args.check else build_release
+    result = operation(
         output_dir=args.output_dir.expanduser().resolve(),
-        metadata_dir=metadata_dir.expanduser().resolve(),
+        metadata_dir=metadata_dir.expanduser().resolve(), tag=args.tag,
     )
-    print(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
+    if args.check:
+        result = {key: value for key, value in result.items() if key != "inventory"}
+        result["status"] = "ready_to_build"
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
 
 
 if __name__ == "__main__":

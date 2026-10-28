@@ -234,7 +234,7 @@ def test_formal_release_uses_individual_scoring_profiles_without_provenance(trac
     directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
     formal = yaml.safe_load((directory / "scoring.yaml").read_text())
     assert formal["scoring_config"]["scoring_status"] == "formal"
-    assert formal["scoring_config"]["task_pack_version"] == "0.10.0"
+    assert formal["scoring_config"]["task_pack_version"] == "1.0.0rc1"
     assert "family_policy" not in formal["scoring_config"]
     assert formal["scoring_profiles"]
     assert all("provenance" not in profile for profile in formal["scoring_profiles"].values())

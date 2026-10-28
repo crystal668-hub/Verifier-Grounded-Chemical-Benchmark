@@ -1,7 +1,7 @@
 schema_version: 1
 scoring_config:
   task_pack_id: open_generation_rdkit
-  task_pack_version: 0.10.0
+  task_pack_version: 1.0.0rc1
   scoring_version: linear_goal_v2
   scoring_status: formal
 scoring_profiles:

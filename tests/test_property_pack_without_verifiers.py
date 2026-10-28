@@ -24,7 +24,7 @@ def fail_verifier(*args, **kwargs):
 @pytest.mark.parametrize("name", PROPERTY_TRACKS)
 def test_property_track_loads_and_scores_all_gold_without_verifiers(name, monkeypatch):
     definition = TrackDefinition(
-        name=name, version="0.10.0",
+        name=name, version="1.0.0rc1",
         task_pack_path="tasks.yaml", scoring_config_path="scoring.yaml", resource_pack=name,
     )
     assert definition.verifier_specs_path is None

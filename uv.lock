@@ -2603,7 +2603,7 @@ wheels = [
 
 [[package]]
 name = "verifier-grounded-benchmark"
-version = "0.10.0"
+version = "1.0.0rc1"
 source = { editable = "." }
 dependencies = [
     { name = "admet-ai" },
@@ -2635,6 +2635,7 @@ torchani = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "packaging" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -2681,6 +2682,7 @@ provides-extras = ["future-backends", "materials", "torchani", "mace"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "packaging", specifier = "==26.2" },
     { name = "pytest", specifier = "==8.4.2" },
     { name = "ruff", specifier = "==0.16.0" },
 ]

@@ -88,14 +88,14 @@ def builtin_definitions() -> list[TrackDefinition]:
     """Return the four formal tracks, separating verifier-based and gold-based tasks."""
     return [
         TrackDefinition(
-            name="open_generation_rdkit", version="0.10.0",
+            name="open_generation_rdkit", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
             tags=("small_molecule", "rdkit", "descriptor"), resource_pack="open_generation_rdkit",
         ),
         TrackDefinition(
-            name="open_generation_xtb", version="0.10.0",
+            name="open_generation_xtb", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path="verifier_specs.yaml",
             scoring_config_path="scoring.yaml",
             sample_answers_path="sample_answers.jsonl",
@@ -103,7 +103,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             requirements=("xTB executable; CREST 2.12 for conformer-search tasks",), resource_pack="open_generation_xtb",
         ),
         TrackDefinition(
-            name="property_calculation_advanced", version="0.10.0",
+            name="property_calculation_advanced", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
@@ -111,7 +111,7 @@ def builtin_definitions() -> list[TrackDefinition]:
             resource_pack="property_calculation_advanced",
         ),
         TrackDefinition(
-            name="property_calculation_basic", version="0.10.0",
+            name="property_calculation_basic", version="1.0.0rc1",
             task_pack_path="tasks.yaml", verifier_specs_path=None,
             scoring_config_path="scoring.yaml",
             sample_answers_path=None,
