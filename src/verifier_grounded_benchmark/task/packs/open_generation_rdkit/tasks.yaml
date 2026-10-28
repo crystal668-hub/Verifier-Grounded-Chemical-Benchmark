@@ -6,7 +6,7 @@ tasks:
 - task_id: rdkit_001_qed_max
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -34,7 +34,7 @@ tasks:
 - task_id: rdkit_002_sa_min
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -62,7 +62,7 @@ tasks:
 - task_id: rdkit_003_logp_window
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -90,7 +90,7 @@ tasks:
 - task_id: rdkit_004_tpsa_window
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -118,7 +118,7 @@ tasks:
 - task_id: rdkit_005_hba_window
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -146,7 +146,7 @@ tasks:
 - task_id: rdkit_006_hbd_window
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -174,7 +174,7 @@ tasks:
 - task_id: rdkit_007_fsp3_max
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -202,7 +202,7 @@ tasks:
 - task_id: rdkit_008_qed_sa
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -232,7 +232,7 @@ tasks:
 - task_id: rdkit_009_logp_tpsa
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -262,7 +262,7 @@ tasks:
 - task_id: rdkit_010_hba_hbd
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: basic
   capability_tags:
   - open_generation
   - property_satisfaction
@@ -292,7 +292,7 @@ tasks:
 - task_id: rdkit_011_logp_target
   version: 1
   object_type: small_molecule
-  difficulty: simple
+  difficulty: advanced
   formal_track: true
   capability_tags:
   - open_generation
@@ -321,7 +321,7 @@ tasks:
 - task_id: rdkit_012_sa_logp_target
   version: 1
   object_type: small_molecule
-  difficulty: expert
+  difficulty: advanced
   formal_track: true
   capability_tags:
   - open_generation
@@ -350,7 +350,7 @@ tasks:
 - task_id: rdkit_013_chain_end_to_end_max
   version: 2
   object_type: small_molecule
-  difficulty: expert
+  difficulty: advanced
   formal_track: true
   capability_tags:
   - open_generation
@@ -379,7 +379,7 @@ tasks:
 - task_id: rdkit_014_caffeine_similarity_max
   version: 1
   object_type: small_molecule
-  difficulty: expert
+  difficulty: advanced
   formal_track: true
   capability_tags:
   - open_generation
