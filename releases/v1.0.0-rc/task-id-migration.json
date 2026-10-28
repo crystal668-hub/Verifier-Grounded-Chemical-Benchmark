@@ -1,0 +1,63 @@
+{
+  "source_commit": "0f4e84cdfb30ca3a664e6e2ce21ae087cfd46be4",
+  "date": "2026-10-28",
+  "retired_task_ids": [
+    "property_calculation_advanced_004_ir_top2_frequencies",
+    "rdkit_002_sa_min",
+    "rdkit_005_hba_window",
+    "rdkit_006_hbd_window",
+    "rdkit_007_fsp3_max"
+  ],
+  "id_mapping": {
+    "rdkit_001_qed_max": "rdkit_001_qed_max",
+    "rdkit_003_logp_window": "rdkit_002_logp_window",
+    "rdkit_004_tpsa_window": "rdkit_003_tpsa_window",
+    "rdkit_008_qed_sa": "rdkit_004_qed_sa",
+    "rdkit_009_logp_tpsa": "rdkit_005_logp_tpsa",
+    "rdkit_010_hba_hbd": "rdkit_006_hba_hbd",
+    "rdkit_011_logp_target": "rdkit_007_logp_target",
+    "rdkit_012_sa_logp_target": "rdkit_008_sa_logp_target",
+    "rdkit_013_chain_end_to_end_max": "rdkit_009_chain_end_to_end_max",
+    "rdkit_014_caffeine_similarity_max": "rdkit_010_caffeine_similarity_max",
+    "property_calculation_advanced_001_free_energy": "property_calculation_advanced_001_free_energy",
+    "property_calculation_advanced_002_crystal_phase": "property_calculation_advanced_002_crystal_phase",
+    "property_calculation_advanced_003_hbond_count": "property_calculation_advanced_003_hbond_count",
+    "property_calculation_advanced_005_crystal_density": "property_calculation_advanced_004_crystal_density",
+    "property_calculation_advanced_006_cocrystal_ratio": "property_calculation_advanced_005_cocrystal_ratio",
+    "property_calculation_advanced_007_polymorph_free_energy_crossover": "property_calculation_advanced_006_polymorph_free_energy_crossover",
+    "property_calculation_advanced_008_interaction_binding_energy": "property_calculation_advanced_007_interaction_binding_energy",
+    "property_calculation_advanced_009_homo_lumo_gap": "property_calculation_advanced_008_homo_lumo_gap",
+    "property_calculation_advanced_010_hbond_distances": "property_calculation_advanced_009_hbond_distances",
+    "property_calculation_advanced_011_accessible_pore_volume_ratio": "property_calculation_advanced_010_accessible_pore_volume_ratio",
+    "property_calculation_advanced_012_carboxyl_hydrogen_distance": "property_calculation_advanced_011_carboxyl_hydrogen_distance",
+    "property_calculation_advanced_013_halogen_bond_energy": "property_calculation_advanced_012_halogen_bond_energy",
+    "property_calculation_advanced_014_bay069_pka": "property_calculation_advanced_013_bay069_pka",
+    "property_calculation_advanced_015_formaldehyde_socme": "property_calculation_advanced_014_formaldehyde_socme",
+    "property_calculation_advanced_016_anthracene_isc_rate": "property_calculation_advanced_015_anthracene_isc_rate",
+    "property_calculation_advanced_017_biacetyl_phosphorescence_rate": "property_calculation_advanced_016_biacetyl_phosphorescence_rate",
+    "property_calculation_advanced_018_anthracene_ht_contribution": "property_calculation_advanced_017_anthracene_ht_contribution",
+    "property_calculation_advanced_019_acetophenone_isc_rate": "property_calculation_advanced_018_acetophenone_isc_rate",
+    "property_calculation_advanced_020_azulene_internal_conversion_rate": "property_calculation_advanced_019_azulene_internal_conversion_rate"
+  },
+  "tracks": {
+    "open_generation_rdkit": {
+      "before": 14,
+      "after": 10,
+      "removed_profiles": [
+        "rdkit_fraction_csp3_maximize_0p0_1p0_v2"
+      ],
+      "removed_verifiers": [
+        "rdkit_fraction_csp3_v1"
+      ]
+    },
+    "property_calculation_advanced": {
+      "before": 20,
+      "after": 19,
+      "removed_profiles": [
+        "property_calculation_advanced_ir_frequency_1_numeric_gold_v2",
+        "property_calculation_advanced_ir_frequency_2_numeric_gold_v2"
+      ],
+      "removed_verifiers": []
+    }
+  }
+}

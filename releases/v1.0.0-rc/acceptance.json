@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "status": "accepted_for_local_artifact_delivery",
+  "date": "2026-10-28",
+  "package_version": "1.0.0rc1",
+  "tag": "v1.0.0-rc",
+  "source_commit": "c4a705a06f8e5e7310a8ac40e81b7612caead055",
+  "source_tree": "53bc6992ad1be7d60e0513e858fc6d076ad35399",
+  "scope": {
+    "python_distribution": true,
+    "review_system_changes": false,
+    "remote_publication": false,
+    "public_sample_answers": false,
+    "license_decision": "deferred per owner; not a local-build gate"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "platform": "Darwin",
+    "machine": "arm64"
+  },
+  "gates": {
+    "core_tests": {
+      "passed": 710,
+      "skipped": 15,
+      "warnings": 1,
+      "evidence": "evidence/core-tests.log"
+    },
+    "lint": {
+      "command": ".venv/bin/ruff check src tests scripts",
+      "exit_code": 0
+    },
+    "lock": {
+      "command": "uv lock --check --offline",
+      "exit_code": 0
+    },
+    "frozen_payloads": {
+      "baseline": "f094254a206507ef99fad412434b4aa2886dc96a",
+      "task_scoring_verifier_yaml_only_pack_version_changes": true
+    },
+    "no_public_samples": {
+      "resources_and_optional_api_removed": true,
+      "regression_fixtures_excluded_from_wheel_and_sdist": true,
+      "evidence": "evidence/no-public-samples-tests.log"
+    },
+    "installed_wheel": {
+      "status": "passed",
+      "evidence": "evidence/installed-wheel.json"
+    },
+    "resources_and_scoring": {
+      "status": "passed",
+      "evidence": "evidence/resource-validation.json"
+    },
+    "clean_core_dependencies": {
+      "packages": 65,
+      "dependency_check": "passed",
+      "optional_backends_not_required": true,
+      "evidence": "evidence/clean-core-check.json"
+    },
+    "xtb_regression": {
+      "passed": 9,
+      "total_formal_tasks": 20,
+      "input_source": "explicit development fixture, not distributed",
+      "evidence": "evidence/xtb-regression-inputs.json"
+    },
+    "repeat_build": {
+      "identical": true,
+      "evidence": "evidence/reproducible-build.json"
+    },
+    "tag_binding": {
+      "resolved_commit": "c4a705a06f8e5e7310a8ac40e81b7612caead055",
+      "matches_manifest": true
+    },
+    "historical_v0100": {
+      "artifact_hashes_match_frozen_manifest": true,
+      "tracked_history_unmodified": true
+    }
+  },
+  "unverified": [
+    "11 formal xTB tasks not covered by the nine development regression inputs",
+    "Independent scientific recalculation of property gold values",
+    "Repeated CREST-run numerical stability and cross-platform equivalence",
+    "7 optional ML/Docker live tests and 8 private calibration input tests skipped",
+    "Code license and third-party resource redistribution authorization; public publication is out of scope"
+  ],
+  "historical_observations": "evidence/legacy-artifact-observations.json"
+}

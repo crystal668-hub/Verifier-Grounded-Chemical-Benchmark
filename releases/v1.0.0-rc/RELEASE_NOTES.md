@@ -1,0 +1,118 @@
+# Verifier-Grounded Benchmark v1.0.0-rc
+
+Date: 2026-10-28. Python distribution version: **1.0.0rc1**.
+Git tag and release-material directory: **v1.0.0-rc**.
+
+## Delivery scope
+
+The owner approved local wheel/sdist artifacts, release materials and a Git tag.
+This release does not upload to PyPI/GitHub or deploy a service. Code licensing
+and task/resource redistribution authorization are deferred to a later public
+release; no permission or open-source license is inferred from these artifacts.
+`review_system/` remains a development-only tool and is not modified or packaged.
+
+## Changes since the historical v0.10.0 release
+
+| Area | RC behavior |
+| --- | --- |
+| Inventory | 100 tasks: RDKit 10, xTB 20, Basic 51, Advanced 19; previously 105. |
+| Retirement | Remove four standalone RDKit tasks and the Advanced IR-frequency task; preserve retained task order and frozen chemistry/scoring definitions. |
+| IDs | The migration covers 29 retained RDKit/Advanced tasks, with 25 changed full IDs. Match the complete old ID, never only its number. |
+| Difficulty | Only `basic` and `advanced` are accepted; old custom packs must migrate their labels. |
+| Public samples | All four tracks provide no public sample answers. Track.sample_answers() and TrackDefinition.sample_answers_path are removed. Development regression inputs are excluded from wheel/sdist. |
+| CLI failures | Verifier/evaluator error rows now produce exit 2 while preserving the report; normal scored zeros still succeed. |
+| Numeric failures | Overlarge integers, nonfinite values and booleans score zero without dropping the remaining batch. |
+| Configuration | Separate scoring files must match task-pack ID and version; duplicate YAML keys are rejected with file/line diagnostics. |
+| Versioning | Project, formal registry, tasks/scoring and lockfile are aligned at `1.0.0rc1`; schema 3 and `linear_goal_v2` are unchanged. |
+| Construction | The tag is explicit, versions are canonical, mismatched tags and existing destinations are refused, builds are staged and checked before creating new files. |
+| Attestation | Source commit/tree, task/scoring/verifier resource hashes, task IDs, profile definitions and archive hashes identify the build. |
+| Documentation | Installable package readme, root entrypoint, prompt export and caller-provided-answer walkthrough, result/exit-code contract and grouped-scoring correction. |
+| Environment | Core checks no longer require optional ASE/materials packages; optional checks are explicit. |
+| Historical tooling | The frozen 0.9.2 tolerance-analysis adapter now labels its reconstructed tasks with their historical version; raw historical configurations are unchanged. |
+
+## Retired tasks and migration
+
+- `rdkit_002_sa_min`
+- `rdkit_005_hba_window`
+- `rdkit_006_hbd_window`
+- `rdkit_007_fsp3_max`
+- `property_calculation_advanced_004_ir_top2_frequencies`
+
+The complete mapping and rationale are in
+[the retirement record](../../docs/research/2026-10-28-task-retirement.md).
+The local release includes `task-id-migration.json`, copied from the maintenance
+manifest. Retirement source backups remain outside wheel/sdist. Removed IDs
+do not redirect to unrelated new tasks. Historical v0.10.0 artifacts, tags and
+attestations are retained. Whole-suite scores for 105 and 100 tasks are not the
+same evaluation population.
+
+## Scoring and interface clarification
+
+Advanced 002 already uses two equal-weight groups: numeric energy and the pair
+of phase answers. Both phases must be correct for the phase group to score 1.
+Field scores `[1, 1, 0]` produce `(1 + 0) / 2 = 0.5`; the previous field-mean
+documentation was wrong. This RC corrects the documentation, not the formula.
+
+Public task views and scoring reports do not return gold or scoring profiles.
+Explicit gold access is `track.task(task_id, include_gold=True)`. Property-only
+packs require tasks.yaml and scoring.yaml, with no empty verifier placeholder.
+Individual task versions, gold, thresholds and verifier protocols are not
+changed by the RC engineering fixes. The package includes public scoring data
+for offline evaluation; it is not a hidden-answer server-side benchmark.
+
+## Acceptance and reproducibility
+
+The [implementation plan](../../docs/research/2026-10-28-v1.0.0-rc-implementation-plan.md)
+defines the gates. Final executed results are recorded in
+`releases/v1.0.0-rc/acceptance.json` and its accompanying validation report.
+`manifest.json` identifies the exact clean source commit; release evidence
+generated after construction is committed separately and does not change the
+source tag. `SHA256SUMS` covers wheel/sdist; release materials have a separate
+checksum list.
+
+Acceptance covers core tests/lint/lock consistency, strict config and error
+regressions, wheel/sdist parity and exclusions, clean installation outside the
+checkout, 70 property gold round trips, 10 RDKit regression inputs and explicit live
+xTB/CREST regression inputs. It must record actual counts, commands, exit codes and
+environment versions rather than assume success.
+
+Known validation boundaries:
+
+- Property gold round trips validate the evaluator against its configuration;
+  they are not independent recalculations of the scientific gold values.
+- Nine development xTB regression inputs do not cover all twenty formal tasks. The remaining
+  eleven tasks and repeated CREST-run stability are not declared validated
+  without separate executed evidence.
+- Optional ML/Docker backend live tests and private-calibration tests may skip;
+  those outcomes must be reported explicitly.
+- The installation gate covers the tested Python 3.12/macOS environment; it
+  does not establish cross-platform numerical equivalence.
+- Licensing, external resource rights and any future public redistribution
+  require separate owner decisions.
+
+## Local release procedure
+
+From an accepted, clean source commit with the development dependencies installed:
+
+```bash
+uv run --no-sync python scripts/release/build_release.py --tag v1.0.0-rc --check
+uv run --no-sync python scripts/release/build_release.py --tag v1.0.0-rc
+```
+
+The builder does not push, upload or move tags. After validating the exact
+artifacts, create the local annotated tag at `manifest.canonical_source.commit`
+and verify its resolved commit. Never force-move a conflicting historical tag.
+Further corrected candidates require an explicit new version and destination.
+
+## Final local acceptance result
+
+Accepted source: c4a705a06f8e5e7310a8ac40e81b7612caead055. The local annotated v1.0.0-rc tag maps to Python
+1.0.0rc1. **710 tests passed, 15 skipped**. Exact-wheel installation,
+no-public-sample archive/API checks, caller-owned answer workflow, evaluator
+regressions and repeat-build hashes passed. See [validation report](VALIDATION.md),
+[acceptance record](acceptance.json) and the evidence directory. The full mapping
+is [task-id-migration.json](task-id-migration.json).
+
+The eleven xTB tasks outside regression inputs, independent gold recalculation,
+repeat-run stability and licensing are not declared validated. Unrelated old
+archive discrepancies are recorded in the validation report.

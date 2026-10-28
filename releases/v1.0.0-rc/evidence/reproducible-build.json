@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "source_commit": "c4a705a06f8e5e7310a8ac40e81b7612caead055",
+  "source_date_epoch": 1793190767,
+  "artifacts": [
+    {
+      "filename": "verifier_grounded_benchmark-1.0.0rc1-py3-none-any.whl",
+      "sha256": "51e39ef4a50f47c5a5686042d0ef8924c0c44c752f43e15bb3199b07552dd56d",
+      "identical": true
+    },
+    {
+      "filename": "verifier_grounded_benchmark-1.0.0rc1.tar.gz",
+      "sha256": "a48782e260fc88b325c3bbb1b3e06aba3435b1e2ee99ec7997933fdbc72b4444",
+      "identical": true
+    }
+  ]
+}

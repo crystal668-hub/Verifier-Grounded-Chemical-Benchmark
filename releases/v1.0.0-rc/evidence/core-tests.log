@@ -1,0 +1,43 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 59%]
+........................................................................ [ 69%]
+................................sssss............................ss..... [ 79%]
+..............ssssss...................ss............................... [ 89%]
+........................................................................ [ 99%]
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_property_calculation_tasks.py::test_cif_inputs_parse_to_expected_structures
+  /Users/xutao/verifier-grounded-benchmark/.venv/lib/python3.12/site-packages/pymatgen/core/structure.py:3172: UserWarning: Issues encountered while parsing CIF: Skipping relative stoichiometry check because CIF does not contain formula keys.
+    struct = parser.parse_structures(primitive=primitive)[0]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================= slowest 15 durations =============================
+9.74s call     tests/test_installed_wheel.py::test_installed_wheel_vgb_score_rdkit_smoke
+6.02s call     tests/test_admet_ai_env_script.py::test_check_admet_ai_env_outputs_json
+5.84s call     tests/test_public_api.py::test_track_evaluate_answers_uses_v3_result_and_scoring_contract
+5.08s call     tests/test_admet_ai_task_scripts.py::test_admet_ai_herg_script_outputs_standard_json_result
+5.07s call     tests/test_public_api.py::test_track_evaluate_answers_reports_complete_benchmark_score
+3.83s call     tests/test_matgl_env_script.py::test_check_matgl_env_reports_json
+2.28s call     tests/test_xtb_task_scripts.py::test_all_xtb_property_scripts_reject_mismatched_property
+1.26s call     tests/test_packaging.py::test_distribution_artifacts_exclude_private_and_removed_files
+1.25s call     tests/test_property_tolerance_policy.py::test_export_needs_no_answer_workbooks_and_loads_as_shadow_scoring
+0.95s call     tests/test_external_dependencies.py::test_preflight_connects_named_conda_environment
+0.69s call     tests/test_release_source.py::test_package_track_versions_and_inventory_are_release_aligned
+0.62s call     tests/test_matgl_properties_backend.py::test_matgl_bandgap_passes_configured_fidelity_state_attr
+0.61s call     tests/test_public_api.py::test_track_evaluate_answers_coverage_detects_duplicate_and_unknown_task_ids
+0.60s call     tests/test_public_api.py::test_track_evaluate_answers_reports_partial_coverage
+0.58s call     tests/test_mace_mp_properties_backend.py::test_mace_scores_fake_energy_per_atom
+=========================== short test summary info ============================
+SKIPPED [2] tests/test_soltrannet_molgpka_docker_smoke.py:28: set VGB_RUN_DOCKER_SMOKE=1 to run live Docker model smoke tests
+SKIPPED [1] tests/test_soltrannet_molgpka_docker_smoke.py:35: set VGB_RUN_DOCKER_SMOKE=1 to run live Docker model smoke tests
+SKIPPED [1] tests/test_soltrannet_molgpka_docker_smoke.py:59: set VGB_RUN_DOCKER_SMOKE=1 to run live Docker model smoke tests
+SKIPPED [1] tests/test_soltrannet_molgpka_docker_smoke.py:66: set VGB_RUN_DOCKER_SMOKE=1 to run live Docker model smoke tests
+SKIPPED [1] tests/test_torchani_mace_live_smoke.py:15: set VGB_RUN_MLIP_SMOKE=1 to run TorchANI/MACE live model smoke tests
+SKIPPED [1] tests/test_torchani_mace_live_smoke.py:29: set VGB_RUN_MLIP_SMOKE=1 to run TorchANI/MACE live model smoke tests
+SKIPPED [6] tests/test_xtb_calibration_inputs.py:31: private legacy calibration answers are not tracked
+SKIPPED [2] tests/test_xtb_expert_calibration_inputs.py:38: private expert calibration answers are not tracked
+710 passed, 15 skipped, 1 warning in 70.28s (0:01:10)

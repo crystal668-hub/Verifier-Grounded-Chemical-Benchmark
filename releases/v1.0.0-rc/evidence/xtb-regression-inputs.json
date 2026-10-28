@@ -1,0 +1,42 @@
+{
+  "failing_rows": [],
+  "failure_type": null,
+  "min_sample_score": 0.6,
+  "status": "ok",
+  "summary": {
+    "benchmark_score": null,
+    "coverage": {
+      "complete": false,
+      "duplicate_task_ids": [],
+      "missing_task_ids": [
+        "xtb_008_lumo_min",
+        "xtb_009_polarizability_dipole_opt",
+        "xtb_010_solvation_selectivity_alpb",
+        "xtb_011_electrophilicity_max",
+        "xtb_012_fukui_carbon_site",
+        "xtb_013_hessian_thermo_stability",
+        "xtb_014_formula_dipole_min",
+        "xtb_015_two_fluorine_gap_min",
+        "xtb_016_c10_f2_gap_min",
+        "xtb_017_roy_singlepoint_energy_min",
+        "xtb_018_ritonavir_optimized_energy_min"
+      ],
+      "num_rows_submitted": 9,
+      "num_task_ids_submitted": 9,
+      "num_tasks_answered": 9,
+      "num_tasks_total": 20,
+      "unknown_task_ids": []
+    },
+    "evaluated_mean_score": 0.9623385350115038,
+    "max_score": 1.0,
+    "mean_score": 0.9623385350115038,
+    "min_score": 0.6677939128704993,
+    "num_answers": 9,
+    "num_candidate_rejected": 0,
+    "num_error": 0,
+    "num_ok": 9,
+    "num_scored": 9,
+    "num_submission_rejected": 0
+  },
+  "xtb_executable": "/opt/homebrew/bin/xtb"
+}

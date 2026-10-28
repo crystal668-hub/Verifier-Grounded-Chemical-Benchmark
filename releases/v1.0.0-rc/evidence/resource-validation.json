@@ -1,0 +1,16 @@
+{
+  "status": "passed",
+  "input_objects": {
+    "cif": 8,
+    "molecular_dimer_reference": 1,
+    "smiles": 52,
+    "xyz": 1,
+    "smiles_pair": 6,
+    "molecule_description": 1
+  },
+  "numeric_field_upper_boundary_triplets": 69,
+  "cif_warnings": [
+    "Issues encountered while parsing CIF: Skipping relative stoichiometry check because CIF does not contain formula keys."
+  ],
+  "independent_gold_recalculation": false
+}

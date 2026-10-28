@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "canonical_smiles": null,
+      "constraint_scores": [],
+      "failure_scope": "infrastructure",
+      "failure_type": "verifier_timeout",
+      "message": "verifier timed out after 0.001 seconds",
+      "properties": {},
+      "schema_version": 3,
+      "score": null,
+      "status": "error",
+      "task_id": "rdkit_001_qed_max",
+      "versions": {
+        "package": "1.0.0rc1",
+        "result_schema": "3",
+        "scoring": "linear_goal_v2",
+        "task_pack": "1.0.0rc1",
+        "verifiers": {}
+      }
+    }
+  ],
+  "summary": {
+    "benchmark_score": null,
+    "coverage": {
+      "complete": true,
+      "duplicate_task_ids": [],
+      "missing_task_ids": [],
+      "num_rows_submitted": 1,
+      "num_task_ids_submitted": 1,
+      "num_tasks_answered": 1,
+      "num_tasks_total": 1,
+      "unknown_task_ids": []
+    },
+    "evaluated_mean_score": null,
+    "max_score": null,
+    "mean_score": null,
+    "min_score": null,
+    "num_answers": 1,
+    "num_candidate_rejected": 0,
+    "num_error": 1,
+    "num_ok": 0,
+    "num_scored": 0,
+    "num_submission_rejected": 0
+  }
+}

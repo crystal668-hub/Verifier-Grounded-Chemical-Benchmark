@@ -1,0 +1,148 @@
+{
+  "status": "passed",
+  "source_commit": "c4a705a06f8e5e7310a8ac40e81b7612caead055",
+  "python": "3.12.13",
+  "module": "/tmp/vgb-rc-clean-core-20261028/lib/python3.12/site-packages/verifier_grounded_benchmark/__init__.py",
+  "package_version": "1.0.0rc1",
+  "tracks": {
+    "open_generation_rdkit": {
+      "task_count": 10,
+      "evaluation": {
+        "benchmark_score": 0.7402806724388251,
+        "coverage": {
+          "complete": true,
+          "duplicate_task_ids": [],
+          "missing_task_ids": [],
+          "num_rows_submitted": 10,
+          "num_task_ids_submitted": 10,
+          "num_tasks_answered": 10,
+          "num_tasks_total": 10,
+          "unknown_task_ids": []
+        },
+        "evaluated_mean_score": 0.7402806724388251,
+        "max_score": 1.0,
+        "mean_score": 0.7402806724388251,
+        "min_score": 0.0005511926297420144,
+        "num_answers": 10,
+        "num_candidate_rejected": 0,
+        "num_error": 0,
+        "num_ok": 10,
+        "num_scored": 10,
+        "num_submission_rejected": 0
+      }
+    },
+    "open_generation_xtb": {
+      "task_count": 20
+    },
+    "property_calculation_advanced": {
+      "task_count": 19,
+      "evaluation": {
+        "benchmark_score": 1.0,
+        "coverage": {
+          "complete": true,
+          "duplicate_task_ids": [],
+          "missing_task_ids": [],
+          "num_rows_submitted": 19,
+          "num_task_ids_submitted": 19,
+          "num_tasks_answered": 19,
+          "num_tasks_total": 19,
+          "unknown_task_ids": []
+        },
+        "evaluated_mean_score": 1.0,
+        "max_score": 1.0,
+        "mean_score": 1.0,
+        "min_score": 1.0,
+        "num_answers": 19,
+        "num_candidate_rejected": 0,
+        "num_error": 0,
+        "num_ok": 19,
+        "num_scored": 19,
+        "num_submission_rejected": 0
+      }
+    },
+    "property_calculation_basic": {
+      "task_count": 51,
+      "evaluation": {
+        "benchmark_score": 1.0,
+        "coverage": {
+          "complete": true,
+          "duplicate_task_ids": [],
+          "missing_task_ids": [],
+          "num_rows_submitted": 51,
+          "num_task_ids_submitted": 51,
+          "num_tasks_answered": 51,
+          "num_tasks_total": 51,
+          "unknown_task_ids": []
+        },
+        "evaluated_mean_score": 1.0,
+        "max_score": 1.0,
+        "mean_score": 1.0,
+        "min_score": 1.0,
+        "num_answers": 51,
+        "num_candidate_rejected": 0,
+        "num_error": 0,
+        "num_ok": 51,
+        "num_scored": 51,
+        "num_submission_rejected": 0
+      }
+    }
+  },
+  "documented_quickstart": "passed",
+  "overflow_batch": {
+    "rows": 51,
+    "scores": "first zero; other 50 full",
+    "exit_code": 0
+  },
+  "error_exit_regressions": "missing module and timeout return 2 with retained reports",
+  "grouped_scoring_example": 0.5,
+  "installed_xtb_smoke": {
+    "task_id": "xtb_001_gap_window",
+    "score": 1.0
+  },
+  "archive_metadata_and_exclusions": "passed",
+  "public_sample_resources_and_api": "absent across all four tracks",
+  "regression_inputs": "caller supplied from source-only fixtures; absent from wheel/sdist",
+  "commands": [
+    {
+      "name": "property_calculation_basic",
+      "exit_code": 0
+    },
+    {
+      "name": "property_calculation_advanced",
+      "exit_code": 0
+    },
+    {
+      "name": "open_generation_rdkit",
+      "exit_code": 0
+    },
+    {
+      "name": "quickstart",
+      "exit_code": 0
+    },
+    {
+      "name": "huge-int",
+      "exit_code": 0
+    },
+    {
+      "name": "incomplete",
+      "exit_code": 2
+    },
+    {
+      "name": "missing-module",
+      "exit_code": 2
+    },
+    {
+      "name": "timeout",
+      "exit_code": 2
+    },
+    {
+      "name": "xtb-installed-smoke",
+      "exit_code": 0
+    }
+  ],
+  "versions": {
+    "rdkit": "2026.3.2",
+    "PyYAML": "6.0.3",
+    "admet-ai": "2.0.1"
+  }
+}
