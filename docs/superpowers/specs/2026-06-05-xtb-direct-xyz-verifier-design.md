@@ -1,5 +1,9 @@
 # xTB 直接 XYZ Verifier 首版设计方案
 
+> 历史分级说明（2026-10-28）：本文的旧难度标签、分布及调整建议已失效，
+> 仅保留为历史记录。当前任务统一使用 basic / advanced，具体映射以
+> [标准任务难度等级](../../design/task-difficulty-levels.md)及正式 tasks.yaml 为准；不要复用本文的旧分级示例。
+
 ## 背景
 
 这一轮 xTB verifier 接入应围绕“模型直接输出 XYZ 分子三维结构”设计。模型给出的最终答案不是 SMILES，也不是 CIF/SDF，而是一个带原子坐标的 XYZ block；verifier 直接解析这份 XYZ，做基础几何和化学域检查，然后调用本地 xTB 计算可验证的量子化学性质。

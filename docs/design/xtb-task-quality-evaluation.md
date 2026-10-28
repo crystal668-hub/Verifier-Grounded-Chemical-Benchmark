@@ -1,8 +1,8 @@
 # xTB 自动化题目质量评估模块设计
 
 > 2026-10-28 更新：正式任务现统一为 basic / advanced 两档，具体分类见
-> [标准任务难度等级](task-difficulty-levels.md)。本文原四档难度及其目标成功率
-> 保留为历史设计，不能直接作为当前两档分类的校准标准。
+> [标准任务难度等级](task-difficulty-levels.md)。本文原四档难度的目标成功率表已移除，新的两档区间
+> 尚待校准，不能沿用旧区间。
 
 日期：2026-06-23
 
@@ -426,14 +426,10 @@ calibration_quality_score = positive_reachability_score
 - `failure_type_counts`；
 - per-panel-member score matrix。
 
-声明难度的目标 success rate：
-
-| Declared difficulty | 目标 success rate |
-| --- | ---: |
-| `basic` | 35%-80% |
-| `intermediate` | 15%-60% |
-| `advanced` | 5%-35% |
-| `expert` | 1%-20% |
+声明难度只使用 basic / advanced，见[标准任务难度等级](task-difficulty-levels.md)。
+两档目标 success rate 尚待基于统一模型面板、工具权限和搜索预算重新校准。
+旧四档成功率表已移除；未配置新的目标区间时，不计算 difficulty_alignment_score，
+也不输出 difficulty_too_easy 或 difficulty_too_hard_for_panel 判定。
 
 判断规则：
 

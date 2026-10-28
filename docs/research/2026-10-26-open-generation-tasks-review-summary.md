@@ -1,5 +1,9 @@
 # Open Generation Tasks Review Report - Executive Summary
 
+> 历史分级说明（2026-10-28）：本文的旧难度标签、分布及调整建议已失效，
+> 仅保留为历史记录。当前任务统一使用 basic / advanced，具体映射以
+> [标准任务难度等级](../design/task-difficulty-levels.md)及正式 tasks.yaml 为准；不要复用本文的旧分级示例。
+
 **日期：** 2026-10-26  
 **审核范围：** `open_generation_rdkit` (14 tasks) 和 `open_generation_xtb` (20 tasks)  
 **总计：** 34 个任务

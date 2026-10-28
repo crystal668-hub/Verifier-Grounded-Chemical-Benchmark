@@ -339,7 +339,7 @@ tasks:
 - task_id: xtb_018_ritonavir_optimized_energy_min
   version: 1
   object_type: small_molecule_3d
-  difficulty: expert
+  difficulty: advanced
   formal_track: false
   capability_tags:
   - open_generation
@@ -394,7 +394,7 @@ tasks:
 - task_id: xtb_019_odd_element_counts_gap_max
   version: 1
   object_type: small_molecule_3d
-  difficulty: expert
+  difficulty: advanced
   formal_track: false
   capability_tags:
   - open_generation
@@ -462,7 +462,7 @@ tasks:
 - task_id: xtb_020_pyrene_substituent_energy_min
   version: 1
   object_type: small_molecule
-  difficulty: expert
+  difficulty: advanced
   formal_track: false
   capability_tags:
   - open_generation

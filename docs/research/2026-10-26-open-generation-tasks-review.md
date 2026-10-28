@@ -1,5 +1,9 @@
 # Open Generation Tasks Review Report
 
+> 历史分级说明（2026-10-28）：本文的旧难度标签、分布及调整建议已失效，
+> 仅保留为历史记录。当前任务统一使用 basic / advanced，具体映射以
+> [标准任务难度等级](../design/task-difficulty-levels.md)及正式 tasks.yaml 为准；不要复用本文的旧分级示例。
+
 **Date:** 2026-10-26  
 **Reviewer:** Claude (AI Assistant)  
 **Scope:** `open_generation_rdkit` and `open_generation_xtb` tracks  

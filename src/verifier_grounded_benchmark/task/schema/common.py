@@ -9,6 +9,7 @@ from typing import Any
 
 from verifier_grounded_benchmark.task.models import LinearGoalSpec
 
+SUPPORTED_DIFFICULTIES = frozenset({"basic", "advanced"})
 SCORING_VERSION = "linear_goal_v1"
 SUPPORTED_SCORING_VERSIONS = frozenset({"linear_goal_v1", "linear_goal_v2"})
 SUPPORTED_SCORING_STATUSES = frozenset({"formal", "shadow_pending_research"})
@@ -39,6 +40,18 @@ def require_string(value: Any, label: str) -> str:
     if not isinstance(value, str) or not value:
         raise ValueError(f"{label} must be a non-empty string")
     return value
+
+
+def validate_task_difficulty(task: Mapping[str, Any]) -> None:
+    """Reject unsupported labels while allowing legacy tasks without metadata."""
+    if "difficulty" not in task:
+        return
+    difficulty = require_string(task["difficulty"], f"task {task.get('task_id')} difficulty")
+    if difficulty not in SUPPORTED_DIFFICULTIES:
+        raise ValueError(
+            f"unsupported difficulty for task {task.get('task_id')}: {difficulty}; "
+            "expected basic or advanced"
+        )
 
 
 def index_unique(items: list[Any], key: str, label: str) -> dict[str, dict[str, Any]]:

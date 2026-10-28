@@ -1,5 +1,9 @@
 # xTB 进阶化学性质题目设计方案
 
+> 历史分级说明（2026-10-28）：本文的旧难度标签、分布及调整建议已失效，
+> 仅保留为历史记录。当前任务统一使用 basic / advanced，具体映射以
+> [标准任务难度等级](../../design/task-difficulty-levels.md)及正式 tasks.yaml 为准；不要复用本文的旧分级示例。
+
 ## 背景
 
 现有 xTB-XYZ track 已经支持模型直接输出单个小分子的 XYZ 几何，并用本地 xTB CLI 计算三类性质：HOMO-LUMO gap、molecular dipole moment 和 relaxation energy。第二版任务已将 `relaxation_energy` 从独立目标调整为通用几何质量门槛，避免粗糙坐标被 xTB 优化“修好”后仍获得高分。

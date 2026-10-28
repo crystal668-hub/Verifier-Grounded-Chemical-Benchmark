@@ -1,7 +1,7 @@
 # Verifier Grounded Benchmark - Registered Tasks
 
 **Version:** 0.10.0  
-**Last Updated:** 2026-10-26
+**Last Updated:** 2026-10-28
 
 ## Summary
 
@@ -25,46 +25,46 @@ The benchmark currently has **4 formal tracks** with a total of **105 registered
 
 ### Task List
 
-1. **rdkit_001_qed_max** (v1) - simple  
+1. **rdkit_001_qed_max** (v1) - basic\
    Maximize QED on a bounded 0.0 to 1.0 scale
 
-2. **rdkit_002_sa_min** (v1) - simple  
+2. **rdkit_002_sa_min** (v1) - basic\
    Minimize synthetic accessibility score on a fixed 1.0 to 10.0 range
 
-3. **rdkit_003_logp_window** (v1) - simple  
+3. **rdkit_003_logp_window** (v1) - basic\
    Have logP between 1.0 and 3.0
 
-4. **rdkit_004_tpsa_window** (v1) - simple  
+4. **rdkit_004_tpsa_window** (v1) - basic\
    Have TPSA between 35.0 and 75.0 square angstroms
 
-5. **rdkit_005_hba_window** (v1) - simple  
+5. **rdkit_005_hba_window** (v1) - basic\
    Have hydrogen-bond acceptors between 2.0 and 4.0 inclusive
 
-6. **rdkit_006_hbd_window** (v1) - simple  
+6. **rdkit_006_hbd_window** (v1) - basic\
    Have hydrogen-bond donors between 1.0 and 2.0 inclusive
 
-7. **rdkit_007_fsp3_max** (v1) - simple  
+7. **rdkit_007_fsp3_max** (v1) - basic\
    Maximize fraction Csp3 on a 0.0 to 1.0 scale
 
-8. **rdkit_008_qed_sa** (v1) - simple [multi_objective]  
+8. **rdkit_008_qed_sa** (v1) - basic [multi_objective]\
    Maximize QED and minimize synthetic accessibility score
 
-9. **rdkit_009_logp_tpsa** (v1) - simple [multi_objective]  
+9. **rdkit_009_logp_tpsa** (v1) - basic [multi_objective]\
    Have logP between 1.0-3.0 and TPSA between 35.0-75.0
 
-10. **rdkit_010_hba_hbd** (v1) - simple [multi_objective]  
+10. **rdkit_010_hba_hbd** (v1) - basic [multi_objective]\
     Have HBA between 2.0-4.0 and HBD between 1.0-2.0
 
-11. **rdkit_011_logp_target** (v1) - simple [formal_track]  
+11. **rdkit_011_logp_target** (v1) - advanced [formal_track]\
     Make logP as close as possible to 3.0 with constraints
 
-12. **rdkit_012_sa_logp_target** (v1) - expert [formal_track]  
+12. **rdkit_012_sa_logp_target** (v1) - advanced [formal_track]\
     SA < 5.0, optimize logP to 3.0
 
-13. **rdkit_013_chain_end_to_end_max** (v2) - expert [formal_track]  
+13. **rdkit_013_chain_end_to_end_max** (v2) - advanced [formal_track]\
     Maximize end-to-end distance in six-carbon chain using UFF
 
-14. **rdkit_014_caffeine_similarity_max** (v1) - expert [formal_track]  
+14. **rdkit_014_caffeine_similarity_max** (v1) - advanced [formal_track]\
     Maximize similarity to caffeine with property constraints
 
 ---
@@ -78,64 +78,64 @@ The benchmark currently has **4 formal tracks** with a total of **105 registered
 
 ### Task List
 
-1. **xtb_001_gap_window** (v2) - basic [formal_track]  
+1. **xtb_001_gap_window** (v2) - basic [formal_track]\
    HOMO-LUMO gap between 3.5 and 5.5 eV
 
-2. **xtb_002_dipole_window** (v2) - basic [formal_track]  
+2. **xtb_002_dipole_window** (v2) - basic [formal_track]\
    Molecular dipole moment between 3.0 and 5.5 Debye
 
-3. **xtb_003_gap_max** (v2) - intermediate [formal_track]  
+3. **xtb_003_gap_max** (v2) - basic [formal_track]\
    Maximize HOMO-LUMO gap
 
-4. **xtb_004_gap_min** (v2) - intermediate [formal_track]  
+4. **xtb_004_gap_min** (v2) - basic [formal_track]\
    Minimize HOMO-LUMO gap
 
-5. **xtb_005_dipole_max** (v2) - intermediate [formal_track]  
+5. **xtb_005_dipole_max** (v2) - basic [formal_track]\
    Maximize molecular dipole moment
 
-6. **xtb_006_low_gap_high_dipole_opt** (v2) - intermediate [formal_track, multi_objective]  
+6. **xtb_006_low_gap_high_dipole_opt** (v2) - basic [formal_track, multi_objective]\
    Minimize gap and maximize dipole
 
-7. **xtb_007_gap_dipole_window** (v2) - intermediate [formal_track, multi_objective]  
+7. **xtb_007_gap_dipole_window** (v2) - basic [formal_track, multi_objective]\
    Gap between 2.5-4.2 eV and dipole between 3.5-6.0 Debye
 
-8. **xtb_008_lumo_min** (v1) - intermediate [formal_track]  
+8. **xtb_008_lumo_min** (v1) - basic [formal_track]\
    Minimize LUMO energy
 
-9. **xtb_009_polarizability_dipole_opt** (v1) - advanced [formal_track, multi_objective]  
+9. **xtb_009_polarizability_dipole_opt** (v1) - basic [formal_track, multi_objective]\
    Maximize polarizability per heavy atom with dipole constraint
 
-10. **xtb_010_solvation_selectivity_alpb** (v1) - advanced [formal_track]  
+10. **xtb_010_solvation_selectivity_alpb** (v1) - basic [formal_track]\
     Maximize water-over-hexane solvation selectivity
 
-11. **xtb_011_electrophilicity_max** (v1) - advanced [formal_track]  
+11. **xtb_011_electrophilicity_max** (v1) - basic [formal_track]\
     Maximize global electrophilicity index
 
-12. **xtb_012_fukui_carbon_site** (v1) - expert [formal_track]  
+12. **xtb_012_fukui_carbon_site** (v1) - basic [formal_track]\
     Maximize strongest carbon-atom f+ local reactivity
 
-13. **xtb_013_hessian_thermo_stability** (v2) - expert [formal_track]  
+13. **xtb_013_hessian_thermo_stability** (v2) - basic [formal_track]\
     Stable minimum with maximum 298.15 K entropy per heavy atom
 
-14. **xtb_014_formula_dipole_min** (v1) - advanced [formal_track]  
+14. **xtb_014_formula_dipole_min** (v1) - advanced [formal_track]\
     C12H16N3O8 neutral doublet, minimize dipole
 
-15. **xtb_015_two_fluorine_gap_min** (v1) - advanced [formal_track]  
+15. **xtb_015_two_fluorine_gap_min** (v1) - advanced [formal_track]\
     Exactly 2 F atoms, ≤10 C atoms, minimize gap
 
-16. **xtb_016_c10_f2_gap_min** (v1) - advanced [formal_track]  
+16. **xtb_016_c10_f2_gap_min** (v1) - advanced [formal_track]\
     Exactly 10 C and 2 F atoms, minimize gap
 
-17. **xtb_017_roy_singlepoint_energy_min** (v1) - advanced [formal_track]  
+17. **xtb_017_roy_singlepoint_energy_min** (v1) - advanced [formal_track]\
     ROY molecule conformer, minimize single-point energy
 
-18. **xtb_018_ritonavir_optimized_energy_min** (v1) - expert [formal_track]  
+18. **xtb_018_ritonavir_optimized_energy_min** (v1) - advanced [formal_track]\
     Ritonavir conformer with stereochemistry, minimize optimized energy
 
-19. **xtb_019_odd_element_counts_gap_max** (v1) - expert [formal_track]  
+19. **xtb_019_odd_element_counts_gap_max** (v1) - advanced [formal_track]\
     All non-H elements odd count, dipole < 2.0, maximize gap
 
-20. **xtb_020_pyrene_substituent_energy_min** (v1) - expert [formal_track]  
+20. **xtb_020_pyrene_substituent_energy_min** (v1) - advanced [formal_track]\
     Pyrene with NO2, NH2, COOH substituents, minimize conformer energy
 
 ---
@@ -296,7 +296,7 @@ The benchmark currently has **4 formal tracks** with a total of **105 registered
 
 - All tracks are at version 0.10.0
 - Tasks marked `[formal_track]` are designated as official benchmark tasks
-- Difficulty levels: simple, basic, intermediate, advanced, expert
+- Difficulty levels: basic, advanced; see [the standard](design/task-difficulty-levels.md).
 - All tasks include detailed prompts, answer schemas, and validation criteria
 - Verifier-based tracks use computational verification
 - Gold-based tracks use reference answer comparison

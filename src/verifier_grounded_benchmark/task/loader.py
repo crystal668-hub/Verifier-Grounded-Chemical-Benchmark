@@ -27,6 +27,7 @@ from verifier_grounded_benchmark.task.schema.common import (
     require_mapping,
     require_string,
     validate_profiles,
+    validate_task_difficulty,
 )
 from verifier_grounded_benchmark.task.schema.open_generation import (
     validate_open_generation_task,
@@ -140,7 +141,10 @@ def _merge_scoring_data(
 def load_tasks_file(resource: Any) -> dict[str, dict[str, Any]]:
     """Load task definitions indexed by unique task_id without merging scoring data."""
     data = _load_yaml_mapping(resource)
-    return index_unique(require_list(data.get("tasks"), "tasks"), "task_id", "task")
+    tasks = index_unique(require_list(data.get("tasks"), "tasks"), "task_id", "task")
+    for task in tasks.values():
+        validate_task_difficulty(task)
+    return tasks
 
 
 def load_verifier_specs_file(resource: Any) -> dict[str, dict[str, Any]]:
@@ -178,6 +182,7 @@ def task_pack_from_mappings(
     migrated_tasks: list[TaskSpec] = []
     for task_id, source in tasks.items():
         raw = deepcopy(source)
+        validate_task_difficulty(raw)
         task_type = raw.get("task_type", "open_generation")
         if task_type == "property_calculation":
             requested = {item["name"]: item for item in raw["requested_properties"]}
@@ -317,6 +322,7 @@ def _load_v2(task_data: dict[str, Any], verifier_data: dict[str, Any]) -> TaskPa
     )
     tasks: list[TaskSpec] = []
     for task_id, raw in tasks_by_id.items():
+        validate_task_difficulty(raw)
         task_type = require_string(raw.get("task_type"), f"task {task_id} task_type")
         scoring = require_mapping(raw.get("scoring"), f"task {task_id} scoring")
         task_scoring_version = require_string(
@@ -370,6 +376,7 @@ def _load_legacy(
     verifiers_by_id = validate_verifier_specs(verifier_items)
     tasks: list[TaskSpec] = []
     for task_id, raw in tasks_by_id.items():
+        validate_task_difficulty(raw)
         task_type = raw.get("task_type", "open_generation")
         frozen = freeze_mapping(raw)
         if task_type == "property_calculation":
