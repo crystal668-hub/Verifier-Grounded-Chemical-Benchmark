@@ -47,7 +47,10 @@ def _construct_unique_mapping(loader: yaml.SafeLoader, node: yaml.Node, deep: bo
     for key_node, value_node in node.value:
         key = loader.construct_object(key_node, deep=deep)
         if key in mapping:
-            raise ValueError(f"duplicate YAML key: {key}")
+            raise yaml.constructor.ConstructorError(
+                "while constructing a mapping", node.start_mark,
+                f"duplicate YAML key: {key}", key_node.start_mark,
+            )
         mapping[key] = loader.construct_object(value_node, deep=deep)
     return mapping
 
@@ -93,7 +96,6 @@ def load_task_pack(
         _load_yaml_mapping(scoring_resource) if scoring_resource is not None else None
     )
     if task_data.get("schema_version") == 2:
-        task_data = _load_yaml_mapping(tasks_resource, require_unique_keys=True)
         if scoring_data is not None:
             task_data = _merge_scoring_data(task_data, scoring_data)
         return _load_v2(task_data, verifier_data)
@@ -112,10 +114,17 @@ def _sibling_resource(resource: Any, filename: str) -> Any | None:
 def _merge_scoring_data(
     task_data: dict[str, Any], scoring_data: dict[str, Any]
 ) -> dict[str, Any]:
-    """Merge scoring entries by task_id, rejecting missing or extra task IDs."""
+    """Bind scoring to the same pack identity/version and exactly the same task IDs."""
     config = require_mapping(scoring_data.get("scoring_config"), "scoring_config")
     merged = deepcopy(task_data)
     metadata = require_mapping(merged.get("task_pack"), "task_pack")
+    for config_key, pack_key in (("task_pack_id", "id"), ("task_pack_version", "version")):
+        value = require_string(config.get(config_key), f"scoring_config {config_key}")
+        if value != metadata.get(pack_key):
+            raise ValueError(
+                f"scoring_config {config_key} {value!r} does not match "
+                f"task_pack {pack_key} {metadata.get(pack_key)!r}"
+            )
     metadata["scoring_version"] = require_string(
         config.get("scoring_version"), "scoring_config scoring_version"
     )
@@ -398,7 +407,7 @@ def _load_legacy(
 
 
 def _load_yaml_mapping(
-    resource: Any, *, require_unique_keys: bool = False
+    resource: Any, *, require_unique_keys: bool = True
 ) -> dict[str, Any]:
     try:
         loader = _UniqueKeyLoader if require_unique_keys else yaml.SafeLoader

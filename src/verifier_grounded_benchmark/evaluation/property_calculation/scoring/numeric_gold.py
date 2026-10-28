@@ -26,10 +26,15 @@ def score_numeric_gold(
     if submitted is None or submitted.get("unit") != gold.get("unit"):
         return 0.0
     value = submitted.get("value")
-    if isinstance(value, bool) or not isinstance(value, Real) or not math.isfinite(float(value)):
+    if isinstance(value, bool) or not isinstance(value, Real):
+        return 0.0
+    try:
+        numeric_value = float(value)
+    except (OverflowError, ValueError):
+        return 0.0
+    if not math.isfinite(numeric_value):
         return 0.0
     transform = profile.get("value_transform", "identity")
-    numeric_value = float(value)
     minimum_value = profile.get("minimum_value")
     if minimum_value is not None and numeric_value < minimum_value:
         return 0.0

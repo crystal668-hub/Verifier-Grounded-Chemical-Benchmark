@@ -205,6 +205,8 @@ def test_export_needs_no_answer_workbooks_and_loads_as_shadow_scoring(tmp_path):
         directory = ROOT / "src/verifier_grounded_benchmark/task/packs" / track
         scoring_path = tmp_path / f"{track}.scoring.yaml"
         task_data = yaml.safe_load((directory / "tasks.yaml").read_text())
+        config = yaml.safe_load(scoring_path.read_text())
+        task_data["task_pack"]["version"] = config["scoring_config"]["task_pack_version"]
         task_data["tasks"] = [task.to_dict() for task in projection.original.load_historical_pack(track).tasks]
         tasks_path = tmp_path / f"{track}.tasks.yaml"
         tasks_path.write_text(yaml.safe_dump(task_data))

@@ -257,6 +257,7 @@ def run(source_dir: Path | None, output_dir: Path, policy_path: Path = POLICY) -
             config_path = Path(temporary) / f"{track}.scoring.yaml"
             config_path.write_text(config, encoding="utf-8")
             task_data = yaml.safe_load((directory / "tasks.yaml").read_text())
+            task_data["task_pack"]["version"] = candidate["scoring_config"]["task_pack_version"]
             task_data["tasks"] = [task.to_dict() for task in original.load_historical_pack(track).tasks]
             tasks_path = Path(temporary) / f"{track}.tasks.yaml"
             tasks_path.write_text(yaml.safe_dump(task_data), encoding="utf-8")

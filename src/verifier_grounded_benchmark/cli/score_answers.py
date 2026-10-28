@@ -75,7 +75,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Score a JSONL submission; return 2 on dependency or required-coverage failure."""
+    """Score JSONL; return 2 on dependency, evaluation, or required-coverage failure."""
     args = parse_args(argv)
     answers = load_answers_jsonl_file(args.answers)
     pack: TaskPack | None = None
@@ -138,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     print(json.dumps(report, indent=2, sort_keys=True))
-    return 0
+    return 2 if report["summary"]["num_error"] else 0
 
 
 if __name__ == "__main__":
