@@ -127,11 +127,11 @@ def test_score_ranges_represent_nonzero_submitted_values():
     assert log_score["max"] == 0.0734
 
 
-def test_v0100_catalog_has_task_specific_widths_and_absolute_scoring():
+def test_v100rc_catalog_has_task_specific_widths_and_absolute_scoring():
     catalog = load_catalog()
     count = 0
     for track in catalog["tracks"]:
-        assert track["version"] == "0.10.0"
+        assert track["version"] == "1.0.0rc1"
         for task in track["tasks"]:
             for rule in task["scoring"]["rules"]:
                 profile = rule["profile"]
