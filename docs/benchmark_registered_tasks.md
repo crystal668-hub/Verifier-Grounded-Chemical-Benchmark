@@ -1,7 +1,7 @@
 # Verifier Grounded Benchmark - Registered Tasks
 
-**Version:** 0.10.0 source, post-retirement (2026-10-28)\
-**Last Updated:** 2026-10-28
+**Version:** 1.0.0rc1 (release tag: v1.0.0-rc)\
+**Last Updated:** 2026-11-03
 
 ## Summary
 
@@ -9,10 +9,15 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 | Track | Version | Tasks | Type | Tags |
 |-------|---------|-------|------|------|
-| open_generation_rdkit | 0.10.0 | 10 | Verifier-based | small_molecule, rdkit, descriptor |
-| open_generation_xtb | 0.10.0 | 20 | Verifier-based | small_molecule_3d, xtb, xyz, smiles |
-| property_calculation_basic | 0.10.0 | 51 | Gold-based | property_calculation, fixed_input, basic, small_molecule |
-| property_calculation_advanced | 0.10.0 | 19 | Gold-based | property_calculation, fixed_input, crystal |
+| open_generation_rdkit | 1.0.0rc1 | 10 | Verifier-based | small_molecule, rdkit, descriptor |
+| open_generation_xtb | 1.0.0rc1 | 20 | Verifier-based | small_molecule_3d, xtb, xyz, smiles |
+| property_calculation_basic | 1.0.0rc1 | 51 | Gold-based | property_calculation, fixed_input, basic, small_molecule |
+| property_calculation_advanced | 1.0.0rc1 | 19 | Gold-based | property_calculation, fixed_input, crystal |
+
+These are two complementary task families: 30 candidate-construction tasks use
+runtime verification, and 70 fixed-object property tasks compare final answers
+with frozen gold. The requirements below describe evaluation dependencies;
+reference generation and respondent-side solving may use other tools.
 
 ---
 
@@ -20,7 +25,7 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 **Type:** Open generation (verifier-based)\
 **Object Type:** Small molecule (SMILES)\
-**Requirements:** RDKit\
+**Evaluation requirements:** RDKit\
 **Task Count:** 10
 
 ### Task List
@@ -60,8 +65,8 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 ## Track 2: open_generation_xtb
 
 **Type:** Open generation (verifier-based)\
-**Object Type:** Small molecule 3D (XYZ)\
-**Requirements:** xTB executable; CREST 2.12 for conformer-search tasks\
+**Object Type:** Small molecule (19 XYZ tasks and one SMILES task)\
+**Evaluation requirements:** RDKit, xTB 6.7.1; CREST 2.12 for task 020\
 **Task Count:** 20
 
 ### Task List
@@ -132,7 +137,7 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 **Type:** Property calculation (gold-based)\
 **Object Type:** Various (molecules, complexes, surfaces)\
-**Requirements:** Various computational chemistry tools\
+**Evaluation requirements:** Packaged gold and scoring data; no runtime chemistry verifier\
 **Task Count:** 51
 
 ### Task Categories
@@ -213,7 +218,7 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 **Type:** Property calculation (gold-based)\
 **Object Type:** Molecular crystals and advanced properties\
-**Requirements:** Advanced computational chemistry tools (DFT, TDDFT)\
+**Evaluation requirements:** Packaged gold and scoring data; no runtime chemistry verifier\
 **Task Count:** 19
 
 ### Task List
@@ -267,7 +272,7 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
     Phosphorescence rate constant
 
 17. **property_calculation_advanced_017_anthracene_ht_contribution**\
-    Heavy-atom contribution to ISC
+    Herzberg-Teller contribution to ISC
 
 18. **property_calculation_advanced_018_acetophenone_isc_rate**\
     ISC rate for acetophenone
@@ -279,7 +284,7 @@ The benchmark currently has **4 formal tracks** with a total of **100 registered
 
 ## Notes
 
-- All tracks are at version 0.10.0
+- All tracks are at version 1.0.0rc1
 - Tasks marked `[formal_track]` are designated as official benchmark tasks
 - Difficulty levels: basic, advanced; see [the standard](design/task-difficulty-levels.md).
 - All tasks include detailed prompts, answer schemas, and validation criteria

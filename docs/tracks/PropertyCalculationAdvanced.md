@@ -9,7 +9,7 @@ public API and custom-pack CLI load it from `tasks.yaml` and `scoring.yaml`.
 
 ## 1. 定位
 
-`property_calculation_advanced` 是独立于 open-generation 的正式 track。题面给出完整化学或材料结构，模型报告计算结果；评分器只比较最终答案与公开 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。
+`property_calculation_advanced` 是独立于 open-generation 的正式 track。题面给出化学对象及相关条件，部分题目包含 CIF/XYZ 结构，模型报告目标性质或标签；评分器只比较最终答案与冻结 gold，不运行性质 verifier，也不检查模型的工具调用或中间推理。题面输入并非每题都足以唯一重建参考值，不能把 gold 比较表述为运行时独立科学计算。
 
 当前正式题目共 19 道。新增的激发态动力学题目如下：
 
@@ -104,7 +104,6 @@ versions: mapping
 
 ## 6. Gold Policy
 
-发行包保留 scoring data 供本地离线评分和审计，但普通任务视图、`prompts()` 和评分结果都不返回 gold。需要公开读取标准答案时，只能通过
+发行包保留 scoring data 供本地离线评分和审计，但普通任务视图、`prompts()` 和评分结果都不返回 gold。需要公开读取标准答案时，可以通过
 `track.task(task_id, include_gold=True)` 获取；该接口明确表达答案访问意图，避免 gold 在多层
-公共 API 中重复暴露。初版只记录 `withheld_initial_release`，不公布 gold 生成协议，也不把协议
-写入 prompt。
+公共 API 中重复暴露。正式 task pack 不提供完整的 gold 生成协议；参考来源和已知输入边界保留在维护记录中，例如[专家题转换记录](../research/2026-08-20-task14-25-property-calculation-conversion-plan.md)。这一边界不改变当前的冻结参考值评分规则。

@@ -1,155 +1,95 @@
-# Verifier-Grounded 化学 Benchmark 初始设计方案
+# Verifier-Grounded 化学 Benchmark：研究定位与设计演进
 
-日期：2026-05-26
-更新：2026-05-27 补充近两年化学 LLM/agent benchmark 调研与设计规范提炼。
-更新：2026-06-02 明确最终 verifier 以单一 Docker 镜像发布，并将正式题目收紧到可计算化学性质。
-更新：2026-07-02 对照当前 repo 实现状态，明确 RDKit 与 xTB 两类题目已形成可复用雏形；AtomisticSkills MCP prototype 已移除，材料方向后续以 native Python 后端重新设计。
+初稿日期：2026-05-26。现行定位确认：2026-11-03。
 
-## 1. 项目动机
+本文件保留初始设计的演进背景，并以当前正式题集和实现说明研究主线。
+§7、§10 和 §11.1–11.8 是早期选题与调研记录；其余章节按当前
+`v1.0.0-rc`（Python `1.0.0rc1`）的定位更新。历史设计版本保存在 Git 中。
 
-本项目希望构造一类新的化学 benchmark，用来评估大模型或化学智能体在真实科研式任务中的问题解决能力。当前已有化学 benchmark 的评价方式主要集中在两类：
+## 1. 项目动机与研究主线
 
-1. 验证最终答案是否与标准答案一致，例如数值、选项、短文本或结构化答案匹配。
-2. 根据回答是否覆盖指定知识点、步骤或 rubric 条目打分。
+通用大模型与支持工具调用、代码执行和任务编排的 agent harness 相结合，为化学问题求解提供了新的系统形态。本项目关注的问题是：**系统能否将化学知识转化为面向具体目标、可验证的求解结果？**
 
-这两类评价方式适合考试题、知识问答、推导题或固定答案任务，但很难覆盖真实化学研究中常见的问题形态。实际科研任务经常不是“回答某个唯一答案”，而是“提出一个满足若干性质约束的化学对象”，例如：
+知识问答可以考察化学知识与相关推理，但仅靠知识问答表现不足以衡量目标驱动任务的完成能力。本项目不以“知识题已失去意义”或“现有知识题已经普遍饱和”为前提，也不把已有化学 benchmark 一概归为知识记忆题。
 
-- 给出一个具有指定药物样性质、溶解度和安全性约束的小分子。
-- 设计一个 band gap 落在目标窗口且稳定性较好的材料。
-- 提出一个满足特定低成本量子性质约束的分子候选。
+我们将评价重点放在两类互补任务上。第一类是开放生成：给定性质目标和结构约束，要求系统提出候选分子或分子构象。评价器按照固定计算协议重新计算候选的性质，依据其满足目标的程度评分，模型自报的性质值不作为验证证据。第二类是性质计算：给定化学对象与问题条件，要求系统报告目标性质，并依据预先计算或经专家审校后冻结的参考答案评分。两类任务分别覆盖目标约束下的候选构造与给定对象的性质求解。
 
-这类任务天然允许多个有效答案，也不适合仅靠文本覆盖度判断回答质量。模型输出的关键不是解释是否听起来合理，而是候选对象本身是否真的满足目标性质。因此，本项目引入 verifier-grounded 的评价机制：由封装在官方 verifier Docker 镜像中的独立化学工具、固定模型和计算脚本重新验证候选对象性质，并基于性质偏差给出分数。
+为降低本地运行评价流程的门槛，开放生成任务的验证主要依托 RDKit、xTB 及必要的 CREST 构象搜索流程；性质计算任务将参考答案的生成与模型评价分离。参考答案可以来自计算成本较高的方法，而评分阶段无需重复这些计算。这使评价流程的运行成本与参考计算的生成成本得以分开。
 
-## 2. Benchmark 核心定位
+对可连续度量的数值目标，我们使用预先设定尺度的连续距离评分，刻画候选性质对目标的满足程度，或提交结果对参考值的接近程度。同时保留必要的有效性检查、硬约束和离散答案判定。最终得分反映系统在指定任务、参考协议和评分规则下的完成程度。
 
-本 benchmark 的核心形态是：
+## 2. 两类任务的定位
 
-> Open-generation chemical property satisfaction benchmark。
+| 题型 | 题面与提交对象 | 评价依据 | 当前正式 tracks |
+| --- | --- | --- | --- |
+| 开放生成 | 给定目标与约束，提交候选 SMILES 或 XYZ | 对候选执行固定计算协议，重新得到性质 | `open_generation_rdkit`、`open_generation_xtb` |
+| 性质计算 | 给定对象与条件，提交数值、标签或多字段答案 | 与预先冻结的 gold 比较 | `property_calculation_basic`、`property_calculation_advanced` |
 
-也就是说，每道题给出一个具有真实化学研究价值的目标或约束，要求模型生成一个或多个候选化学对象。模型的最终答案应包含可被程序解析的候选对象标识，而不是只输出一个数值结论。
+开放生成无需枚举所有有效候选，同一目标可以允许多个高分答案。性质计算有明确的参考答案，是独立的正式题型。两类任务共同评价最终求解结果，但运行时证据来源不同；“所有题都独立重算”“所有题都不依赖标准答案”均不描述当前套件。
 
-候选对象可以包括但不限于：
+当前开放生成提交单个候选，不以候选新颖性作为通用计分条件。结构域、允许元素、分子身份、电子态等限制按具体任务声明。材料、晶体及激发态相关性质计算题的存在，不等同于已发布材料开放生成 track。
 
-- 小分子：SMILES、InChI 或可规范化的化学名称。
-- 材料：composition、CIF、pymatgen Structure 或其他可转换结构表示。
-- 量子化学分子：SMILES 加可生成的 3D 构象，或明确的结构文件。
-- 后续扩展中的反应或催化候选：reaction SMILES、催化剂结构、slab+adsorbate 表示等。
+## 3. 答题系统与科学定义
 
-题目设计应围绕“有研究者实际关心并训练模型预测或用专业软件计算的性质”展开。如果某一性质在化学研究中经常被预测、筛选或优化，并且可以由稳定 verifier 自动计算或预测，就可以作为本 benchmark 的候选目标性质。正式题目应避免选择那类只要查询 PubChem、Materials Project、ChEMBL、TDC、Matbench 或类似数据库/数据集字段就能直接得到的性质；数据库可用于审校、构造 fixtures、参考 entries、novelty 检查或离线校准，但不应成为正式性质分数的 oracle。
+模型与 agent harness 的调用、搜索、工具使用和答案生成由参评方负责。benchmark package 提供任务、解析答案并评分，不接管模型执行，也不检查工具调用轨迹或中间推理。
 
-## 3. 当前硬约束
+因此，分数可以比较不同模型与 harness 配置的最终求解表现，但不能单独证明某个答案来自工具使用、参数化知识或特定推理过程。实验应说明模型、harness、工具权限、检索条件和计算预算；归因于某项能力需要相应的实验设计。
 
-初版 benchmark 只考虑 open-generation 题型，不引入 Candidate-selection track。
+题面以化学对象、目标和科学条件为中心。工具中立允许参评系统选择实现方式；当计算层级、状态、单位或其他协议条件定义了所求性质时，仍需明确这些条件。连续容差不能替代科学定义，也不能让不同物理量或未明确的参考协议自动可比。
 
-Candidate-selection 形式虽然工程上更容易控制，但如果候选项已经有限且固定，所有候选项性质可以预先计算，最终只需要程序判断选项是否正确。此时 verifier 的设计价值会显著降低，因为评价问题退化为传统的选择或排序任务。本项目要评估的是模型能否在开放空间中提出化学对象，并使该对象通过独立性质验证。
+## 4. 两条评价路径
 
-初版题目还应避免“数据库查值型 open generation”。如果候选对象的目标性质可以通过公开数据库字段、冻结 benchmark 标签或数据集查表直接得到，那么任务更接近 retrieval benchmark，而不是本项目关注的科研式可计算性质满足问题。正式评分应要求 verifier 对候选对象执行计算、模拟、结构处理或固定模型推断。
+### 4.1 开放生成：运行时性质验证
 
-本 benchmark 的设计目标也不以区分 skills-on 和 skills-off 为核心。skills-on/skills-off 对比可以作为未来实验分支，但它不是 benchmark 题型、评价机制或题目选择的设计出发点。初版设计更关注如何解决现有化学 benchmark 难以评价真实开放生成科研任务的问题。
-
-## 4. Verifier-Grounded 评价机制
-
-每个正式评分约束应绑定一个可复现的验证脚本。验证脚本是某一化学性质或 descriptor 的计算入口：它读取模型给出的候选对象、task card 中的单个 constraint 和对应 verifier spec，在官方 verifier Docker 镜像内调用对应的计算后端，独立计算或预测该性质，然后根据候选对象与该约束之间的距离打分。
-
-这里的“绑定验证脚本”应按所计算的化学性质或 descriptor 分类，而不是按 task id 复制或包装一套 verifier。对用户和 runner 来说，每个评分 constraint 必须能追溯到唯一、明确、可独立执行的 `verification_script`；当多道题或多目标题计算同一种性质时，它们应调用同一个脚本，并使用相同输入输出契约。对工程实现来说，这个脚本内部可以复用共享后端库或工具环境，例如 RDKit descriptor backend、xTB workflow、ADMET 模型、native MatGL backend 或 native MACE-MP backend。也就是说，分层应是：
+开放生成从模型回复中解析候选，应用任务的结构有效性、适用域和身份要求，再按 verifier spec 调度计算。正式入口采用 Python module subprocess；多个性质入口可复用共享后端。xTB/CREST 等外部可执行程序由运行环境提供。
 
 ```text
-task constraint/property -> verification_script -> shared backend/tool environment
+task constraint -> verifier spec/executor -> shared backend
+                                              |
+                                              v
+                                      computed evidence
+                                              |
+                                              v
+                                      constraint scoring
 ```
 
-runner 不应再维护“某类 verifier 到 Python 函数”的代码分发表；分发信息应来自 task/spec 中的脚本路径。共享后端只负责提供可复用计算能力，不能替代 property-level 验证脚本成为用户需要理解或选择的验证入口。
+Verifier 返回性质、诊断、版本和失败信息，由评价层计算分数。模型自报的性质不能代替重算证据。候选不满足结构域或硬约束可以得到零分；依赖缺失、超时等评价故障单独报告，不当作候选的科学失败。
 
-Verifier 不信任模型自报的性质值。即使模型在回答中声称某个分子 QED 为 0.82、logS 为 -2.1，评价时也只把候选对象本身作为输入，由 verifier 重新计算或预测这些性质。
+### 4.2 性质计算：冻结参考答案比较
 
-最终发布形态应是一个单一官方 verifier image。用户测评模型时只需要拉取该镜像、构建运行容器，并把题目、答案和 verifier spec 传给 runner。单题测试和批量测试使用同一套评分逻辑：runner 只是在调度层逐题、逐约束执行对应验证脚本，多目标任务由 runner 聚合多个脚本返回的 constraint scores；脚本的执行后端全部来自容器内预装环境。需要注意的是，打包和发布这个官方镜像属于上线前的交付工作，不是当前设计与早期开发阶段必须完成的工程任务；当前阶段只需要把 task schema、verifier spec、脚本 I/O 和后端边界设计成能够自然迁移到该镜像形态，避免后续上线时重复重构。
+性质计算解析提交值，按字段定义检查格式、数值域和单位，并与冻结 gold 比较。所需资源为 `tasks.yaml` 和 `scoring.yaml`，不配置或运行性质 verifier。
 
-一个完整的 verifier 评价流程包括：
+Gold 的生成与来源审校发生在维护阶段。评价阶段可重复执行同一评分规则，但这不等于独立重算了科学参考值。部分题目的参考值来自专家计算或文献来源；关于输入充分性和参考协议的已知边界应保留在相应 track 和研究记录中。
 
-1. 解析候选对象：检查 SMILES、CIF、reaction SMILES 或结构文件是否可解析。
-2. 规范化候选对象：进行 canonicalization、去盐、选择主组分、结构合法性检查或材料结构标准化。
-3. 适用域检查：确认候选对象属于 verifier 支持的化学空间。
-4. 性质验证：运行容器内确定性工具、固定 ML 模型、计算化学脚本或材料模拟/MLIP workflow。
-5. 距离打分：根据性质值与目标窗口、阈值或目标值之间的偏差计算分数。
+### 4.3 公共结果契约
 
-验证脚本的 I/O 契约应保持稳定。输入是一个 JSON payload，至少包含：
+两类任务共享结果外层契约：`status: scored | error`、性质/提交答案、分项分数、失败分类与版本信息。开放生成的 `properties` 来自 verifier evidence；性质计算的字段记录提交答案及比较诊断。相同结果字段不意味着执行过相同计算路径。
 
-- `task`：题目记录中的必要元信息，例如 `task_id`、版本和对象类型。
-- `constraint`：当前验证脚本负责评分的单个性质约束，包括 `property`、约束类型、阈值或窗口参数，以及绑定的 verifier id。
-- `verifier_spec`：verifier image、验证脚本路径、依赖版本、资源上限、后端参数、适用域和 scoring 参数。
-- `candidate`：解析后的候选对象，例如 canonical SMILES、CIF/structure 文件路径、reaction SMILES 或结构化 JSON。
+公共 API、CLI 和错误处理详见[包说明](../../src/verifier_grounded_benchmark/README.md)。
 
-输出是一个 JSON result，至少包含：
+## 5. 连续评分与离散判定
 
-- `status`：`ok` 或 `error`。
-- `failure_type`：无错误时为 `null`；失败时使用统一 failure taxonomy。
-- `properties`：verifier 计算出的性质值、单位和必要中间指标。
-- `scores`：`validity_gate`、`domain_gate`、`constraint_scores`、`property_score` 和最终 `score`。
-- `versions`：verifier image tag、脚本版本、工具版本、模型 checkpoint 或计算后端版本。
-- `artifacts`：可选字段，用于记录构象、弛豫结构、日志、原始计算输出或诊断文件。
+所有可连续评分的数值目标共用 `linear_goal_v2` 内核：定义满分目标或区域，并在其外按配置宽度线性衰减至零。开放生成包括窗口、目标值、最大化和最小化目标；性质计算以 gold 为满分点，按任务声明的数值变换和误差尺度计算接近程度。
 
-推荐的通用评分框架是：
+连续评分的主要作用是表达接近目标的程度。不同计算协议的差异可以成为选择误差尺度时的考虑因素，但评分宽度是出题效用参数，不自动等于实验不确定度、计算方法误差、置信区间或跨协议误差校准结果。性质计算的 tolerance 表示降到零分的误差宽度，不能写成“容差内一律满分”。
 
-```text
-score = validity_gate
-      * domain_gate
-      * property_score
-```
+有效性、适用域、分子身份和硬约束保持相应门控；相位标签和原子标识等采用离散匹配或显式部分分。不能把整个评分体系概括为“所有任务都没有二元判断”。
 
-其中：
+开放生成主目标分数取几何平均，可选 quality gates 取最小值并作为乘子。性质计算默认对字段分数取算术平均；Advanced 002 按 energy 与 phase 两组平均，其中 phase 组要求两个相名均正确。完整且无评价错误的 suite 按任务等权平均，因此当前综合分中开放生成占 30%、性质计算占 70%。论文应分别报告两类任务，明确综合分的构成。
 
-- `validity_gate` 判断候选对象是否有效、可解析、可规范化。
-- `domain_gate` 判断候选对象是否落在 verifier 的适用范围内。
-- `property_score` 衡量候选对象满足目标性质约束的程度。
+数学定义与架构演进见[统一评分规格](unified-linear-goal-scoring.md)；当前参数以各 track 的 `scoring.yaml` 为准。
 
-性质打分可以采用不同形式：
+## 6. 设计收益与解释边界
 
-- 窗口约束：性质落入 `[L, U]` 得满分，超出窗口按距离衰减。
-- 目标值约束：使用 `exp(-abs(y - target) / sigma)` 之类的连续惩罚。
-- 最大化或最小化目标：使用 clipped linear、logistic desirability 或排序型 desirability。
-- 多目标约束：优先采用 hard constraints + soft objective；多个 soft score 可用几何平均或加权 desirability 合成。
+两类任务将候选构造与性质求解放在同一个最终结果评价框架中：开放生成支持多解，性质计算扩展固定对象的科学问题覆盖。评价采用预先定义的计算协议或参考答案，减少对自然语言解释风格的依赖。
 
-## 5. 与常规 Benchmark 的差异
+本地评分通过较轻量的开放生成后端和离线冻结的性质参考值降低运行门槛。答题系统可能自行采用更昂贵的方法；参考答案的生成也可能需要不同的软件与资源。评分端可本地运行不能推出每道题的从头求解都已在个人计算机上验证。
 
-Verifier-grounded benchmark 与常规化学问答 benchmark 的关键区别在于评价对象不同。
-
-常规 benchmark 通常评价：
-
-- 最终答案是否等于标准答案。
-- 回答是否覆盖参考解法中的关键点。
-- LLM judge 是否认为回答合理。
-
-本 benchmark 评价：
-
-- 模型提出的候选化学对象是否有效。
-- 候选对象是否属于题目要求的化学空间。
-- 独立 verifier 计算出的性质是否满足目标约束。
-- 候选对象与目标性质之间的偏差有多小。
-
-因此，同一道题可以有多个满分或高分答案。评价不依赖某个唯一标准答案，也不要求模型复述某条固定推理路径。模型可以通过文献知识、结构类比、局部修改、性质预测、计算脚本或搜索优化得到候选对象；只要最终候选对象经 verifier 验证满足目标，就应获得相应分数。数据库检索可以是参评系统寻找候选的策略之一，但 benchmark 的正式性质评分不应退化为查表。
-
-## 6. 设计收益
-
-### 6.1 更贴近真实科研任务
-
-真实化学研究经常是目标驱动的候选发现过程，而不是固定答案问答。Verifier-grounded 设计可以把“请提出一个满足性质约束的候选物质”转化为可自动评价的 benchmark 任务。
-
-### 6.2 支持开放多解
-
-传统标准答案评价很难处理多解问题。Verifier-grounded 设计不需要事先列出所有正确答案，只需要定义候选对象表示、目标性质和验证方式。
-
-### 6.3 减少文本评分主观性
-
-LLM judge 和 rubric 覆盖评分容易受到表达方式、答案长度和论证风格影响。Verifier-grounded 机制把评价重心转移到候选对象的可验证性质，减少纯文本判断带来的不稳定性。
-
-### 6.4 允许连续分数
-
-对于性质优化任务，二元正确/错误往往过于粗糙。候选对象即使没有完全满足目标，也可能接近目标窗口。距离型评分可以区分“完全无效”“方向正确但略偏”“基本满足”和“完全满足”等不同质量层级。
-
-### 6.5 强化可复现性
-
-每个 verifier 都应固定 verifier image tag、工具版本、模型 checkpoint、计算参数、输入规范和评分函数。这样 benchmark 分数可以在不同运行环境中复现，并能明确说明分数代表的是“满足该 verifier 定义下的性质目标”，而不是笼统证明实验上最优。若使用参考数据或数据库快照，它们只能作为计算 workflow 的辅助资产，例如相图 reference entries、去重集合、novelty 背景库或离线校准集，而不是直接返回目标性质分数的 oracle。
+任务、参考值和评分配置的冻结支持结果审计。高分描述既定协议下的完成程度；它不等同于实验最优性、可合成性或完整科研能力。详见[项目限制](Limits.md)和各 [track 文档](../tracks/)。
 
 ## 7. 初版推荐覆盖方向
+
+> 本节及后续性质推荐表记录早期选题设想，不是当前正式任务清单或覆盖承诺。当前正式覆盖范围以注册任务清单和各 track 文档为准。
 
 根据目标性质调研报告，初版应优先选择工程可行性高、化学研究价值明确、输入输出规范清晰、可自动验证的性质方向。
 
@@ -262,50 +202,23 @@ LLM judge 和 rubric 覆盖评分容易受到表达方式、答案长度和论�
 | 困难 | retrosynthesis feasibility | P1-11 中的 retrosynthesis feasibility 子任务 | 需要 retrosynthesis planner、模板/策略模型和 fixed stock；结果高度依赖 stock 与 policy checkpoint。 | AiZynthFinder；fixed purchasable stock and policy | [AiZynthFinder docs](https://molecularai.github.io/aizynthfinder/)<br>[AiZynthFinder GitHub](https://github.com/MolecularAI/aizynthfinder) |
 | 困难 | reaction yield | P1-11 中的 reaction yield 子任务 | 通用 yield prediction 不稳定；首版只能在固定 reaction family 和 fixed checkpoint 下使用。 | `rxn_yields` / Yield-BERT fixed checkpoint；family-specific fixed yield model | [rxn_yields GitHub](https://github.com/rxn4chemistry/rxn_yields) |
 
-## 8. Verifier 的存在形态
+## 8. 当前交付与发布边界
 
-正式 verifier 的发布形态应是一个单一官方 Docker 镜像，而不是让用户分别安装多个本地环境。镜像中预装首版任务需要的计算后端，例如 RDKit、pymatgen、xTB、OpenMM、ASE、cclib、固定 QSAR/ADMET 模型、固定材料 ML 模型、MLIP calculator 和必要的脚本运行环境。
+当前 RC 交付是本地 wheel/sdist、release 材料和 Git tag。Python API/CLI 接收调用方提供的答案；RDKit 随包依赖安装，xTB 6.7.1 与任务 020 所需的 CREST 2.12 单独提供。正式 verifier 使用 `executor.type: python_module`。Spec 中保留的 `verifier_image` 字段不代表单一官方镜像已构建或发布。
 
-这一镜像形态是最终交付约束，用于指导当前 schema、脚本边界和后端组织方式；它不要求当前开发阶段立即完成镜像构建、发布或完整环境封装。当前开发可以先在本地 Python 环境中实现脚本契约和共享后端，只要这些入口未来可以直接放入官方镜像中运行。
+四个正式 track 不提供公开 sample answers；开发回归答案不进入 wheel/sdist。性质计算 gold 和 scoring 配置仍随发行包提供，用于离线评分与审计；普通任务视图不自动返回 gold，显式接口为 `track.task(task_id, include_gold=True)`。移除样例答案不构成隐藏测试集或防污染机制。
 
-每道题通过 constraints 中的 verifier id 绑定一组 property-level 验证脚本。单目标任务通常只绑定一个脚本；多目标任务绑定多个脚本，并由 runner 在调度层顺序执行后聚合分数。脚本按所计算的化学性质或 descriptor 分类，而不是按 task id 分类；多个任务只要计算同一种性质，就应复用同一个脚本。多个 property-level 脚本可以共享以下类型的后端能力：
+当前正式开放生成只使用 RDKit 与 xTB/CREST。源码中的其他可选后端不能直接计作正式任务覆盖。早期单镜像构想和公开 dev/mini/hidden test 划分不作为当前已交付事实。发行详情见 [RC 说明](../research/2026-10-28-v1.0.0-rc-release-notes.md)。
 
-1. 确定性工具：例如 RDKit、pymatgen、xTB、OpenMM、ASE、cclib。
-2. 固定 ML 模型：例如 ADMET-AI、Chemprop checkpoint、SolTranNet、CHGNet、MACE、MatterSim。
-3. 固定计算 workflow：例如 RDKit ETKDG + xTB、MLIP relaxation + energy proxy、pymatgen PhaseDiagram + fixed reference entries、固定受体/参数的 docking workflow。
+## 9. 科研能力声明的范围
 
-数据库、数据集和外部 API 不作为正式性质分数的直接 oracle。它们可以作为离线资产进入镜像或发布包，用于 reference entries、fixtures、去重/novelty 背景库、applicability-domain 统计、模型训练/校准或人工审校记录。若某个题目的目标性质只能靠查数据库标签得到，该题不应进入正式 open-generation property satisfaction track。
+本 benchmark 评价给定对象、目标、结构域、参考协议和评分规则下的求解结果。它不直接评价独立提出研究问题、选择研究方向、设计合成路线或执行实验的完整能力。
 
-为了保证 benchmark 可复现，每个 verifier spec 至少需要记录：
+开放生成 verifier 得分不直接证明实验性质；性质计算参考答案比较不证明答题者执行过某个计算流程。评分端的工程回归、参考值的科学来源验证、数值重复性与模型表现是不同层次的证据，论文应分别说明。
 
-- verifier 名称、版本和 `verifier_image` tag。
-- 对应性质或 descriptor 的 `verification_script` 路径、脚本版本和入口命令。
-- 工具、模型或计算 workflow 来源。
-- model checkpoint、reference entries、fixed stock 或其他辅助资产标识。
-- 输入格式、candidate schema 和规范化规则。
-- 输出性质名称、单位和取值范围。
-- 适用域规则。
-- 评分函数和参数。
-- 资源需求，例如 CPU/GPU、内存、timeout、最大候选数和临时文件限制。
-- 失败时的处理规则。
+## 10. 早期相关 Benchmark 调研
 
-正式评分不依赖在线服务。在线服务可以用于调研、题目审校或离线交叉检查，但不能作为 benchmark 运行时的唯一评价路径，也不能让同一题的性质值随在线数据库更新而漂移。
-
-## 9. 当前不纳入范围
-
-初版明确不纳入以下内容：
-
-- Candidate-selection 题型。
-- 把 Candidate-selection 作为 calibration、debug 或 sanity check。
-- 把只需数据库字段查值的性质作为正式 open-generation 评分目标。
-- 以区分 skills-on 和 skills-off 为 benchmark 设计目标。
-- 证明某个候选物实验上最优、催化活性最好或药物开发价值最高。
-- 依赖在线服务或数据库查询作为正式运行时 verifier。
-- 要求模型输出或暴露真实推理轨迹，并以推理轨迹是否符合某条固定路径为主要评分依据。
-
-本 benchmark 验证的是：在给定 verifier 定义的目标性质下，模型是否能提出满足这些性质的候选化学对象。
-
-## 10. 近两年相关 Benchmark 调研
+> 本节保留截至 2026-05-27 的调研记录。写作时需另外核实相关工作，不能把本节当作当前完整文献综述。
 
 ### 10.1 调研口径
 
@@ -343,7 +256,9 @@ LLM judge 和 rubric 覆盖评分容易受到表达方式、答案长度和论�
 
 补充说明：2025 年的 oMeBench 曾提出有机反应机理 benchmark，但截至 2026-05-27，其 arXiv 页面显示该稿件已撤回，因此本设计不把它作为主要依据。反应机理方向仍可参考其“逐步中间体、步骤类型、相似性评分”的思想，但需要等待更稳定的数据与评价方案。
 
-## 11. 从现有 Benchmark 提炼的设计规范
+## 11. 从早期 Benchmark 调研提炼的设计规范
+
+> §11.1–11.8 保留早期建议，包含尚未实现的能力、字段、数据划分和报告维度；不代表当前发布承诺。现行约定见 §11.9。
 
 ### 11.1 Benchmark 层面的规范
 
@@ -440,99 +355,55 @@ LLM judge 和 rubric 覆盖评分容易受到表达方式、答案长度和论�
 - 公开数据不应泄露可直接执行的危险合成细节；必要时使用 redacted answer、受控访问或只公开 meta-evaluation。
 - 对 open-generation 任务，应加入 forbidden chemical space 或 safety gate，防止模型通过生成高风险候选获得高性质分。
 
-### 11.9 对本项目的直接设计约束
+### 11.9 现行设计约定
 
-基于上述调研，本 verifier-grounded benchmark 初版应采用以下约束：
+1. 开放生成与性质计算是两类互补的正式题型，分别使用运行时重算和冻结 gold 比较。
+2. 所有任务有机器可解析的答案契约；评分面向最终结果，不以中间推理或工具调用轨迹为依据。
+3. 工具中立与科学定义分开处理；影响目标含义的计算条件应明确，不能以容差代替定义。
+4. 可连续度量的数值目标采用连续距离评分，结构/硬约束和离散字段保留显式判定。
+5. 轻量化描述评分端的设计取舍；参考计算与参评系统求解成本分别报告。
+6. 当前正式覆盖由 registry 与 task packs 定义，不根据可选 backend 清单推断。
+7. 论文区分工程验收、参考值来源与模型实验结论；按任务类型报告结果，并说明综合分权重和实验配置。
 
-1. 继续坚持 open-generation，不把 MCQ 或 candidate-selection 作为核心题型。
-2. 每道题必须有结构化 answer schema，最终评分只信任候选对象和 verifier，不信任模型自报性质。
-3. 正式题目应聚焦可计算化学性质，避免把数据库/数据集字段查值作为目标性质 oracle。
-4. 首批题目应先覆盖小分子、材料和低成本量子性质三个可自动验证方向，避免过早进入难以复现的通用实验方案评分。
-5. 每个任务都要有能力标签、对象类型、难度标签、verifier 标签、constraint 级 `verification_script` 追踪关系和失败模式标签。
-6. 每个 verifier 都要有可复现 spec，记录 `verifier_image`、property-level 脚本入口、固定模型或计算 workflow、资源上限和 failure policy；如果使用 LLM judge，只能作为人工 rubric 的扩展或材料合成类开放过程任务的辅助评价，并需要专家一致性校准。
-7. Runner 输出应保存原始回答、解析结果、规范化候选、verifier 输出、分项分数、失败类型、依赖版本和可选 artifacts。
-8. Leaderboard 不应只发布总分；至少按 validity、domain pass rate、property satisfaction、novelty、安全 gate、任务类别分别报告。
-9. 数据发布要包含公开 dev 集、代表性 mini 集和冻结 test 集；后续若公开 leaderboard，应保留隐藏或周期更新题库以缓解污染。
+## 12. 当前仓库实现对照
 
-## 12. 当前 repo 实现对照
+截至 2026-11-03，正式版本为 `1.0.0rc1`，对应 `v1.0.0-rc`，包含四个 track、100 道任务：
 
-截至 2026-06-11，当前 repo 已经从纯设计草案进入早期可运行实现阶段。总体工程形态已经基本对齐本文第 4 节和第 8 节提出的分层原则：
+| Track | 题数 | basic / advanced | 回答与评价 |
+| --- | ---: | --- | --- |
+| `open_generation_rdkit` | 10 | 6 / 4 | 单个 SMILES；RDKit descriptor 或固定构象流程重算 |
+| `open_generation_xtb` | 20 | 13 / 7 | 19 题 XYZ、1 题 SMILES；xTB/CREST 重算 |
+| `property_calculation_basic` | 51 | 51 / 0 | 固定对象的数值或原子标识；gold 比较 |
+| `property_calculation_advanced` | 19 | 0 / 19 | 固定对象的数值、标签或多字段答案；gold 比较 |
 
-```text
-task pack -> constraints/verifier_id -> verifier_specs.yaml -> property-level verification_script -> shared backend/tool environment
-```
+数据来自[正式 registry](../../src/verifier_grounded_benchmark/task/registry.py)及各 task pack；逐题信息见[注册任务清单](../benchmark_registered_tasks.md)。`basic`/`advanced` 是任务元数据，不自动对应模型成功率；定义见[难度标准](task-difficulty-levels.md)。
 
-当前 runner 已不依赖中心化 Python verifier registry，而是从 task/spec 中读取 `verification_script` 路径，构造 JSON payload 后通过子进程执行对应脚本。`benchmark/answer_extraction.py` 负责把 raw model response 归一化为 verifier-ready candidate，`benchmark/verifier_scripts.py` 负责脚本 payload 与执行，`benchmark/evaluate.py` 负责逐约束路由、多目标聚合和摘要输出，`vgb-score` 提供安装后的命令行批量评分入口。
+### 12.1 评价架构
 
-### 12.1 已形成雏形：RDKit 小分子 descriptor 题
+唯一正式实现包为 `src/verifier_grounded_benchmark/`，`src/vgb/` 提供别名。
 
-`tasks/rdkit_baseline/` 已经形成首个稳定模板：
+- `task/`：schema、registry、任务资源与加载。
+- `evaluation/open_generation/`：候选解析、verifier 执行、性质证据与候选评分。
+- `evaluation/property_calculation/`：答案解析、gold 比较与字段/分组评分。
+- `evaluation/common/` 与 `evaluation/reporting/`：公共评分内核、失败/结果契约及覆盖率报告。
+- `Track`/`Suite` 与 `vgb-score`：公开调用入口；模型执行由调用方负责。
 
-- `tasks.yaml` 定义 open-generation 小分子题面、`FINAL ANSWER: <SMILES>` 答案格式、domain 约束、单目标和多目标 constraint。
-- `verifier_specs.yaml` 将每个 descriptor 绑定到 property-level 脚本，例如 `verifiers/rdkit_descriptors/rdkit_qed.py`、`rdkit_logp.py`、`rdkit_tpsa.py`、`rdkit_sa_score.py` 等。
-- `verifiers/rdkit_descriptors/backend.py` 复用 RDKit descriptor 计算、SMILES 解析、canonicalization、domain gate 和 `verifiers/common/scoring.py` 通用 scoring。
-- 测试覆盖了答案抽取、脚本路由、多约束聚合、descriptor 后端和 CLI 批量评分。
+### 12.2 正式运行时与配置
 
-这部分已经可以作为后续确定性 small-molecule verifier 的参考模式。后续如果接入更多 RDKit 或类似低成本 descriptor，应优先复用这套组织方式：一个性质一个 property-level 脚本，多个脚本共享后端，题目只通过 constraint 绑定 verifier id。
+RDKit track 有 13 个 verifier specs，xTB track 有 15 个。xTB 001–013 使用 relaxation-energy quality gate；014–020 按各题声明处理，不自动加上该乘子。任务 020 接收 SMILES，由冻结 CREST/xTB 流程生成并搜索构象。
 
-### 12.2 已形成雏形：xTB direct-XYZ 低成本量子题
+任务定义与评分配置分离：所有 track 有 `tasks.yaml` 和 `scoring.yaml`，仅开放生成提供 `verifier_specs.yaml`。当前 task schema 为 2、结果 schema 为 3、连续评分版本为 `linear_goal_v2`。详细协议见 [RDKit](../tracks/RDKit.md)、[xTB](../tracks/xTB.md)、[Basic](../tracks/PropertyCalculationBasic.md)和 [Advanced](../tracks/PropertyCalculationAdvanced.md)。
 
-`tasks/xtb_xyz/` 已经形成第二个可复用模板：
+### 12.3 已记录的验证范围
 
-- 题目要求模型直接输出 fenced `xyz` block，而不是只输出 SMILES 或自报性质。
-- 当前包含 18 个 formal tasks，覆盖 HOMO-LUMO gap、dipole moment、LUMO、polarizability/dipole、ALPB solvation selectivity、global electrophilicity、Fukui carbon-site response、hessian thermochemistry，以及固定分子式/电子态和 ROY、Ritonavir 构象能量题。
-- 当前包含 13 个 verifier specs；新增的 expert specs 支持 neutral doublet dipole、comment-declared charge closed-shell gap、submitted-geometry total energy 和 optimized total energy。
-- `verifiers/xtb/backend.py` 负责 XYZ 解析、精确组成和电子态验证、几何 domain 与连通性检查、分子图/立体化学 identity gate、xTB CLI 调用、输出解析、runner failure 映射和 scoring。
-- relaxation energy 已作为原有 001-013 direct-XYZ 题的几何质量 gate 接入聚合逻辑；严格按专家题面实现的 014-018 不额外引入该 gate。
+[RC 验收记录](../../releases/v1.0.0-rc/VALIDATION.md)报告了核心测试、安装、资源一致性和评分边界检查。70 道性质计算的 gold round trips 验证评分器与配置的一致性，不是独立科学重算；该次 live xTB/CREST 回归使用 9 道输入，不代表覆盖全部 20 道题。重复 CREST 稳定性与跨平台数值等价性仍需对应的实验证据。
 
-这部分代表了“需要外部本地计算工具，但仍可用 property-level script + shared backend 固化”的设计路径。后续接入其他计算化学 verifier 时，应优先参考 xTB 的模式：把候选对象格式、计算前 domain gate、工具失败 taxonomy、资源上限和质量 gate 写入 spec，而不是把这些逻辑散落在题目或 runner 中。
+## 13. 后续论文材料与证据
 
-### 12.3 材料类 verifier 的当前边界
+研究主线已按 §1 确认。后续写作以当前题集与已执行证据为基础，分别处理：
 
-AtomisticSkills MCP、MACE MCP 和 MatGL MCP prototype 已从当前 active codebase 中移除。当前正式发布面仍以 RDKit 与 xTB 为主；材料方向不再保留依赖外部 AtomisticSkills checkout、MCP server 或 agent-specific conda environment 的可执行路径。
-
-保留的材料方向基础是 native MatGL 与 MACE-MP Python backend：`verifiers/matgl/backend.py`、`verifiers/matgl/matgl_*.py`、`verifiers/mace_mp/backend.py` 与 `verifiers/mace_mp/mace_mp_*.py`。这些实现用于后续正式材料 task specs 的基础，但当前不作为内置正式 track 发布，也不复用已删除的 Si-only MCP prototype task pack。
-
-MACE-MP 已有 native backend；后续重新接入正式发布面前，仍需要明确模型版本冻结、候选材料 domain、资源模型和正式 task design。后续材料类正式题目应参考 RDKit 与 xTB 已成型的分层结构，重新完成材料 verifier 的题目设计、domain 设计、资源约束和正式 failure policy。
-
-## 13. 后续待讨论项
-
-后续讨论应从“是否采用 verifier-grounded 方案”转向“如何把已验证的 RDKit/xTB 模式推广到更多 verifier，并避免实验性 MCP 工具误入正式题目”。优先级如下。
-
-### 13.1 P0：固化已成型实现为正式规范
-
-- 将当前 task card、answer schema、verifier spec 和 result JSON 的实际字段整理成版本化 schema 文档，明确哪些字段为必填、哪些是实验字段。
-- 明确 property-level `verification_script` 的稳定 I/O 契约，包括 payload 字段、标准 result 字段、失败类型、版本字段和 artifacts 字段。
-- 把 RDKit 与 xTB 作为首批正式模板写入开发规范：新 verifier 必须说明它参考哪一类模板，或解释为什么需要新增模板。
-- 统一 `formal_track`、`experimental_smoke`、`prototype` 等状态标记，避免未来材料类实验题目被误认为已完成正式设计。
-- 明确多目标聚合规则、quality gate 规则和 bounded scoring 的边界，特别是 `role: quality_gate` 与普通 property score 的关系。
-- 补充公开 dev/sample/test 题集的拆分规则，并说明 sample answers 只用于 smoke/regression，不代表 leaderboard 标准答案集合。
-
-### 13.2 P0：补齐正式发布与可复现运行边界
-
-- 设计单一官方 verifier image 的构建、tag、发布和兼容性策略。
-- 明确哪些依赖必须进入镜像，哪些可以是外部可选依赖；xTB、native MatGL、native MACE-MP 这类本地工具需要有清晰的降级和环境错误报告。
-- 为每个 verifier spec 固定工具版本、模型 checkpoint、reference assets、资源上限和 timeout 语义。
-- 明确 CI 中哪些测试必须完全离线、哪些是环境 smoke test、哪些需要手动或 nightly 运行。
-- 形成环境检查脚本的统一命名、输出 JSON 格式和 failure message 规范。
-
-### 13.3 P1：材料类 verifier 的正式设计
-
-- 重新设计 MACE 与 MatGL 正式任务，不沿用已移除的 Si-only MCP prototype。需要确定候选材料空间、结构大小、允许元素、晶胞 sanity、去重规则和 domain gate。
-- 明确 MatGL band gap、MatGL formation energy、MACE energy 等性质的科学含义、单位、模型输出 convention、适用域和评分窗口。
-- 判断材料题是否需要 relaxation、energy above hull、fixed reference entries 或其他稳定性 gate；如果需要，应明确 reference asset 的冻结方式。
-
-### 13.4 P1：扩展 verifier 接入规则
-
-- 新接入 ADMET、QSAR、材料 MLIP、docking、reaction validity 或 retrosynthesis verifier 时，应先写最小 task pack、verifier spec、property-level script、shared backend 和 fake-runner 测试，再扩大题目数量。
-- 每个新 verifier 都必须先回答：候选对象表示是什么、目标性质是否可运行时重新计算、是否存在数据库查值捷径、适用域如何定义、失败如何分类。
-- 对 ML surrogate verifier，需要记录训练数据来源、模型 checkpoint、校准质量、已知 failure mode 和 contamination 风险。
-- 对反应、催化和合成路线任务，应先完成输入 schema 和安全 policy，再讨论正式评分。
-
-### 13.5 P2：评价协议与 leaderboard
-
-- 明确多候选答案的计分方式，包括 best-of-k、重复候选、invalid candidate、候选顺序和预算限制。
-- 设计 novelty、leakage、applicability-domain 统计规则，避免正式分数被数据库记忆或训练集污染主导。
-- 定义 leaderboard 报告维度：validity pass rate、domain pass rate、property score、quality gate、tool/environment failure、任务类别和对象类型。
-- 明确 benchmark runner 与现有 OpenClaw benchmark 体系的集成方式，包括输入输出文件格式、批量调度、日志和 artifacts 保存。
-- 设计隐藏或周期更新题库策略，避免开放生成任务在公开 sample 上过拟合。
+- **实验解释**：记录模型与 harness 配置、工具/检索权限、预算和重复运行设置，分别报告两类任务及失败情况；不能从最终分数直接归因工具使用。
+- **参考答案依据**：整理 gold 来源、科学协议与输入充分性。已知边界见[专家题转换记录](../research/2026-08-20-task14-25-property-calculation-conversion-plan.md)，不能把参考值冻结解释为所有题面都足以唯一重建参考值。
+- **评分依据**：解释连续距离尺度、硬约束和离散规则，区分评分效用、数值重复性和方法间差异。
+- **计算成本**：分别报告评分端、参考值生成和答题端成本；“适合个人计算机”的具体运行结论需说明实测环境与任务范围。
+- **数据与相关工作**：说明 gold 可访问性和污染控制边界，并在写作时更新 §10 的历史文献调研；隐藏题库、新后端或新任务均需另外定义范围。

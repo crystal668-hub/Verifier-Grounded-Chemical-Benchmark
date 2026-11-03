@@ -4,11 +4,15 @@
 > [任务退役与 ID 迁移](../research/2026-10-28-task-retirement.md)。
 
 日期：2026-07-17
-状态：架构与评分设计规格草案，参数待定，尚未替换正式实现
+更新：2026-11-03。统一线性内核与评价架构已实现；当前正式评分版本为
+`linear_goal_v2`，结果 schema 为 3。本文保留早期任务表、schema 示例和迁移方案，
+其中的旧目录、版本与 `TBD` 不代表现行配置。当前参数以正式 task packs 的
+`scoring.yaml` 为准，公共契约见[包说明](../../src/verifier_grounded_benchmark/README.md)，
+研究定位见[现行设计](INITIAL-DESIGN.md)。
 
 ## 1. 目的
 
-本文同时规定 verifier-grounded benchmark 的评价系统架构和统一连续评分方式。目标是把当前分散在 `benchmark`、`verifiers` 和 `verifier_grounded_benchmark` 三套 Python 包中的答案解析、verifier 执行、打分、聚合、reporting、task 加载与公共 API 收敛为职责清晰、依赖单向的模块。
+本文记录统一连续评分方式及评价系统的架构演进。最初的重构目标是将分散在 `benchmark`、`verifiers` 和 `verifier_grounded_benchmark` 中的评价职责收敛；当前正式实现已位于 `verifier_grounded_benchmark`，并将开放生成与性质计算分为两条评价路径。
 
 所有可连续评分的数值约束都转换为：
 
@@ -24,13 +28,13 @@
 - 明确窗口内、超过单向优化目标后以及 hard gate 通过后的满分语义；
 - 明确 Property Calculation 在 gold 附近连续衰减，而不是 tolerance 内二元通过；
 - 明确多约束、quality gate、stability gate 和 Property Calculation 字段的聚合方式；
-- 为当前四个 task pack 中的 33 道题给出逐题迁移规则。
+- 保留最初四个 task pack 中 33 道题的迁移设计，作为历史记录。
 - 定义 `evaluation`、`task`、`scripts` 和 `releases` 四个责任域及其依赖边界；
 - 将 open-generation verifier 从独立顶层包收归 `evaluation/open_generation`；
 - 定义 parser、verifier evidence、constraint score、task result 和 benchmark report 的稳定接口；
 - 给出从当前目录到目标目录的逐文件迁移方案、兼容策略和验收标准。
 
-本文不确定具体目标值和衰减宽度。所有标记为 `TBD` 的参数必须经过独立研究、审核和版本冻结后才能进入正式 task pack。旧 `lower`、`upper`、`sigma` 和 `absolute_tolerance` 不得未经审核直接解释成新参数。
+当前目标值和衰减宽度已在正式 task packs 中冻结。下文 `TBD` 是早期设计占位，不能用于运行时评分。旧 `lower`、`upper`、`sigma` 和 `absolute_tolerance` 不得未经审核直接解释成新参数。
 
 ## 2. 分数语义
 
@@ -42,6 +46,8 @@
 - 分数表示相对于任务目标的线性完成度，不表示候选属于某个性质总体分布的分位数，也不表示成功概率或 verifier uncertainty。
 
 不同性质可以使用相同公式，但目标和衰减宽度仍是任务参数。这里的“统一”指统一数学内核、边界行为、字段含义和聚合协议，不要求所有性质共享同一个数值零点或相同物理尺度。
+
+连续评分适用于可连续度量的数值目标；有效性、结构域和硬约束，以及标签和原子身份等离散答案，仍按显式判定规则处理。衰减宽度表达评分效用，不自动等于实验不确定度或经过校准的跨计算协议误差。
 
 ## 3. 统一数学内核
 
@@ -203,7 +209,7 @@ score_minimize(x) =
 
 ### 4.5 Property Calculation 数值答案
 
-数值 Property Calculation 以 gold answer `g` 为唯一峰值，以左右容错宽度 `tauL > 0`、`tauU > 0` 定义非零得分范围：
+数值 Property Calculation 在评分空间中以 gold answer `g` 为峰值，以左右容错宽度 `tauL > 0`、`tauU > 0` 定义非零得分范围。以下公式假设单位与数值域检查已通过；配置 `absolute` 或 `log10` 变换时，先对提交值和 gold 应用同一变换，再计算距离：
 
 ```text
 L = g
@@ -231,18 +237,20 @@ score_numeric_gold(x) = clip(1 - abs(x - g) / tau, 0, 1)
 
 本题型中的“容错区间”是 `(g - tauL, g + tauU)` 内的非零得分支撑区间，不是满分平台。gold 得 1 分，半个容错宽度处得 0.5 分，容错边界及其外侧得 0 分。
 
-`tauL/tauU` 的新语义与当前 `absolute_tolerance` 不同。迁移时必须使用新字段，禁止保留旧字段名却改变边界含义。
+`tauL/tauU` 的语义与历史 `absolute_tolerance` 不同。迁移时必须使用新字段，禁止保留旧字段名却改变边界含义。
 
 ### 4.6 Property Calculation 字符串答案
 
 字符串、标签和离散映射不使用线性距离：
 
 ```text
-score_exact_string(x) = 1    if normalized(x) == normalized(gold)
-score_exact_string(x) = 0    otherwise
+score_exact_string(x) = 1                      if normalized(x) == normalized(gold)
+score_exact_string(x) = partial_scores.get(x, 0) otherwise
 ```
 
 除非任务显式定义 normalization，否则比较必须区分大小写并要求精确匹配。字符串映射不得为了产生连续分数而任意嵌入数轴。
+
+当前实现还支持配置显式的 `partial_scores`；未匹配 gold 时，只能获得配置中声明的部分分。原子标识使用独立的 `atom_identity` 规则，按原子索引和元素比较，必要时按配置给予元素匹配部分分。
 
 ## 5. Gate 与失败语义
 
@@ -319,9 +327,9 @@ task_score = property_score * quality_gate_score
 先为每个请求字段计算 field score：
 
 - 数值字段使用 `score_numeric_gold`；
-- 字符串字段使用 `score_exact_string`。
+- 字符串字段按 profile 使用 `score_exact_string` 或 `score_atom_identity`。
 
-所有请求字段等权参与任务分数：
+默认情况下，所有请求字段等权参与任务分数：
 
 ```text
 task_score = arithmetic_mean(field_scores)
@@ -333,7 +341,9 @@ task_score = arithmetic_mean(field_scores)
 task_score = max_over_assignments(arithmetic_mean(matched_field_scores))
 ```
 
-缺失字段记 0 分，其他字段仍按各自结果得分。Property Calculation 不支持字段权重或全对门槛。
+缺失字段记 0 分，其他字段仍按各自结果得分。任务也可以显式声明 `comparison_groups`：先按组配置取字段算术平均或 `all_correct`，再对组分数取等权算术平均。`all_correct` 仅在组内每个字段都得 1 时为 1，否则为 0。
+
+当前 Advanced 002 使用两个等权组：energy 组为能量字段的连续分，phase 组要求两个相名都正确。字段分 `[1, 1, 0]` 的 task score 为 `(1 + 0) / 2 = 0.5`，不是字段直接平均得到的 2/3。其他未配置分组的正式性质计算任务按字段平均。
 
 ### 6.3 Benchmark 总分
 
@@ -344,6 +354,8 @@ benchmark_score = arithmetic_mean(task_scores)
 ```
 
 缺题、重复 task id 或未知 task id 时，run 不完整，正式 `benchmark_score` 必须为空。基础设施失败必须在重试后仍单独报告，不能从分母静默删除。
+
+当前完整 100 题 suite 中，开放生成的总权重为 30%，性质计算为 70%。研究报告应区分两类任务的表现；综合分不单独代表开放生成能力或工具使用能力。
 
 ## 7. 建议的规范化 schema
 
@@ -377,9 +389,9 @@ scoring:
 
 实现可以保留便于作者阅读的题型字段，但进入 scorer 前必须转换成上述规范化表示。`null` 表示该侧无界，代码不得对无穷值执行减法。
 
-## 8. 当前任务逐题应用
+## 8. 历史任务迁移示例
 
-本节覆盖顶层四个 task pack 的全部 33 道题。`tasks/xtb_xyz/expert_calibration/tasks.yaml` 中的 014-018 是正式 xTB 同 id 任务的 calibration 副本，必须继承对应规则和参数版本，不重复计数。
+本节保留 2026-07-17 的四个 task pack、33 道题的设计示例，不是当前正式清单。下文的“当前”、旧路径、退役任务和 `TBD` 均属于该历史阶段；现行题目见[注册清单](../benchmark_registered_tasks.md)，参数见正式 `scoring.yaml`。
 
 表中 `TBD` 仅表示具体数值待定，不表示公式或参数角色待定。
 
@@ -495,13 +507,13 @@ Window 的 `[L,U]`、Target 的 `T` 和 Property Calculation 的 gold 来自题�
 - 生效 scoring version；
 - 审核日期和责任人/流程。
 
-## 10. 迁移规则
+## 10. 历史迁移规则
 
 1. 新评分必须发布为新的 benchmark scoring version。
 2. 旧分数与新分数不得跨版本直接比较。
 3. `window.sigma` 不自动转换为 `rL/rU`。
 4. `maximize_bounded/minimize_bounded.lower/upper` 不自动批准为新的 `T/B`。
-5. Property Calculation 的 `absolute_tolerance` 当前表示满分通过边界，不得原名复用为零分衰减宽度。
+5. Property Calculation 的旧 `absolute_tolerance` 表示满分通过边界，不得原名复用为零分衰减宽度。
 6. task prompt、task metadata、verifier result 和公开评分说明必须引用同一个冻结参数 profile。
 7. 参数未完成审核前，可以实现 shadow scoring，但不得替换正式 `score`。
 
@@ -532,13 +544,13 @@ Window 的 `[L,U]`、Target 的 `T` 和 Property Calculation 的 gold 来自题�
 - quality/stability gate 取各自最小值并与 property score 相乘；
 - hard gate failure 令候选为 0；
 - infrastructure failure 不生成候选零分；
-- Property Calculation group 使用最小值；
-- Property Calculation 任务使用 group 算术平均；
+- Property Calculation 默认使用字段算术平均；
+- 显式分组支持字段算术平均或 `all_correct`，task score 为组分数算术平均；
 - incomplete benchmark run 不生成正式 benchmark score。
 
 ### 11.3 任务覆盖
 
-自动检查必须证明：
+本节保留早期迁移的覆盖目标，33 题计数与旧 task-pack 布局仅对应当时的设计。该迁移要求自动检查证明：
 
 - 四个顶层 task pack 的 33 个 task id 全部有且只有一个迁移定义；
 - 每个数值约束都能规范化为 `linear_goal_distance`；
@@ -561,15 +573,16 @@ score = clip(1 - normalized_distance_to_full_score_region, 0, 1)
 - Maximize：达到下阈值后满分，只在左侧衰减；
 - Minimize：达到上阈值后满分，只在右侧衰减；
 - Numeric Gold：gold 为 1，容错范围内线性衰减，容错边界为 0；
-- Exact String：精确匹配为 1，否则为 0。
+- Exact String：精确匹配为 1，否则采用显式配置的部分分或 0；
+- Atom Identity：按原子索引与元素判定，部分分由配置声明。
 
-由此可以在不拟合全化学空间性质分布的前提下，为当前所有题目提供形式统一、边界明确、可版本化且可审计的连续评分规则。
+由此为数值目标提供统一、可版本化的连续评分内核，并保留明确的硬约束和离散答案规则。
 
 ## 13. 架构重构目标
 
-### 13.1 当前结构的问题
+### 13.1 重构前的结构问题
 
-当前评价职责分散在三个顶层 Python 包中：
+本节及后续迁移方案记录重构前的状态。当前实现已收敛至 `src/verifier_grounded_benchmark/`。重构前的评价职责分散在三个顶层 Python 包中：
 
 | 当前包 | 实际职责 | 问题 |
 | --- | --- | --- |
@@ -808,9 +821,9 @@ releases/
 - 解析 single-value 或 multi-property JSON answer；
 - 校验 property name、value type 和 unit；
 - 数值字段调用 Numeric Gold 线性公式；
-- 字符串字段 exact match；
-- `mode: all` group 取成员最小值；
-- task score 对 group 做等权算术平均。
+- 字符串或原子标识字段按 profile 匹配，并应用显式部分分；
+- 默认对字段取算术平均；
+- 显式 `comparison_groups` 分别使用算术平均或 `all_correct`，再对组取等权算术平均。
 
 该主题型当前不需要 property verifier，不应为了目录对称创建空 verifier layer。
 
@@ -962,10 +975,11 @@ Unknown property 可以忽略并记录 diagnostic，但 duplicate requested prop
 | Scorer | 规则 |
 | --- | --- |
 | `numeric_gold` | `L=U=gold`，左右 tolerance 为 decay width |
-| `exact_string` | normalized exact match 为 1，否则为 0 |
+| `exact_string` | exact match 为 1，否则采用显式部分分或 0 |
+| `atom_identity` | 比较原子索引和元素，按配置给予元素匹配部分分 |
 | `answer_matching/by_property` | 按 property name 对应提交值与 gold |
 | `answer_matching/unordered_numeric` | 选择字段平均分最高的一一匹配 |
-| `task_score` | 所有字段分数的算术平均 |
+| `task_score` | 默认对字段取算术平均；显式分组时，对组分数取算术平均 |
 
 Numeric Gold 必须调用 common linear kernel。Property Calculation 不得维护第二份三角形公式。
 
@@ -1016,7 +1030,7 @@ answer record
 
 ### 17.3 Open-generation verifier 与 scorer 分离
 
-当前 backend 直接调用 `score_constraint`。重构后 verifier 必须只返回 evidence：
+重构前 backend 直接调用 `score_constraint`。当前 verifier 与 scorer 已分离；verifier 返回 evidence，评价层计算分数。以下接口示例保留原重构设计：
 
 ```python
 class PropertyVerifier(Protocol):
@@ -1162,7 +1176,7 @@ scoring_version: linear_goal_v1
 
 ### 18.5 Verifier entrypoint
 
-当前 `verification_script: verifiers/.../file.py` 应迁移为安装包稳定的 module entrypoint：
+历史 `verification_script: verifiers/.../file.py` 已迁移为安装包稳定的 module entrypoint：
 
 ```yaml
 executor:
